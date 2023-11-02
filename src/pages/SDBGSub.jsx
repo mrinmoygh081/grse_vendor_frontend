@@ -6,6 +6,8 @@ import Header from "../components/Header";
 const SDBGSub = () => {
   const [isPopup, setIsPopup] = useState(false);
 
+  const updateSDBG = async () => {};
+
   return (
     <>
       <div className="d-flex flex-column flex-root">
@@ -46,19 +48,37 @@ const SDBGSub = () => {
                               <tbody style={{ maxHeight: "100%" }}>
                                 <tr>
                                   <td className="table_center">31/10/2023</td>
-                                  <td className="">Axis Bank</td>
-                                  <td className="">78943878748</td>
-                                  <td className="">
+                                  <td>Axis Bank</td>
+                                  <td>78943878748</td>
+                                  <td>
                                     <a
                                       href={require("D:/office/projects/grse/grse_vendor/src/uploads/SDBG Document.pdf")}
                                       target="_blank"
+                                      rel="noreferrer"
                                     >
                                       Check File
                                     </a>
                                   </td>
-                                  <td className="">XYZ Pvt. Ltd.</td>
-                                  <td className="">Uploading SDBG</td>
-                                  <td className="">Pending</td>
+                                  <td>XYZ Pvt. Ltd.</td>
+                                  <td>Uploading SDBG</td>
+                                  <td>Pending</td>
+                                </tr>
+                                <tr>
+                                  <td className="table_center">31/10/2023</td>
+                                  <td>Axis Bank</td>
+                                  <td>78943878748</td>
+                                  <td>
+                                    <a
+                                      href={require("D:/office/projects/grse/grse_vendor/src/uploads/SDBG Document.pdf")}
+                                      target="_blank"
+                                      rel="noreferrer"
+                                    >
+                                      Check File
+                                    </a>
+                                  </td>
+                                  <td>GRSE</td>
+                                  <td>Returning SDBG for correction</td>
+                                  <td>Pending</td>
                                 </tr>
                               </tbody>
                             </table>
@@ -100,7 +120,7 @@ const SDBGSub = () => {
               Close
             </button>
           </div>
-          <form>
+          <form onSubmit={updateSDBG}>
             <div className="row">
               <div className="col-md-6 col-12">
                 <div class="mb-3">

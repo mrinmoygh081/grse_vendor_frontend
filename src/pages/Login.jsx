@@ -37,20 +37,24 @@ export default function Login() {
   return (
     <>
       <div className="d-flex flex-column flex-root" style={{ height: "100vh" }}>
-        <div
-          className="d-flex flex-column flex-column-fluid bgi-position-y-bottom position-x-center bgi-no-repeat bgi-size-contain bgi-attachment-fixed"
-          style={{
-            backgroundImage:
-              "url(assets/media/illustrations/sketchy-1/14-dark.png)",
-          }}
-        >
+        <div className="d-flex flex-column flex-column-fluid bgi-position-y-bottom position-x-center bgi-no-repeat bgi-size-contain bgi-attachment-fixed">
           <div className="d-flex flex-center flex-column flex-column-fluid p-10 pb-lg-20">
-            <div className="w-lg-500px bg-body rounded shadow-sm p-10 p-lg-15 mx-auto">
+            <h3 className="text-center">
+              Garden Reach Shipbuilders & Engineers Ltd. <br /> (A GOVT.OF INDIA
+              UNDERTAKING)
+            </h3>
+            <div className="w-lg-500px bg-body rounded shadow-sm p-10 p-lg-15 mx-auto border">
               <form onSubmit={loginSubmit} className="form w-100">
-                <div className="text-center mb-10">
-                  <h1 className="text-dark mb-3">Log In to Vendor Portal</h1>
+                <div className="text-center mb-5">
+                  <img
+                    src={require("../images/logo.png")}
+                    alt=""
+                    className="img-fluid"
+                    style={{ width: "120px" }}
+                  />
+                  <h3 className="text-dark">Login to Vendor Portal</h3>
                 </div>
-                <div className="fv-row mb-10">
+                <div className="fv-row mb-3">
                   <label className="form-label fs-6 fw-bolder text-dark">
                     Username
                   </label>
@@ -66,7 +70,7 @@ export default function Login() {
                     }
                   />
                 </div>
-                <div className="fv-row mb-10">
+                <div className="fv-row mb-3">
                   <div className="d-flex flex-stack mb-2">
                     <label className="form-label fw-bolder text-dark fs-6 mb-0">
                       Password
