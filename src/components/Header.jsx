@@ -1,8 +1,12 @@
 import React, { useState } from "react";
+import { useSelector } from "react-redux";
 
-export default function Header({ title, POnum, vCode }) {
+export default function Header({ title, POnum, vCode, id }) {
   const [isDropOpen, setIsDropOpen] = useState(false);
+  const user = useSelector((state) => state.auth);
+  const vendorCode = user.vendor_id;
   const toggleDropMenu = () => setIsDropOpen(!isDropOpen);
+
   return (
     <>
       <div id="kt_header" className="header align-items-stretch shadow">
@@ -50,12 +54,14 @@ export default function Header({ title, POnum, vCode }) {
                 <div className="d-flex align-items-center justify-content-between w-100">
                   <div className="menu menu-lg-rounded menu-column menu-lg-row menu-state-bg menu-title-gray-700 menu-state-title-primary menu-state-icon-primary menu-state-bullet-primary menu-arrow-gray-400 fw-bold my-5 my-lg-0 align-items-stretch">
                     <div className="menu-item here show menu-lg-down-accordion me-lg-1">
-                      <span className="menu-title">PO number: 8787667099</span>
+                      <span className="menu-title">PO number: {id}</span>
                     </div>
                   </div>
                   <div className="menu menu-lg-rounded menu-column menu-lg-row menu-state-bg menu-title-gray-700 menu-state-title-primary menu-state-icon-primary menu-state-bullet-primary menu-arrow-gray-400 fw-bold my-5 my-lg-0 align-items-stretch">
                     <div className="menu-item here show menu-lg-down-accordion me-lg-1">
-                      <span className="menu-title">Vendor Code: 65768</span>
+                      <span className="menu-title">
+                        Vendor Code: {user.user.vendor_code}
+                      </span>
                     </div>
                   </div>
                 </div>

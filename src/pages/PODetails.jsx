@@ -1,39 +1,44 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Select from "react-select";
 import makeAnimated from "react-select/animated";
 import SideBar from "../components/SideBar";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
-
-const durationOptions = [
-  { value: "", label: "Choose Duration" },
-  { value: "10", label: "10 Seconds" },
-  { value: "30", label: "30 Seconds" },
-  { value: "60", label: "60 Seconds" },
-  { value: "120", label: "120 Seconds" },
-];
-
-const timeGapOptions = [
-  { value: "", label: "Choose Time" },
-  { value: "1", label: "1 Minute" },
-  { value: "5", label: "5 Minutes" },
-  { value: "10", label: "10 Minutes" },
-  { value: "30", label: "30 Minutes" },
-  { value: "60", label: "60 Minutes" },
-  { value: "120", label: "120 Minutes" },
-];
+import { useParams } from "react-router-dom";
+import { apiCallBack } from "../utils/fetchAPIs";
+import { useSelector } from "react-redux";
 
 const animatedComponents = makeAnimated();
 
 const PODetails = () => {
+  const [poDetails, setPoDetails] = useState([]);
+  const { id } = useParams();
+  const { token, user } = useSelector((state) => state.auth);
+  const { po } = useSelector((state) => state.selectedPO);
+
+  useEffect(() => {
+    (async () => {
+      const data = await apiCallBack(
+        "GET",
+        `po/details?id=${id}`, // Adjust the API endpoint as needed
+        null,
+        token
+      );
+      if (data?.status) {
+        setPoDetails(data?.data);
+      }
+    })();
+  }, [id]);
+
+  console.log(poDetails, "poDetailspoDetails");
   return (
     <>
       <main>
         <div className="d-flex flex-column flex-root">
           <div className="page d-flex flex-row flex-column-fluid">
-            <SideBar />
+            <SideBar id={id} />
             <div className="wrapper d-flex flex-column flex-row-fluid">
-              <Header title={"Dashboard"} />
+              <Header title={"Dashboard"} id={id} />
               <div
                 className="content d-flex flex-column flex-column-fluid"
                 id="kt_content"
@@ -49,76 +54,115 @@ const PODetails = () => {
                             </h2> */}
                           </div>
                         </div>
-                        <div className="row">
-                          <div className="col-12 col-md-6">
-                            <div className="card card-xxl-stretch mb-5 mb-xxl-8">
-                              <div className="card-body py-3">
-                                <div className="card_header_data">
-                                  <span className="label">PO Number:</span>
-                                  <span className="label_data">8787667099</span>
+                        <div>
+                          <h1>Purchase Order Details</h1>
+                          {poDetails.map((po) => (
+                            <div key={po.EBELN}>
+                              <div className="row">
+                                <div className="col-6">
+                                  <div className="card card-xxl-stretch mb-5 mb-xxl-8">
+                                    <div className="card-body py-3">
+                                      <div className="card_header_data">
+                                        <span className="label">
+                                          PO Number:
+                                        </span>
+                                        <span className="label_data">
+                                          {po.EBELN}
+                                        </span>
+                                      </div>
+                                      <div className="card_header_data">
+                                        <span className="label">PO Date:</span>
+                                        <span className="label_data">
+                                          {po.AEDAT}
+                                        </span>
+                                      </div>
+                                      <div className="card_header_data">
+                                        <span className="label">MAN:</span>
+                                        <span className="label_data">
+                                          {po.ERNAM}
+                                        </span>
+                                      </div>
+                                      <div className="card_header_data">
+                                        <span className="label">
+                                          Vendor Name:
+                                        </span>
+                                        <span className="label_data">
+                                          {/* Vendor name */}
+                                        </span>
+                                      </div>
+                                      <div className="card_header_data">
+                                        <span className="label">
+                                          Purchase Group:
+                                        </span>
+                                        <span className="label_data">
+                                          {po.EKGRP}
+                                        </span>
+                                      </div>
+                                      <div className="card_header_data">
+                                        <span className="label">
+                                          PO Acceptance Date:
+                                        </span>
+                                        <span className="label_data">
+                                          {/* PO Acceptance Date */}
+                                        </span>
+                                      </div>
+                                    </div>
+                                  </div>
                                 </div>
-                                <div className="card_header_data">
-                                  <span className="label">PO Date:</span>
-                                  <span className="label_data">8787667099</span>
-                                </div>
-                                <div className="card_header_data">
-                                  <span className="label">MAN:</span>
-                                  <span className="label_data">8787667099</span>
-                                </div>
-                                <div className="card_header_data">
-                                  <span className="label">Vendor Name:</span>
-                                  <span className="label_data"></span>
-                                </div>
-                                <div className="card_header_data">
-                                  <span className="label">Purchase Group:</span>
-                                  <span className="label_data">8787667099</span>
-                                </div>
-                                <div className="card_header_data">
-                                  <span className="label">
-                                    PO Acceptance Date:
-                                  </span>
-                                  <span className="label_data">05/10/2023</span>
+                                <div className="col-6">
+                                  <div className="card card-xxl-stretch mb-5 mb-xxl-8">
+                                    <div className="card-body py-3">
+                                      <div className="card_header_data">
+                                        <span className="label">
+                                          Contractual SDBG/IB submission date:
+                                        </span>
+                                        <span className="label_data">
+                                          {"11/3/2023"}"
+                                        </span>
+                                      </div>
+                                      <div className="card_header_data">
+                                        <span className="label">
+                                          Contractual drawing submission date:
+                                        </span>
+                                        <span className="label_data">
+                                          {/* Drawing submission date */}
+                                        </span>
+                                      </div>
+                                      <div className="card_header_data">
+                                        <span className="label">
+                                          Contractual QAP submission date:
+                                        </span>
+                                        <span className="label_data">
+                                          {/* QAP submission date */}
+                                        </span>
+                                      </div>
+                                      <div className="card_header_data">
+                                        <span className="label">
+                                          Raw material stamping date/Test
+                                          witness date:
+                                        </span>
+                                        <span className="label_data">
+                                          {/* Stamping/Test witness date */}
+                                        </span>
+                                      </div>
+                                      <div className="card_header_data">
+                                        <span className="label">
+                                          Final inspection date/FAT:
+                                        </span>
+                                        <span className="label_data">
+                                          {/* Final inspection date */}
+                                        </span>
+                                      </div>
+                                    </div>
+                                  </div>
                                 </div>
                               </div>
-                            </div>
-                          </div>
-                          <div className="col-12 col-md-6">
-                            <div className="card card-xxl-stretch mb-5 mb-xxl-8">
-                              <div className="card-body py-3">
-                                <div className="card_header_data">
-                                  <span className="label">
-                                    Contractual SDBG/IB submission date:
-                                  </span>
-                                  <span className="label_data">05/10/2023</span>
-                                </div>
-                                <div className="card_header_data">
-                                  <span className="label">
-                                    Contractual drawing submission date:
-                                  </span>
-                                  <span className="label_data">05/10/2023</span>
-                                </div>
-                                <div className="card_header_data">
-                                  <span className="label">
-                                    Contractual QAP submission date:
-                                  </span>
-                                  <span className="label_data">05/10/2023</span>
-                                </div>
-                                <div className="card_header_data">
-                                  <span className="label">
-                                    Raw material stamping date/Test witness
-                                    date:
-                                  </span>
-                                  <span className="label_data">05/10/2023</span>
-                                </div>
-                                <div className="card_header_data">
-                                  <span className="label">
-                                    Final inspection date/FAT:
-                                  </span>
-                                  <span className="label_data">05/10/2023</span>
-                                </div>
+
+                              <div className="card card-xxl-stretch mb-5 mb-xxl-8 customer_feedback">
+                                {/* Add customer feedback information here */}
                               </div>
                             </div>
-                          </div>
+                          ))}
                         </div>
                       </div>
 
@@ -147,39 +191,24 @@ const PODetails = () => {
                                     </tr>
                                   </thead>
                                   <tbody style={{ maxHeight: "100%" }}>
-                                    <tr>
-                                      <td className="table_center">
-                                        7876655445
-                                      </td>
-
-                                      <td className="">MANDS7876</td>
-                                      <td className="">MANDS7876</td>
-                                      <td className="">MANDS7876</td>
-                                      <td className="">MANDS7876</td>
-                                      <td className="">MANDS7876</td>
-                                    </tr>
-                                    <tr>
-                                      <td className="table_center">
-                                        7876655445
-                                      </td>
-
-                                      <td className="">MANDS7876</td>
-                                      <td className="">MANDS7876</td>
-                                      <td className="">MANDS7876</td>
-                                      <td className="">MANDS7876</td>
-                                      <td className="">MANDS7876</td>
-                                    </tr>
-                                    <tr>
-                                      <td className="table_center">
-                                        7876655445
-                                      </td>
-
-                                      <td className="">MANDS7876</td>
-                                      <td className="">MANDS7876</td>
-                                      <td className="">MANDS7876</td>
-                                      <td className="">MANDS7876</td>
-                                      <td className="">MANDS7876</td>
-                                    </tr>
+                                    {poDetails.MAT_DETAILS ? (
+                                      poDetails.MAT_DETAILS.map((material) => (
+                                        <tr key={material.EBELP}>
+                                          <td>{material.EBELP}</td>
+                                          <td>{material.MATNR}</td>
+                                          <td>{material.TXZ01}</td>
+                                          <td>{material.MENGE}</td>
+                                          <td>{material.MEINS}</td>
+                                          <td>{material.KTMNG}</td>
+                                        </tr>
+                                      ))
+                                    ) : (
+                                      <tr>
+                                        <td colSpan="6">
+                                          No material details available.
+                                        </td>
+                                      </tr>
+                                    )}
                                   </tbody>
                                 </table>
                                 {/* <div className="d-flex align-items-center justify-content-between py-3">

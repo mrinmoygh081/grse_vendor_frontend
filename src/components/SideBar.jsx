@@ -1,16 +1,21 @@
 import React, { Fragment, useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { logoutHandler } from "../redux/slices/loginSlice";
 import { Link } from "react-router-dom";
 import { sidebarData } from "../data/sidebarData";
+import { poRemoveHandler } from "../redux/slices/poSlice";
 
-export default function SideBar() {
+export default function SideBar({ id }) {
   const dispatch = useDispatch();
   const [isDropOpen, setIsDropOpen] = useState(false);
   const toggleDropMenu = () => setIsDropOpen(!isDropOpen);
+  const { po } = useSelector((state) => state.selectedPO);
+  console.log("po", po);
 
   const logOutFun = () => {
     dispatch(logoutHandler());
+    dispatch(poRemoveHandler());
+    window.location.href = "/";
     // Persistor.pause();
     // Persistor.flush().then(() => {
     //   return Persistor.purge();
@@ -20,7 +25,11 @@ export default function SideBar() {
   return (
     <>
       <div id="kt_aside" className="aside aside-dark aside-hoverable">
-        <div className="aside-logo flex-column-auto" id="kt_aside_logo">
+        <div
+          className="aside-logo flex-column-auto"
+          id="kt_aside_logo"
+          onClick={() => dispatch(poRemoveHandler())}
+        >
           <Link to="/" className="logo_link">
             <img
               src={require("../images/logo.png")}
@@ -47,7 +56,7 @@ export default function SideBar() {
               {sidebarData &&
                 sidebarData.map((item, index) => (
                   <div className="menu-item" key={index}>
-                    <Link to={item?.link} className="menu-link">
+                    <Link to={`${item?.link}/${po}`} className="menu-link">
                       <span className="menu-icon">
                         <span className="svg-icon svg-icon-2">
                           <svg

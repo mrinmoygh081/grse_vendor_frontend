@@ -1,23 +1,23 @@
 export const sidebarData = [
   {
     title: "Purchase Orders",
-    link: "/po/8787667099",
+    link: "/po",
   },
   {
     title: "SDBG Submissions",
-    link: "/sdbg/8787667099",
+    link: "/sdbg",
   },
   {
     title: "Drawing Submissions",
-    link: "/drawing/8787667099",
+    link: "/drawing",
   },
   {
     title: "QAP Submissions",
-    link: "/qap/8787667099",
+    link: "/qap",
   },
   {
     title: "Inspection call letter",
-    link: "/inspection/8787667099",
+    link: "/inspection",
   },
   {
     title: "Shipping documents",

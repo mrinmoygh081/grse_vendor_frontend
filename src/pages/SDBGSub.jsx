@@ -2,11 +2,72 @@ import React, { useState } from "react";
 import Footer from "../components/Footer";
 import SideBar from "../components/SideBar";
 import Header from "../components/Header";
+import { useParams } from "react-router-dom";
+import { useSelector } from "react-redux";
+import { apiCallBack } from "../utils/fetchAPIs";
+import { toast } from "react-toastify";
 
 const SDBGSub = () => {
   const [isPopup, setIsPopup] = useState(false);
+  const [formData, setFormData] = useState({
+    bankName: "",
+    transactionId: "",
+    sdbgFile: null,
+    remarks: "",
+  });
+  const { id } = useParams();
 
-  const updateSDBG = async () => {};
+  const { user, token } = useSelector((state) => state.auth);
+
+  // console.log(user, "bikky");
+
+  const updateSDBG = async (e) => {
+    const form = new FormData();
+    form.append("purchasing_doc_no", id);
+    form.append("file", formData.sdbgFile);
+    form.append("remarks", formData.remarks);
+    form.append("updated_by", user.NAME1);
+    form.append("bank_name", formData.bankName);
+    form.append("transaction_id", formData.transactionId);
+    form.append("vendor_code", user.vendor_code);
+    form.append("action_by_name", user.name);
+    form.append("action_by_id", user.email);
+
+    try {
+      // Make an API request using your 'apiCallBack' function
+      const response = await apiCallBack(
+        "POST",
+        `po/addSDBG?type=sdbg`,
+        form, // Send the form data as the payload
+        token
+      );
+      if (response?.status === true) {
+        const data = await response.json();
+        console.log(data, "abhinit");
+        setIsPopup(false); // Close the popup on successful submission
+
+        // Show a success toast
+        toast.success("Form submitted successfully");
+        setFormData({
+          sdbgFile: null,
+          remarks: "",
+          bankName: "",
+          transactionId: "",
+        });
+      } else {
+        // Handle the case where the request fails (non-2xx response)
+        toast.error(`Request failed with status ${response.status}`);
+      }
+    } catch (error) {
+      // Handle network errors or other exceptions
+      toast.error(`Error: ${error}`);
+      // Show an error toast
+      toast.error("Form submission failed", {
+        position: "top-right",
+        autoClose: 3000, // Close the toast after 3 seconds (adjust as needed)
+      });
+    }
+  };
 
   return (
     <>
@@ -14,7 +75,7 @@ const SDBGSub = () => {
         <div className="page d-flex flex-row flex-column-fluid">
           <SideBar />
           <div className="wrapper d-flex flex-column flex-row-fluid">
-            <Header title={"SDBG Submission"} />
+            <Header title={"SDBG Submission"} id={id} />
             <div className="content d-flex flex-column flex-column-fluid">
               <div className="post d-flex flex-column-fluid">
                 <div className="container">
@@ -51,13 +112,13 @@ const SDBGSub = () => {
                                   <td>Axis Bank</td>
                                   <td>78943878748</td>
                                   <td>
-                                    <a
+                                    {/* <a
                                       href={require("D:/office/projects/grse/grse_vendor/src/uploads/SDBG Document.pdf")}
                                       target="_blank"
                                       rel="noreferrer"
                                     >
                                       Check File
-                                    </a>
+                                    </a> */}
                                   </td>
                                   <td>XYZ Pvt. Ltd.</td>
                                   <td>Uploading SDBG</td>
@@ -68,13 +129,13 @@ const SDBGSub = () => {
                                   <td>Axis Bank</td>
                                   <td>78943878748</td>
                                   <td>
-                                    <a
+                                    {/* <a
                                       href={require("D:/office/projects/grse/grse_vendor/src/uploads/SDBG Document.pdf")}
                                       target="_blank"
                                       rel="noreferrer"
                                     >
                                       Check File
-                                    </a>
+                                    </a> */}
                                   </td>
                                   <td>GRSE</td>
                                   <td>Returning SDBG for correction</td>
@@ -120,44 +181,73 @@ const SDBGSub = () => {
               Close
             </button>
           </div>
-          <form onSubmit={updateSDBG}>
-            <div className="row">
-              <div className="col-md-6 col-12">
-                <div class="mb-3">
-                  <label class="form-label">Bank Name</label>
-                  <input type="text" class="form-control" />
-                </div>
-              </div>
-              <div className="col-md-6 col-12">
-                <div class="mb-3">
-                  <label class="form-label">Transaction ID</label>
-                  <input type="text" class="form-control" />
-                </div>
-              </div>
-              <div className="col-12">
-                <div class="mb-3">
-                  <label class="form-label">SDBG File</label>
-                  <input type="file" class="form-control" />
-                </div>
-              </div>
-              <div className="col-12">
-                <div class="mb-3">
-                  <label class="form-label">Remarks</label>
-                  <textarea
-                    name=""
-                    id=""
-                    rows="4"
-                    className="form-control"
-                  ></textarea>
-                </div>
-              </div>
-              <div className="col-12">
-                <div class="mb-3">
-                  <button className="btn fw-bold btn-primary">UPDATE</button>
-                </div>
+
+          <div className="row">
+            <div className="col-md-6 col-12">
+              <div class="mb-3">
+                <label class="form-label">Bank Name</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  onChange={(e) =>
+                    setFormData({ ...formData, bankName: e.target.value })
+                  }
+                />
               </div>
             </div>
-          </form>
+            <div className="col-md-6 col-12">
+              <div class="mb-3">
+                <label class="form-label">Transaction ID</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  onChange={(e) =>
+                    setFormData({
+                      ...formData,
+                      transactionId: e.target.value,
+                    })
+                  }
+                />
+              </div>
+            </div>
+            <div className="col-12">
+              <div class="mb-3">
+                <label class="form-label">SDBG File</label>
+                <input
+                  type="file"
+                  class="form-control"
+                  onChange={(e) =>
+                    setFormData({ ...formData, sdbgFile: e.target.files[0] })
+                  }
+                />
+              </div>
+            </div>
+            <div className="col-12">
+              <div class="mb-3">
+                <label class="form-label">Remarks</label>
+                <textarea
+                  name=""
+                  id=""
+                  rows="4"
+                  className="form-control"
+                  onChange={(e) =>
+                    setFormData({ ...formData, remarks: e.target.value })
+                  }
+                ></textarea>
+              </div>
+            </div>
+            <div className="col-12">
+              <div class="mb-3">
+                <button
+                  onClick={updateSDBG}
+                  className="btn fw-bold btn-primary"
+                  type="submit"
+                >
+                  UPDATE
+                </button>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </>

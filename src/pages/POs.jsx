@@ -1,10 +1,38 @@
-import React from "react";
-import { useDispatch } from "react-redux";
-import { Link } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { Link, useNavigate } from "react-router-dom";
 import { logoutHandler } from "../redux/slices/loginSlice";
+import { apiCallBack } from "../utils/fetchAPIs";
+import { poHandler } from "../redux/slices/poSlice";
 
 const POs = () => {
   const dispatch = useDispatch();
+  const [polist, setPolist] = useState([]);
+  const { token } = useSelector((state) => state.auth);
+  const { po } = useSelector((state) => state.selectedPO);
+  const navigate = useNavigate();
+  console.log("po", po);
+
+  useEffect(() => {
+    (async () => {
+      const data = await apiCallBack(
+        "GET",
+        `getFilteredData?$tableName=ekko`,
+        null,
+        token
+      );
+      if (data?.status) {
+        setPolist(data?.data);
+      }
+    })();
+  }, []);
+
+  useEffect(() => {
+    if (po) {
+      console.log(po);
+      navigate(`/po/${po}`);
+    }
+  }, [po]);
 
   return (
     <>
@@ -17,56 +45,23 @@ const POs = () => {
                 <div className="table-responsive res_height">
                   <table className="table table-bordered table-hover table-striped table_styled">
                     <tbody>
-                      <tr>
-                        <td>
-                          <Link to={"/po/7890978789"}>7890978789</Link>
-                        </td>
-                      </tr>
-                      <tr>
-                        <td>
-                          <Link to={"/po/7890978789"}>7890978790</Link>
-                        </td>
-                      </tr>
-                      <tr>
-                        <td>
-                          <Link to={"/po/7890978789"}>7890978791</Link>
-                        </td>
-                      </tr>
-                      <tr>
-                        <td>
-                          <Link to={"/po/7890978789"}>7890976509</Link>
-                        </td>
-                      </tr>
-                      <tr>
-                        <td>
-                          <Link to={"/po/7890978789"}>7890345789</Link>
-                        </td>
-                      </tr>
-                      <tr>
-                        <td>
-                          <Link to={"/po/7890978789"}>7890970929</Link>
-                        </td>
-                      </tr>
-                      <tr>
-                        <td>
-                          <Link to={"/po/7890978789"}>7809878789</Link>
-                        </td>
-                      </tr>
-                      <tr>
-                        <td>
-                          <Link to={"/po/7890978789"}>7890978789</Link>
-                        </td>
-                      </tr>
-                      <tr>
-                        <td>
-                          <Link to={"/po/7890978789"}>7890909889</Link>
-                        </td>
-                      </tr>
-                      <tr>
-                        <td>
-                          <Link to={"/po/7890978789"}>7890978712</Link>
-                        </td>
-                      </tr>
+                      {polist.map((po, index) => (
+                        <tr key={index}>
+                          <td>
+                            {/* <Link
+                              to={`/po/${po.EBELN}`}
+                              onClick={() => selectedPOHandler(po.EBELN)}
+                            >
+                              {po.EBELN}
+                            </Link> */}
+                            <button
+                              onClick={() => dispatch(poHandler(po.EBELN))}
+                            >
+                              {po.EBELN}
+                            </button>
+                          </td>
+                        </tr>
+                      ))}
                     </tbody>
                   </table>
                 </div>

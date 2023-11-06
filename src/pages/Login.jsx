@@ -9,13 +9,14 @@ export default function Login() {
   const dispatch = useDispatch();
   const [isLoading, setIsLoading] = useState(false);
   const [loginData, setLoginData] = useState({
-    username: "",
+    vendor_code: "",
     password: "",
   });
 
   const loginSubmit = async (e) => {
     e.preventDefault();
-    if (loginData.username === "" || loginData.username === null) {
+    console.log(loginData);
+    if (!loginData.vendor_code) {
       toast.error("Please provide a valid username to login");
       return;
     }
@@ -25,8 +26,9 @@ export default function Login() {
     }
     setIsLoading(true);
     let res = await postAPI("auth2/login", loginData, null);
+    console.log(res, "kkkkkkkkkkk");
     if (res?.status) {
-      dispatch(loginHandler(res.token));
+      dispatch(loginHandler(res));
       toast.success("Successfully logged in");
     } else {
       toast.error("Please provide correct username and password");
@@ -56,17 +58,20 @@ export default function Login() {
                 </div>
                 <div className="fv-row mb-3">
                   <label className="form-label fs-6 fw-bolder text-dark">
-                    Username
+                    vendor code
                   </label>
 
                   <input
                     className="form-control form-control-lg form-control-solid"
                     type="username"
-                    name="username"
+                    name="vendor_code"
                     autoComplete="off"
-                    value={loginData.username}
+                    value={loginData.vendor_code}
                     onChange={(e) =>
-                      setLoginData({ ...loginData, username: e.target.value })
+                      setLoginData({
+                        ...loginData,
+                        vendor_code: e.target.value,
+                      })
                     }
                   />
                 </div>

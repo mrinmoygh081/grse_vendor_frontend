@@ -45,13 +45,13 @@ const InspectionCall = () => {
                                 <tr>
                                   <td className="table_center">31/10/2023</td>
                                   <td className="">
-                                    <a
+                                    {/* <a
                                       href={require("D:/office/projects/grse/grse_vendor/src/uploads/SDBG Document.pdf")}
                                       target="_blank"
                                       rel="noreferrer"
                                     >
                                       Check File
-                                    </a>
+                                    </a> */}
                                   </td>
                                   <td className="">XYZ Pvt. Ltd.</td>
                                   <td className="">
@@ -62,13 +62,13 @@ const InspectionCall = () => {
                                 <tr>
                                   <td className="table_center">31/10/2023</td>
                                   <td className="">
-                                    <a
+                                    {/* <a
                                       href={require("D:/office/projects/grse/grse_vendor/src/uploads/SDBG Document.pdf")}
                                       target="_blank"
                                       rel="noreferrer"
                                     >
                                       Check File
-                                    </a>
+                                    </a> */}
                                   </td>
                                   <td className="">GRSE</td>
                                   <td className="">
@@ -80,13 +80,13 @@ const InspectionCall = () => {
                                 <tr>
                                   <td className="table_center">31/10/2023</td>
                                   <td className="">
-                                    <a
+                                    {/* <a
                                       href={require("D:/office/projects/grse/grse_vendor/src/uploads/SDBG Document.pdf")}
                                       target="_blank"
                                       rel="noreferrer"
                                     >
                                       Check File
-                                    </a>
+                                    </a> */}
                                   </td>
                                   <td className="">XYZ Pvt. Ltd.</td>
                                   <td className="">
@@ -97,13 +97,13 @@ const InspectionCall = () => {
                                 <tr>
                                   <td className="table_center">31/10/2023</td>
                                   <td className="">
-                                    <a
+                                    {/* <a
                                       href={require("D:/office/projects/grse/grse_vendor/src/uploads/SDBG Document.pdf")}
                                       target="_blank"
                                       rel="noreferrer"
                                     >
                                       Check File
-                                    </a>
+                                    </a> */}
                                   </td>
                                   <td className="">GRSE</td>
                                   <td className="">Upload of Approved QAP </td>
