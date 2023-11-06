@@ -8,6 +8,7 @@ import SDBGSub from "./pages/SDBGSub";
 import DrawingSub from "./pages/DrawingSub";
 import QAPSub from "./pages/QAPSub";
 import InspectionCall from "./pages/InspectionCall";
+import Shippingdocuments from "./pages/Shippingdocuments";
 
 function Layout() {
   const { token, isLoggedIn } = useSelector((state) => state.auth);
@@ -31,6 +32,11 @@ function Layout() {
             <Route exact path="/drawing/:id" element={<DrawingSub />} />
             <Route exact path="/qap/:id" element={<QAPSub />} />
             <Route exact path="/inspection/:id" element={<InspectionCall />} />
+            <Route
+              exact
+              path="/shipping-documents/:id"
+              element={<Shippingdocuments />}
+            />
           </Routes>
         )}
       </BrowserRouter>

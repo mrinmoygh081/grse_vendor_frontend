@@ -2,9 +2,11 @@ import React, { useState } from "react";
 import Footer from "../components/Footer";
 import SideBar from "../components/SideBar";
 import Header from "../components/Header";
+import { useParams } from "react-router-dom";
 
-const InspectionCall = () => {
+const Shippingdocuments = () => {
   const [isPopup, setIsPopup] = useState(false);
+  const { id } = useParams();
 
   return (
     <>
@@ -12,7 +14,7 @@ const InspectionCall = () => {
         <div className="page d-flex flex-row flex-column-fluid">
           <SideBar />
           <div className="wrapper d-flex flex-column flex-row-fluid">
-            <Header title={"Inspection Call Letter"} />
+            <Header title={"Inspection Call Letter"} id={id} />
             <div className="content d-flex flex-column flex-column-fluid">
               <div className="post d-flex flex-column-fluid">
                 <div className="container">
@@ -23,7 +25,7 @@ const InspectionCall = () => {
                           onClick={() => setIsPopup(true)}
                           className="btn fw-bold btn-primary"
                         >
-                          Upload Inspection call letter
+                          Upload Shipping documents
                         </button>
                       </div>
                     </div>
@@ -43,21 +45,20 @@ const InspectionCall = () => {
                               <tbody style={{ maxHeight: "100%" }}>
                                 <tr>
                                   <td className="table_center">
-                                    31/10/2023-12:36PM
+                                    01/11/2023-10:30AM
                                   </td>
                                   <td className="">
                                     {/* <a
-                                      href={require("D:/office/projects/grse/grse_vendor/src/uploads/SDBG Document.pdf")}
-                                      target="_blank"
-                                      rel="noreferrer"
-                                    >
-                                      Check File
-                                    </a> */}
+                                        href={require("D:/office/projects/grse/grse_vendor/src/uploads/SDBG Document.pdf")}
+                                        target="_blank"
+                                        rel="noreferrer"
+                                      >
+                                        Check File
+                                      </a> */}
                                   </td>
                                   <td className="">XYZ Pvt. Ltd.</td>
                                   <td className="">
-                                    Raw material stamping date/ test witness
-                                    date etc
+                                    Uploading of shipping documents
                                   </td>
                                 </tr>
                                 <tr>
@@ -66,85 +67,34 @@ const InspectionCall = () => {
                                   </td>
                                   <td className="">
                                     {/* <a
-                                      href={require("D:/office/projects/grse/grse_vendor/src/uploads/SDBG Document.pdf")}
-                                      target="_blank"
-                                      rel="noreferrer"
-                                    >
-                                      Check File
-                                    </a> */}
+                                        href={require("D:/office/projects/grse/grse_vendor/src/uploads/SDBG Document.pdf")}
+                                        target="_blank"
+                                        rel="noreferrer"
+                                      >
+                                        Check File
+                                      </a> */}
                                   </td>
                                   <td className="">GRSE</td>
-                                  <td className="">In process inspection</td>
-                                </tr>
-                                <tr>
-                                  <td className="table_center">
-                                    31/10/2023-12:36PM
-                                  </td>
                                   <td className="">
-                                    {/* <a
-                                      href={require("D:/office/projects/grse/grse_vendor/src/uploads/SDBG Document.pdf")}
-                                      target="_blank"
-                                      rel="noreferrer"
-                                    >
-                                      Check File
-                                    </a> */}
-                                  </td>
-                                  <td className="">XYZ Pvt. Ltd.</td>
-                                  <td className="">Final inspection/ FATs</td>
-                                </tr>
-
-                                <tr>
-                                  <td className="table_center">
-                                    01/11/2023-01:36PM
-                                  </td>
-                                  <td className="">
-                                    {/* <a
-                                      href={require("D:/office/projects/grse/grse_vendor/src/uploads/SDBG Document.pdf")}
-                                      target="_blank"
-                                      rel="noreferrer"
-                                    >
-                                      Check File
-                                    </a> */}
-                                  </td>
-                                  <td className="">GRSE.</td>
-                                  <td className="">
-                                    Replication of the uploaded final dispatch
-                                    clearance with or without comments
-                                  </td>
-                                </tr>
-                                <tr>
-                                  <td className="table_center">
-                                    02/11/2023-02:36PM
-                                  </td>
-                                  <td className="">
-                                    {/* <a
-                                      href={require("D:/office/projects/grse/grse_vendor/src/uploads/SDBG Document.pdf")}
-                                      target="_blank"
-                                      rel="noreferrer"
-                                    >
-                                      Check File
-                                    </a> */}
-                                  </td>
-                                  <td className="">XYZ Pvt. Ltd.</td>
-                                  <td className="">
-                                    Uploading of inspection release note
+                                    Replication of the Uploaded shipping
+                                    documents
                                   </td>
                                 </tr>
                               </tbody>
                             </table>
                             {/* <div className="d-flex align-items-center justify-content-between py-3">
-                                  <button className="btn fw-bold btn-info">
-                                    ADD NEW
-                                  </button>
-                                  <div>
-                                    <button className="btn fw-bold btn-primary mx-3">
-                                      Stop
+                                    <button className="btn fw-bold btn-info">
+                                      ADD NEW
                                     </button>
-                                    <button className="btn fw-bold btn-primary">
-                                      Send
-                                    </button>
-                                  </div>
-                                </div> */}
+                                    <div>
+                                      <button className="btn fw-bold btn-primary mx-3">
+                                        Stop
+                                      </button>
+                                      <button className="btn fw-bold btn-primary">
+                                        Send
+                                      </button>
+                                    </div>
+                                  </div> */}
                           </div>
                         </div>
                       </div>
@@ -162,7 +112,7 @@ const InspectionCall = () => {
           <div className="card-header border-0 pt-5">
             <h3 className="card-title align-items-start flex-column">
               <span className="card-label fw-bold fs-3 mb-1">
-                Upload Inspection call letter
+                Upload Shipping documents
               </span>
             </h3>
             <button
@@ -204,4 +154,4 @@ const InspectionCall = () => {
   );
 };
 
-export default InspectionCall;
+export default Shippingdocuments;

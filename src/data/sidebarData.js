@@ -21,6 +21,7 @@ export const sidebarData = [
   },
   {
     title: "Shipping documents",
+    link: "/shipping-documents",
   },
   {
     title: "Gate In Entry / GR / ICGRN",
