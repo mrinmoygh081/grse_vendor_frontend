@@ -30,9 +30,12 @@ const ChecklistSub = () => {
                         </button>
                         <button
                           onClick={() => setIsSecPopup(true)}
-                          className="btn fw-bold btn-primary"
+                          className="btn fw-bold btn-primary me-3"
                         >
                           Upload PBG Copy (optional)
+                        </button>
+                        <button className="btn fw-bold btn-primary">
+                          Checklist
                         </button>
                       </div>
                     </div>
@@ -46,6 +49,7 @@ const ChecklistSub = () => {
                                   <th>DateTime </th>
                                   <th>Invoice, PBG Copy & Checklist</th>
                                   <th>Document Type</th>
+                                  <th>ICGRN</th>
                                   <th>Updated By</th>
                                   <th className="min-w-150px">Remarks</th>
                                 </tr>
@@ -65,6 +69,7 @@ const ChecklistSub = () => {
                                     </a>
                                   </td>
                                   <td>Invoice</td>
+                                  <td>908348</td>
                                   <td>XYZ Pvt. Ltd.</td>
                                   <td>Uploading of Invoice</td>
                                 </tr>
@@ -82,6 +87,7 @@ const ChecklistSub = () => {
                                     </a>
                                   </td>
                                   <td>MTC</td>
+                                  <td>908348</td>
                                   <td>XYZ Pvt. Ltd.</td>
                                   <td>Uploading of MTC</td>
                                 </tr>
@@ -99,6 +105,7 @@ const ChecklistSub = () => {
                                     </a>
                                   </td>
                                   <td>GC</td>
+                                  <td>908348</td>
                                   <td>XYZ Pvt. Ltd.</td>
                                   <td>Uploading of GC</td>
                                 </tr>
@@ -116,6 +123,7 @@ const ChecklistSub = () => {
                                     </a>
                                   </td>
                                   <td>LR</td>
+                                  <td>908348</td>
                                   <td>XYZ Pvt. Ltd.</td>
                                   <td>Uploading of LR</td>
                                 </tr>
