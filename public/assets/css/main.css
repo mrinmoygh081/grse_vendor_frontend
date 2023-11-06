@@ -70,7 +70,7 @@ label {
   box-shadow: 1px 1px 16pc #1d1d1d;
 }
 .popup .card .row {
-  padding: 0 20px;
+  padding: 0 30px;
   max-height: 75vh;
   overflow-y: scroll;
 }

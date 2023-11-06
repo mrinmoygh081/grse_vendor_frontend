@@ -184,11 +184,11 @@ const SDBGSub = () => {
 
           <div className="row">
             <div className="col-md-6 col-12">
-              <div class="mb-3">
-                <label class="form-label">Bank Name</label>
+              <div className="mb-3">
+                <label className="form-label">Bank Name</label>
                 <input
                   type="text"
-                  class="form-control"
+                  className="form-control"
                   onChange={(e) =>
                     setFormData({ ...formData, bankName: e.target.value })
                   }
@@ -196,11 +196,11 @@ const SDBGSub = () => {
               </div>
             </div>
             <div className="col-md-6 col-12">
-              <div class="mb-3">
-                <label class="form-label">Transaction ID</label>
+              <div className="mb-3">
+                <label className="form-label">Transaction ID</label>
                 <input
                   type="text"
-                  class="form-control"
+                  className="form-control"
                   onChange={(e) =>
                     setFormData({
                       ...formData,
@@ -211,11 +211,11 @@ const SDBGSub = () => {
               </div>
             </div>
             <div className="col-12">
-              <div class="mb-3">
-                <label class="form-label">SDBG File</label>
+              <div className="mb-3">
+                <label className="form-label">SDBG File</label>
                 <input
                   type="file"
-                  class="form-control"
+                  className="form-control"
                   onChange={(e) =>
                     setFormData({ ...formData, sdbgFile: e.target.files[0] })
                   }
@@ -223,8 +223,8 @@ const SDBGSub = () => {
               </div>
             </div>
             <div className="col-12">
-              <div class="mb-3">
-                <label class="form-label">Remarks</label>
+              <div className="mb-3">
+                <label className="form-label">Remarks</label>
                 <textarea
                   name=""
                   id=""
@@ -237,7 +237,7 @@ const SDBGSub = () => {
               </div>
             </div>
             <div className="col-12">
-              <div class="mb-3">
+              <div className="mb-3">
                 <button
                   onClick={updateSDBG}
                   className="btn fw-bold btn-primary"

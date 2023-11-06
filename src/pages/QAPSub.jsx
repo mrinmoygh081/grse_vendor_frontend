@@ -149,14 +149,14 @@ const QAPSub = () => {
           <form>
             <div className="row">
               <div className="col-12">
-                <div class="mb-3">
-                  <label class="form-label">QAP File</label>
-                  <input type="file" class="form-control" />
+                <div className="mb-3">
+                  <label className="form-label">QAP File</label>
+                  <input type="file" className="form-control" />
                 </div>
               </div>
               <div className="col-12">
-                <div class="mb-3">
-                  <label class="form-label">Remarks</label>
+                <div className="mb-3">
+                  <label className="form-label">Remarks</label>
                   <textarea
                     name=""
                     id=""
@@ -166,7 +166,7 @@ const QAPSub = () => {
                 </div>
               </div>
               <div className="col-12">
-                <div class="mb-3">
+                <div className="mb-3">
                   <button className="btn fw-bold btn-primary">UPDATE</button>
                 </div>
               </div>

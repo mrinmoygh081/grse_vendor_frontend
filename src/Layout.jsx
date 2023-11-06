@@ -9,6 +9,8 @@ import DrawingSub from "./pages/DrawingSub";
 import QAPSub from "./pages/QAPSub";
 import InspectionCall from "./pages/InspectionCall";
 import Shippingdocuments from "./pages/Shippingdocuments";
+import GateInSub from "./pages/GateInSub";
+import ChecklistSub from "./pages/ChecklistSub";
 
 function Layout() {
   const { token, isLoggedIn } = useSelector((state) => state.auth);
@@ -37,6 +39,8 @@ function Layout() {
               path="/shipping-documents/:id"
               element={<Shippingdocuments />}
             />
+            <Route exact path="/gate-in/:id" element={<GateInSub />} />
+            <Route exact path="/checklist/:id" element={<ChecklistSub />} />
           </Routes>
         )}
       </BrowserRouter>

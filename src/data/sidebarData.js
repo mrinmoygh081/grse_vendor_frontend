@@ -25,9 +25,11 @@ export const sidebarData = [
   },
   {
     title: "Gate In Entry / GR / ICGRN",
+    link: "/gate-in",
   },
   {
-    title: "Invoice, PBG copy & checklist",
+    title: "Invoice, PBG Copy & Checklist",
+    link: "/checklist",
   },
   {
     title: "Bill registration number",

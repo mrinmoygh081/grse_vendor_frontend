@@ -46,13 +46,13 @@ const InspectionCall = () => {
                                     31/10/2023-12:36PM
                                   </td>
                                   <td className="">
-                                    {/* <a
-                                      href={require("D:/office/projects/grse/grse_vendor/src/uploads/SDBG Document.pdf")}
+                                    <a
+                                      href={require("C:/grse/grse_frontend/grse_vendor/src/uploads/testing.pdf")}
                                       target="_blank"
                                       rel="noreferrer"
                                     >
                                       Check File
-                                    </a> */}
+                                    </a>
                                   </td>
                                   <td className="">XYZ Pvt. Ltd.</td>
                                   <td className="">
@@ -65,13 +65,13 @@ const InspectionCall = () => {
                                     31/10/2023-12:36PM
                                   </td>
                                   <td className="">
-                                    {/* <a
-                                      href={require("D:/office/projects/grse/grse_vendor/src/uploads/SDBG Document.pdf")}
+                                    <a
+                                      href={require("C:/grse/grse_frontend/grse_vendor/src/uploads/testing.pdf")}
                                       target="_blank"
                                       rel="noreferrer"
                                     >
                                       Check File
-                                    </a> */}
+                                    </a>
                                   </td>
                                   <td className="">GRSE</td>
                                   <td className="">In process inspection</td>
@@ -81,13 +81,13 @@ const InspectionCall = () => {
                                     31/10/2023-12:36PM
                                   </td>
                                   <td className="">
-                                    {/* <a
-                                      href={require("D:/office/projects/grse/grse_vendor/src/uploads/SDBG Document.pdf")}
+                                    <a
+                                      href={require("C:/grse/grse_frontend/grse_vendor/src/uploads/testing.pdf")}
                                       target="_blank"
                                       rel="noreferrer"
                                     >
                                       Check File
-                                    </a> */}
+                                    </a>
                                   </td>
                                   <td className="">XYZ Pvt. Ltd.</td>
                                   <td className="">Final inspection/ FATs</td>
@@ -98,13 +98,13 @@ const InspectionCall = () => {
                                     01/11/2023-01:36PM
                                   </td>
                                   <td className="">
-                                    {/* <a
-                                      href={require("D:/office/projects/grse/grse_vendor/src/uploads/SDBG Document.pdf")}
+                                    <a
+                                      href={require("C:/grse/grse_frontend/grse_vendor/src/uploads/testing.pdf")}
                                       target="_blank"
                                       rel="noreferrer"
                                     >
                                       Check File
-                                    </a> */}
+                                    </a>
                                   </td>
                                   <td className="">GRSE.</td>
                                   <td className="">
@@ -117,13 +117,13 @@ const InspectionCall = () => {
                                     02/11/2023-02:36PM
                                   </td>
                                   <td className="">
-                                    {/* <a
-                                      href={require("D:/office/projects/grse/grse_vendor/src/uploads/SDBG Document.pdf")}
+                                    <a
+                                      href={require("C:/grse/grse_frontend/grse_vendor/src/uploads/testing.pdf")}
                                       target="_blank"
                                       rel="noreferrer"
                                     >
                                       Check File
-                                    </a> */}
+                                    </a>
                                   </td>
                                   <td className="">XYZ Pvt. Ltd.</td>
                                   <td className="">
@@ -175,14 +175,14 @@ const InspectionCall = () => {
           <form>
             <div className="row">
               <div className="col-12">
-                <div class="mb-3">
-                  <label class="form-label">QAP File</label>
-                  <input type="file" class="form-control" />
+                <div className="mb-3">
+                  <label className="form-label">QAP File</label>
+                  <input type="file" className="form-control" />
                 </div>
               </div>
               <div className="col-12">
-                <div class="mb-3">
-                  <label class="form-label">Remarks</label>
+                <div className="mb-3">
+                  <label className="form-label">Remarks</label>
                   <textarea
                     name=""
                     id=""
@@ -192,7 +192,7 @@ const InspectionCall = () => {
                 </div>
               </div>
               <div className="col-12">
-                <div class="mb-3">
+                <div className="mb-3">
                   <button className="btn fw-bold btn-primary">UPDATE</button>
                 </div>
               </div>

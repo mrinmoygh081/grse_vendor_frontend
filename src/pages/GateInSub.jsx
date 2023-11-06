@@ -4,7 +4,7 @@ import SideBar from "../components/SideBar";
 import Header from "../components/Header";
 import { useParams } from "react-router-dom";
 
-const Shippingdocuments = () => {
+const GateInSub = () => {
   const [isPopup, setIsPopup] = useState(false);
   const { id } = useParams();
 
@@ -14,21 +14,11 @@ const Shippingdocuments = () => {
         <div className="page d-flex flex-row flex-column-fluid">
           <SideBar />
           <div className="wrapper d-flex flex-column flex-row-fluid">
-            <Header title={"Shipping Documents"} id={id} />
+            <Header title={"Gate In Entry / Goods receipt / ICGRN "} id={id} />
             <div className="content d-flex flex-column flex-column-fluid">
               <div className="post d-flex flex-column-fluid">
                 <div className="container">
                   <div className="row g-5 g-xl-8">
-                    <div className="col-12">
-                      <div className="screen_header">
-                        <button
-                          onClick={() => setIsPopup(true)}
-                          className="btn fw-bold btn-primary"
-                        >
-                          Upload Shipping documents
-                        </button>
-                      </div>
-                    </div>
                     <div className="col-12">
                       <div className="card-body p-3">
                         <div className="tab-content">
@@ -37,10 +27,10 @@ const Shippingdocuments = () => {
                               <thead>
                                 <tr className="border-0">
                                   <th>DateTime </th>
-                                  <th>Shipping Documents</th>
+                                  <th>Document</th>
                                   <th>Document Type</th>
+                                  <th>ID</th>
                                   <th>Updated By</th>
-                                  <th className="min-w-150px">Remarks</th>
                                 </tr>
                               </thead>
                               <tbody style={{ maxHeight: "100%" }}>
@@ -57,9 +47,9 @@ const Shippingdocuments = () => {
                                       Check File
                                     </a>
                                   </td>
-                                  <td>Invoice</td>
-                                  <td>XYZ Pvt. Ltd.</td>
-                                  <td>Uploading of Invoice</td>
+                                  <td>Gate In Entry</td>
+                                  <td>098349</td>
+                                  <td>GRSE</td>
                                 </tr>
                                 <tr>
                                   <td className="table_center">
@@ -74,9 +64,9 @@ const Shippingdocuments = () => {
                                       Check File
                                     </a>
                                   </td>
-                                  <td>MTC</td>
-                                  <td>XYZ Pvt. Ltd.</td>
-                                  <td>Uploading of MTC</td>
+                                  <td>Goods Receipt</td>
+                                  <td>656567</td>
+                                  <td>GRSE</td>
                                 </tr>
                                 <tr>
                                   <td className="table_center">
@@ -91,26 +81,9 @@ const Shippingdocuments = () => {
                                       Check File
                                     </a>
                                   </td>
-                                  <td>GC</td>
-                                  <td>XYZ Pvt. Ltd.</td>
-                                  <td>Uploading of GC</td>
-                                </tr>
-                                <tr>
-                                  <td className="table_center">
-                                    31/10/2023-12:36PM
-                                  </td>
-                                  <td>
-                                    <a
-                                      href={require("C:/grse/grse_frontend/grse_vendor/src/uploads/testing.pdf")}
-                                      target="_blank"
-                                      rel="noreferrer"
-                                    >
-                                      Check File
-                                    </a>
-                                  </td>
-                                  <td>LR</td>
-                                  <td>XYZ Pvt. Ltd.</td>
-                                  <td>Uploading of LR</td>
+                                  <td>ICGRN Report</td>
+                                  <td>908348</td>
+                                  <td>GRSE</td>
                                 </tr>
                               </tbody>
                             </table>
@@ -183,4 +156,4 @@ const Shippingdocuments = () => {
   );
 };
 
-export default Shippingdocuments;
+export default GateInSub;
