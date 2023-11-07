@@ -2,12 +2,16 @@ import React, { useState } from "react";
 import Footer from "../components/Footer";
 import SideBar from "../components/SideBar";
 import Header from "../components/Header";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 const ChecklistSub = () => {
   const [isPopup, setIsPopup] = useState(false);
   const [isSecPopup, setIsSecPopup] = useState(false);
   const { id } = useParams();
+  const navigate = useNavigate();
+  const ChecklistHandler = () => {
+    navigate(`/checklistedit/${id}`);
+  };
 
   return (
     <>
@@ -34,7 +38,10 @@ const ChecklistSub = () => {
                         >
                           Upload PBG Copy (optional)
                         </button>
-                        <button className="btn fw-bold btn-primary">
+                        <button
+                          className="btn fw-bold btn-primary"
+                          onClick={ChecklistHandler}
+                        >
                           Checklist
                         </button>
                       </div>

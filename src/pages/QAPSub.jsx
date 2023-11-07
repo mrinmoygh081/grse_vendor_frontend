@@ -2,9 +2,11 @@ import React, { useState } from "react";
 import Footer from "../components/Footer";
 import SideBar from "../components/SideBar";
 import Header from "../components/Header";
+import { useParams } from "react-router-dom";
 
 const QAPSub = () => {
   const [isPopup, setIsPopup] = useState(false);
+  const { id } = useParams();
 
   return (
     <>
@@ -12,7 +14,7 @@ const QAPSub = () => {
         <div className="page d-flex flex-row flex-column-fluid">
           <SideBar />
           <div className="wrapper d-flex flex-column flex-row-fluid">
-            <Header title={"QAP Submission"} />
+            <Header title={"QAP Submission"} id={id} />
             <div className="content d-flex flex-column flex-column-fluid">
               <div className="post d-flex flex-column-fluid">
                 <div className="container">

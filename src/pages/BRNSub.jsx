@@ -18,107 +18,57 @@ const BRNSub = () => {
             <div className="content d-flex flex-column flex-column-fluid">
               <div className="post d-flex flex-column-fluid">
                 <div className="container">
-                  <div className="row g-5 g-xl-8">
-                    <div className="col-12">
-                      <div className="screen_header">
-                        <button
-                          onClick={() => setIsPopup(true)}
-                          className="btn fw-bold btn-primary"
-                        >
-                          Upload Shipping documents
-                        </button>
+                  {/* code below */}
+                  <form>
+                    <div className="row">
+                      <div className="col-12">
+                        <div className="mb-3">
+                          <label className="form-label">
+                            Invoice Number <span className="star">*</span>
+                          </label>
+                          <input type="text" className="form-control" />
+                        </div>
                       </div>
-                    </div>
-                    <div className="col-12">
-                      <div className="card-body p-3">
-                        <div className="tab-content">
-                          <div className="table-responsive">
-                            <table className="table table-striped table-bordered table_height">
-                              <thead>
-                                <tr className="border-0">
-                                  <th>DateTime </th>
-                                  <th>Shipping Documents</th>
-                                  <th>Document Type</th>
-                                  <th>Updated By</th>
-                                  <th className="min-w-150px">Remarks</th>
-                                </tr>
-                              </thead>
-                              <tbody style={{ maxHeight: "100%" }}>
-                                <tr>
-                                  <td className="table_center">
-                                    01/11/2023-10:30AM
-                                  </td>
-                                  <td>
-                                    <a
-                                      href={require("C:/grse/grse_frontend/grse_vendor/src/uploads/testing.pdf")}
-                                      target="_blank"
-                                      rel="noreferrer"
-                                    >
-                                      Check File
-                                    </a>
-                                  </td>
-                                  <td>Invoice</td>
-                                  <td>XYZ Pvt. Ltd.</td>
-                                  <td>Uploading of Invoice</td>
-                                </tr>
-                                <tr>
-                                  <td className="table_center">
-                                    31/10/2023-12:36PM
-                                  </td>
-                                  <td>
-                                    <a
-                                      href={require("C:/grse/grse_frontend/grse_vendor/src/uploads/testing.pdf")}
-                                      target="_blank"
-                                      rel="noreferrer"
-                                    >
-                                      Check File
-                                    </a>
-                                  </td>
-                                  <td>MTC</td>
-                                  <td>XYZ Pvt. Ltd.</td>
-                                  <td>Uploading of MTC</td>
-                                </tr>
-                                <tr>
-                                  <td className="table_center">
-                                    31/10/2023-12:36PM
-                                  </td>
-                                  <td>
-                                    <a
-                                      href={require("C:/grse/grse_frontend/grse_vendor/src/uploads/testing.pdf")}
-                                      target="_blank"
-                                      rel="noreferrer"
-                                    >
-                                      Check File
-                                    </a>
-                                  </td>
-                                  <td>GC</td>
-                                  <td>XYZ Pvt. Ltd.</td>
-                                  <td>Uploading of GC</td>
-                                </tr>
-                                <tr>
-                                  <td className="table_center">
-                                    31/10/2023-12:36PM
-                                  </td>
-                                  <td>
-                                    <a
-                                      href={require("C:/grse/grse_frontend/grse_vendor/src/uploads/testing.pdf")}
-                                      target="_blank"
-                                      rel="noreferrer"
-                                    >
-                                      Check File
-                                    </a>
-                                  </td>
-                                  <td>LR</td>
-                                  <td>XYZ Pvt. Ltd.</td>
-                                  <td>Uploading of LR</td>
-                                </tr>
-                              </tbody>
-                            </table>
-                          </div>
+                      <div className="col-12">
+                        <div className="mb-3">
+                          <label className="form-label">
+                            Upload File <span className="star">*</span>
+                          </label>
+                          <input type="file" className="form-control" />
+                        </div>
+                      </div>
+                      <div className="mb-3">
+                        <label className="form-label">
+                          Vendor Bill Date <span className="star">*</span>
+                        </label>
+                        <input type="text" className="form-control" />
+                      </div>
+                      <div className="mb-3">
+                        <label className="form-label">
+                          Bill Submitted To<span className="star">*</span>
+                        </label>
+                        <input type="text" className="form-control" />
+                      </div>
+                      <div className="col-12">
+                        <div className="mb-3">
+                          <label className="form-label">Remarks</label>
+                          <textarea
+                            name=""
+                            id=""
+                            rows="4"
+                            className="form-control"
+                          ></textarea>
+                        </div>
+                      </div>
+                      <div className="col-12">
+                        <div className="mb-3">
+                          <button className="btn fw-bold btn-primary">
+                            UPDATE
+                          </button>
                         </div>
                       </div>
                     </div>
-                  </div>
+                  </form>
                 </div>
               </div>
             </div>

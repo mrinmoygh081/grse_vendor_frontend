@@ -2,12 +2,18 @@ import React, { useState } from "react";
 import Footer from "../components/Footer";
 import SideBar from "../components/SideBar";
 import Header from "../components/Header";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 const ClaimLatterSub = () => {
   const [isPopup, setIsPopup] = useState(false);
   const [isSecPopup, setIsSecPopup] = useState(false);
+  const [isthreePopup, setIsthreePopup] = useState(false);
   const { id } = useParams();
+  const navigate = useNavigate();
+
+  const ChecklistHandler = () => {
+    navigate(`/checklistedit/${id}`);
+  };
 
   return (
     <>
@@ -29,12 +35,15 @@ const ClaimLatterSub = () => {
                           Upload Claim Letter
                         </button>
                         <button
-                          onClick={() => setIsSecPopup(true)}
+                          onClick={ChecklistHandler}
                           className="btn fw-bold btn-primary me-3"
                         >
                           Checklist
                         </button>
-                        <button className="btn fw-bold btn-primary">
+                        <button
+                          onClick={() => setIsthreePopup(true)}
+                          className="btn fw-bold btn-primary"
+                        >
                           Generate BTN
                         </button>
                       </div>
@@ -162,6 +171,71 @@ const ClaimLatterSub = () => {
                   </label>
                   <input type="file" className="form-control" />
                 </div>
+              </div>
+              <div className="col-12">
+                <div className="mb-3">
+                  <label className="form-label">Remarks</label>
+                  <textarea
+                    name=""
+                    id=""
+                    rows="4"
+                    className="form-control"
+                  ></textarea>
+                </div>
+              </div>
+              <div className="col-12">
+                <div className="mb-3">
+                  <button className="btn fw-bold btn-primary">UPDATE</button>
+                </div>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+      <div className={isthreePopup ? "popup active" : "popup"}>
+        <div className="card card-xxl-stretch mb-5 mb-xxl-8">
+          <div className="card-header border-0 pt-5">
+            <h3 className="card-title align-items-start flex-column">
+              <span className="card-label fw-bold fs-3 mb-1">
+                Bill Registration
+              </span>
+            </h3>
+            <button
+              className="btn fw-bold btn-danger"
+              onClick={() => setIsthreePopup(false)}
+            >
+              Close
+            </button>
+          </div>
+          <form>
+            <div className="row">
+              <div className="col-12">
+                <div className="mb-3">
+                  <label className="form-label">
+                    Invoice Number <span className="star">*</span>
+                  </label>
+                  <input type="text" className="form-control" />
+                </div>
+              </div>
+              <div className="col-12">
+                <div className="mb-3">
+                  <label className="form-label">
+                    Upload File <span className="star">*</span>
+                  </label>
+                  <input type="file" className="form-control" />
+                </div>
+              </div>
+              <div className="mb-3">
+                <label className="form-label">
+                  Vendor Bill Date <span className="star">*</span>
+                </label>
+                <input type="text" className="form-control" />
+              </div>
+              <div className="mb-3">
+                <label className="form-label">
+                  Bill Submitted To<span className="star">*</span>
+                </label>
+                <input type="text" className="form-control" />
               </div>
               <div className="col-12">
                 <div className="mb-3">

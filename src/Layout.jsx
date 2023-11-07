@@ -16,9 +16,10 @@ import PaymentAdvisesSub from "./pages/PaymentAdvisesSub";
 import PBGuploadSub from "./pages/PBGuploadSub";
 import BGExtensionSub from "./pages/BGExtensionSub";
 import ClaimLatterSub from "./pages/ClaimLatterSub";
+import ChecklistSubEdit from "./pages/ChecklistSubEdit";
 
 function Layout() {
-  const { token, isLoggedIn } = useSelector((state) => state.auth);
+  const { token, isLoggedIn, userType } = useSelector((state) => state.auth);
 
   useEffect(() => {
     console.log(token, isLoggedIn);
@@ -30,6 +31,48 @@ function Layout() {
         {!token && !isLoggedIn ? (
           <Routes>
             <Route exact path="/" element={<Login />} />
+          </Routes>
+        ) : userType === 1 ? (
+          <Routes>
+            <Route exact path="/" element={<POs />} />
+            <Route exact path="/po/:id" element={<PODetails />} />
+            <Route exact path="/sdbg/:id" element={<SDBGSub />} />
+            <Route exact path="/drawing/:id" element={<DrawingSub />} />
+            <Route exact path="/qap/:id" element={<QAPSub />} />
+            <Route exact path="/inspection/:id" element={<InspectionCall />} />
+            <Route
+              exact
+              path="/shipping-documents/:id"
+              element={<Shippingdocuments />}
+            />
+            <Route exact path="/gate-in/:id" element={<GateInSub />} />
+            <Route exact path="/checklist/:id" element={<ChecklistSub />} />
+            <Route
+              exact
+              path="/bill-registration-number/:id"
+              element={<BRNSub />}
+            />
+            <Route
+              exact
+              path="/payment-advise/:id"
+              element={<PaymentAdvisesSub />}
+            />
+            <Route exact path="/pbg-upload/:id" element={<PBGuploadSub />} />
+            <Route
+              exact
+              path="/bg-extension/:id"
+              element={<BGExtensionSub />}
+            />
+            <Route
+              exact
+              path="/claim-letter/:id"
+              element={<ClaimLatterSub />}
+            />
+            <Route
+              exact
+              path="/checklistedit/:id"
+              element={<ChecklistSubEdit />}
+            />
           </Routes>
         ) : (
           <Routes>
@@ -66,6 +109,11 @@ function Layout() {
               exact
               path="/claim-letter/:id"
               element={<ClaimLatterSub />}
+            />
+            <Route
+              exact
+              path="/checklistedit/:id"
+              element={<ChecklistSubEdit />}
             />
           </Routes>
         )}

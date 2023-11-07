@@ -17,7 +17,7 @@ const SDBGSub = () => {
   });
   const { id } = useParams();
 
-  const { user, token } = useSelector((state) => state.auth);
+  const { user, token, userType } = useSelector((state) => state.auth);
 
   // console.log(user, "bikky");
 

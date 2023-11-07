@@ -2,13 +2,18 @@ import React, { useState } from "react";
 import Footer from "../components/Footer";
 import SideBar from "../components/SideBar";
 import Header from "../components/Header";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 const PBGuploadSub = () => {
   const [isPopup, setIsPopup] = useState(false);
   const [isSecPopup, setIsSecPopup] = useState(false);
   const [isthreePopup, setIsthreePopup] = useState(false);
   const { id } = useParams();
+  const navigate = useNavigate();
+
+  const ChecklistHandler = () => {
+    navigate(`/checklistedit/${id}`);
+  };
 
   return (
     <>
@@ -35,7 +40,10 @@ const PBGuploadSub = () => {
                         >
                           Claim Letter
                         </button>
-                        <button className="btn fw-bold btn-primary me-3">
+                        <button
+                          onClick={ChecklistHandler}
+                          className="btn fw-bold btn-primary me-3"
+                        >
                           Checklist
                         </button>
                         <button
@@ -216,18 +224,6 @@ const PBGuploadSub = () => {
           <form>
             <div className="row">
               <div className="col-12">
-                <div className="mb-3">
-                  <label className="form-label">
-                    Purchase Order <span className="star">*</span>
-                  </label>
-                  <input type="text" className="form-control" />
-                </div>
-                <div className="mb-3">
-                  <label className="form-label">
-                    Vendor Name <span className="star">*</span>
-                  </label>
-                  <input type="text" className="form-control" />
-                </div>
                 <div className="mb-3">
                   <label className="form-label">
                     Invoice Number <span className="star">*</span>
