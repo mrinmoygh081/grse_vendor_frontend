@@ -4,7 +4,7 @@ import SideBar from "../components/SideBar";
 import Header from "../components/Header";
 import { useParams } from "react-router-dom";
 
-const ChecklistSub = () => {
+const ClaimLatterSub = () => {
   const [isPopup, setIsPopup] = useState(false);
   const [isSecPopup, setIsSecPopup] = useState(false);
   const { id } = useParams();
@@ -15,7 +15,7 @@ const ChecklistSub = () => {
         <div className="page d-flex flex-row flex-column-fluid">
           <SideBar />
           <div className="wrapper d-flex flex-column flex-row-fluid">
-            <Header title={"Invoice, PBG Copy & Checklist"} id={id} />
+            <Header title={"Claim Letter"} id={id} />
             <div className="content d-flex flex-column flex-column-fluid">
               <div className="post d-flex flex-column-fluid">
                 <div className="container">
@@ -26,16 +26,16 @@ const ChecklistSub = () => {
                           onClick={() => setIsPopup(true)}
                           className="btn fw-bold btn-primary me-3"
                         >
-                          Upload Invoice
+                          Upload Claim Letter
                         </button>
                         <button
                           onClick={() => setIsSecPopup(true)}
                           className="btn fw-bold btn-primary me-3"
                         >
-                          Upload PBG Copy (optional)
+                          Checklist
                         </button>
                         <button className="btn fw-bold btn-primary">
-                          Checklist
+                          Generate BTN
                         </button>
                       </div>
                     </div>
@@ -47,9 +47,9 @@ const ChecklistSub = () => {
                               <thead>
                                 <tr className="border-0">
                                   <th>DateTime </th>
-                                  <th>Invoice, PBG Copy & Checklist</th>
+                                  <th>Document</th>
                                   <th>Document Type</th>
-                                  <th>Document Number</th>
+
                                   <th>Updated By</th>
                                   <th className="min-w-150px">Remarks</th>
                                 </tr>
@@ -68,64 +68,10 @@ const ChecklistSub = () => {
                                       Check File
                                     </a>
                                   </td>
-                                  <td>Invoice</td>
-                                  <td>908348</td>
+                                  <td>Claim Letter</td>
+
                                   <td>XYZ Pvt. Ltd.</td>
-                                  <td>Uploading of Invoice</td>
-                                </tr>
-                                <tr>
-                                  <td className="table_center">
-                                    31/10/2023-12:36PM
-                                  </td>
-                                  <td>
-                                    <a
-                                      href={require("C:/grse/grse_frontend/grse_vendor/src/uploads/testing.pdf")}
-                                      target="_blank"
-                                      rel="noreferrer"
-                                    >
-                                      Check File
-                                    </a>
-                                  </td>
-                                  <td>MTC</td>
-                                  <td>908348</td>
-                                  <td>XYZ Pvt. Ltd.</td>
-                                  <td>Uploading of MTC</td>
-                                </tr>
-                                <tr>
-                                  <td className="table_center">
-                                    31/10/2023-12:36PM
-                                  </td>
-                                  <td>
-                                    <a
-                                      href={require("C:/grse/grse_frontend/grse_vendor/src/uploads/testing.pdf")}
-                                      target="_blank"
-                                      rel="noreferrer"
-                                    >
-                                      Check File
-                                    </a>
-                                  </td>
-                                  <td>GC</td>
-                                  <td>908348</td>
-                                  <td>XYZ Pvt. Ltd.</td>
-                                  <td>Uploading of GC</td>
-                                </tr>
-                                <tr>
-                                  <td className="table_center">
-                                    31/10/2023-12:36PM
-                                  </td>
-                                  <td>
-                                    <a
-                                      href={require("C:/grse/grse_frontend/grse_vendor/src/uploads/testing.pdf")}
-                                      target="_blank"
-                                      rel="noreferrer"
-                                    >
-                                      Check File
-                                    </a>
-                                  </td>
-                                  <td>LR</td>
-                                  <td>908348</td>
-                                  <td>XYZ Pvt. Ltd.</td>
-                                  <td>Uploading of LR</td>
+                                  <td>Uploading of Claim Letter</td>
                                 </tr>
                               </tbody>
                             </table>
@@ -146,7 +92,7 @@ const ChecklistSub = () => {
           <div className="card-header border-0 pt-5">
             <h3 className="card-title align-items-start flex-column">
               <span className="card-label fw-bold fs-3 mb-1">
-                Upload Invoice
+                Upload Claim Letter
               </span>
             </h3>
             <button
@@ -160,17 +106,6 @@ const ChecklistSub = () => {
             <div className="row">
               <div className="col-12">
                 <div className="mb-3">
-                  <label className="form-label">
-                    Invoice Number <span className="star">*</span>
-                  </label>
-                  <input type="text" className="form-control" />
-                </div>
-              </div>
-              <div className="col-12">
-                <div className="mb-3">
-                  <label className="form-label">
-                    Invoice <span className="star">*</span>
-                  </label>
                   <input type="file" className="form-control" />
                 </div>
               </div>
@@ -252,4 +187,4 @@ const ChecklistSub = () => {
   );
 };
 
-export default ChecklistSub;
+export default ClaimLatterSub;

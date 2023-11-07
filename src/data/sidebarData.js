@@ -33,14 +33,22 @@ export const sidebarData = [
   },
   {
     title: "Bill registration number",
+    link: "/bill-registration-number",
   },
   {
     title: "Payment advises",
+    link: "/payment-advise",
+  },
+  {
+    title: "Claim Letter",
+    link: "/claim-letter",
   },
   {
     title: "PBG Upload",
+    link: "/pbg-upload",
   },
   {
     title: "BG Extension/Release",
+    link: "/bg-extension",
   },
 ];

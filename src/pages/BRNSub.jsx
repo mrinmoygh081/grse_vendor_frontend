@@ -4,9 +4,8 @@ import SideBar from "../components/SideBar";
 import Header from "../components/Header";
 import { useParams } from "react-router-dom";
 
-const ChecklistSub = () => {
+const BRNSub = () => {
   const [isPopup, setIsPopup] = useState(false);
-  const [isSecPopup, setIsSecPopup] = useState(false);
   const { id } = useParams();
 
   return (
@@ -15,7 +14,7 @@ const ChecklistSub = () => {
         <div className="page d-flex flex-row flex-column-fluid">
           <SideBar />
           <div className="wrapper d-flex flex-column flex-row-fluid">
-            <Header title={"Invoice, PBG Copy & Checklist"} id={id} />
+            <Header title={"Bill Registration Number"} id={id} />
             <div className="content d-flex flex-column flex-column-fluid">
               <div className="post d-flex flex-column-fluid">
                 <div className="container">
@@ -24,18 +23,9 @@ const ChecklistSub = () => {
                       <div className="screen_header">
                         <button
                           onClick={() => setIsPopup(true)}
-                          className="btn fw-bold btn-primary me-3"
+                          className="btn fw-bold btn-primary"
                         >
-                          Upload Invoice
-                        </button>
-                        <button
-                          onClick={() => setIsSecPopup(true)}
-                          className="btn fw-bold btn-primary me-3"
-                        >
-                          Upload PBG Copy (optional)
-                        </button>
-                        <button className="btn fw-bold btn-primary">
-                          Checklist
+                          Upload Shipping documents
                         </button>
                       </div>
                     </div>
@@ -47,9 +37,8 @@ const ChecklistSub = () => {
                               <thead>
                                 <tr className="border-0">
                                   <th>DateTime </th>
-                                  <th>Invoice, PBG Copy & Checklist</th>
+                                  <th>Shipping Documents</th>
                                   <th>Document Type</th>
-                                  <th>Document Number</th>
                                   <th>Updated By</th>
                                   <th className="min-w-150px">Remarks</th>
                                 </tr>
@@ -69,7 +58,6 @@ const ChecklistSub = () => {
                                     </a>
                                   </td>
                                   <td>Invoice</td>
-                                  <td>908348</td>
                                   <td>XYZ Pvt. Ltd.</td>
                                   <td>Uploading of Invoice</td>
                                 </tr>
@@ -87,7 +75,6 @@ const ChecklistSub = () => {
                                     </a>
                                   </td>
                                   <td>MTC</td>
-                                  <td>908348</td>
                                   <td>XYZ Pvt. Ltd.</td>
                                   <td>Uploading of MTC</td>
                                 </tr>
@@ -105,7 +92,6 @@ const ChecklistSub = () => {
                                     </a>
                                   </td>
                                   <td>GC</td>
-                                  <td>908348</td>
                                   <td>XYZ Pvt. Ltd.</td>
                                   <td>Uploading of GC</td>
                                 </tr>
@@ -123,7 +109,6 @@ const ChecklistSub = () => {
                                     </a>
                                   </td>
                                   <td>LR</td>
-                                  <td>908348</td>
                                   <td>XYZ Pvt. Ltd.</td>
                                   <td>Uploading of LR</td>
                                 </tr>
@@ -146,7 +131,7 @@ const ChecklistSub = () => {
           <div className="card-header border-0 pt-5">
             <h3 className="card-title align-items-start flex-column">
               <span className="card-label fw-bold fs-3 mb-1">
-                Upload Invoice
+                Upload Shipping documents
               </span>
             </h3>
             <button
@@ -161,7 +146,7 @@ const ChecklistSub = () => {
               <div className="col-12">
                 <div className="mb-3">
                   <label className="form-label">
-                    Invoice Number <span className="star">*</span>
+                    Shipping File Type <span className="star">*</span>
                   </label>
                   <input type="text" className="form-control" />
                 </div>
@@ -169,61 +154,7 @@ const ChecklistSub = () => {
               <div className="col-12">
                 <div className="mb-3">
                   <label className="form-label">
-                    Invoice <span className="star">*</span>
-                  </label>
-                  <input type="file" className="form-control" />
-                </div>
-              </div>
-              <div className="col-12">
-                <div className="mb-3">
-                  <label className="form-label">Remarks</label>
-                  <textarea
-                    name=""
-                    id=""
-                    rows="4"
-                    className="form-control"
-                  ></textarea>
-                </div>
-              </div>
-              <div className="col-12">
-                <div className="mb-3">
-                  <button className="btn fw-bold btn-primary">UPDATE</button>
-                </div>
-              </div>
-            </div>
-          </form>
-        </div>
-      </div>
-      {console.log(isSecPopup)}
-      <div className={isSecPopup ? "popup active" : "popup"}>
-        <div className="card card-xxl-stretch mb-5 mb-xxl-8">
-          <div className="card-header border-0 pt-5">
-            <h3 className="card-title align-items-start flex-column">
-              <span className="card-label fw-bold fs-3 mb-1">
-                Upload PBG Copy (optionals)
-              </span>
-            </h3>
-            <button
-              className="btn fw-bold btn-danger"
-              onClick={() => setIsSecPopup(false)}
-            >
-              Close
-            </button>
-          </div>
-          <form>
-            <div className="row">
-              <div className="col-12">
-                <div className="mb-3">
-                  <label className="form-label">
-                    Invoice Number <span className="star">*</span>
-                  </label>
-                  <input type="text" className="form-control" />
-                </div>
-              </div>
-              <div className="col-12">
-                <div className="mb-3">
-                  <label className="form-label">
-                    Invoice <span className="star">*</span>
+                    Shipping File <span className="star">*</span>
                   </label>
                   <input type="file" className="form-control" />
                 </div>
@@ -252,4 +183,4 @@ const ChecklistSub = () => {
   );
 };
 
-export default ChecklistSub;
+export default BRNSub;

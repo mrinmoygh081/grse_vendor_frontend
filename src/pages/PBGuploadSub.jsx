@@ -4,9 +4,10 @@ import SideBar from "../components/SideBar";
 import Header from "../components/Header";
 import { useParams } from "react-router-dom";
 
-const ChecklistSub = () => {
+const PBGuploadSub = () => {
   const [isPopup, setIsPopup] = useState(false);
   const [isSecPopup, setIsSecPopup] = useState(false);
+  const [isthreePopup, setIsthreePopup] = useState(false);
   const { id } = useParams();
 
   return (
@@ -15,7 +16,7 @@ const ChecklistSub = () => {
         <div className="page d-flex flex-row flex-column-fluid">
           <SideBar />
           <div className="wrapper d-flex flex-column flex-row-fluid">
-            <Header title={"Invoice, PBG Copy & Checklist"} id={id} />
+            <Header title={"PBG Upload"} id={id} />
             <div className="content d-flex flex-column flex-column-fluid">
               <div className="post d-flex flex-column-fluid">
                 <div className="container">
@@ -26,16 +27,22 @@ const ChecklistSub = () => {
                           onClick={() => setIsPopup(true)}
                           className="btn fw-bold btn-primary me-3"
                         >
-                          Upload Invoice
+                          Upload of PBG
+                        </button>
+                        <button
+                          onClick={() => setIsthreePopup(true)}
+                          className="btn fw-bold btn-primary me-3"
+                        >
+                          Claim Letter
+                        </button>
+                        <button className="btn fw-bold btn-primary me-3">
+                          Checklist
                         </button>
                         <button
                           onClick={() => setIsSecPopup(true)}
                           className="btn fw-bold btn-primary me-3"
                         >
-                          Upload PBG Copy (optional)
-                        </button>
-                        <button className="btn fw-bold btn-primary">
-                          Checklist
+                          Generate BTN
                         </button>
                       </div>
                     </div>
@@ -47,9 +54,9 @@ const ChecklistSub = () => {
                               <thead>
                                 <tr className="border-0">
                                   <th>DateTime </th>
-                                  <th>Invoice, PBG Copy & Checklist</th>
+                                  <th>Document</th>
                                   <th>Document Type</th>
-                                  <th>Document Number</th>
+
                                   <th>Updated By</th>
                                   <th className="min-w-150px">Remarks</th>
                                 </tr>
@@ -68,14 +75,14 @@ const ChecklistSub = () => {
                                       Check File
                                     </a>
                                   </td>
-                                  <td>Invoice</td>
-                                  <td>908348</td>
+                                  <td>Claim Letter</td>
+
                                   <td>XYZ Pvt. Ltd.</td>
-                                  <td>Uploading of Invoice</td>
+                                  <td>Uploading of Claim Letter</td>
                                 </tr>
                                 <tr>
                                   <td className="table_center">
-                                    31/10/2023-12:36PM
+                                    01/11/2023-10:30AM
                                   </td>
                                   <td>
                                     <a
@@ -86,46 +93,10 @@ const ChecklistSub = () => {
                                       Check File
                                     </a>
                                   </td>
-                                  <td>MTC</td>
-                                  <td>908348</td>
+                                  <td>Upload of PBG</td>
+
                                   <td>XYZ Pvt. Ltd.</td>
-                                  <td>Uploading of MTC</td>
-                                </tr>
-                                <tr>
-                                  <td className="table_center">
-                                    31/10/2023-12:36PM
-                                  </td>
-                                  <td>
-                                    <a
-                                      href={require("C:/grse/grse_frontend/grse_vendor/src/uploads/testing.pdf")}
-                                      target="_blank"
-                                      rel="noreferrer"
-                                    >
-                                      Check File
-                                    </a>
-                                  </td>
-                                  <td>GC</td>
-                                  <td>908348</td>
-                                  <td>XYZ Pvt. Ltd.</td>
-                                  <td>Uploading of GC</td>
-                                </tr>
-                                <tr>
-                                  <td className="table_center">
-                                    31/10/2023-12:36PM
-                                  </td>
-                                  <td>
-                                    <a
-                                      href={require("C:/grse/grse_frontend/grse_vendor/src/uploads/testing.pdf")}
-                                      target="_blank"
-                                      rel="noreferrer"
-                                    >
-                                      Check File
-                                    </a>
-                                  </td>
-                                  <td>LR</td>
-                                  <td>908348</td>
-                                  <td>XYZ Pvt. Ltd.</td>
-                                  <td>Uploading of LR</td>
+                                  <td>Uploading of PBG</td>
                                 </tr>
                               </tbody>
                             </table>
@@ -146,7 +117,7 @@ const ChecklistSub = () => {
           <div className="card-header border-0 pt-5">
             <h3 className="card-title align-items-start flex-column">
               <span className="card-label fw-bold fs-3 mb-1">
-                Upload Invoice
+                Upload of PBG
               </span>
             </h3>
             <button
@@ -160,17 +131,49 @@ const ChecklistSub = () => {
             <div className="row">
               <div className="col-12">
                 <div className="mb-3">
-                  <label className="form-label">
-                    Invoice Number <span className="star">*</span>
-                  </label>
-                  <input type="text" className="form-control" />
+                  <input type="file" className="form-control" />
                 </div>
               </div>
               <div className="col-12">
                 <div className="mb-3">
-                  <label className="form-label">
-                    Invoice <span className="star">*</span>
-                  </label>
+                  <label className="form-label">Remarks</label>
+                  <textarea
+                    name=""
+                    id=""
+                    rows="4"
+                    className="form-control"
+                  ></textarea>
+                </div>
+              </div>
+              <div className="col-12">
+                <div className="mb-3">
+                  <button className="btn fw-bold btn-primary">UPDATE</button>
+                </div>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <div className={isthreePopup ? "popup active" : "popup"}>
+        <div className="card card-xxl-stretch mb-5 mb-xxl-8">
+          <div className="card-header border-0 pt-5">
+            <h3 className="card-title align-items-start flex-column">
+              <span className="card-label fw-bold fs-3 mb-1">
+                Upload Claim Letter
+              </span>
+            </h3>
+            <button
+              className="btn fw-bold btn-danger"
+              onClick={() => setIsthreePopup(false)}
+            >
+              Close
+            </button>
+          </div>
+          <form>
+            <div className="row">
+              <div className="col-12">
+                <div className="mb-3">
                   <input type="file" className="form-control" />
                 </div>
               </div>
@@ -200,7 +203,7 @@ const ChecklistSub = () => {
           <div className="card-header border-0 pt-5">
             <h3 className="card-title align-items-start flex-column">
               <span className="card-label fw-bold fs-3 mb-1">
-                Upload PBG Copy (optionals)
+                Bill Registration
               </span>
             </h3>
             <button
@@ -215,6 +218,18 @@ const ChecklistSub = () => {
               <div className="col-12">
                 <div className="mb-3">
                   <label className="form-label">
+                    Purchase Order <span className="star">*</span>
+                  </label>
+                  <input type="text" className="form-control" />
+                </div>
+                <div className="mb-3">
+                  <label className="form-label">
+                    Vendor Name <span className="star">*</span>
+                  </label>
+                  <input type="text" className="form-control" />
+                </div>
+                <div className="mb-3">
+                  <label className="form-label">
                     Invoice Number <span className="star">*</span>
                   </label>
                   <input type="text" className="form-control" />
@@ -223,10 +238,22 @@ const ChecklistSub = () => {
               <div className="col-12">
                 <div className="mb-3">
                   <label className="form-label">
-                    Invoice <span className="star">*</span>
+                    Upload File <span className="star">*</span>
                   </label>
                   <input type="file" className="form-control" />
                 </div>
+              </div>
+              <div className="mb-3">
+                <label className="form-label">
+                  Vendor Bill Date <span className="star">*</span>
+                </label>
+                <input type="text" className="form-control" />
+              </div>
+              <div className="mb-3">
+                <label className="form-label">
+                  Bill Submitted To<span className="star">*</span>
+                </label>
+                <input type="text" className="form-control" />
               </div>
               <div className="col-12">
                 <div className="mb-3">
@@ -252,4 +279,4 @@ const ChecklistSub = () => {
   );
 };
 
-export default ChecklistSub;
+export default PBGuploadSub;

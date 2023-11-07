@@ -11,6 +11,11 @@ import InspectionCall from "./pages/InspectionCall";
 import Shippingdocuments from "./pages/Shippingdocuments";
 import GateInSub from "./pages/GateInSub";
 import ChecklistSub from "./pages/ChecklistSub";
+import BRNSub from "./pages/BRNSub";
+import PaymentAdvisesSub from "./pages/PaymentAdvisesSub";
+import PBGuploadSub from "./pages/PBGuploadSub";
+import BGExtensionSub from "./pages/BGExtensionSub";
+import ClaimLatterSub from "./pages/ClaimLatterSub";
 
 function Layout() {
   const { token, isLoggedIn } = useSelector((state) => state.auth);
@@ -41,6 +46,27 @@ function Layout() {
             />
             <Route exact path="/gate-in/:id" element={<GateInSub />} />
             <Route exact path="/checklist/:id" element={<ChecklistSub />} />
+            <Route
+              exact
+              path="/bill-registration-number/:id"
+              element={<BRNSub />}
+            />
+            <Route
+              exact
+              path="/payment-advise/:id"
+              element={<PaymentAdvisesSub />}
+            />
+            <Route exact path="/pbg-upload/:id" element={<PBGuploadSub />} />
+            <Route
+              exact
+              path="/bg-extension/:id"
+              element={<BGExtensionSub />}
+            />
+            <Route
+              exact
+              path="/claim-letter/:id"
+              element={<ClaimLatterSub />}
+            />
           </Routes>
         )}
       </BrowserRouter>
