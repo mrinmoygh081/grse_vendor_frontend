@@ -19,7 +19,7 @@ const SDBGSub = () => {
 
   const { user, token, userType } = useSelector((state) => state.auth);
 
-  // console.log(user, "bikky");
+  console.log(userType, "bikky");
 
   const updateSDBG = async (e) => {
     const form = new FormData();
@@ -106,42 +106,117 @@ const SDBGSub = () => {
                                   <th>Status</th>
                                 </tr>
                               </thead>
-                              <tbody style={{ maxHeight: "100%" }}>
-                                <tr>
-                                  <td className="table_center">31/10/2023</td>
-                                  <td>Axis Bank</td>
-                                  <td>78943878748</td>
-                                  <td>
-                                    {/* <a
-                                      href={require("D:/office/projects/grse/grse_vendor/src/uploads/SDBG Document.pdf")}
-                                      target="_blank"
-                                      rel="noreferrer"
-                                    >
-                                      Check File
-                                    </a> */}
-                                  </td>
-                                  <td>XYZ Pvt. Ltd.</td>
-                                  <td>Uploading SDBG</td>
-                                  <td>Pending</td>
-                                </tr>
-                                <tr>
-                                  <td className="table_center">31/10/2023</td>
-                                  <td>Axis Bank</td>
-                                  <td>78943878748</td>
-                                  <td>
-                                    {/* <a
-                                      href={require("D:/office/projects/grse/grse_vendor/src/uploads/SDBG Document.pdf")}
-                                      target="_blank"
-                                      rel="noreferrer"
-                                    >
-                                      Check File
-                                    </a> */}
-                                  </td>
-                                  <td>GRSE</td>
-                                  <td>Returning SDBG for correction</td>
-                                  <td>Pending</td>
-                                </tr>
-                              </tbody>
+                              {userType === 1 ? (
+                                <tbody style={{ maxHeight: "100%" }}>
+                                  <tr>
+                                    <td className="table_center">31/10/2023</td>
+                                    <td>Axis Bank</td>
+                                    <td>78943878748</td>
+                                    <td>
+                                      <a
+                                        href={require("C:/grse/grse_frontend/grse_vendor/src/uploads/testing.pdf")}
+                                        target="_blank"
+                                        rel="noreferrer"
+                                      >
+                                        Check File
+                                      </a>
+                                    </td>
+                                    <td>XYZ Pvt. Ltd.</td>
+                                    <td>Uploading SDBG</td>
+                                    <td>Pending</td>
+                                  </tr>
+                                  <tr>
+                                    <td className="table_center">31/10/2023</td>
+                                    <td>Axis Bank</td>
+                                    <td>78943878748</td>
+                                    <td>
+                                      <a
+                                        href={require("C:/grse/grse_frontend/grse_vendor/src/uploads/testing.pdf")}
+                                        target="_blank"
+                                        rel="noreferrer"
+                                      >
+                                        Check File
+                                      </a>
+                                    </td>
+                                    <td>GRSE</td>
+                                    <td>Returning SDBG for correction</td>
+                                    <td>Pending</td>
+                                  </tr>
+                                  <tr>
+                                    <td className="table_center">31/10/2023</td>
+                                    <td>Axis Bank</td>
+                                    <td>78943878748</td>
+                                    <td>
+                                      <a
+                                        href={require("C:/grse/grse_frontend/grse_vendor/src/uploads/testing.pdf")}
+                                        target="_blank"
+                                        rel="noreferrer"
+                                      >
+                                        Check File
+                                      </a>
+                                    </td>
+                                    <td>GRSE</td>
+                                    <td>SDBG receipt acknowledgement</td>
+                                    <td>Approved</td>
+                                  </tr>
+                                </tbody>
+                              ) : (
+                                <tbody style={{ maxHeight: "100%" }}>
+                                  <tr>
+                                    <td className="table_center">31/10/2023</td>
+                                    <td>Axis Bank</td>
+                                    <td>78943878748</td>
+                                    <td>
+                                      <a
+                                        href={require("C:/grse/grse_frontend/grse_vendor/src/uploads/testing.pdf")}
+                                        target="_blank"
+                                        rel="noreferrer"
+                                      >
+                                        Check File
+                                      </a>
+                                    </td>
+                                    <td>XYZ Pvt. Ltd.</td>
+                                    <td>Uploading SDBG</td>
+                                    <td>Pending</td>
+                                  </tr>
+                                  <tr>
+                                    <td className="table_center">31/10/2023</td>
+                                    <td></td>
+                                    <td></td>
+                                    <td>
+                                      <a
+                                        href={require("C:/grse/grse_frontend/grse_vendor/src/uploads/testing.pdf")}
+                                        target="_blank"
+                                        rel="noreferrer"
+                                      >
+                                        Check File
+                                      </a>
+                                    </td>
+                                    <td>GRSE</td>
+                                    <td>Returning SDBG for correction</td>
+                                    <td>Pending</td>
+                                  </tr>
+                                  <tr>
+                                    <td className="table_center">31/10/2023</td>
+                                    <td></td>
+                                    <td></td>
+                                    <td>
+                                      <a
+                                        href={require("C:/grse/grse_frontend/grse_vendor/src/uploads/testing.pdf")}
+                                        target="_blank"
+                                        rel="noreferrer"
+                                      >
+                                        Check File
+                                      </a>
+                                    </td>
+                                    <td>GRSE</td>
+                                    <td>
+                                      Upload of SDBG receipt acknowledgement.
+                                    </td>
+                                    <td>Approved</td>
+                                  </tr>
+                                </tbody>
+                              )}
                             </table>
                             {/* <div className="d-flex align-items-center justify-content-between py-3">
                                   <button className="btn fw-bold btn-info">
@@ -237,7 +312,7 @@ const SDBGSub = () => {
               </div>
             </div>
             <div className="col-12">
-              <div className="mb-3">
+              <div className="mb-3 d-flex justify-content-between">
                 <button
                   onClick={updateSDBG}
                   className="btn fw-bold btn-primary"
@@ -245,6 +320,17 @@ const SDBGSub = () => {
                 >
                   UPDATE
                 </button>
+                {userType !== 1 ? (
+                  <button
+                    onClick={updateSDBG}
+                    className="btn fw-bold btn-primary"
+                    type="submit"
+                  >
+                    Approved
+                  </button>
+                ) : (
+                  ""
+                )}
               </div>
             </div>
           </div>

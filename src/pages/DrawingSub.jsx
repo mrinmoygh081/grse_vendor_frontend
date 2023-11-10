@@ -3,10 +3,12 @@ import Footer from "../components/Footer";
 import SideBar from "../components/SideBar";
 import Header from "../components/Header";
 import { useParams } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 const DrawingSub = () => {
   const [isPopup, setIsPopup] = useState(false);
   const { id } = useParams();
+  const { userType } = useSelector((state) => state.auth);
 
   return (
     <>
@@ -53,13 +55,13 @@ const DrawingSub = () => {
                                 <tr>
                                   <td className="table_center">31/10/2023</td>
                                   <td className="">
-                                    {/* <a
-                                      href={require("D:/office/projects/grse/grse_vendor/src/uploads/SDBG Document.pdf")}
+                                    <a
+                                      href={require("C:/grse/grse_frontend/grse_vendor/src/uploads/testing.pdf")}
                                       target="_blank"
                                       rel="noreferrer"
                                     >
                                       Check File
-                                    </a> */}
+                                    </a>
                                   </td>
                                   <td className="">XYZ Pvt. Ltd.</td>
                                   <td className="">Uploading Drawing</td>
@@ -68,13 +70,13 @@ const DrawingSub = () => {
                                 <tr>
                                   <td className="table_center">31/10/2023</td>
                                   <td className="">
-                                    {/* <a
-                                      href={require("D:/office/projects/grse/grse_vendor/src/uploads/SDBG Document.pdf")}
+                                    <a
+                                      href={require("C:/grse/grse_frontend/grse_vendor/src/uploads/testing.pdf")}
                                       target="_blank"
                                       rel="noreferrer"
                                     >
                                       Check File
-                                    </a> */}
+                                    </a>
                                   </td>
                                   <td className="">GRSE</td>
                                   <td className="">
@@ -85,13 +87,13 @@ const DrawingSub = () => {
                                 <tr>
                                   <td className="table_center">31/10/2023</td>
                                   <td className="">
-                                    {/* <a
-                                      href={require("D:/office/projects/grse/grse_vendor/src/uploads/SDBG Document.pdf")}
+                                    <a
+                                      href={require("C:/grse/grse_frontend/grse_vendor/src/uploads/testing.pdf")}
                                       target="_blank"
                                       rel="noreferrer"
                                     >
                                       Check File
-                                    </a> */}
+                                    </a>
                                   </td>
                                   <td className="">XYZ Pvt. Ltd.</td>
                                   <td className="">
@@ -102,13 +104,13 @@ const DrawingSub = () => {
                                 <tr>
                                   <td className="table_center">31/10/2023</td>
                                   <td className="">
-                                    {/* <a
-                                      href={require("D:/office/projects/grse/grse_vendor/src/uploads/SDBG Document.pdf")}
+                                    <a
+                                      href={require("C:/grse/grse_frontend/grse_vendor/src/uploads/testing.pdf")}
                                       target="_blank"
                                       rel="noreferrer"
                                     >
                                       Check File
-                                    </a> */}
+                                    </a>
                                   </td>
                                   <td className="">GRSE</td>
                                   <td className="">
@@ -119,13 +121,13 @@ const DrawingSub = () => {
                                 <tr>
                                   <td className="table_center">31/10/2023</td>
                                   <td className="">
-                                    {/* <a
-                                      href={require("D:/office/projects/grse/grse_vendor/src/uploads/SDBG Document.pdf")}
+                                    <a
+                                      href={require("C:/grse/grse_frontend/grse_vendor/src/uploads/testing.pdf")}
                                       target="_blank"
                                       rel="noreferrer"
                                     >
                                       Check File
-                                    </a> */}
+                                    </a>
                                   </td>
                                   <td className="">XYZ Pvt. Ltd.</td>
                                   <td className="">
@@ -136,13 +138,13 @@ const DrawingSub = () => {
                                 <tr>
                                   <td className="table_center">31/10/2023</td>
                                   <td className="">
-                                    {/* <a
-                                      href={require("D:/office/projects/grse/grse_vendor/src/uploads/SDBG Document.pdf")}
+                                    <a
+                                      href={require("C:/grse/grse_frontend/grse_vendor/src/uploads/testing.pdf")}
                                       target="_blank"
                                       rel="noreferrer"
                                     >
                                       Check File
-                                    </a> */}
+                                    </a>
                                   </td>
                                   <td className="">GRSE</td>
                                   <td className="">
@@ -212,8 +214,17 @@ const DrawingSub = () => {
                 </div>
               </div>
               <div className="col-12">
-                <div className="mb-3">
-                  <button className="btn fw-bold btn-primary">UPDATE</button>
+                <div className="mb-3 d-flex justify-content-between">
+                  <button className="btn fw-bold btn-primary" type="submit">
+                    UPDATE
+                  </button>
+                  {userType != 1 ? (
+                    <button className="btn fw-bold btn-primary" type="submit">
+                      Approved
+                    </button>
+                  ) : (
+                    ""
+                  )}
                 </div>
               </div>
             </div>

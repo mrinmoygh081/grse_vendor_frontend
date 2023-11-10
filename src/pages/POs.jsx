@@ -1,26 +1,22 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { logoutHandler } from "../redux/slices/loginSlice";
 import { apiCallBack } from "../utils/fetchAPIs";
 import { poHandler } from "../redux/slices/poSlice";
+import { FiSearch } from "react-icons/fi";
 
 const POs = () => {
   const dispatch = useDispatch();
   const [polist, setPolist] = useState([]);
+  const [searchQuery, setSearchQuery] = useState("");
   const { token } = useSelector((state) => state.auth);
   const { po } = useSelector((state) => state.selectedPO);
   const navigate = useNavigate();
-  console.log("po", po);
 
   useEffect(() => {
     (async () => {
-      const data = await apiCallBack(
-        "GET",
-        `getFilteredData?$tableName=ekko`,
-        null,
-        token
-      );
+      const data = await apiCallBack("GET", `po/poList`, null, token);
       if (data?.status) {
         setPolist(data?.data);
       }
@@ -29,7 +25,6 @@ const POs = () => {
 
   useEffect(() => {
     if (po) {
-      console.log(po);
       navigate(`/po/${po}`);
     }
   }, [po]);
@@ -41,27 +36,86 @@ const POs = () => {
           <div className="col-md-8 col-12">
             <div className="card_pos">
               <div className="card">
-                <div className="card_headline">Purchase Orders</div>
+                <div className="card_headline">
+                  <h1>Purchase Orders</h1>
+                  <div className="input_search">
+                    <input
+                      type="text"
+                      className="form-control"
+                      value={searchQuery}
+                      onChange={(e) => setSearchQuery(e.target.value)}
+                    />
+                    <button className="search_btn">
+                      <FiSearch />
+                    </button>
+                  </div>
+                </div>
                 <div className="table-responsive res_height">
                   <table className="table table-bordered table-hover table-striped table_styled">
+                    <thead>
+                      <tr>
+                        <th>POs</th>
+                        <th>SDBG</th>
+                        <th>Drawings</th>
+                        <th>QAP</th>
+                      </tr>
+                    </thead>
                     <tbody>
-                      {polist.map((po, index) => (
-                        <tr key={index}>
-                          <td>
-                            {/* <Link
-                              to={`/po/${po.EBELN}`}
-                              onClick={() => selectedPOHandler(po.EBELN)}
-                            >
-                              {po.EBELN}
-                            </Link> */}
-                            <button
-                              onClick={() => dispatch(poHandler(po.EBELN))}
-                            >
-                              {po.EBELN}
-                            </button>
-                          </td>
+                      {polist.length === 0 ? (
+                        <tr>
+                          <td colSpan="4">No data found</td>
                         </tr>
-                      ))}
+                      ) : (
+                        polist
+                          .filter((po) =>
+                            po.poNumber
+                              .toLowerCase()
+                              .includes(searchQuery.toLowerCase())
+                          )
+                          .map((po, index) => (
+                            <tr key={index}>
+                              <td>
+                                <button onClick={() => dispatch(poHandler(po))}>
+                                  {po.poNumber}
+                                </button>
+                              </td>
+                              <td>
+                                Sub Date:{" "}
+                                {typeof po?.SDVG?.created_at === "number"
+                                  ? new Date(
+                                      po?.SDVG?.created_at
+                                    ).toLocaleDateString()
+                                  : "N/A"}{" "}
+                                <br />
+                                Created By GRSE:
+                                {po.SDVG.created_by_name || "N/A"}
+                              </td>
+                              <td>
+                                Sub Date:{" "}
+                                {typeof po?.Drawing?.created_at === "number"
+                                  ? new Date(
+                                      po?.Drawing?.created_at
+                                    ).toLocaleDateString()
+                                  : "N/A"}{" "}
+                                <br />
+                                Created By GRSE:{" "}
+                                {po.Drawing.created_by_name || "N/A"}
+                              </td>
+                              <td>
+                                Sub Date:{" "}
+                                {typeof po?.qapSubmission?.created_at ===
+                                "number"
+                                  ? new Date(
+                                      po?.qapSubmission?.created_at
+                                    ).toLocaleDateString()
+                                  : "N/A"}{" "}
+                                <br />
+                                Created By GRSE:{" "}
+                                {po.qapSubmission.created_by_name || "N/A"}
+                              </td>
+                            </tr>
+                          ))
+                      )}
                     </tbody>
                   </table>
                 </div>

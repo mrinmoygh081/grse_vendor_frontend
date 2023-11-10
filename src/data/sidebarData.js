@@ -75,6 +75,10 @@ export const sidebarGRSEData = [
     link: "/inspection",
   },
   {
+    title: "WDC",
+    link: "/wdc",
+  },
+  {
     title: "Shipping documents",
     link: "/shipping-documents",
   },

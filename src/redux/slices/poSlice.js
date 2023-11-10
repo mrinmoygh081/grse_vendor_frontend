@@ -2,6 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
   po: null,
+  poType: null,
 };
 
 export const selectedPO = createSlice({
@@ -9,10 +10,12 @@ export const selectedPO = createSlice({
   initialState,
   reducers: {
     poHandler: (state, action) => {
-      state.po = action.payload;
+      state.po = action.payload?.poNumber;
+      state.poType = action.payload?.poType;
     },
     poRemoveHandler: (state, action) => {
       state.po = null;
+      state.poType = null;
     },
   },
 });

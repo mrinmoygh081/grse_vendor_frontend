@@ -7,14 +7,14 @@ import Footer from "../components/Footer";
 import { useParams } from "react-router-dom";
 import { apiCallBack } from "../utils/fetchAPIs";
 import { useSelector } from "react-redux";
+import moment from "moment";
 
 const animatedComponents = makeAnimated();
 
 const PODetails = () => {
   const [poDetails, setPoDetails] = useState([]);
   const { id } = useParams();
-  const { token, user } = useSelector((state) => state.auth);
-  const { po } = useSelector((state) => state.selectedPO);
+  const { token } = useSelector((state) => state.auth);
 
   useEffect(() => {
     (async () => {
@@ -30,7 +30,6 @@ const PODetails = () => {
     })();
   }, [id]);
 
-  console.log(poDetails, "poDetailspoDetails");
   return (
     <>
       <main>
@@ -73,7 +72,10 @@ const PODetails = () => {
                                       <div className="card_header_data">
                                         <span className="label">PO Date:</span>
                                         <span className="label_data">
-                                          {po.AEDAT}
+                                          {moment(po.AEDAT)
+                                            .utc()
+                                            .format("YYYY-MM-DD")}
+                                          {/* {po.AEDAT} */}
                                         </span>
                                       </div>
                                       <div className="card_header_data">
@@ -190,7 +192,7 @@ const PODetails = () => {
                                       <th>Contractual delivery date </th>
                                     </tr>
                                   </thead>
-                                  <tbody style={{ maxHeight: "100%" }}>
+                                  {/* <tbody style={{ maxHeight: "100%" }}>
                                     {poDetails.MAT_DETAILS ? (
                                       poDetails.MAT_DETAILS.map((material) => (
                                         <tr key={material.EBELP}>
@@ -209,6 +211,32 @@ const PODetails = () => {
                                         </td>
                                       </tr>
                                     )}
+                                  </tbody> */}
+                                  <tbody style={{ maxHeight: "100%" }}>
+                                    <tr>
+                                      <td>10</td>
+                                      <td>3D330</td>
+                                      <td>Sheet Metal</td>
+                                      <td>50</td>
+                                      <td>Meter Square</td>
+                                      <td>12/08/2023</td>
+                                    </tr>
+                                    <tr>
+                                      <td>20</td>
+                                      <td>3D330</td>
+                                      <td>AC</td>
+                                      <td>10</td>
+                                      <td>Kg</td>
+                                      <td>12/08/2023</td>
+                                    </tr>
+                                    <tr>
+                                      <td>30</td>
+                                      <td>3D330</td>
+                                      <td>Compressor</td>
+                                      <td>30</td>
+                                      <td>Kg</td>
+                                      <td>12/08/2023</td>
+                                    </tr>
                                   </tbody>
                                 </table>
                                 {/* <div className="d-flex align-items-center justify-content-between py-3">

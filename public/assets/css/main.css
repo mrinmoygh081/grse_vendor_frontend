@@ -10,7 +10,7 @@ label {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  width: min(400px, 80%);
+  width: min(900px, 80%);
 }
 .card_headline {
   font-size: 24px;
@@ -89,4 +89,22 @@ label {
   bottom: 0;
   right: 0;
   width: calc(100% - 265px); */
+}
+.card_headline {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.input_search {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #ccc;
+  padding: 5px;
+}
+.input_search button {
+  background-color: transparent;
+  border: none;
+  display: flex;
+  align-items: center;
 }

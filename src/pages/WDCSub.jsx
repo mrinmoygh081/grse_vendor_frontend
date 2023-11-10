@@ -5,7 +5,7 @@ import Header from "../components/Header";
 import { useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
 
-const QAPSub = () => {
+const WDCSub = () => {
   const [isPopup, setIsPopup] = useState(false);
   const { id } = useParams();
   const { userType } = useSelector((state) => state.auth);
@@ -16,7 +16,7 @@ const QAPSub = () => {
         <div className="page d-flex flex-row flex-column-fluid">
           <SideBar />
           <div className="wrapper d-flex flex-column flex-row-fluid">
-            <Header title={"QAP Submission"} id={id} />
+            <Header title={"WDC"} id={id} />
             <div className="content d-flex flex-column flex-column-fluid">
               <div className="post d-flex flex-column-fluid">
                 <div className="container">
@@ -27,7 +27,7 @@ const QAPSub = () => {
                           onClick={() => setIsPopup(true)}
                           className="btn fw-bold btn-primary"
                         >
-                          Upload QAP
+                          Upload WDC
                         </button>
                       </div>
                     </div>
@@ -39,7 +39,7 @@ const QAPSub = () => {
                               <thead>
                                 <tr className="border-0">
                                   <th>DateTime </th>
-                                  <th>QAP File</th>
+                                  <th>WDC File</th>
                                   <th>Updated By</th>
                                   <th className="min-w-150px">Remarks</th>
                                   <th>Status</th>
@@ -58,7 +58,7 @@ const QAPSub = () => {
                                     </a>
                                   </td>
                                   <td className="">XYZ Pvt. Ltd.</td>
-                                  <td className="">Uploading QAP</td>
+                                  <td className="">Upload of WDC</td>
                                   <td className="">Pending</td>
                                 </tr>
                                 <tr>
@@ -74,7 +74,7 @@ const QAPSub = () => {
                                   </td>
                                   <td className="">GRSE</td>
                                   <td className="">
-                                    Returning QAP for Correction
+                                    Returning WDC for correction
                                   </td>
                                   <td className="">Pending</td>
                                 </tr>
@@ -91,7 +91,7 @@ const QAPSub = () => {
                                   </td>
                                   <td className="">XYZ Pvt. Ltd.</td>
                                   <td className="">
-                                    Returning QAP after Correction
+                                    WDC returned for corrections
                                   </td>
                                   <td className="">Pending</td>
                                 </tr>
@@ -107,7 +107,9 @@ const QAPSub = () => {
                                     </a>
                                   </td>
                                   <td className="">GRSE</td>
-                                  <td className="">Upload of Approved QAP </td>
+                                  <td className="">
+                                    Replication of approved WDC{" "}
+                                  </td>
                                   <td className="">Approved</td>
                                 </tr>
                               </tbody>
@@ -141,7 +143,7 @@ const QAPSub = () => {
         <div className="card card-xxl-stretch mb-5 mb-xxl-8">
           <div className="card-header border-0 pt-5">
             <h3 className="card-title align-items-start flex-column">
-              <span className="card-label fw-bold fs-3 mb-1">UPLOAD QAP</span>
+              <span className="card-label fw-bold fs-3 mb-1">UPLOAD WDC</span>
             </h3>
             <button
               className="btn fw-bold btn-danger"
@@ -191,4 +193,4 @@ const QAPSub = () => {
   );
 };
 
-export default QAPSub;
+export default WDCSub;

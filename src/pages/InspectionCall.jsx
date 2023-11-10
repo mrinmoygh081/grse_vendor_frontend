@@ -75,7 +75,7 @@ const InspectionCall = () => {
                                       Check File
                                     </a>
                                   </td>
-                                  <td className="">GRSE</td>
+                                  <td className="">XYZ Pvt. Ltd.</td>
                                   <td className="">In process inspection</td>
                                 </tr>
                                 <tr>

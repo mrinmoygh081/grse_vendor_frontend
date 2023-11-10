@@ -9,9 +9,10 @@ export default function SideBar({ id }) {
   const dispatch = useDispatch();
   const [isDropOpen, setIsDropOpen] = useState(false);
   const toggleDropMenu = () => setIsDropOpen(!isDropOpen);
-  const { po } = useSelector((state) => state.selectedPO);
+  const { po, poType } = useSelector((state) => state.selectedPO);
   const { userType } = useSelector((state) => state.auth);
   console.log("userType", userType);
+  console.log("poType", poType);
 
   const logOutFun = () => {
     dispatch(logoutHandler());
@@ -48,117 +49,229 @@ export default function SideBar({ id }) {
             style={{ height: "calc(100vh - 100px)", paddingBottom: "40px" }}
           >
             <div className="menu menu-column menu-title-gray-800 menu-state-title-primary menu-state-icon-primary menu-state-bullet-primary menu-arrow-gray-500">
+              {/* vendor  */}
               {userType === 1 &&
                 sidebarData &&
                 sidebarData.map((item, index) => (
                   <div className="menu-item" key={index}>
-                    <Link to={`${item?.link}/${po}`} className="menu-link">
-                      <span className="menu-icon">
-                        <span className="svg-icon svg-icon-2">
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            width="24"
-                            height="24"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                          >
-                            <rect
-                              x="2"
-                              y="2"
-                              width="9"
-                              height="9"
-                              rx="2"
-                              fill="currentColor"
-                            />
-                            <rect
-                              opacity="0.3"
-                              x="13"
-                              y="2"
-                              width="9"
-                              height="9"
-                              rx="2"
-                              fill="currentColor"
-                            />
-                            <rect
-                              opacity="0.3"
-                              x="13"
-                              y="13"
-                              width="9"
-                              height="9"
-                              rx="2"
-                              fill="currentColor"
-                            />
-                            <rect
-                              opacity="0.3"
-                              x="2"
-                              y="13"
-                              width="9"
-                              height="9"
-                              rx="2"
-                              fill="currentColor"
-                            />
-                          </svg>
+                    {poType === "hybrid" || poType === "material" ? (
+                      <Link to={`${item?.link}/${po}`} className="menu-link">
+                        <span className="menu-icon">
+                          <span className="svg-icon svg-icon-2">
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              width="24"
+                              height="24"
+                              viewBox="0 0 24 24"
+                              fill="none"
+                            >
+                              <rect
+                                x="2"
+                                y="2"
+                                width="9"
+                                height="9"
+                                rx="2"
+                                fill="currentColor"
+                              />
+                              <rect
+                                opacity="0.3"
+                                x="13"
+                                y="2"
+                                width="9"
+                                height="9"
+                                rx="2"
+                                fill="currentColor"
+                              />
+                              <rect
+                                opacity="0.3"
+                                x="13"
+                                y="13"
+                                width="9"
+                                height="9"
+                                rx="2"
+                                fill="currentColor"
+                              />
+                              <rect
+                                opacity="0.3"
+                                x="2"
+                                y="13"
+                                width="9"
+                                height="9"
+                                rx="2"
+                                fill="currentColor"
+                              />
+                            </svg>
+                          </span>
                         </span>
-                      </span>
-                      <span className="menu-title">{item?.title}</span>
-                    </Link>
+                        <span className="menu-title">{item?.title}</span>
+                      </Link>
+                    ) : (
+                      item.title !== "WDC" && (
+                        <Link to={`${item?.link}/${po}`} className="menu-link">
+                          <span className="menu-icon">
+                            <span className="svg-icon svg-icon-2">
+                              <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                width="24"
+                                height="24"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                              >
+                                <rect
+                                  x="2"
+                                  y="2"
+                                  width="9"
+                                  height="9"
+                                  rx="2"
+                                  fill="currentColor"
+                                />
+                                <rect
+                                  opacity="0.3"
+                                  x="13"
+                                  y="2"
+                                  width="9"
+                                  height="9"
+                                  rx="2"
+                                  fill="currentColor"
+                                />
+                                <rect
+                                  opacity="0.3"
+                                  x="13"
+                                  y="13"
+                                  width="9"
+                                  height="9"
+                                  rx="2"
+                                  fill="currentColor"
+                                />
+                                <rect
+                                  opacity="0.3"
+                                  x="2"
+                                  y="13"
+                                  width="9"
+                                  height="9"
+                                  rx="2"
+                                  fill="currentColor"
+                                />
+                              </svg>
+                            </span>
+                          </span>
+                          <span className="menu-title">{item?.title}</span>
+                        </Link>
+                      )
+                    )}
                   </div>
                 ))}
 
+              {/* grse  */}
               {userType !== 1 &&
                 sidebarGRSEData &&
                 sidebarGRSEData.map((item, index) => (
                   <div className="menu-item" key={index}>
-                    <Link to={`${item?.link}/${po}`} className="menu-link">
-                      <span className="menu-icon">
-                        <span className="svg-icon svg-icon-2">
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            width="24"
-                            height="24"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                          >
-                            <rect
-                              x="2"
-                              y="2"
-                              width="9"
-                              height="9"
-                              rx="2"
-                              fill="currentColor"
-                            />
-                            <rect
-                              opacity="0.3"
-                              x="13"
-                              y="2"
-                              width="9"
-                              height="9"
-                              rx="2"
-                              fill="currentColor"
-                            />
-                            <rect
-                              opacity="0.3"
-                              x="13"
-                              y="13"
-                              width="9"
-                              height="9"
-                              rx="2"
-                              fill="currentColor"
-                            />
-                            <rect
-                              opacity="0.3"
-                              x="2"
-                              y="13"
-                              width="9"
-                              height="9"
-                              rx="2"
-                              fill="currentColor"
-                            />
-                          </svg>
+                    {poType === "hybrid" || poType === "material" ? (
+                      <Link to={`${item?.link}/${po}`} className="menu-link">
+                        <span className="menu-icon">
+                          <span className="svg-icon svg-icon-2">
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              width="24"
+                              height="24"
+                              viewBox="0 0 24 24"
+                              fill="none"
+                            >
+                              <rect
+                                x="2"
+                                y="2"
+                                width="9"
+                                height="9"
+                                rx="2"
+                                fill="currentColor"
+                              />
+                              <rect
+                                opacity="0.3"
+                                x="13"
+                                y="2"
+                                width="9"
+                                height="9"
+                                rx="2"
+                                fill="currentColor"
+                              />
+                              <rect
+                                opacity="0.3"
+                                x="13"
+                                y="13"
+                                width="9"
+                                height="9"
+                                rx="2"
+                                fill="currentColor"
+                              />
+                              <rect
+                                opacity="0.3"
+                                x="2"
+                                y="13"
+                                width="9"
+                                height="9"
+                                rx="2"
+                                fill="currentColor"
+                              />
+                            </svg>
+                          </span>
                         </span>
-                      </span>
-                      <span className="menu-title">{item?.title}</span>
-                    </Link>
+                        <span className="menu-title">{item?.title}</span>
+                      </Link>
+                    ) : (
+                      item.title !== "WDC" && (
+                        <Link to={`${item?.link}/${po}`} className="menu-link">
+                          <span className="menu-icon">
+                            <span className="svg-icon svg-icon-2">
+                              <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                width="24"
+                                height="24"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                              >
+                                <rect
+                                  x="2"
+                                  y="2"
+                                  width="9"
+                                  height="9"
+                                  rx="2"
+                                  fill="currentColor"
+                                />
+                                <rect
+                                  opacity="0.3"
+                                  x="13"
+                                  y="2"
+                                  width="9"
+                                  height="9"
+                                  rx="2"
+                                  fill="currentColor"
+                                />
+                                <rect
+                                  opacity="0.3"
+                                  x="13"
+                                  y="13"
+                                  width="9"
+                                  height="9"
+                                  rx="2"
+                                  fill="currentColor"
+                                />
+                                <rect
+                                  opacity="0.3"
+                                  x="2"
+                                  y="13"
+                                  width="9"
+                                  height="9"
+                                  rx="2"
+                                  fill="currentColor"
+                                />
+                              </svg>
+                            </span>
+                          </span>
+                          <span className="menu-title">{item?.title}</span>
+                        </Link>
+                      )
+                    )}
                   </div>
                 ))}
 

@@ -17,6 +17,7 @@ import PBGuploadSub from "./pages/PBGuploadSub";
 import BGExtensionSub from "./pages/BGExtensionSub";
 import ClaimLatterSub from "./pages/ClaimLatterSub";
 import ChecklistSubEdit from "./pages/ChecklistSubEdit";
+import WDCSub from "./pages/WDCSub";
 
 function Layout() {
   const { token, isLoggedIn, userType } = useSelector((state) => state.auth);
@@ -73,6 +74,7 @@ function Layout() {
               path="/checklistedit/:id"
               element={<ChecklistSubEdit />}
             />
+            <Route exact path="/wdc/:id" element={<WDCSub />} />
           </Routes>
         ) : (
           <Routes>
@@ -115,6 +117,7 @@ function Layout() {
               path="/checklistedit/:id"
               element={<ChecklistSubEdit />}
             />
+            <Route exact path="/wdc/:id" element={<WDCSub />} />
           </Routes>
         )}
       </BrowserRouter>
