@@ -80,29 +80,32 @@ const POs = () => {
                                 </button>
                               </td>
                               <td>
-                                Sub Date:{" "}
+                                SDBG Date:{" "}
                                 {typeof po?.SDVG?.created_at === "number"
                                   ? new Date(
                                       po?.SDVG?.created_at
                                     ).toLocaleDateString()
                                   : "N/A"}{" "}
                                 <br />
-                                Created By GRSE:
-                                {po.SDVG.created_by_name || "N/A"}
+                                Created By: {po.SDVG.created_by_name || "N/A"}
+                                <br />
+                                Remarks: {po?.SDVG?.remarks || "N/A"}
                               </td>
                               <td>
-                                Sub Date:{" "}
+                                Drawing Date:{" "}
                                 {typeof po?.Drawing?.created_at === "number"
                                   ? new Date(
                                       po?.Drawing?.created_at
                                     ).toLocaleDateString()
                                   : "N/A"}{" "}
                                 <br />
-                                Created By GRSE:{" "}
+                                Created By:{" "}
                                 {po.Drawing.created_by_name || "N/A"}
+                                <br />
+                                Remarks: {po?.Drawing?.remarks || "N/A"}
                               </td>
                               <td>
-                                Sub Date:{" "}
+                                QAP Date:{" "}
                                 {typeof po?.qapSubmission?.created_at ===
                                 "number"
                                   ? new Date(
@@ -110,8 +113,10 @@ const POs = () => {
                                     ).toLocaleDateString()
                                   : "N/A"}{" "}
                                 <br />
-                                Created By GRSE:{" "}
+                                Created By:{" "}
                                 {po.qapSubmission.created_by_name || "N/A"}
+                                <br />
+                                Remarks: {po?.qapSubmission?.remarks || "N/A"}
                               </td>
                             </tr>
                           ))

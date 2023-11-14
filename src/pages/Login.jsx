@@ -58,7 +58,7 @@ export default function Login() {
                 </div>
                 <div className="fv-row mb-3">
                   <label className="form-label fs-6 fw-bolder text-dark">
-                    vendor code
+                    User code
                   </label>
 
                   <input

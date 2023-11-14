@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Footer from "../components/Footer";
 import SideBar from "../components/SideBar";
 import Header from "../components/Header";
@@ -9,6 +9,7 @@ import { toast } from "react-toastify";
 
 const SDBGSub = () => {
   const [isPopup, setIsPopup] = useState(false);
+  const [allsdbg, setAllsdbg] = useState([]);
   const [formData, setFormData] = useState({
     bankName: "",
     transactionId: "",
@@ -19,34 +20,43 @@ const SDBGSub = () => {
 
   const { user, token, userType } = useSelector((state) => state.auth);
 
-  console.log(userType, "bikky");
-
+  useEffect(() => {
+    (async () => {
+      const data = await apiCallBack(
+        "GET",
+        `po/getAllSDBG?po=${id}`,
+        null,
+        token
+      );
+      if (data?.status) {
+        setAllsdbg(data?.data);
+      }
+    })();
+  }, []);
+  console.log(allsdbg, "allsdbgallsdbg9999999999");
   const updateSDBG = async (e) => {
-    const form = new FormData();
-    form.append("purchasing_doc_no", id);
-    form.append("file", formData.sdbgFile);
-    form.append("remarks", formData.remarks);
-    form.append("updated_by", user.NAME1);
-    form.append("bank_name", formData.bankName);
-    form.append("transaction_id", formData.transactionId);
-    form.append("vendor_code", user.vendor_code);
-    form.append("action_by_name", user.name);
-    form.append("action_by_id", user.email);
-
     try {
-      // Make an API request using your 'apiCallBack' function
+      const form = new FormData();
+      form.append("purchasing_doc_no", id);
+      form.append("file", formData.sdbgFile);
+      form.append("remarks", formData.remarks);
+      form.append("updated_by", user.NAME1);
+      form.append("bank_name", formData.bankName);
+      form.append("transaction_id", formData.transactionId);
+      form.append("vendor_code", user.vendor_code);
+      form.append("action_by_name", user.name);
+      form.append("action_by_id", user.email);
+
       const response = await apiCallBack(
         "POST",
         `po/addSDBG?type=sdbg`,
-        form, // Send the form data as the payload
+        form,
         token
       );
-      if (response?.status === true) {
-        const data = await response.json();
+      if (response.statusCode === 200) {
+        const data = response.data;
         console.log(data, "abhinit");
-        setIsPopup(false); // Close the popup on successful submission
-
-        // Show a success toast
+        setIsPopup(false);
         toast.success("Form submitted successfully");
         setFormData({
           sdbgFile: null,
@@ -54,17 +64,12 @@ const SDBGSub = () => {
           bankName: "",
           transactionId: "",
         });
-      } else {
-        // Handle the case where the request fails (non-2xx response)
-        toast.error(`Request failed with status ${response.status}`);
       }
     } catch (error) {
-      // Handle network errors or other exceptions
-      toast.error(`Error: ${error}`);
-      // Show an error toast
+      console.error("Error:", error);
       toast.error("Form submission failed", {
         position: "top-right",
-        autoClose: 3000, // Close the toast after 3 seconds (adjust as needed)
+        autoClose: 3000,
       });
     }
   };
@@ -108,7 +113,33 @@ const SDBGSub = () => {
                               </thead>
                               {userType === 1 ? (
                                 <tbody style={{ maxHeight: "100%" }}>
-                                  <tr>
+                                  {allsdbg &&
+                                    allsdbg.map((item, index) => (
+                                      <tr key={index}>
+                                        <td className="table_center">
+                                          {item.created_at}
+                                        </td>
+                                        <td>{item.bank_name}</td>
+                                        <td>{item.transaction_id}</td>
+                                        <td>
+                                          <a
+                                            href={`${process.env.REACT_APP_BACKEND_API}po/download?id=${item.id}&type=sdbg`}
+                                            target="_blank"
+                                            rel="noreferrer"
+                                          >
+                                            Check File
+                                          </a>
+                                        </td>
+                                        <td>{item.created_by_name}</td>
+                                        <td>{item.remarks}</td>
+                                        <td>
+                                          {item.status != 1
+                                            ? "Approved"
+                                            : "Pending"}
+                                        </td>
+                                      </tr>
+                                    ))}
+                                  {/* <tr>
                                     <td className="table_center">31/10/2023</td>
                                     <td>Axis Bank</td>
                                     <td>78943878748</td>
@@ -158,7 +189,7 @@ const SDBGSub = () => {
                                     <td>GRSE</td>
                                     <td>SDBG receipt acknowledgement</td>
                                     <td>Approved</td>
-                                  </tr>
+                                  </tr> */}
                                 </tbody>
                               ) : (
                                 <tbody style={{ maxHeight: "100%" }}>
@@ -321,11 +352,7 @@ const SDBGSub = () => {
                   UPDATE
                 </button>
                 {userType !== 1 ? (
-                  <button
-                    onClick={updateSDBG}
-                    className="btn fw-bold btn-primary"
-                    type="submit"
-                  >
+                  <button className="btn fw-bold btn-primary" type="submit">
                     Approved
                   </button>
                 ) : (
