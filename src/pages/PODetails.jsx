@@ -111,53 +111,66 @@ const PODetails = () => {
                                     </div>
                                   </div>
                                 </div>
-                                <div className="col-6">
-                                  <div className="card card-xxl-stretch mb-5 mb-xxl-8">
-                                    <div className="card-body py-3">
-                                      <div className="card_header_data">
-                                        <span className="label">
-                                          Contractual SDBG/IB submission date:
-                                        </span>
-                                        <span className="label_data">
-                                          {"11/3/2023"}"
-                                        </span>
-                                      </div>
-                                      <div className="card_header_data">
-                                        <span className="label">
-                                          Contractual drawing submission date:
-                                        </span>
-                                        <span className="label_data">
-                                          {/* Drawing submission date */}
-                                        </span>
-                                      </div>
-                                      <div className="card_header_data">
-                                        <span className="label">
-                                          Contractual QAP submission date:
-                                        </span>
-                                        <span className="label_data">
-                                          {/* QAP submission date */}
-                                        </span>
-                                      </div>
-                                      <div className="card_header_data">
-                                        <span className="label">
+                                {po.timeline == "" ? (
+                                  ""
+                                ) : (
+                                  <div className="col-6">
+                                    <div className="card card-xxl-stretch mb-5 mb-xxl-8">
+                                      <div className="card-body py-3">
+                                        <div className="card_header_data">
+                                          <span className="label">
+                                            {/* Contractual SDBG/IB submission date: */}
+                                            {po.timeline[0]?.MTEXT} :
+                                          </span>
+                                          <span className="label_data">
+                                            {moment(
+                                              po.timeline[0]?.PLAN_DATE
+                                            ).format("YYYY-MM-DD")}
+                                          </span>
+                                        </div>
+                                        <div className="card_header_data">
+                                          <span className="label">
+                                            {/* Contractual drawing submission date: */}
+                                            {po.timeline[1]?.MTEXT} :
+                                          </span>
+                                          <span className="label_data">
+                                            {moment(
+                                              po.timeline[1]?.PLAN_DATE
+                                            ).format("YYYY-MM-DD")}
+                                          </span>
+                                        </div>
+                                        <div className="card_header_data">
+                                          <span className="label">
+                                            {/* Contractual QAP submission date: */}
+                                            {po.timeline[2]?.MTEXT} :
+                                          </span>
+                                          <span className="label_data">
+                                            {moment(
+                                              po.timeline[2]?.PLAN_DATE
+                                            ).format("YYYY-MM-DD")}
+                                          </span>
+                                        </div>
+                                        <div className="card_header_data">
+                                          {/* <span className="label">
                                           Raw material stamping date/Test
                                           witness date:
-                                        </span>
-                                        <span className="label_data">
-                                          {/* Stamping/Test witness date */}
-                                        </span>
-                                      </div>
-                                      <div className="card_header_data">
-                                        <span className="label">
+                                        </span> */}
+                                          <span className="label_data">
+                                            {/* Stamping/Test witness date */}
+                                          </span>
+                                        </div>
+                                        <div className="card_header_data">
+                                          {/* <span className="label">
                                           Final inspection date/FAT:
-                                        </span>
-                                        <span className="label_data">
-                                          {/* Final inspection date */}
-                                        </span>
+                                        </span> */}
+                                          <span className="label_data">
+                                            {/* Final inspection date */}
+                                          </span>
+                                        </div>
                                       </div>
                                     </div>
                                   </div>
-                                </div>
+                                )}
                               </div>
 
                               <div className="card card-xxl-stretch mb-5 mb-xxl-8 customer_feedback">

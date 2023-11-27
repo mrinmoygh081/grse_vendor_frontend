@@ -20,6 +20,10 @@ export const sidebarData = [
     link: "/inspection",
   },
   {
+    title: "WDC",
+    link: "/wdc",
+  },
+  {
     title: "Shipping documents",
     link: "/shipping-documents",
   },

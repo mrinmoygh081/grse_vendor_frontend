@@ -106,7 +106,7 @@ export default function SideBar({ id }) {
                         <span className="menu-title">{item?.title}</span>
                       </Link>
                     ) : (
-                      item.title !== "WDC" && (
+                      item.link !== "/gate-in" && (
                         <Link to={`${item?.link}/${po}`} className="menu-link">
                           <span className="menu-icon">
                             <span className="svg-icon svg-icon-2">

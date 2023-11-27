@@ -67,10 +67,14 @@ const POs = () => {
                         </tr>
                       ) : (
                         polist
-                          .filter((po) =>
-                            po.poNumber
-                              .toLowerCase()
-                              .includes(searchQuery.toLowerCase())
+                          .filter(
+                            (po) =>
+                              po.poNumber
+                                .toLowerCase()
+                                .includes(searchQuery.toLowerCase()) ||
+                              po.poType
+                                .toLowerCase()
+                                .includes(searchQuery.toLowerCase())
                           )
                           .map((po, index) => (
                             <tr key={index}>
@@ -78,6 +82,8 @@ const POs = () => {
                                 <button onClick={() => dispatch(poHandler(po))}>
                                   {po.poNumber}
                                 </button>
+                                <br />
+                                <span> poType:{po.poType}</span>
                               </td>
                               <td>
                                 SDBG Date:{" "}

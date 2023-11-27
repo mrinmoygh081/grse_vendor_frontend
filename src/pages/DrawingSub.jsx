@@ -1,14 +1,85 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Footer from "../components/Footer";
 import SideBar from "../components/SideBar";
 import Header from "../components/Header";
 import { useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
+import { apiCallBack } from "../utils/fetchAPIs";
 
 const DrawingSub = () => {
   const [isPopup, setIsPopup] = useState(false);
+  const [alldrawing, setAlldrawing] = useState([]);
+  const [formData, setFormData] = useState({
+    drawingFile: null,
+    remarks: "",
+  });
   const { id } = useParams();
-  const { userType } = useSelector((state) => state.auth);
+  const { user, token, userType } = useSelector((state) => state.auth);
+
+  const getData = async () => {
+    try {
+      const data = await apiCallBack(
+        "GET",
+        `po/drawingList?poNo=${id}`,
+        null,
+        token
+      );
+      if (data?.status) {
+        setAlldrawing(data?.data);
+      }
+    } catch (error) {
+      console.error("Error fetching drawing list:", error);
+    }
+  };
+
+  useEffect(() => {
+    getData();
+  }, [id, token]);
+
+  const updateDrawing = async (flag) => {
+    let isApproved = flag;
+    let uType;
+    if (userType === 1) {
+      uType = "VENDOR";
+    } else {
+      uType = "GRSE";
+    }
+    try {
+      const formDataToSend = new FormData();
+      formDataToSend.append("purchasing_doc_no", id);
+      formDataToSend.append("file", formData.drawingFile);
+      formDataToSend.append("remarks", formData.remarks);
+      formDataToSend.append("status", isApproved);
+      formDataToSend.append("mailSendTo", "aabhinit96@gmail.com");
+      formDataToSend.append("updated_by", uType);
+      formDataToSend.append("vendor_code", user.vendor_code);
+      formDataToSend.append("action_by_name", user.name);
+      formDataToSend.append("action_by_id", user.email);
+
+      const response = await apiCallBack(
+        "POST",
+        "po/drawing",
+        formDataToSend,
+        token
+      );
+
+      if (response?.status) {
+        // Handle success, e.g., show a success message or update the drawing list
+        console.log("Drawing uploaded successfully");
+        setIsPopup(false);
+        setFormData({
+          drawingFile: null,
+          remarks: "",
+        });
+        getData();
+      } else {
+        // Handle failure, e.g., show an error message
+        console.error("Failed to upload drawing");
+      }
+    } catch (error) {
+      console.error("Error uploading drawing:", error);
+    }
+  };
 
   return (
     <>
@@ -29,12 +100,12 @@ const DrawingSub = () => {
                         >
                           Upload Drawing
                         </button>
-                        <button
+                        {/* <button
                           onClick={() => setIsPopup(true)}
                           className="btn fw-bold btn-primary"
                         >
                           Upload Of WDB Approved Drawing
-                        </button>
+                        </button> */}
                       </div>
                     </div>
                     <div className="col-12">
@@ -52,121 +123,33 @@ const DrawingSub = () => {
                                 </tr>
                               </thead>
                               <tbody style={{ maxHeight: "100%" }}>
-                                <tr>
-                                  <td className="table_center">31/10/2023</td>
-                                  <td className="">
-                                    <a
-                                      href={require("C:/grse/grse_frontend/grse_vendor/src/uploads/testing.pdf")}
-                                      target="_blank"
-                                      rel="noreferrer"
-                                    >
-                                      Check File
-                                    </a>
-                                  </td>
-                                  <td className="">XYZ Pvt. Ltd.</td>
-                                  <td className="">Uploading Drawing</td>
-                                  <td className="">Pending</td>
-                                </tr>
-                                <tr>
-                                  <td className="table_center">31/10/2023</td>
-                                  <td className="">
-                                    <a
-                                      href={require("C:/grse/grse_frontend/grse_vendor/src/uploads/testing.pdf")}
-                                      target="_blank"
-                                      rel="noreferrer"
-                                    >
-                                      Check File
-                                    </a>
-                                  </td>
-                                  <td className="">GRSE</td>
-                                  <td className="">
-                                    Returning Drawing for Correction
-                                  </td>
-                                  <td className="">Pending</td>
-                                </tr>
-                                <tr>
-                                  <td className="table_center">31/10/2023</td>
-                                  <td className="">
-                                    <a
-                                      href={require("C:/grse/grse_frontend/grse_vendor/src/uploads/testing.pdf")}
-                                      target="_blank"
-                                      rel="noreferrer"
-                                    >
-                                      Check File
-                                    </a>
-                                  </td>
-                                  <td className="">XYZ Pvt. Ltd.</td>
-                                  <td className="">
-                                    Returning Drawing after Correction
-                                  </td>
-                                  <td className="">Pending</td>
-                                </tr>
-                                <tr>
-                                  <td className="table_center">31/10/2023</td>
-                                  <td className="">
-                                    <a
-                                      href={require("C:/grse/grse_frontend/grse_vendor/src/uploads/testing.pdf")}
-                                      target="_blank"
-                                      rel="noreferrer"
-                                    >
-                                      Check File
-                                    </a>
-                                  </td>
-                                  <td className="">GRSE</td>
-                                  <td className="">
-                                    Returning Drawing for WDB Approval
-                                  </td>
-                                  <td className="">Pending</td>
-                                </tr>
-                                <tr>
-                                  <td className="table_center">31/10/2023</td>
-                                  <td className="">
-                                    <a
-                                      href={require("C:/grse/grse_frontend/grse_vendor/src/uploads/testing.pdf")}
-                                      target="_blank"
-                                      rel="noreferrer"
-                                    >
-                                      Check File
-                                    </a>
-                                  </td>
-                                  <td className="">XYZ Pvt. Ltd.</td>
-                                  <td className="">
-                                    Upload of WDB Approved Drawing
-                                  </td>
-                                  <td className="">Pending</td>
-                                </tr>
-                                <tr>
-                                  <td className="table_center">31/10/2023</td>
-                                  <td className="">
-                                    <a
-                                      href={require("C:/grse/grse_frontend/grse_vendor/src/uploads/testing.pdf")}
-                                      target="_blank"
-                                      rel="noreferrer"
-                                    >
-                                      Check File
-                                    </a>
-                                  </td>
-                                  <td className="">GRSE</td>
-                                  <td className="">
-                                    Upload of Acknowledgement Receipt
-                                  </td>
-                                  <td className="">Approved</td>
-                                </tr>
+                                {alldrawing.map((drawing) => (
+                                  <tr key={drawing.drawing_id}>
+                                    <td className="table_center">
+                                      {drawing.created_at}
+                                    </td>
+                                    <td className="">
+                                      <a
+                                        href={`${process.env.REACT_APP_BACKEND_API}po/download?id=${drawing.drawing_id}&type=drawing`}
+                                        target="_blank"
+                                        rel="noreferrer"
+                                      >
+                                        {drawing.file_name}
+                                      </a>
+                                    </td>
+                                    <td className="">
+                                      {drawing.created_by_name}
+                                    </td>
+                                    <td className="">{drawing.remarks}</td>
+                                    <td className="">
+                                      {drawing.status === "APPROVED"
+                                        ? "APPROVED"
+                                        : "PENDING"}
+                                    </td>
+                                  </tr>
+                                ))}
                               </tbody>
                             </table>
-                            {/* <div className="d-flex align-items-center justify-content-between py-3">
-                                  <button className="btn fw-bold btn-info">
-                                    ADD NEW
-                                  </button>
-                                  <div>
-                                    <button className="btn fw-bold btn-primary mx-3">
-                                      Stop
-                                    </button>
-                                    <button className="btn fw-bold btn-primary">
-                                      Send
-                                    </button>
-                                  </div>
-                                </div> */}
                           </div>
                         </div>
                       </div>
@@ -179,6 +162,7 @@ const DrawingSub = () => {
           </div>
         </div>
       </div>
+
       <div className={isPopup ? "popup active" : "popup"}>
         <div className="card card-xxl-stretch mb-5 mb-xxl-8">
           <div className="card-header border-0 pt-5">
@@ -198,8 +182,16 @@ const DrawingSub = () => {
             <div className="row">
               <div className="col-12">
                 <div className="mb-3">
-                  <label className="form-label">Drawing File</label>
-                  <input type="file" className="form-control" />
+                  <input
+                    type="file"
+                    className="form-control"
+                    onChange={(e) =>
+                      setFormData({
+                        ...formData,
+                        drawingFile: e.target.files[0],
+                      })
+                    }
+                  />
                 </div>
               </div>
               <div className="col-12">
@@ -210,16 +202,27 @@ const DrawingSub = () => {
                     id=""
                     rows="4"
                     className="form-control"
+                    onChange={(e) =>
+                      setFormData({ ...formData, remarks: e.target.value })
+                    }
                   ></textarea>
                 </div>
               </div>
               <div className="col-12">
                 <div className="mb-3 d-flex justify-content-between">
-                  <button className="btn fw-bold btn-primary" type="submit">
+                  <button
+                    onClick={() => updateDrawing("PENDING")}
+                    className="btn fw-bold btn-primary"
+                    type="button"
+                  >
                     UPDATE
                   </button>
-                  {userType != 1 ? (
-                    <button className="btn fw-bold btn-primary" type="submit">
+                  {userType !== 1 ? (
+                    <button
+                      onClick={() => updateDrawing("APPROVED")}
+                      className="btn fw-bold btn-primary"
+                      type="button"
+                    >
                       Approved
                     </button>
                   ) : (

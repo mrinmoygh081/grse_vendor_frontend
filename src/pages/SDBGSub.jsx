@@ -6,7 +6,7 @@ import { useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { apiCallBack } from "../utils/fetchAPIs";
 import { toast } from "react-toastify";
-
+import moment from "moment";
 const SDBGSub = () => {
   const [isPopup, setIsPopup] = useState(false);
   const [allsdbg, setAllsdbg] = useState([]);
@@ -20,39 +20,50 @@ const SDBGSub = () => {
 
   const { user, token, userType } = useSelector((state) => state.auth);
 
+  const getSDBG = async () => {
+    const data = await apiCallBack(
+      "GET",
+      `po/sdbgList?poNo=${id}`,
+      null,
+      token
+    );
+    if (data?.status) {
+      setAllsdbg(data?.data);
+    }
+  };
+
   useEffect(() => {
-    (async () => {
-      const data = await apiCallBack(
-        "GET",
-        `po/getAllSDBG?po=${id}`,
-        null,
-        token
-      );
-      if (data?.status) {
-        setAllsdbg(data?.data);
-      }
-    })();
+    getSDBG();
   }, []);
-  console.log(allsdbg, "allsdbgallsdbg9999999999");
-  const updateSDBG = async (e) => {
+  console.log(userType, "allsdbgallsdbg9999999999");
+
+  const updateSDBG = async (flag) => {
+    let uType;
+    if (userType === 1) {
+      uType = "VENDOR";
+    } else {
+      uType = "GRSE";
+    }
+    let isApproved;
+    if (flag === "Approved") {
+      isApproved = "ACKNOWLEDGED";
+    } else {
+      isApproved = "PENDING";
+    }
     try {
       const form = new FormData();
       form.append("purchasing_doc_no", id);
       form.append("file", formData.sdbgFile);
       form.append("remarks", formData.remarks);
-      form.append("updated_by", user.NAME1);
+      form.append("status", isApproved);
+      form.append("updated_by", uType);
       form.append("bank_name", formData.bankName);
       form.append("transaction_id", formData.transactionId);
       form.append("vendor_code", user.vendor_code);
       form.append("action_by_name", user.name);
       form.append("action_by_id", user.email);
 
-      const response = await apiCallBack(
-        "POST",
-        `po/addSDBG?type=sdbg`,
-        form,
-        token
-      );
+      const response = await apiCallBack("POST", `po/sdbg`, form, token);
       if (response.statusCode === 200) {
         const data = response.data;
         console.log(data, "abhinit");
@@ -64,6 +75,7 @@ const SDBGSub = () => {
           bankName: "",
           transactionId: "",
         });
+        getSDBG();
       }
     } catch (error) {
       console.error("Error:", error);
@@ -111,35 +123,36 @@ const SDBGSub = () => {
                                   <th>Status</th>
                                 </tr>
                               </thead>
-                              {userType === 1 ? (
-                                <tbody style={{ maxHeight: "100%" }}>
-                                  {allsdbg &&
-                                    allsdbg.map((item, index) => (
-                                      <tr key={index}>
-                                        <td className="table_center">
-                                          {item.created_at}
-                                        </td>
-                                        <td>{item.bank_name}</td>
-                                        <td>{item.transaction_id}</td>
-                                        <td>
-                                          <a
-                                            href={`${process.env.REACT_APP_BACKEND_API}po/download?id=${item.id}&type=sdbg`}
-                                            target="_blank"
-                                            rel="noreferrer"
-                                          >
-                                            Check File
-                                          </a>
-                                        </td>
-                                        <td>{item.created_by_name}</td>
-                                        <td>{item.remarks}</td>
-                                        <td>
-                                          {item.status != 1
-                                            ? "Approved"
-                                            : "Pending"}
-                                        </td>
-                                      </tr>
-                                    ))}
-                                  {/* <tr>
+                              <tbody style={{ maxHeight: "100%" }}>
+                                {allsdbg &&
+                                  allsdbg.map((item, index) => (
+                                    <tr key={index}>
+                                      <td className="table_center">
+                                        {moment(item.created_at)
+                                          .utc()
+                                          .format("YYYY-MM-DD")}
+                                      </td>
+                                      <td>{item.bank_name}</td>
+                                      <td>{item.transaction_id}</td>
+                                      <td>
+                                        <a
+                                          href={`${process.env.REACT_APP_BACKEND_API}po/download?id=${item.id}&type=sdbg`}
+                                          target="_blank"
+                                          rel="noreferrer"
+                                        >
+                                          Check File
+                                        </a>
+                                      </td>
+                                      <td>{item.created_by_name}</td>
+                                      <td>{item.remarks}</td>
+                                      <td>
+                                        {item.status === "ACKNOWLEDGED"
+                                          ? "ACKNOWLEDGED"
+                                          : "PENDING"}
+                                      </td>
+                                    </tr>
+                                  ))}
+                                {/* <tr>
                                     <td className="table_center">31/10/2023</td>
                                     <td>Axis Bank</td>
                                     <td>78943878748</td>
@@ -190,64 +203,7 @@ const SDBGSub = () => {
                                     <td>SDBG receipt acknowledgement</td>
                                     <td>Approved</td>
                                   </tr> */}
-                                </tbody>
-                              ) : (
-                                <tbody style={{ maxHeight: "100%" }}>
-                                  <tr>
-                                    <td className="table_center">31/10/2023</td>
-                                    <td>Axis Bank</td>
-                                    <td>78943878748</td>
-                                    <td>
-                                      <a
-                                        href={require("C:/grse/grse_frontend/grse_vendor/src/uploads/testing.pdf")}
-                                        target="_blank"
-                                        rel="noreferrer"
-                                      >
-                                        Check File
-                                      </a>
-                                    </td>
-                                    <td>XYZ Pvt. Ltd.</td>
-                                    <td>Uploading SDBG</td>
-                                    <td>Pending</td>
-                                  </tr>
-                                  <tr>
-                                    <td className="table_center">31/10/2023</td>
-                                    <td></td>
-                                    <td></td>
-                                    <td>
-                                      <a
-                                        href={require("C:/grse/grse_frontend/grse_vendor/src/uploads/testing.pdf")}
-                                        target="_blank"
-                                        rel="noreferrer"
-                                      >
-                                        Check File
-                                      </a>
-                                    </td>
-                                    <td>GRSE</td>
-                                    <td>Returning SDBG for correction</td>
-                                    <td>Pending</td>
-                                  </tr>
-                                  <tr>
-                                    <td className="table_center">31/10/2023</td>
-                                    <td></td>
-                                    <td></td>
-                                    <td>
-                                      <a
-                                        href={require("C:/grse/grse_frontend/grse_vendor/src/uploads/testing.pdf")}
-                                        target="_blank"
-                                        rel="noreferrer"
-                                      >
-                                        Check File
-                                      </a>
-                                    </td>
-                                    <td>GRSE</td>
-                                    <td>
-                                      Upload of SDBG receipt acknowledgement.
-                                    </td>
-                                    <td>Approved</td>
-                                  </tr>
-                                </tbody>
-                              )}
+                              </tbody>
                             </table>
                             {/* <div className="d-flex align-items-center justify-content-between py-3">
                                   <button className="btn fw-bold btn-info">
@@ -345,14 +301,18 @@ const SDBGSub = () => {
             <div className="col-12">
               <div className="mb-3 d-flex justify-content-between">
                 <button
-                  onClick={updateSDBG}
+                  onClick={() => updateSDBG("NotApproved")}
                   className="btn fw-bold btn-primary"
                   type="submit"
                 >
                   UPDATE
                 </button>
                 {userType !== 1 ? (
-                  <button className="btn fw-bold btn-primary" type="submit">
+                  <button
+                    onClick={() => updateSDBG("Approved")}
+                    className="btn fw-bold btn-primary"
+                    type="submit"
+                  >
                     Approved
                   </button>
                 ) : (
