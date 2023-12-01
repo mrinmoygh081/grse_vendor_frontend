@@ -1,12 +1,83 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Footer from "../components/Footer";
 import SideBar from "../components/SideBar";
 import Header from "../components/Header";
 import { useParams } from "react-router-dom";
+import { useSelector } from "react-redux";
+import { apiCallBack } from "../utils/fetchAPIs";
+import { toast } from "react-toastify";
+import moment from "moment";
 
 const InspectionCall = () => {
   const [isPopup, setIsPopup] = useState(false);
+  const [inspectioncall, setInspectioncall] = useState([]);
   const { id } = useParams();
+
+  const { user, token, userType } = useSelector((state) => state.auth);
+  const [formData, setFormData] = useState({
+    InspectioncallFile: null,
+    remarks: "",
+  });
+
+  const getData = async () => {
+    try {
+      const data = await apiCallBack(
+        "GET",
+        `po/ListOfInspectionCallLetter?poNo=${id}`,
+        null,
+        token
+      );
+      if (data?.status) {
+        setInspectioncall(data?.data);
+      }
+    } catch (error) {
+      console.error("Error fetching drawing list:", error);
+    }
+  };
+
+  useEffect(() => {
+    getData();
+  }, [id, token]);
+
+  const updateInspectionCall = async (flag) => {
+    try {
+      let isApproved = flag;
+      let uType;
+      if (userType === 1) {
+        uType = "VENDOR";
+      } else {
+        uType = "GRSE";
+      }
+      const formDataToSend = new FormData();
+      formDataToSend.append("purchasing_doc_no", id);
+      formDataToSend.append("file", formData.InspectioncallFile);
+      formDataToSend.append("remarks", formData.remarks);
+      formDataToSend.append("status", isApproved);
+      formDataToSend.append("updated_by", uType);
+      formDataToSend.append("vendor_code", user.vendor_code);
+      formDataToSend.append("action_by_name", user.name);
+      formDataToSend.append("action_by_id", user.email);
+
+      const response = await apiCallBack(
+        "POST",
+        "po/inspectionCallLetter",
+        formDataToSend,
+        token
+      );
+
+      if (response?.status) {
+        // Handle success, e.g., show a success message or update the inspection call letter list
+        toast.success("Inspection call letter uploaded successfully");
+        setIsPopup(false);
+        getData(); // Refresh the data after successful upload
+      } else {
+        // Handle failure, e.g., show an error message
+        toast.error("Failed to upload inspection call letter");
+      }
+    } catch (error) {
+      console.error("Error uploading inspection call letter:", error);
+    }
+  };
 
   return (
     <>
@@ -43,110 +114,35 @@ const InspectionCall = () => {
                                 </tr>
                               </thead>
                               <tbody style={{ maxHeight: "100%" }}>
-                                <tr>
-                                  <td className="table_center">
-                                    31/10/2023-12:36PM
-                                  </td>
-                                  <td className="">
-                                    <a
-                                      href={require("C:/grse/grse_frontend/grse_vendor/src/uploads/testing.pdf")}
-                                      target="_blank"
-                                      rel="noreferrer"
-                                    >
-                                      Check File
-                                    </a>
-                                  </td>
-                                  <td className="">XYZ Pvt. Ltd.</td>
-                                  <td className="">
-                                    Raw material stamping date/ test witness
-                                    date etc
-                                  </td>
-                                </tr>
-                                <tr>
-                                  <td className="table_center">
-                                    31/10/2023-12:36PM
-                                  </td>
-                                  <td className="">
-                                    <a
-                                      href={require("C:/grse/grse_frontend/grse_vendor/src/uploads/testing.pdf")}
-                                      target="_blank"
-                                      rel="noreferrer"
-                                    >
-                                      Check File
-                                    </a>
-                                  </td>
-                                  <td className="">XYZ Pvt. Ltd.</td>
-                                  <td className="">In process inspection</td>
-                                </tr>
-                                <tr>
-                                  <td className="table_center">
-                                    31/10/2023-12:36PM
-                                  </td>
-                                  <td className="">
-                                    <a
-                                      href={require("C:/grse/grse_frontend/grse_vendor/src/uploads/testing.pdf")}
-                                      target="_blank"
-                                      rel="noreferrer"
-                                    >
-                                      Check File
-                                    </a>
-                                  </td>
-                                  <td className="">XYZ Pvt. Ltd.</td>
-                                  <td className="">Final inspection/ FATs</td>
-                                </tr>
-
-                                <tr>
-                                  <td className="table_center">
-                                    01/11/2023-01:36PM
-                                  </td>
-                                  <td className="">
-                                    <a
-                                      href={require("C:/grse/grse_frontend/grse_vendor/src/uploads/testing.pdf")}
-                                      target="_blank"
-                                      rel="noreferrer"
-                                    >
-                                      Check File
-                                    </a>
-                                  </td>
-                                  <td className="">GRSE.</td>
-                                  <td className="">
-                                    Replication of the uploaded final dispatch
-                                    clearance with or without comments
-                                  </td>
-                                </tr>
-                                <tr>
-                                  <td className="table_center">
-                                    02/11/2023-02:36PM
-                                  </td>
-                                  <td className="">
-                                    <a
-                                      href={require("C:/grse/grse_frontend/grse_vendor/src/uploads/testing.pdf")}
-                                      target="_blank"
-                                      rel="noreferrer"
-                                    >
-                                      Check File
-                                    </a>
-                                  </td>
-                                  <td className="">XYZ Pvt. Ltd.</td>
-                                  <td className="">
-                                    Uploading of inspection release note
-                                  </td>
-                                </tr>
+                                {inspectioncall.map((inspection) => (
+                                  <tr key={inspection.id}>
+                                    <td className="table_center">
+                                      {moment(inspection.created_at)
+                                        .utc()
+                                        .format("YYYY-MM-DD")}
+                                    </td>
+                                    <td className="">
+                                      <a
+                                        href={`${process.env.REACT_APP_BACKEND_API}po/download?id=${inspection.drawing_id}&type=qap`}
+                                        target="_blank"
+                                        rel="noreferrer"
+                                      >
+                                        {inspection.file_name}
+                                      </a>
+                                    </td>
+                                    <td className="">
+                                      {inspection.created_by_name}
+                                    </td>
+                                    <td className="">{inspection.remarks}</td>
+                                    <td className="">
+                                      {inspection.status === "APPROVED"
+                                        ? "APPROVED"
+                                        : "PENDING"}
+                                    </td>
+                                  </tr>
+                                ))}
                               </tbody>
                             </table>
-                            {/* <div className="d-flex align-items-center justify-content-between py-3">
-                                  <button className="btn fw-bold btn-info">
-                                    ADD NEW
-                                  </button>
-                                  <div>
-                                    <button className="btn fw-bold btn-primary mx-3">
-                                      Stop
-                                    </button>
-                                    <button className="btn fw-bold btn-primary">
-                                      Send
-                                    </button>
-                                  </div>
-                                </div> */}
                           </div>
                         </div>
                       </div>
@@ -178,8 +174,16 @@ const InspectionCall = () => {
             <div className="row">
               <div className="col-12">
                 <div className="mb-3">
-                  <label className="form-label">QAP File</label>
-                  <input type="file" className="form-control" />
+                  <input
+                    type="file"
+                    className="form-control"
+                    onChange={(e) =>
+                      setFormData({
+                        ...formData,
+                        InspectioncallFile: e.target.files[0],
+                      })
+                    }
+                  />
                 </div>
               </div>
               <div className="col-12">
@@ -190,12 +194,32 @@ const InspectionCall = () => {
                     id=""
                     rows="4"
                     className="form-control"
+                    onChange={(e) =>
+                      setFormData({ ...formData, remarks: e.target.value })
+                    }
                   ></textarea>
                 </div>
               </div>
               <div className="col-12">
-                <div className="mb-3">
-                  <button className="btn fw-bold btn-primary">UPDATE</button>
+                <div className="mb-3 d-flex justify-content-between">
+                  <button
+                    onClick={() => updateInspectionCall("PENDING")}
+                    className="btn fw-bold btn-primary"
+                    type="button"
+                  >
+                    UPDATE
+                  </button>
+                  {userType !== 1 ? (
+                    <button
+                      onClick={() => updateInspectionCall("APPROVED")}
+                      className="btn fw-bold btn-primary"
+                      type="button"
+                    >
+                      Approved
+                    </button>
+                  ) : (
+                    ""
+                  )}
                 </div>
               </div>
             </div>

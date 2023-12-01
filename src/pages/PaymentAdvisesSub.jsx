@@ -1,12 +1,36 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Footer from "../components/Footer";
 import SideBar from "../components/SideBar";
 import Header from "../components/Header";
 import { useParams } from "react-router-dom";
+import moment from "moment";
+import { useSelector } from "react-redux";
+import { apiCallBack } from "../utils/fetchAPIs";
 
 const PaymentAdvisesSub = () => {
   const [isPopup, setIsPopup] = useState(false);
+  const [paymentAdvisesData, setPaymentAdvisesData] = useState([]);
   const { id } = useParams();
+  const { token } = useSelector((state) => state.auth);
+
+  const getIcgrnData = async () => {
+    try {
+      const data = await apiCallBack(
+        "GET",
+        `po/ListOfIcgrn?poNo=${id}`,
+        null,
+        token
+      );
+      if (data?.status) {
+        setPaymentAdvisesData(data?.data);
+      }
+    } catch (error) {
+      console.error("Error fetching ICGRN list:", error);
+    }
+  };
+  useEffect(() => {
+    getIcgrnData();
+  }, [id, token]);
 
   return (
     <>
@@ -34,25 +58,29 @@ const PaymentAdvisesSub = () => {
                                 </tr>
                               </thead>
                               <tbody style={{ maxHeight: "100%" }}>
-                                <tr>
-                                  <td className="table_center">
-                                    01/11/2023-10:30AM
-                                  </td>
-                                  <td>
-                                    <a
-                                      href={require("C:/grse/grse_frontend/grse_vendor/src/uploads/testing.pdf")}
-                                      target="_blank"
-                                      rel="noreferrer"
-                                    >
-                                      Check File
-                                    </a>
-                                  </td>
-                                  <td>
-                                    Replication of payment advise from SAP
-                                  </td>
-                                  <td>098349</td>
-                                  <td>GRSE</td>
-                                </tr>
+                                {paymentAdvisesData.map(
+                                  (paymentItem, index) => (
+                                    <tr key={index}>
+                                      <td className="table_center">
+                                        {moment(paymentItem.created_at)
+                                          .utc()
+                                          .format("YYYY-MM-DD")}
+                                      </td>
+                                      <td>
+                                        <a
+                                          href={`${process.env.REACT_APP_BACKEND_API}po/download?id=${paymentItem.id}&type=qap`}
+                                          target="_blank"
+                                          rel="noreferrer"
+                                        >
+                                          Check File
+                                        </a>
+                                      </td>
+                                      <td>{paymentItem.document_type}</td>
+                                      <td>{paymentItem.id}</td>
+                                      <td>{paymentItem.updated_by}</td>
+                                    </tr>
+                                  )
+                                )}
                               </tbody>
                             </table>
                           </div>

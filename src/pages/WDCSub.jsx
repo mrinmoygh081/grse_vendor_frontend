@@ -1,14 +1,70 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Footer from "../components/Footer";
 import SideBar from "../components/SideBar";
 import Header from "../components/Header";
 import { useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
+import { apiCallBack } from "../utils/fetchAPIs";
+import { toast } from "react-toastify";
+import moment from "moment";
 
 const WDCSub = () => {
   const [isPopup, setIsPopup] = useState(false);
+  const [allwdc, setAllwdcp] = useState([]);
+  const [formData, setFormData] = useState({
+    // wdcFile: null,
+    remarks: "",
+  });
   const { id } = useParams();
-  const { userType } = useSelector((state) => state.auth);
+  const { user, token, userType } = useSelector((state) => state.auth);
+
+  const getData = async () => {
+    try {
+      const data = await apiCallBack(
+        "GET",
+        `po/ListOfWdc?poNo=${id}`,
+        null,
+        token
+      );
+      if (data?.status) {
+        setAllwdcp(data?.data);
+      }
+    } catch (error) {
+      console.error("Error fetching drawing list:", error);
+    }
+  };
+
+  useEffect(() => {
+    getData();
+  }, [id, token]);
+
+  const wdcBtn = async (status) => {
+    try {
+      let isApproved = status;
+      let uType = userType === 1 ? "VENDOR" : "GRSE";
+      const payload = {
+        purchasing_doc_no: id,
+        vendor_code: user.vendor_code,
+        remarks: formData.remarks,
+        status: isApproved,
+        updated_by: uType,
+        action_by_name: user.name,
+        action_by_id: user.email,
+      };
+
+      const response = await apiCallBack("POST", "po/wdc", payload, token);
+
+      if (response?.status) {
+        toast.success("WDC Updated Successfully");
+        setIsPopup(false);
+        getData(); // Fetch updated data
+      } else {
+        toast.error("Failed to update WDC");
+      }
+    } catch (error) {
+      console.error("Error updating WDC:", error);
+    }
+  };
 
   return (
     <>
@@ -46,87 +102,29 @@ const WDCSub = () => {
                                 </tr>
                               </thead>
                               <tbody style={{ maxHeight: "100%" }}>
-                                <tr>
-                                  <td className="table_center">31/10/2023</td>
-                                  <td className="">
-                                    <a
-                                      href={require("C:/grse/grse_frontend/grse_vendor/src/uploads/testing.pdf")}
-                                      target="_blank"
-                                      rel="noreferrer"
-                                    >
-                                      Check File
-                                    </a>
-                                  </td>
-                                  <td className="">XYZ Pvt. Ltd.</td>
-                                  <td className="">Upload of WDC</td>
-                                  <td className="">Pending</td>
-                                </tr>
-                                <tr>
-                                  <td className="table_center">31/10/2023</td>
-                                  <td className="">
-                                    <a
-                                      href={require("C:/grse/grse_frontend/grse_vendor/src/uploads/testing.pdf")}
-                                      target="_blank"
-                                      rel="noreferrer"
-                                    >
-                                      Check File
-                                    </a>
-                                  </td>
-                                  <td className="">GRSE</td>
-                                  <td className="">
-                                    Returning WDC for correction
-                                  </td>
-                                  <td className="">Pending</td>
-                                </tr>
-                                <tr>
-                                  <td className="table_center">31/10/2023</td>
-                                  <td className="">
-                                    <a
-                                      href={require("C:/grse/grse_frontend/grse_vendor/src/uploads/testing.pdf")}
-                                      target="_blank"
-                                      rel="noreferrer"
-                                    >
-                                      Check File
-                                    </a>
-                                  </td>
-                                  <td className="">XYZ Pvt. Ltd.</td>
-                                  <td className="">
-                                    WDC returned for corrections
-                                  </td>
-                                  <td className="">Pending</td>
-                                </tr>
-                                <tr>
-                                  <td className="table_center">31/10/2023</td>
-                                  <td className="">
-                                    <a
-                                      href={require("C:/grse/grse_frontend/grse_vendor/src/uploads/testing.pdf")}
-                                      target="_blank"
-                                      rel="noreferrer"
-                                    >
-                                      Check File
-                                    </a>
-                                  </td>
-                                  <td className="">GRSE</td>
-                                  <td className="">
-                                    Replication of approved WDC{" "}
-                                  </td>
-                                  <td className="">Approved</td>
-                                </tr>
+                                {allwdc.map((wdcItem, index) => (
+                                  <tr key={index}>
+                                    <td className="table_center">
+                                      {moment(wdcItem.created_at)
+                                        .utc()
+                                        .format("YYYY-MM-DD")}
+                                    </td>
+                                    <td className="">
+                                      <a
+                                        href={`${process.env.REACT_APP_BACKEND_API}po/download?id=${wdcItem.file_path}&type=qap`}
+                                        target="_blank"
+                                        rel="noreferrer"
+                                      >
+                                        Check File
+                                      </a>
+                                    </td>
+                                    <td className="">{wdcItem.updated_by}</td>
+                                    <td className="">{wdcItem.remarks}</td>
+                                    <td className="">{wdcItem.status}</td>
+                                  </tr>
+                                ))}
                               </tbody>
                             </table>
-                            {/* <div className="d-flex align-items-center justify-content-between py-3">
-                                  <button className="btn fw-bold btn-info">
-                                    ADD NEW
-                                  </button>
-                                  <div>
-                                    <button className="btn fw-bold btn-primary mx-3">
-                                      Stop
-                                    </button>
-                                    <button className="btn fw-bold btn-primary">
-                                      Send
-                                    </button>
-                                  </div>
-                                </div> */}
                           </div>
                         </div>
                       </div>
@@ -154,12 +152,20 @@ const WDCSub = () => {
           </div>
           <form>
             <div className="row">
-              <div className="col-12">
+              {/* <div className="col-12">
                 <div className="mb-3">
-                  <label className="form-label">QAP File</label>
-                  <input type="file" className="form-control" />
+                  <input
+                    type="file"
+                    className="form-control"
+                    onChange={(e) =>
+                      setFormData({
+                        ...formData,
+                        wdcFile: e.target.files[0],
+                      })
+                    }
+                  />
                 </div>
-              </div>
+              </div> */}
               <div className="col-12">
                 <div className="mb-3">
                   <label className="form-label">Remarks</label>
@@ -168,20 +174,29 @@ const WDCSub = () => {
                     id=""
                     rows="4"
                     className="form-control"
+                    onChange={(e) =>
+                      setFormData({ ...formData, remarks: e.target.value })
+                    }
                   ></textarea>
                 </div>
               </div>
               <div className="col-12">
                 <div className="mb-3 d-flex justify-content-between">
-                  <button className="btn fw-bold btn-primary" type="submit">
+                  <button
+                    onClick={() => wdcBtn("PENDING")}
+                    className="btn fw-bold btn-primary"
+                    type="button"
+                  >
                     UPDATE
                   </button>
-                  {userType !== 1 ? (
-                    <button className="btn fw-bold btn-primary" type="submit">
+                  {userType !== 1 && (
+                    <button
+                      onClick={() => wdcBtn("APPROVED")}
+                      className="btn fw-bold btn-primary"
+                      type="button"
+                    >
                       Approved
                     </button>
-                  ) : (
-                    ""
                   )}
                 </div>
               </div>

@@ -5,6 +5,8 @@ import Header from "../components/Header";
 import { useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { apiCallBack } from "../utils/fetchAPIs";
+import moment from "moment";
+import { toast } from "react-toastify";
 
 const QAPSub = () => {
   const [isPopup, setIsPopup] = useState(false);
@@ -52,10 +54,7 @@ const QAPSub = () => {
       formDataToSend.append("status", isApproved);
       formDataToSend.append("updated_by", uType);
       formDataToSend.append("vendor_code", user.vendor_code);
-      formDataToSend.append(
-        "mailSendTo",
-        "VENDOR MAIL ID / GRSE OFFICERS MAIL ID"
-      );
+      formDataToSend.append("mailSendTo", "aabhinit96@gmail.com");
       formDataToSend.append("action_by_name", user.name);
       formDataToSend.append("action_by_id", user.email);
 
@@ -72,7 +71,7 @@ const QAPSub = () => {
 
       if (response?.status) {
         // Handle success, e.g., show a success message or update the QAP list
-        console.log("QAP uploaded successfully");
+        toast.success("QAP uploaded successfully");
         setIsPopup(false);
         setFormData({
           QapFile: null,
@@ -81,10 +80,10 @@ const QAPSub = () => {
         getData();
       } else {
         // Handle failure, e.g., show an error message
-        console.error("Failed to upload QAP");
+        toast.error("Failed to upload QAP");
       }
     } catch (error) {
-      console.error("Error uploading QAP:", error);
+      toast.error("Error uploading QAP:", error);
     }
   };
 
@@ -127,7 +126,9 @@ const QAPSub = () => {
                                 {allqap.map((qap) => (
                                   <tr key={qap.drawing_id}>
                                     <td className="table_center">
-                                      {qap.created_at}
+                                      {moment(qap.created_at)
+                                        .utc()
+                                        .format("YYYY-MM-DD")}
                                     </td>
                                     <td className="">
                                       <a

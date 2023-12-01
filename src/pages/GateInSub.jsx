@@ -1,13 +1,38 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Footer from "../components/Footer";
 import SideBar from "../components/SideBar";
 import Header from "../components/Header";
 import { useParams } from "react-router-dom";
+import { apiCallBack } from "../utils/fetchAPIs";
+import { useSelector } from "react-redux";
+import moment from "moment";
 
 const GateInSub = () => {
   const [isPopup, setIsPopup] = useState(false);
+  const [icgrnData, setIcgrnData] = useState([]);
   const { id } = useParams();
+  const { user, token, userType } = useSelector((state) => state.auth);
 
+  const getIcgrnData = async () => {
+    try {
+      const data = await apiCallBack(
+        "GET",
+        `po/ListOfIcgrn?poNo=${id}`,
+        null,
+        token
+      );
+      if (data?.status) {
+        setIcgrnData(data?.data);
+      }
+    } catch (error) {
+      console.error("Error fetching ICGRN list:", error);
+    }
+  };
+  useEffect(() => {
+    getIcgrnData();
+  }, [id, token]);
+
+  console.log(icgrnData, "abhinit anand");
   return (
     <>
       <div className="d-flex flex-column flex-root">
@@ -34,57 +59,27 @@ const GateInSub = () => {
                                 </tr>
                               </thead>
                               <tbody style={{ maxHeight: "100%" }}>
-                                <tr>
-                                  <td className="table_center">
-                                    01/11/2023-10:30AM
-                                  </td>
-                                  <td>
-                                    <a
-                                      href={require("C:/grse/grse_frontend/grse_vendor/src/uploads/testing.pdf")}
-                                      target="_blank"
-                                      rel="noreferrer"
-                                    >
-                                      Check File
-                                    </a>
-                                  </td>
-                                  <td>Gate In Entry</td>
-                                  <td>098349</td>
-                                  <td>GRSE</td>
-                                </tr>
-                                <tr>
-                                  <td className="table_center">
-                                    31/10/2023-12:36PM
-                                  </td>
-                                  <td>
-                                    <a
-                                      href={require("C:/grse/grse_frontend/grse_vendor/src/uploads/testing.pdf")}
-                                      target="_blank"
-                                      rel="noreferrer"
-                                    >
-                                      Check File
-                                    </a>
-                                  </td>
-                                  <td>Goods Receipt</td>
-                                  <td>656567</td>
-                                  <td>GRSE</td>
-                                </tr>
-                                <tr>
-                                  <td className="table_center">
-                                    31/10/2023-12:36PM
-                                  </td>
-                                  <td>
-                                    <a
-                                      href={require("C:/grse/grse_frontend/grse_vendor/src/uploads/testing.pdf")}
-                                      target="_blank"
-                                      rel="noreferrer"
-                                    >
-                                      Check File
-                                    </a>
-                                  </td>
-                                  <td>ICGRN Report</td>
-                                  <td>908348</td>
-                                  <td>GRSE</td>
-                                </tr>
+                                {icgrnData.map((icgrnItem, index) => (
+                                  <tr key={index}>
+                                    <td className="table_center">
+                                      {moment(icgrnItem.created_at)
+                                        .utc()
+                                        .format("YYYY-MM-DD")}
+                                    </td>
+                                    <td>
+                                      <a
+                                        href={`${process.env.REACT_APP_BACKEND_API}po/download?id=${icgrnItem.file_path}&type=qap`}
+                                        target="_blank"
+                                        rel="noreferrer"
+                                      >
+                                        Check File
+                                      </a>
+                                    </td>
+                                    <td>{icgrnItem.document_type}</td>
+                                    <td>{icgrnItem.id}</td>
+                                    <td>{icgrnItem.updated_by}</td>
+                                  </tr>
+                                ))}
                               </tbody>
                             </table>
                           </div>

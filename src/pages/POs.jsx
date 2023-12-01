@@ -5,6 +5,7 @@ import { logoutHandler } from "../redux/slices/loginSlice";
 import { apiCallBack } from "../utils/fetchAPIs";
 import { poHandler } from "../redux/slices/poSlice";
 import { FiSearch } from "react-icons/fi";
+import moment from "moment";
 
 const POs = () => {
   const dispatch = useDispatch();
@@ -21,13 +22,20 @@ const POs = () => {
         setPolist(data?.data);
       }
     })();
-  }, []);
+  }, [token]); // Include 'token' as a dependency
 
   useEffect(() => {
     if (po) {
       navigate(`/po/${po}`);
     }
-  }, [po]);
+  }, [po, navigate]);
+
+  // Filter the polist based on the searchQuery
+  const filteredPolist = polist.filter(
+    (po) =>
+      po.poNumber.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      po.poType.toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
   return (
     <>
@@ -44,6 +52,7 @@ const POs = () => {
                       className="form-control"
                       value={searchQuery}
                       onChange={(e) => setSearchQuery(e.target.value)}
+                      placeholder="Search..."
                     />
                     <button className="search_btn">
                       <FiSearch />
@@ -61,71 +70,128 @@ const POs = () => {
                       </tr>
                     </thead>
                     <tbody>
-                      {polist.length === 0 ? (
+                      {filteredPolist.length === 0 ? (
                         <tr>
-                          <td colSpan="4">No data found</td>
+                          <td colSpan="7">No data found</td>
                         </tr>
                       ) : (
-                        polist
-                          .filter(
-                            (po) =>
-                              po.poNumber
-                                .toLowerCase()
-                                .includes(searchQuery.toLowerCase()) ||
-                              po.poType
-                                .toLowerCase()
-                                .includes(searchQuery.toLowerCase())
-                          )
-                          .map((po, index) => (
-                            <tr key={index}>
-                              <td>
-                                <button onClick={() => dispatch(poHandler(po))}>
-                                  {po.poNumber}
-                                </button>
-                                <br />
-                                <span> poType:{po.poType}</span>
-                              </td>
-                              <td>
-                                SDBG Date:{" "}
-                                {typeof po?.SDVG?.created_at === "number"
-                                  ? new Date(
-                                      po?.SDVG?.created_at
-                                    ).toLocaleDateString()
-                                  : "N/A"}{" "}
-                                <br />
-                                Created By: {po.SDVG.created_by_name || "N/A"}
-                                <br />
-                                Remarks: {po?.SDVG?.remarks || "N/A"}
-                              </td>
-                              <td>
-                                Drawing Date:{" "}
-                                {typeof po?.Drawing?.created_at === "number"
-                                  ? new Date(
-                                      po?.Drawing?.created_at
-                                    ).toLocaleDateString()
-                                  : "N/A"}{" "}
-                                <br />
-                                Created By:{" "}
-                                {po.Drawing.created_by_name || "N/A"}
-                                <br />
-                                Remarks: {po?.Drawing?.remarks || "N/A"}
-                              </td>
-                              <td>
-                                QAP Date:{" "}
-                                {typeof po?.qapSubmission?.created_at ===
-                                "number"
-                                  ? new Date(
-                                      po?.qapSubmission?.created_at
-                                    ).toLocaleDateString()
-                                  : "N/A"}{" "}
-                                <br />
-                                Created By:{" "}
-                                {po.qapSubmission.created_by_name || "N/A"}
-                                <br />
-                                Remarks: {po?.qapSubmission?.remarks || "N/A"}
-                              </td>
-                            </tr>
-                          ))
+                        filteredPolist.map((po, index) => (
+                          <tr key={index}>
+                            <td>
+                              <button onClick={() => dispatch(poHandler(po))}>
+                                {po.poNumber}
+                              </button>
+                              <br />
+                              <span>
+                                POTYPE
+                                <span style={{ marginLeft: "5px" }}>
+                                  &#10163;
+                                </span>
+                                {po.poType}
+                              </span>
+                            </td>
+                            <td>
+                              {/* SDBG Date:{" "} */}
+                              {po.SDVG ? (
+                                <>
+                                  {/* {typeof po.SDVG.created_at === "number"
+                                    ? moment(po.SDVG.created_at).format(
+                                        "DD-MM-YYYY "
+                                      )
+                                    : "N/A"}{" "}
+                                  <br /> */}
+                                  Contractual Submission:
+                                  <br />
+                                  {po.SDVG.contractual_submission_date
+                                    ? moment(
+                                        po.SDVG.contractual_submission_date
+                                      ).format("DD-MM-YYYY ")
+                                    : "N/A"}
+                                  <br />
+                                  Actual Submission:
+                                  <br />
+                                  {po.SDVG.actual_submission_date
+                                    ? moment(
+                                        po.SDVG.actual_submission_date
+                                      ).format("DD-MM-YYYY ")
+                                    : "N/A"}
+                                  <br />
+                                  Status:
+                                  {po.SDVG.status || "N/A"}
+                                </>
+                              ) : (
+                                "N/A"
+                              )}
+                            </td>
+                            <td>
+                              {/* Drawing Date:{" "} */}
+                              {po.Drawing ? (
+                                <>
+                                  {/* {typeof po.Drawing.created_at === "number"
+                                    ? moment(po.Drawing.created_at).format(
+                                        "DD-MM-YYYY "
+                                      )
+                                    : "N/A"}{" "}
+                                  <br /> */}
+                                  Contractual Submission:
+                                  <br />
+                                  {po.Drawing.contractual_submission_date
+                                    ? moment(
+                                        po.Drawing.contractual_submission_date
+                                      ).format("DD-MM-YYYY ")
+                                    : "N/A"}
+                                  <br />
+                                  Actual Submission:
+                                  <br />
+                                  {po.Drawing.actual_submission_date
+                                    ? moment(
+                                        po.Drawing.actual_submission_date
+                                      ).format("DD-MM-YYYY ")
+                                    : "N/A"}
+                                  <br />
+                                  Status:
+                                  {po.Drawing.status || "N/A"}
+                                </>
+                              ) : (
+                                "N/A"
+                              )}
+                            </td>
+                            <td>
+                              {/* QAP Date:{" "} */}
+                              {po.qapSubmission ? (
+                                <>
+                                  {/* {typeof po.qapSubmission.created_at ===
+                                  "number"
+                                    ? moment(
+                                        po.qapSubmission.created_at
+                                      ).format("DD-MM-YYYY ")
+                                    : "N/A"}{" "}
+                                  <br /> */}
+                                  Contractual Submission:
+                                  <br />
+                                  {po.qapSubmission.contractual_submission_date
+                                    ? moment(
+                                        po.qapSubmission
+                                          .contractual_submission_date
+                                      ).format("DD-MM-YYYY ")
+                                    : "N/A"}
+                                  <br />
+                                  Actual Submission: <br />
+                                  {po.qapSubmission.actual_submission_date
+                                    ? moment(
+                                        po.qapSubmission.actual_submission_date
+                                      ).format("DD-MM-YYYY ")
+                                    : "N/A"}
+                                  <br />
+                                  Status:
+                                  {po.qapSubmission.status || "N/A"}
+                                </>
+                              ) : (
+                                "N/A"
+                              )}
+                            </td>
+                          </tr>
+                        ))
                       )}
                     </tbody>
                   </table>

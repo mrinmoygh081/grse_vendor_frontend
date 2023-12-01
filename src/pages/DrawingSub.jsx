@@ -5,6 +5,8 @@ import Header from "../components/Header";
 import { useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { apiCallBack } from "../utils/fetchAPIs";
+import moment from "moment";
+import { toast } from "react-toastify";
 
 const DrawingSub = () => {
   const [isPopup, setIsPopup] = useState(false);
@@ -15,6 +17,7 @@ const DrawingSub = () => {
   });
   const { id } = useParams();
   const { user, token, userType } = useSelector((state) => state.auth);
+  console.log(user, "useruser");
 
   const getData = async () => {
     try {
@@ -39,18 +42,22 @@ const DrawingSub = () => {
   const updateDrawing = async (flag) => {
     let isApproved = flag;
     let uType;
+    let mailSendTo;
     if (userType === 1) {
       uType = "VENDOR";
+      mailSendTo = "mrinmoygh081@gmail.com";
     } else {
       uType = "GRSE";
+      mailSendTo = "aabhinit96@gmail.com";
     }
+
     try {
       const formDataToSend = new FormData();
       formDataToSend.append("purchasing_doc_no", id);
       formDataToSend.append("file", formData.drawingFile);
       formDataToSend.append("remarks", formData.remarks);
       formDataToSend.append("status", isApproved);
-      formDataToSend.append("mailSendTo", "aabhinit96@gmail.com");
+      formDataToSend.append("mailSendTo", mailSendTo);
       formDataToSend.append("updated_by", uType);
       formDataToSend.append("vendor_code", user.vendor_code);
       formDataToSend.append("action_by_name", user.name);
@@ -64,20 +71,25 @@ const DrawingSub = () => {
       );
 
       if (response?.status) {
-        // Handle success, e.g., show a success message or update the drawing list
-        console.log("Drawing uploaded successfully");
-        setIsPopup(false);
-        setFormData({
-          drawingFile: null,
-          remarks: "",
-        });
-        getData();
+        if (response.message.includes("This drawing aleready APPROVED")) {
+          // Drawing is already approved, show a specific toast message
+          toast.warning(response.message);
+        } else {
+          // Handle success, e.g., show a success message or update the drawing list
+          toast.success("Drawing uploaded successfully");
+          setIsPopup(false);
+          setFormData({
+            drawingFile: null,
+            remarks: "",
+          });
+          getData();
+        }
       } else {
         // Handle failure, e.g., show an error message
-        console.error("Failed to upload drawing");
+        toast.error("Failed to upload drawing");
       }
     } catch (error) {
-      console.error("Error uploading drawing:", error);
+      toast.error("Error uploading drawing:", error);
     }
   };
 
@@ -126,7 +138,9 @@ const DrawingSub = () => {
                                 {alldrawing.map((drawing) => (
                                   <tr key={drawing.drawing_id}>
                                     <td className="table_center">
-                                      {drawing.created_at}
+                                      {moment(drawing.created_at)
+                                        .utc()
+                                        .format("YYYY-MM-DD")}
                                     </td>
                                     <td className="">
                                       <a

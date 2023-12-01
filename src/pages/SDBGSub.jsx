@@ -35,7 +35,6 @@ const SDBGSub = () => {
   useEffect(() => {
     getSDBG();
   }, []);
-  console.log(userType, "allsdbgallsdbg9999999999");
 
   const updateSDBG = async (flag) => {
     let uType;
@@ -60,6 +59,8 @@ const SDBGSub = () => {
       form.append("bank_name", formData.bankName);
       form.append("transaction_id", formData.transactionId);
       form.append("vendor_code", user.vendor_code);
+      // form.append("vendor_name", user.vendor_code);
+      form.append("mailSendTo", "aabhinit96@gmail.com");
       form.append("action_by_name", user.name);
       form.append("action_by_id", user.email);
 

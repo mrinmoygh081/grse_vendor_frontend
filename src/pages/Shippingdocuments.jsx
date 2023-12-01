@@ -1,12 +1,89 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Footer from "../components/Footer";
 import SideBar from "../components/SideBar";
 import Header from "../components/Header";
 import { useParams } from "react-router-dom";
+import { apiCallBack } from "../utils/fetchAPIs";
+import { useSelector } from "react-redux";
+import { toast } from "react-toastify";
+import moment from "moment";
 
 const Shippingdocuments = () => {
   const [isPopup, setIsPopup] = useState(false);
+  const [shippingdocumentss, setShippingdocumentss] = useState([]);
   const { id } = useParams();
+
+  const { user, token, userType } = useSelector((state) => state.auth);
+  const [formData, setFormData] = useState({
+    shippingdocumentssFile: null,
+    remarks: "",
+  });
+
+  const getData = async () => {
+    try {
+      const data = await apiCallBack(
+        "GET",
+        `po/ListOfShippingDocuments?poNo=${id}`,
+        null,
+        token
+      );
+      if (data?.status) {
+        setShippingdocumentss(data?.data);
+      }
+    } catch (error) {
+      console.error("Error fetching drawing list:", error);
+    }
+  };
+
+  useEffect(() => {
+    getData();
+  }, [id, token]);
+
+  const shippingdocumentsBtn = async (status) => {
+    try {
+      let isApproved = status;
+      let uType;
+      if (userType === 1) {
+        uType = "VENDOR";
+      } else {
+        uType = "GRSE";
+      }
+      const formDataToSend = new FormData();
+      formDataToSend.append("purchasing_doc_no", id);
+      formDataToSend.append("file", formData.shippingdocumentssFile);
+      formDataToSend.append("remarks", formData.remarks);
+      formDataToSend.append("status", isApproved);
+      formDataToSend.append("updated_by", uType); // or use user.updated_by if available
+      formDataToSend.append("vendor_code", user.vendor_code);
+      formDataToSend.append("action_by_name", user.name);
+      formDataToSend.append("action_by_id", user.email);
+
+      const response = await apiCallBack(
+        "POST",
+        "po/shippingDocuments",
+        formDataToSend,
+        token
+      );
+
+      if (response?.status) {
+        toast.success("Shipping Document Uploaded Successfully");
+        setIsPopup(false);
+        getData(); // Refresh the data after successful upload
+      } else {
+        // Handle failure, log error details
+        console.error("Failed to upload Shipping Document:", response?.error);
+        toast.error(
+          `Failed to upload Shipping Document: ${response?.error?.message}`
+        );
+      }
+    } catch (error) {
+      // Handle unexpected errors
+      console.error("Error uploading Shipping Document:", error);
+      toast.error(
+        "An unexpected error occurred while uploading Shipping Document"
+      );
+    }
+  };
 
   return (
     <>
@@ -36,82 +113,41 @@ const Shippingdocuments = () => {
                             <table className="table table-striped table-bordered table_height">
                               <thead>
                                 <tr className="border-0">
-                                  <th>DateTime </th>
+                                  <th>DateTime</th>
                                   <th>Shipping Documents</th>
                                   <th>Document Type</th>
                                   <th>Updated By</th>
                                   <th className="min-w-150px">Remarks</th>
+                                  <th className="min-w-150px">Status</th>
                                 </tr>
                               </thead>
                               <tbody style={{ maxHeight: "100%" }}>
-                                <tr>
-                                  <td className="table_center">
-                                    01/11/2023-10:30AM
-                                  </td>
-                                  <td>
-                                    <a
-                                      href={require("C:/grse/grse_frontend/grse_vendor/src/uploads/testing.pdf")}
-                                      target="_blank"
-                                      rel="noreferrer"
-                                    >
-                                      Check File
-                                    </a>
-                                  </td>
-                                  <td>Invoice</td>
-                                  <td>XYZ Pvt. Ltd.</td>
-                                  <td>Uploading of Invoice</td>
-                                </tr>
-                                <tr>
-                                  <td className="table_center">
-                                    31/10/2023-12:36PM
-                                  </td>
-                                  <td>
-                                    <a
-                                      href={require("C:/grse/grse_frontend/grse_vendor/src/uploads/testing.pdf")}
-                                      target="_blank"
-                                      rel="noreferrer"
-                                    >
-                                      Check File
-                                    </a>
-                                  </td>
-                                  <td>MTC</td>
-                                  <td>XYZ Pvt. Ltd.</td>
-                                  <td>Uploading of MTC</td>
-                                </tr>
-                                <tr>
-                                  <td className="table_center">
-                                    31/10/2023-12:36PM
-                                  </td>
-                                  <td>
-                                    <a
-                                      href={require("C:/grse/grse_frontend/grse_vendor/src/uploads/testing.pdf")}
-                                      target="_blank"
-                                      rel="noreferrer"
-                                    >
-                                      Check File
-                                    </a>
-                                  </td>
-                                  <td>GC</td>
-                                  <td>XYZ Pvt. Ltd.</td>
-                                  <td>Uploading of GC</td>
-                                </tr>
-                                <tr>
-                                  <td className="table_center">
-                                    31/10/2023-12:36PM
-                                  </td>
-                                  <td>
-                                    <a
-                                      href={require("C:/grse/grse_frontend/grse_vendor/src/uploads/testing.pdf")}
-                                      target="_blank"
-                                      rel="noreferrer"
-                                    >
-                                      Check File
-                                    </a>
-                                  </td>
-                                  <td>LR</td>
-                                  <td>XYZ Pvt. Ltd.</td>
-                                  <td>Uploading of LR</td>
-                                </tr>
+                                {shippingdocumentss.map((document, index) => (
+                                  <tr key={index}>
+                                    <td className="table_center">
+                                      {moment(document.created_at)
+                                        .utc()
+                                        .format("YYYY-MM-DD")}
+                                    </td>
+                                    <td>
+                                      <a
+                                        href={`${process.env.REACT_APP_BACKEND_API}po/download?id=${document.file_path}&type=qap`}
+                                        target="_blank"
+                                        rel="noreferrer"
+                                      >
+                                        Check File
+                                      </a>
+                                    </td>
+                                    <td>{document.documentType}</td>
+                                    <td>{document.created_by_name}</td>
+                                    <td>{document.remarks}</td>
+                                    <td className="">
+                                      {document.status === "APPROVED"
+                                        ? "APPROVED"
+                                        : "PENDING"}
+                                    </td>
+                                  </tr>
+                                ))}
                               </tbody>
                             </table>
                           </div>
@@ -131,7 +167,7 @@ const Shippingdocuments = () => {
           <div className="card-header border-0 pt-5">
             <h3 className="card-title align-items-start flex-column">
               <span className="card-label fw-bold fs-3 mb-1">
-                Upload Shipping documents
+                Upload Shipping Documents
               </span>
             </h3>
             <button
@@ -145,18 +181,16 @@ const Shippingdocuments = () => {
             <div className="row">
               <div className="col-12">
                 <div className="mb-3">
-                  <label className="form-label">
-                    Shipping File Type <span className="star">*</span>
-                  </label>
-                  <input type="text" className="form-control" />
-                </div>
-              </div>
-              <div className="col-12">
-                <div className="mb-3">
-                  <label className="form-label">
-                    Shipping File <span className="star">*</span>
-                  </label>
-                  <input type="file" className="form-control" />
+                  <input
+                    type="file"
+                    className="form-control"
+                    onChange={(e) =>
+                      setFormData({
+                        ...formData,
+                        shippingdocumentssFile: e.target.files[0],
+                      })
+                    }
+                  />
                 </div>
               </div>
               <div className="col-12">
@@ -167,12 +201,32 @@ const Shippingdocuments = () => {
                     id=""
                     rows="4"
                     className="form-control"
+                    onChange={(e) =>
+                      setFormData({ ...formData, remarks: e.target.value })
+                    }
                   ></textarea>
                 </div>
               </div>
               <div className="col-12">
-                <div className="mb-3">
-                  <button className="btn fw-bold btn-primary">UPDATE</button>
+                <div className="mb-3 d-flex justify-content-between">
+                  <button
+                    onClick={() => shippingdocumentsBtn("PENDING")}
+                    className="btn fw-bold btn-primary"
+                    type="button"
+                  >
+                    UPDATE
+                  </button>
+                  {userType !== 1 ? (
+                    <button
+                      onClick={() => shippingdocumentsBtn("APPROVED")}
+                      className="btn fw-bold btn-primary"
+                      type="button"
+                    >
+                      Approved
+                    </button>
+                  ) : (
+                    ""
+                  )}
                 </div>
               </div>
             </div>
