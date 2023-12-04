@@ -40,7 +40,7 @@ const BGExtensionSub = () => {
                                   </td>
                                   <td>
                                     <a
-                                      href={require("C:/grse/grse_frontend/grse_vendor/src/uploads/testing.pdf")}
+                                      href={require("C:/Users/admin/Downloads/sample.pdf")}
                                       target="_blank"
                                       rel="noreferrer"
                                     >
@@ -57,7 +57,7 @@ const BGExtensionSub = () => {
                                   </td>
                                   <td>
                                     <a
-                                      href={require("C:/grse/grse_frontend/grse_vendor/src/uploads/testing.pdf")}
+                                      href={require("C:/Users/admin/Downloads/sample.pdf")}
                                       target="_blank"
                                       rel="noreferrer"
                                     >

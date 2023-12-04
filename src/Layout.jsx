@@ -18,6 +18,8 @@ import BGExtensionSub from "./pages/BGExtensionSub";
 import ClaimLatterSub from "./pages/ClaimLatterSub";
 import ChecklistSubEdit from "./pages/ChecklistSubEdit";
 import WDCSub from "./pages/WDCSub";
+import BillSubAttach from "./pages/BillSubAttach";
+import BillVendorAttach from "./pages/BillVendorAttach";
 
 function Layout() {
   const { token, isLoggedIn, userType } = useSelector((state) => state.auth);
@@ -75,6 +77,12 @@ function Layout() {
               element={<ChecklistSubEdit />}
             />
             <Route exact path="/wdc/:id" element={<WDCSub />} />
+            <Route exact path="/BillSubAttach" element={<BillSubAttach />} />
+            <Route
+              exact
+              path="/BillVendorAttach"
+              element={<BillVendorAttach />}
+            />
           </Routes>
         ) : (
           <Routes>

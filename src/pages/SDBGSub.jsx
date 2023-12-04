@@ -124,6 +124,7 @@ const SDBGSub = () => {
                                   <th>Status</th>
                                 </tr>
                               </thead>
+                              {console.log(allsdbg)}
                               <tbody style={{ maxHeight: "100%" }}>
                                 {allsdbg &&
                                   allsdbg.map((item, index) => (
@@ -144,7 +145,7 @@ const SDBGSub = () => {
                                           Check File
                                         </a>
                                       </td>
-                                      <td>{item.created_by_name}</td>
+                                      <td> {item.created_by_name}</td>
                                       <td>{item.remarks}</td>
                                       <td>
                                         {item.status === "ACKNOWLEDGED"
