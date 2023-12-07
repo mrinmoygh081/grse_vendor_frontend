@@ -20,16 +20,16 @@ export const sidebarData = [
     link: "/inspection",
   },
   {
-    title: "WDC",
-    link: "/wdc",
-  },
-  {
     title: "Shipping documents",
     link: "/shipping-documents",
   },
   {
     title: "Gate In Entry / GR / ICGRN",
     link: "/gate-in",
+  },
+  {
+    title: "WDC",
+    link: "/wdc",
   },
   {
     title: "Invoice, PBG Copy & Checklist",
@@ -79,16 +79,16 @@ export const sidebarGRSEData = [
     link: "/inspection",
   },
   {
-    title: "WDC",
-    link: "/wdc",
-  },
-  {
     title: "Shipping documents",
     link: "/shipping-documents",
   },
   {
     title: "Gate In Entry / GR / ICGRN",
     link: "/gate-in",
+  },
+  {
+    title: "WDC",
+    link: "/wdc",
   },
   {
     title: "Invoice, PBG Copy & Checklist",

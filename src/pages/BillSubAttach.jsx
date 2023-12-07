@@ -64,6 +64,16 @@ const BillSubAttach = () => {
                                   </td>
                                 </tr>
                                 <tr>
+                                  <td className="table_center">A.6</td>
+                                  <td className="w_400">WDC:</td>
+                                  <td>
+                                    <input
+                                      type="text"
+                                      className="form-control"
+                                    />
+                                  </td>
+                                </tr>
+                                <tr>
                                   <td className="table_center">A.3</td>
                                   <td className="w_400">PO Number </td>
                                   <td>

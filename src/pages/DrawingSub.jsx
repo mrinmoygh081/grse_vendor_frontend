@@ -7,9 +7,25 @@ import { useSelector } from "react-redux";
 import { apiCallBack } from "../utils/fetchAPIs";
 import moment from "moment";
 import { toast } from "react-toastify";
+import Select from "react-select";
+
+const options = [
+  { value: "Hull", label: "Hull" },
+  { value: "Electrical", label: "Electrical" },
+  { value: "Machinery", label: "Machinery" },
+  { value: "Plumbing", label: "Plumbing" },
+];
+
+const empOptions = [
+  { value: "Mr. X Ghosh", label: "Mr. X Ghosh" },
+  { value: "Mr. Y Chowdhury", label: "Mr. Y Chowdhury" },
+  { value: "Mrs. M Ghosh", label: "Mrs. M Ghosh" },
+  { value: "Mrs. D Das", label: "Mrs. D Das" },
+];
 
 const DrawingSub = () => {
   const [isPopup, setIsPopup] = useState(false);
+  const [isPopupAssign, setIsPopupAssign] = useState(false);
   const [alldrawing, setAlldrawing] = useState([]);
   const [formData, setFormData] = useState({
     drawingFile: null,
@@ -17,7 +33,9 @@ const DrawingSub = () => {
   });
   const { id } = useParams();
   const { user, token, userType } = useSelector((state) => state.auth);
+  const { poType } = useSelector((state) => state.selectedPO);
   console.log(user, "useruser");
+  console.log(poType, "poType");
 
   const getData = async () => {
     try {
@@ -93,6 +111,8 @@ const DrawingSub = () => {
     }
   };
 
+  const assignDrawing = async () => {};
+
   return (
     <>
       <div className="d-flex flex-column flex-root">
@@ -106,6 +126,16 @@ const DrawingSub = () => {
                   <div className="row g-5 g-xl-8">
                     <div className="col-12">
                       <div className="screen_header">
+                        {poType === "material" && (
+                          <>
+                            <button
+                              onClick={() => setIsPopupAssign(true)}
+                              className="btn fw-bold btn-primary mx-3"
+                            >
+                              Assign
+                            </button>
+                          </>
+                        )}
                         <button
                           onClick={() => setIsPopup(true)}
                           className="btn fw-bold btn-primary mx-3"
@@ -158,6 +188,10 @@ const DrawingSub = () => {
                                     <td className="">
                                       {drawing.status === "APPROVED"
                                         ? "APPROVED"
+                                        : drawing.status === "REJECTED"
+                                        ? "REJECTED"
+                                        : drawing.status === "ACCEPTED"
+                                        ? "ACCEPTED"
                                         : "PENDING"}
                                     </td>
                                   </tr>
@@ -224,13 +258,49 @@ const DrawingSub = () => {
               </div>
               <div className="col-12">
                 <div className="mb-3 d-flex justify-content-between">
-                  <button
-                    onClick={() => updateDrawing("PENDING")}
-                    className="btn fw-bold btn-primary"
-                    type="button"
-                  >
-                    UPDATE
-                  </button>
+                  {userType !== 1 && poType === "material" ? (
+                    <div>
+                      <button
+                        onClick={() => updateDrawing("SAVED")}
+                        className="btn fw-bold btn-primary me-2"
+                        type="button"
+                      >
+                        SAVE
+                      </button>
+                      <button
+                        onClick={() => updateDrawing("PENDING")}
+                        className="btn fw-bold btn-warning me-2"
+                        type="button"
+                      >
+                        UPDATE
+                      </button>
+                      <button
+                        onClick={() => updateDrawing("ACCEPTED")}
+                        className="btn fw-bold btn-success me-2"
+                        type="button"
+                      >
+                        ACCEPT
+                      </button>
+                      <button
+                        onClick={() => updateDrawing("REJECTED")}
+                        className="btn fw-bold btn-danger"
+                        type="button"
+                      >
+                        REJECT
+                      </button>
+                    </div>
+                  ) : (
+                    <>
+                      <button
+                        onClick={() => updateDrawing("PENDING")}
+                        className="btn fw-bold btn-primary"
+                        type="button"
+                      >
+                        UPDATE
+                      </button>
+                    </>
+                  )}
+
                   {userType !== 1 ? (
                     <button
                       onClick={() => updateDrawing("APPROVED")}
@@ -241,6 +311,71 @@ const DrawingSub = () => {
                     </button>
                   ) : (
                     ""
+                  )}
+                </div>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <div className={isPopupAssign ? "popup active" : "popup"}>
+        <div className="card card-xxl-stretch mb-5 mb-xxl-8">
+          <div className="card-header border-0 pt-5">
+            <h3 className="card-title align-items-start flex-column">
+              <span className="card-label fw-bold fs-3 mb-1">Assign</span>
+            </h3>
+            <button
+              className="btn fw-bold btn-danger"
+              onClick={() => setIsPopupAssign(false)}
+            >
+              Close
+            </button>
+          </div>
+          <form>
+            <div className="row" style={{ overflow: "unset" }}>
+              <div className="col-12">
+                <div className="mb-3">
+                  <label htmlFor="empCategory">Employee Category</label>
+                  <Select
+                    className="basic-single"
+                    classNamePrefix="select"
+                    isClearable={true}
+                    isSearchable={true}
+                    name="empCategory"
+                    id="empCategory"
+                    options={options}
+                  />
+                </div>
+              </div>
+              <div className="col-12">
+                <div className="mb-3">
+                  <label htmlFor="empName">Employee Name</label>
+                  <Select
+                    className="basic-single"
+                    classNamePrefix="select"
+                    isClearable={true}
+                    isSearchable={true}
+                    name="empName"
+                    id="empName"
+                    options={empOptions}
+                  />
+                </div>
+              </div>
+              <div className="col-12">
+                <div className="mb-3 d-flex justify-content-between">
+                  {userType !== 1 ? (
+                    <>
+                      <button
+                        onClick={() => assignDrawing()}
+                        className="btn fw-bold btn-primary"
+                        type="button"
+                      >
+                        ASSIGN
+                      </button>
+                    </>
+                  ) : (
+                    <></>
                   )}
                 </div>
               </div>

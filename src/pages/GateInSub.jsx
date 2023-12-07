@@ -32,7 +32,6 @@ const GateInSub = () => {
     getIcgrnData();
   }, [id, token]);
 
-  console.log(icgrnData, "abhinit anand");
   return (
     <>
       <div className="d-flex flex-column flex-root">

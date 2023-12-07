@@ -20,6 +20,7 @@ import ChecklistSubEdit from "./pages/ChecklistSubEdit";
 import WDCSub from "./pages/WDCSub";
 import BillSubAttach from "./pages/BillSubAttach";
 import BillVendorAttach from "./pages/BillVendorAttach";
+import WDCattach from "./pages/WDCattach";
 
 function Layout() {
   const { token, isLoggedIn, userType } = useSelector((state) => state.auth);
@@ -83,6 +84,7 @@ function Layout() {
               path="/BillVendorAttach"
               element={<BillVendorAttach />}
             />
+            <Route exact path="/WDCattach" element={<WDCattach />} />
           </Routes>
         ) : (
           <Routes>
@@ -126,6 +128,13 @@ function Layout() {
               element={<ChecklistSubEdit />}
             />
             <Route exact path="/wdc/:id" element={<WDCSub />} />
+            <Route exact path="/BillSubAttach" element={<BillSubAttach />} />
+            <Route
+              exact
+              path="/BillVendorAttach"
+              element={<BillVendorAttach />}
+            />
+            <Route exact path="/WDCattach" element={<WDCattach />} />
           </Routes>
         )}
       </BrowserRouter>
