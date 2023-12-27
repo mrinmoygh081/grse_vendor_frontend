@@ -9,19 +9,19 @@ import moment from "moment";
 import { toast } from "react-toastify";
 import Select from "react-select";
 
-const options = [
-  { value: "Hull", label: "Hull" },
-  { value: "Electrical", label: "Electrical" },
-  { value: "Machinery", label: "Machinery" },
-  { value: "Plumbing", label: "Plumbing" },
-];
+// const options = [
+//   { value: "Hull", label: "Hull" },
+//   { value: "Electrical", label: "Electrical" },
+//   { value: "Machinery", label: "Machinery" },
+//   { value: "Plumbing", label: "Plumbing" },
+// ];
 
-const empOptions = [
-  { value: "Mr. X Ghosh", label: "Mr. X Ghosh" },
-  { value: "Mr. Y Chowdhury", label: "Mr. Y Chowdhury" },
-  { value: "Mrs. M Ghosh", label: "Mrs. M Ghosh" },
-  { value: "Mrs. D Das", label: "Mrs. D Das" },
-];
+// const empOptions = [
+//   { value: "Mr. X Ghosh", label: "Mr. X Ghosh" },
+//   { value: "Mr. Y Chowdhury", label: "Mr. Y Chowdhury" },
+//   { value: "Mrs. M Ghosh", label: "Mrs. M Ghosh" },
+//   { value: "Mrs. D Das", label: "Mrs. D Das" },
+// ];
 
 const QAPSub = () => {
   const [isPopup, setIsPopup] = useState(false);
@@ -33,6 +33,65 @@ const QAPSub = () => {
     QapFile: null,
     remarks: "",
   });
+  const [assign, setAssign] = useState({
+    purchasing_doc_no: id,
+    assigned_from: user?.vendor_code,
+    assigned_to: null,
+  });
+  const [empOption, setEmpOption] = useState({
+    depts: [],
+    emps: [],
+  });
+  const [selectedDept, setSelectedDept] = useState(null);
+
+  const getDepts = async () => {
+    const res = await apiCallBack(
+      "GET",
+      "po/internalDepartmentList",
+      null,
+      token
+    );
+    if (res?.status) {
+      let options = res.data.map((item, index) => {
+        return { value: item.id, label: item.name };
+      });
+      setEmpOption({ ...empOption, depts: options });
+    } else {
+      toast.error(res?.message);
+    }
+  };
+
+  const getEmpsByDepts = async (selectedDept) => {
+    const res = await apiCallBack(
+      "GET",
+      `po/internalDepartmentEmpList?sub_dept_id=${selectedDept}`,
+      null,
+      token
+    );
+    console.log(res);
+    if (res?.status) {
+      let options = res.data.map((item, index) => {
+        return {
+          value: item.emp_id,
+          label: `${item.empName} (${item.emp_id})`,
+        };
+      });
+      console.log(options);
+      setEmpOption({ ...empOption, emps: options });
+    } else {
+      toast.error(res?.message);
+    }
+  };
+
+  useEffect(() => {
+    getDepts();
+  }, []);
+
+  useEffect(() => {
+    if (selectedDept) {
+      getEmpsByDepts(selectedDept);
+    }
+  }, [selectedDept]);
 
   const getData = async () => {
     try {
@@ -101,7 +160,15 @@ const QAPSub = () => {
     }
   };
 
-  const assignQAP = async () => {};
+  const assignQAP = async () => {
+    const { purchasing_doc_no, assigned_from, assigned_to } = assign;
+    const formDataToSend = new FormData();
+    formDataToSend.append("purchasing_doc_no", purchasing_doc_no);
+    formDataToSend.append("assigned_from", assigned_from);
+    formDataToSend.append("assigned_to", assigned_to);
+    const res = await apiCallBack("POST", "po/qap", formDataToSend, token);
+    console.log(res);
+  };
 
   return (
     <>
@@ -147,8 +214,8 @@ const QAPSub = () => {
                                 </tr>
                               </thead>
                               <tbody style={{ maxHeight: "100%" }}>
-                                {allqap.map((qap) => (
-                                  <tr key={qap.drawing_id}>
+                                {allqap.map((qap, index) => (
+                                  <tr key={index}>
                                     <td className="table_center">
                                       {moment(qap.created_at)
                                         .utc()
@@ -317,7 +384,8 @@ const QAPSub = () => {
                     isSearchable={true}
                     name="empCategory"
                     id="empCategory"
-                    options={options}
+                    options={empOption.depts}
+                    onChange={(val) => setSelectedDept(val.value)}
                   />
                 </div>
               </div>
@@ -331,7 +399,10 @@ const QAPSub = () => {
                     isSearchable={true}
                     name="empName"
                     id="empName"
-                    options={empOptions}
+                    options={empOption.emps}
+                    onChange={(val) =>
+                      setAssign({ ...assign, assigned_to: val.value })
+                    }
                   />
                 </div>
               </div>

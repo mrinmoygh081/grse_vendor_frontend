@@ -11,8 +11,8 @@ export default function SideBar({ id }) {
   const toggleDropMenu = () => setIsDropOpen(!isDropOpen);
   const { po, poType } = useSelector((state) => state.selectedPO);
   const { userType } = useSelector((state) => state.auth);
-  console.log("userType", userType);
-  console.log("poType", poType);
+  // console.log("userType", userType);
+  // console.log("poType", poType);
 
   const logOutFun = () => {
     dispatch(logoutHandler());

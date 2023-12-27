@@ -15,7 +15,6 @@ const PODetails = () => {
   const [poDetails, setPoDetails] = useState([]);
   const { id } = useParams();
   const { token } = useSelector((state) => state.auth);
-  console.log(token, "tokentoken");
 
   useEffect(() => {
     (async () => {
@@ -224,41 +223,30 @@ const PODetails = () => {
                                     )}
                                   </tbody> */}
                                   <tbody style={{ maxHeight: "100%" }}>
-                                    {poDetails.length > 0 ? (
-                                      poDetails.map((po) =>
-                                        po.materialResult.map(
-                                          (material, index) => (
-                                            <tr key={index}>
-                                              <td>
-                                                {material.material_item_number}
-                                              </td>
-                                              <td>{material.material_code}</td>
-                                              <td>
-                                                {material.mat_description}
-                                              </td>
-                                              <td>
-                                                {material.material_quantity}
-                                              </td>
-                                              <td>{material.material_unit}</td>
-                                              <td>
-                                                {material.contractual_delivery_date ==
-                                                null
-                                                  ? "no date found"
-                                                  : moment(
-                                                      material.contractual_delivery_date
-                                                    ).format("YYYY-MM-DD")}
-                                              </td>
-                                            </tr>
-                                          )
-                                        )
-                                      )
-                                    ) : (
-                                      <tr>
-                                        <td colSpan="6">
-                                          😔No material details available.😔
-                                        </td>
-                                      </tr>
-                                    )}
+                                    <tr>
+                                      <td>10</td>
+                                      <td>3D330</td>
+                                      <td>Sheet Metal</td>
+                                      <td>50</td>
+                                      <td>Meter Square</td>
+                                      <td>12/08/2023</td>
+                                    </tr>
+                                    <tr>
+                                      <td>20</td>
+                                      <td>3D330</td>
+                                      <td>AC</td>
+                                      <td>10</td>
+                                      <td>Kg</td>
+                                      <td>12/08/2023</td>
+                                    </tr>
+                                    <tr>
+                                      <td>30</td>
+                                      <td>3D330</td>
+                                      <td>Compressor</td>
+                                      <td>30</td>
+                                      <td>Kg</td>
+                                      <td>12/08/2023</td>
+                                    </tr>
                                   </tbody>
                                 </table>
                                 {/* <div className="d-flex align-items-center justify-content-between py-3">

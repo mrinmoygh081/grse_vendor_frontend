@@ -34,8 +34,9 @@ const DrawingSub = () => {
   const { id } = useParams();
   const { user, token, userType } = useSelector((state) => state.auth);
   const { poType } = useSelector((state) => state.selectedPO);
-  console.log(user, "useruser");
+  // console.log(user, "useruser");
   console.log(poType, "poType");
+  console.log(userType, "userType");
 
   const getData = async () => {
     try {
@@ -126,7 +127,7 @@ const DrawingSub = () => {
                   <div className="row g-5 g-xl-8">
                     <div className="col-12">
                       <div className="screen_header">
-                        {poType === "material" && (
+                        {userType !== 1 && poType === "material" && (
                           <>
                             <button
                               onClick={() => setIsPopupAssign(true)}
@@ -191,7 +192,7 @@ const DrawingSub = () => {
                                         : drawing.status === "REJECTED"
                                         ? "REJECTED"
                                         : drawing.status === "ACCEPTED"
-                                        ? "ACCEPTED"
+                                        ? "ACCEPTED, Not APPROVED Yet"
                                         : "PENDING"}
                                     </td>
                                   </tr>
@@ -301,16 +302,14 @@ const DrawingSub = () => {
                     </>
                   )}
 
-                  {userType !== 1 ? (
+                  {userType !== 1 && (
                     <button
                       onClick={() => updateDrawing("APPROVED")}
                       className="btn fw-bold btn-primary"
                       type="button"
                     >
-                      Approved
+                      APPROVE
                     </button>
-                  ) : (
-                    ""
                   )}
                 </div>
               </div>

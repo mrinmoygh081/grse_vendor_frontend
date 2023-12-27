@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Login from "./pages/Login";
 import { useSelector } from "react-redux";
@@ -24,10 +24,6 @@ import WDCattach from "./pages/WDCattach";
 
 function Layout() {
   const { token, isLoggedIn, userType } = useSelector((state) => state.auth);
-
-  useEffect(() => {
-    console.log(token, isLoggedIn);
-  }, [token, isLoggedIn]);
 
   return (
     <>
