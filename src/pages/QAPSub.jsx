@@ -37,6 +37,7 @@ const QAPSub = () => {
     purchasing_doc_no: id,
     assigned_from: user?.vendor_code,
     assigned_to: null,
+    remarksallqap: "",
   });
   const [empOption, setEmpOption] = useState({
     depts: [],
@@ -68,7 +69,6 @@ const QAPSub = () => {
       null,
       token
     );
-    console.log(res);
     if (res?.status) {
       let options = res.data.map((item, index) => {
         return {
@@ -161,13 +161,46 @@ const QAPSub = () => {
   };
 
   const assignQAP = async () => {
-    const { purchasing_doc_no, assigned_from, assigned_to } = assign;
+    const { purchasing_doc_no, assigned_from, assigned_to, remarksallqap } =
+      assign;
+
+    // Validate all required fields
+    if (
+      !purchasing_doc_no ||
+      !assigned_from ||
+      !assigned_to ||
+      !remarksallqap
+    ) {
+      toast.error("All fields are required");
+      return;
+    }
+
     const formDataToSend = new FormData();
     formDataToSend.append("purchasing_doc_no", purchasing_doc_no);
     formDataToSend.append("assigned_from", assigned_from);
     formDataToSend.append("assigned_to", assigned_to);
-    const res = await apiCallBack("POST", "po/qap", formDataToSend, token);
-    console.log(res);
+    formDataToSend.append("remarks", remarksallqap);
+    formDataToSend.append("status", "ASSIGNED");
+
+    try {
+      const res = await apiCallBack("POST", "po/qap", formDataToSend, token);
+      console.log(res);
+      if (res?.status) {
+        toast.success(res.message);
+        setIsPopupAssign(false);
+        setAssign({
+          purchasing_doc_no: id,
+          assigned_from: user?.vendor_code,
+          assigned_to: null,
+          remarksallqap: "",
+        });
+      } else {
+        toast.error(res.message);
+      }
+    } catch (error) {
+      console.error("Error assigning QAP:", error);
+      toast.error("Error assigning QAP");
+    }
   };
 
   return (
@@ -183,14 +216,16 @@ const QAPSub = () => {
                   <div className="row g-5 g-xl-8">
                     <div className="col-12">
                       <div className="screen_header">
-                        {userType !== 1 && (
-                          <button
-                            onClick={() => setIsPopupAssign(true)}
-                            className="btn fw-bold btn-primary me-2"
-                          >
-                            Assign
-                          </button>
-                        )}
+                        {userType !== 1 &&
+                          user.department_id === 3 &&
+                          user.internal_role_id === 1 && (
+                            <button
+                              onClick={() => setIsPopupAssign(true)}
+                              className="btn fw-bold btn-primary me-2"
+                            >
+                              Assign
+                            </button>
+                          )}
                         <button
                           onClick={() => setIsPopup(true)}
                           className="btn fw-bold btn-primary"
@@ -407,8 +442,27 @@ const QAPSub = () => {
                 </div>
               </div>
               <div className="col-12">
+                <div className="mb-3">
+                  <label className="form-label">Remarks</label>
+                  <textarea
+                    name=""
+                    id=""
+                    rows="4"
+                    className="form-control"
+                    value={assign?.remarksallqap}
+                    onChange={(e) =>
+                      setAssign({ ...assign, remarksallqap: e.target.value })
+                    }
+                  ></textarea>
+                </div>
+              </div>
+              <div className="col-12">
+                {console.log(user)}
+                {console.log(user.internal_role_id)}
                 <div className="mb-3 d-flex justify-content-between">
-                  {userType !== 1 ? (
+                  {userType !== 1 &&
+                  user.department_id === 3 &&
+                  user.internal_role_id === 1 ? (
                     <>
                       <button
                         onClick={() => assignQAP()}

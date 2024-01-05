@@ -48,6 +48,10 @@ export const sidebarData = [
     link: "/claim-letter",
   },
   {
+    title: "Raise Demand",
+    link: "/raise-demand",
+  },
+  {
     title: "PBG Upload",
     link: "/pbg-upload",
   },
@@ -105,6 +109,10 @@ export const sidebarGRSEData = [
   {
     title: "Claim Letter",
     link: "/claim-letter",
+  },
+  {
+    title: "Raise Demand",
+    link: "/raise-demand",
   },
   {
     title: "PBG Upload",

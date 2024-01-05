@@ -21,6 +21,8 @@ import WDCSub from "./pages/WDCSub";
 import BillSubAttach from "./pages/BillSubAttach";
 import BillVendorAttach from "./pages/BillVendorAttach";
 import WDCattach from "./pages/WDCattach";
+import ReportComponent from "./pages/ReportComponent";
+import RaiseDemand from "./pages/RaiseDemand";
 
 function Layout() {
   const { token, isLoggedIn, userType } = useSelector((state) => state.auth);
@@ -81,6 +83,8 @@ function Layout() {
               element={<BillVendorAttach />}
             />
             <Route exact path="/WDCattach" element={<WDCattach />} />
+            <Route exact path="/raise-demand" element={<RaiseDemand />} />
+            <Route exact path="/log-report" element={<ReportComponent />} />
           </Routes>
         ) : (
           <Routes>
@@ -131,6 +135,8 @@ function Layout() {
               element={<BillVendorAttach />}
             />
             <Route exact path="/WDCattach" element={<WDCattach />} />
+            <Route exact path="/raise-demand" element={<RaiseDemand />} />
+            <Route exact path="/log-report" element={<ReportComponent />} />
           </Routes>
         )}
       </BrowserRouter>

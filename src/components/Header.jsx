@@ -1,11 +1,8 @@
-import React, { useState } from "react";
+import React from "react";
 import { useSelector } from "react-redux";
 
-export default function Header({ title, POnum, vCode, id }) {
-  const [isDropOpen, setIsDropOpen] = useState(false);
+export default function Header({ title, id }) {
   const user = useSelector((state) => state.auth);
-  const vendorCode = user.vendor_id;
-  const toggleDropMenu = () => setIsDropOpen(!isDropOpen);
 
   return (
     <>

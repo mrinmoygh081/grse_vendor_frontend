@@ -76,13 +76,13 @@ const WDCattach = () => {
     },
   ];
 
-  const formDataSecondSection = [
-    { label: "Date:", name: "date" },
-    {
-      label: "Schedule Completion / Actual Date of Completion:",
-      name: "scheduleCompletion",
-    },
-  ];
+  // const formDataSecondSection = [
+  //   { label: "Date:", name: "date" },
+  //   {
+  //     label: "Schedule Completion / Actual Date of Completion:",
+  //     name: "scheduleCompletion",
+  //   },
+  // ];
 
   return (
     <>

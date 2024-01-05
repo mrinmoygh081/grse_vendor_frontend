@@ -1,21 +1,20 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import Footer from "../components/Footer";
 import SideBar from "../components/SideBar";
 import Header from "../components/Header";
 import { useParams } from "react-router-dom";
-import { useSelector } from "react-redux";
+// import { useSelector } from "react-redux";
 import Select from "react-select";
 import { FaPlus, FaTrash } from "react-icons/fa";
 
 const RaiseDemand = () => {
   const [isPopup, setIsPopup] = useState(false);
-  const [allsdbg, setAllsdbg] = useState([]);
   const [dynamicFields, setDynamicFields] = useState([
     { bank: null, quantity: "" },
   ]);
 
   const { id } = useParams();
-  const { user, token, userType } = useSelector((state) => state.auth);
+  // const { user, token, userType } = useSelector((state) => state.auth);
 
   const bankOptions = [
     { value: "102", label: "50" },
@@ -99,7 +98,6 @@ const RaiseDemand = () => {
                                   </th>
                                 </tr>
                               </thead>
-                              {console.log(allsdbg)}
                               <tbody style={{ maxHeight: "100%" }}>
                                 <tr>
                                   <td className="table_center">{"10"}</td>

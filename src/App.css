@@ -10,3 +10,90 @@
 .w_50 {
   width: 50px;
 }
+.inputField {
+  width: 100%; /* or specify the desired width */
+}
+
+.navbar {
+  margin-bottom: 90px;
+}
+
+/* .container {
+  margin-top: 120px;
+} */
+
+.card_pos {
+  margin-top: 120px;
+}
+.report-box {
+  border: 1px solid #ccc;
+  padding: 20px;
+  border-radius: 8px;
+  background-color: #fff;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  justify-content: center;
+  margin-left: 40px;
+}
+.report-box .form-control {
+  padding: 10px;
+}
+
+/* MainHeader.css */
+.custom-navbar {
+  background-color: #d2b48c; /* Brownish-white background color */
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1); /* Box shadow */
+  border: 1px solid #c4bdbd; /* Border color */
+}
+.custom-navbar .container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.custom-text {
+  color: #000; /* Black text color */
+}
+.mx-3 {
+  margin-right: 1rem !important;
+  margin-left: 34rem !important;
+}
+/* Header.css or your global stylesheet */
+.container.mt-4 {
+  margin-top: -80px; /* Adjust the value as needed */
+}
+
+.report-box {
+  margin-top: -80px; /* Adjust the value as needed */
+}
+.navbar-light .navbar-text {
+  color: rgba(0, 0, 0, 0.55);
+  font-size: 32px;
+  font-weight: 600;
+  color: #2a2d93;
+}
+
+/* navbar */
+.navbar-light .navbar-nav .nav-link {
+  font-size: 20px;
+  position: relative;
+  margin-left: 15px;
+  padding: 0;
+}
+.navbar-light .navbar-nav .nav-link::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 0%;
+  height: 2px;
+  background-color: rgba(0, 0, 0, 0.55);
+  transition: all 0.5s ease-in-out;
+}
+.navbar-light .navbar-nav .nav-link:hover:after {
+  width: 100%;
+}
+.navbar-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}

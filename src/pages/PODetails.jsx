@@ -1,6 +1,4 @@
 import React, { useEffect, useState } from "react";
-import Select from "react-select";
-import makeAnimated from "react-select/animated";
 import SideBar from "../components/SideBar";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
@@ -8,8 +6,6 @@ import { useParams } from "react-router-dom";
 import { apiCallBack } from "../utils/fetchAPIs";
 import { useSelector } from "react-redux";
 import moment from "moment";
-
-const animatedComponents = makeAnimated();
 
 const PODetails = () => {
   const [poDetails, setPoDetails] = useState([]);
@@ -109,7 +105,7 @@ const PODetails = () => {
                                     </div>
                                   </div>
                                 </div>
-                                {po.timeline == "" ? (
+                                {po.timeline === "" ? (
                                   ""
                                 ) : (
                                   <div className="col-6">

@@ -6,6 +6,7 @@ import { apiCallBack } from "../utils/fetchAPIs";
 import { poHandler } from "../redux/slices/poSlice";
 import { FiSearch } from "react-icons/fi";
 import moment from "moment";
+import MainHeader from "../components/MainHeader";
 
 const POs = () => {
   const dispatch = useDispatch();
@@ -39,13 +40,13 @@ const POs = () => {
 
   return (
     <>
+      <MainHeader />
       <div className="container">
         <div className="row justify-content-center">
           <div className="col-md-8 col-12">
             <div className="card_pos">
               <div className="card">
                 <div className="card_headline">
-                  <h1>Purchase Orders</h1>
                   <div className="input_search">
                     <input
                       type="text"

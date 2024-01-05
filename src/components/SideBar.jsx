@@ -1,4 +1,4 @@
-import React, { Fragment, useState } from "react";
+import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { logoutHandler } from "../redux/slices/loginSlice";
 import { Link } from "react-router-dom";
@@ -7,12 +7,8 @@ import { poRemoveHandler } from "../redux/slices/poSlice";
 
 export default function SideBar({ id }) {
   const dispatch = useDispatch();
-  const [isDropOpen, setIsDropOpen] = useState(false);
-  const toggleDropMenu = () => setIsDropOpen(!isDropOpen);
   const { po, poType } = useSelector((state) => state.selectedPO);
   const { userType } = useSelector((state) => state.auth);
-  // console.log("userType", userType);
-  // console.log("poType", poType);
 
   const logOutFun = () => {
     dispatch(logoutHandler());

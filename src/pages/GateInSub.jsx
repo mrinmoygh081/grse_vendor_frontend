@@ -11,7 +11,7 @@ const GateInSub = () => {
   const [isPopup, setIsPopup] = useState(false);
   const [icgrnData, setIcgrnData] = useState([]);
   const { id } = useParams();
-  const { user, token, userType } = useSelector((state) => state.auth);
+  const { token } = useSelector((state) => state.auth);
 
   const getIcgrnData = async () => {
     try {
