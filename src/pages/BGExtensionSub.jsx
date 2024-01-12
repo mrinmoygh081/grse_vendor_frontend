@@ -3,18 +3,18 @@ import Footer from "../components/Footer";
 import SideBar from "../components/SideBar";
 import Header from "../components/Header";
 import { useParams } from "react-router-dom";
+import MainHeader from "../components/MainHeader";
 
 const BGExtensionSub = () => {
   const [isPopup, setIsPopup] = useState(false);
-  const { id } = useParams();
 
   return (
     <>
       <div className="d-flex flex-column flex-root">
         <div className="page d-flex flex-row flex-column-fluid">
-          <SideBar />
-          <div className="wrapper d-flex flex-column flex-row-fluid">
-            <Header title={"BG Extension/Release"} id={id} />
+          {/* <SideBar /> */}
+          <div className="d-flex flex-column flex-row-fluid">
+            <MainHeader title={"BG Extension/Release"} />
             <div className="content d-flex flex-column flex-column-fluid">
               <div className="post d-flex flex-column-fluid">
                 <div className="container">
@@ -22,15 +22,23 @@ const BGExtensionSub = () => {
                     <div className="col-12">
                       <div className="card-body p-3">
                         <div className="tab-content">
+                          <div className="d-flex align-items-center justify-content-end mb-3">
+                            <button className="btn fw-bold btn-primary mx-3">
+                              GENERATE
+                            </button>
+                          </div>
                           <div className="table-responsive">
                             <table className="table table-striped table-bordered table_height">
                               <thead>
                                 <tr className="border-0">
-                                  <th>DateTime </th>
-                                  <th>Document</th>
-                                  <th>Document Type</th>
-                                  <th>ID</th>
-                                  <th>Updated By</th>
+                                  <th>SL No </th>
+                                  <th>BG Number </th>
+                                  <th>PO</th>
+                                  {/* for DO */}
+                                  {/* <th>Recommandation By DO</th> */}
+                                  {/* for finance officer */}
+                                  {/* <th>Action</th> */}
+                                  <th>Action By FO</th>
                                 </tr>
                               </thead>
                               <tbody style={{ maxHeight: "100%" }}>
@@ -48,8 +56,17 @@ const BGExtensionSub = () => {
                                     </a>
                                   </td>
                                   <td>BG extension request lette</td>
-                                  <td>098349</td>
-                                  <td>GRSE</td>
+                                  <td>
+                                    <select
+                                      name=""
+                                      id=""
+                                      className="form-control"
+                                      disabled
+                                    >
+                                      <option value="">Extension</option>
+                                      <option value="">Release</option>
+                                    </select>
+                                  </td>
                                 </tr>
                                 <tr>
                                   <td className="table_center">
@@ -65,8 +82,18 @@ const BGExtensionSub = () => {
                                     </a>
                                   </td>
                                   <td>BG release letter</td>
-                                  <td>656567</td>
-                                  <td>GRSE</td>
+                                  <td>
+                                    {/* disabled for FO but enable for DO */}
+                                    <select
+                                      name=""
+                                      id=""
+                                      className="form-control"
+                                      disabled
+                                    >
+                                      <option value="">Extension</option>
+                                      <option value="">Release</option>
+                                    </select>
+                                  </td>
                                 </tr>
                               </tbody>
                             </table>

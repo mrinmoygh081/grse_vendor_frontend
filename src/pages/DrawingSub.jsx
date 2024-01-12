@@ -127,28 +127,12 @@ const DrawingSub = () => {
                   <div className="row g-5 g-xl-8">
                     <div className="col-12">
                       <div className="screen_header">
-                        {userType !== 1 && poType === "material" && (
-                          <>
-                            <button
-                              onClick={() => setIsPopupAssign(true)}
-                              className="btn fw-bold btn-primary mx-3"
-                            >
-                              Assign
-                            </button>
-                          </>
-                        )}
                         <button
                           onClick={() => setIsPopup(true)}
                           className="btn fw-bold btn-primary mx-3"
                         >
-                          Upload Drawing
+                          Upload Covering Letter
                         </button>
-                        {/* <button
-                          onClick={() => setIsPopup(true)}
-                          className="btn fw-bold btn-primary"
-                        >
-                          Upload Of WDB Approved Drawing
-                        </button> */}
                       </div>
                     </div>
                     <div className="col-12">

@@ -23,6 +23,7 @@ import BillVendorAttach from "./pages/BillVendorAttach";
 import WDCattach from "./pages/WDCattach";
 import ReportComponent from "./pages/ReportComponent";
 import RaiseDemand from "./pages/RaiseDemand";
+import WBS from "./pages/WBS";
 
 function Layout() {
   const { token, isLoggedIn, userType } = useSelector((state) => state.auth);
@@ -36,6 +37,7 @@ function Layout() {
           </Routes>
         ) : userType === 1 ? (
           <Routes>
+            {/* <Route exact path="/pos" element={<WBS />} /> */}
             <Route exact path="/" element={<POs />} />
             <Route exact path="/po/:id" element={<PODetails />} />
             <Route exact path="/sdbg/:id" element={<SDBGSub />} />
@@ -60,11 +62,7 @@ function Layout() {
               element={<PaymentAdvisesSub />}
             />
             <Route exact path="/pbg-upload/:id" element={<PBGuploadSub />} />
-            <Route
-              exact
-              path="/bg-extension/:id"
-              element={<BGExtensionSub />}
-            />
+            <Route exact path="/bg-extension" element={<BGExtensionSub />} />
             <Route
               exact
               path="/claim-letter/:id"
@@ -89,6 +87,7 @@ function Layout() {
         ) : (
           <Routes>
             <Route exact path="/" element={<POs />} />
+            {/* <Route exact path="/pos" element={<WBS />} /> */}
             <Route exact path="/po/:id" element={<PODetails />} />
             <Route exact path="/sdbg/:id" element={<SDBGSub />} />
             <Route exact path="/drawing/:id" element={<DrawingSub />} />
@@ -112,11 +111,7 @@ function Layout() {
               element={<PaymentAdvisesSub />}
             />
             <Route exact path="/pbg-upload/:id" element={<PBGuploadSub />} />
-            <Route
-              exact
-              path="/bg-extension/:id"
-              element={<BGExtensionSub />}
-            />
+            <Route exact path="/bg-extension" element={<BGExtensionSub />} />
             <Route
               exact
               path="/claim-letter/:id"

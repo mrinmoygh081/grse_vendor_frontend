@@ -53,12 +53,54 @@ const GateInSub = () => {
                                   <th>DateTime </th>
                                   <th>Document</th>
                                   <th>Document Type</th>
-                                  <th>ID</th>
+                                  {/* <th>ID</th> */}
                                   <th>Updated By</th>
                                 </tr>
                               </thead>
                               <tbody style={{ maxHeight: "100%" }}>
-                                {icgrnData.map((icgrnItem, index) => (
+                                <tr>
+                                  <td className="table_center">03-01-2024</td>
+                                  <td>
+                                    <a
+                                      href={"#"}
+                                      target="_blank"
+                                      rel="noreferrer"
+                                    >
+                                      Check File
+                                    </a>
+                                  </td>
+                                  <td>Gate In Entry</td>
+                                  <td>Mrinmoy Ghosh(65432)</td>
+                                </tr>
+                                <tr>
+                                  <td className="table_center">08-01-2024</td>
+                                  <td>
+                                    <a
+                                      href={"#"}
+                                      target="_blank"
+                                      rel="noreferrer"
+                                    >
+                                      Check File
+                                    </a>
+                                  </td>
+                                  <td>Goods Receipt</td>
+                                  <td>Mrinmoy Ghosh(65432)</td>
+                                </tr>
+                                <tr>
+                                  <td className="table_center">10-01-2024</td>
+                                  <td>
+                                    <a
+                                      href={"#"}
+                                      target="_blank"
+                                      rel="noreferrer"
+                                    >
+                                      Check File
+                                    </a>
+                                  </td>
+                                  <td>ICGRN Report</td>
+                                  <td>Mrinmoy Ghosh(65432)</td>
+                                </tr>
+                                {/* {icgrnData.map((icgrnItem, index) => (
                                   <tr key={index}>
                                     <td className="table_center">
                                       {moment(icgrnItem.created_at)
@@ -78,7 +120,7 @@ const GateInSub = () => {
                                     <td>{icgrnItem.id}</td>
                                     <td>{icgrnItem.updated_by}</td>
                                   </tr>
-                                ))}
+                                ))} */}
                               </tbody>
                             </table>
                           </div>

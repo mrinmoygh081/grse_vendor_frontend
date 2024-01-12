@@ -9,6 +9,7 @@ import { toast } from "react-toastify";
 import moment from "moment";
 const SDBGSub = () => {
   const [isPopup, setIsPopup] = useState(false);
+  const [isEntryPopup, setIsEntryPopup] = useState(false);
   const [allsdbg, setAllsdbg] = useState([]);
   const [formData, setFormData] = useState({
     bankName: "",
@@ -30,6 +31,14 @@ const SDBGSub = () => {
     if (data?.status) {
       setAllsdbg(data?.data);
     }
+  };
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
   };
 
   useEffect(() => {
@@ -101,6 +110,12 @@ const SDBGSub = () => {
                     <div className="col-12">
                       <div className="screen_header">
                         <button
+                          onClick={() => setIsEntryPopup(true)}
+                          className="btn fw-bold btn-primary me-3"
+                        >
+                          SDBG Entry
+                        </button>
+                        <button
                           onClick={() => setIsPopup(true)}
                           className="btn fw-bold btn-primary"
                         >
@@ -124,7 +139,6 @@ const SDBGSub = () => {
                                   <th>Status</th>
                                 </tr>
                               </thead>
-                              {console.log(allsdbg)}
                               <tbody style={{ maxHeight: "100%" }}>
                                 {allsdbg &&
                                   allsdbg.map((item, index) => (
@@ -320,6 +334,435 @@ const SDBGSub = () => {
                 ) : (
                   ""
                 )}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div className={isEntryPopup ? "popup active" : "popup"}>
+        <div className="card card-xxl-stretch mb-5 mb-xxl-8">
+          <div className="card-header border-0 pt-5">
+            <h3 className="card-title align-items-start flex-column">
+              <span className="card-label fw-bold fs-3 mb-1">SDBG Entry</span>
+            </h3>
+            <button
+              className="btn fw-bold btn-danger"
+              onClick={() => setIsEntryPopup(false)}
+            >
+              Close
+            </button>
+          </div>
+
+          <div className="row">
+            <div className="col-md-6 col-12">
+              <div className="mb-3">
+                <label className="form-label">Bankers Name</label>
+                <input
+                  type="text"
+                  className="form-control"
+                  name="BankersName"
+                  onClick={handleInputChange}
+                />
+              </div>
+            </div>
+            <div className="col-md-6 col-12">
+              <div className="mb-3">
+                <label className="form-label">Bankers Branch</label>
+                <input
+                  type="text"
+                  className="form-control"
+                  name="BankersBranch"
+                  onClick={handleInputChange}
+                />
+              </div>
+            </div>
+            <div className="col-md-6 col-12">
+              <div className="mb-3">
+                <label className="form-label">Bankers Address1</label>
+                <input
+                  type="text"
+                  className="form-control"
+                  name="BankersAddress1"
+                  onClick={handleInputChange}
+                />
+              </div>
+            </div>
+            <div className="col-md-6 col-12">
+              <div className="mb-3">
+                <label className="form-label">Bankers Address2</label>
+                <input
+                  type="text"
+                  className="form-control"
+                  name="BankersAddress2"
+                  onClick={handleInputChange}
+                />
+              </div>
+            </div>
+            <div className="col-md-6 col-12">
+              <div className="mb-3">
+                <label className="form-label">Bankers Address3</label>
+                <input
+                  type="text"
+                  className="form-control"
+                  name="BankersAddress3"
+                  onClick={handleInputChange}
+                />
+              </div>
+            </div>
+            <div className="col-md-6 col-12">
+              <div className="mb-3">
+                <label className="form-label">Bankers City</label>
+                <input
+                  type="text"
+                  className="form-control"
+                  name="BankersCity"
+                  onClick={handleInputChange}
+                />
+              </div>
+            </div>
+            <div className="col-md-6 col-12">
+              <div className="mb-3">
+                <label className="form-label">Pin Code</label>
+                <input
+                  type="text"
+                  className="form-control"
+                  name="pincode"
+                  onClick={handleInputChange}
+                />
+              </div>
+            </div>
+            <div className="col-md-6 col-12">
+              <div className="mb-3">
+                <label className="form-label">Bank Guarantee No</label>
+                <input
+                  type="text"
+                  className="form-control"
+                  name="BankersGuarantee"
+                  onClick={handleInputChange}
+                />
+              </div>
+            </div>
+            <div className="col-md-6 col-12">
+              <div className="mb-3">
+                <label className="form-label">BG Date</label>
+                <input
+                  type="text"
+                  className="form-control"
+                  name="BG Date"
+                  onClick={handleInputChange}
+                />
+              </div>
+            </div>
+            <div className="col-md-6 col-12">
+              <div className="mb-3">
+                <label className="form-label">BG Amount</label>
+                <input
+                  type="text"
+                  className="form-control"
+                  name="BGAmount"
+                  onClick={handleInputChange}
+                />
+              </div>
+            </div>
+
+            <div className="col-md-6 col-12">
+              <div className="mb-3">
+                <label className="form-label">Purchase Order</label>
+                <input
+                  type="text"
+                  className="form-control"
+                  name="po"
+                  onClick={handleInputChange}
+                />
+              </div>
+            </div>
+            <div className="col-md-6 col-12">
+              <div className="mb-3">
+                <label className="form-label">Department</label>
+                <input
+                  type="text"
+                  className="form-control"
+                  name="BankersBranch"
+                  onClick={handleInputChange}
+                />
+              </div>
+            </div>
+            <div className="col-md-6 col-12">
+              <div className="mb-3">
+                <label className="form-label">PO Date</label>
+                <input
+                  type="text"
+                  className="form-control"
+                  name="BankersBranch"
+                  onClick={handleInputChange}
+                />
+              </div>
+            </div>
+            <div className="col-md-6 col-12">
+              <div className="mb-3">
+                <label className="form-label">Yard No</label>
+                <input
+                  type="text"
+                  className="form-control"
+                  name="BankersBranch"
+                  onClick={handleInputChange}
+                />
+              </div>
+            </div>
+            <div className="col-md-6 col-12">
+              <div className="mb-3">
+                <label className="form-label">Validity Date</label>
+                <input
+                  type="text"
+                  className="form-control"
+                  name="BankersBranch"
+                  onClick={handleInputChange}
+                />
+              </div>
+            </div>
+            <div className="col-md-6 col-12">
+              <div className="mb-3">
+                <label className="form-label">Claim Period</label>
+                <input
+                  type="text"
+                  className="form-control"
+                  name="BankersBranch"
+                  onClick={handleInputChange}
+                />
+              </div>
+            </div>
+            <div className="col-md-6 col-12">
+              <div className="mb-3">
+                <label className="form-label">Checklist Reference</label>
+                <input
+                  type="text"
+                  className="form-control"
+                  name="BankersBranch"
+                  onClick={handleInputChange}
+                />
+              </div>
+            </div>
+            <div className="col-md-6 col-12">
+              <div className="mb-3">
+                <label className="form-label">Checklist Date</label>
+                <input
+                  type="text"
+                  className="form-control"
+                  name="BankersBranch"
+                  onClick={handleInputChange}
+                />
+              </div>
+            </div>
+            <div className="col-md-6 col-12">
+              <div className="mb-3">
+                <label className="form-label">BG Type</label>
+                <input
+                  type="text"
+                  className="form-control"
+                  name="BankersBranch"
+                  onClick={handleInputChange}
+                />
+              </div>
+            </div>
+            <div className="col-md-6 col-12">
+              <div className="mb-3">
+                <label className="form-label">Vendor Name</label>
+                <input
+                  type="text"
+                  className="form-control"
+                  name="BankersBranch"
+                  onClick={handleInputChange}
+                />
+              </div>
+            </div>
+            <div className="col-md-6 col-12">
+              <div className="mb-3">
+                <label className="form-label">Vendor Address1</label>
+                <input
+                  type="text"
+                  className="form-control"
+                  name="BankersBranch"
+                  onClick={handleInputChange}
+                />
+              </div>
+            </div>
+            <div className="col-md-6 col-12">
+              <div className="mb-3">
+                <label className="form-label">Vendor Address2</label>
+                <input
+                  type="text"
+                  className="form-control"
+                  name="BankersBranch"
+                  onClick={handleInputChange}
+                />
+              </div>
+            </div>
+            <div className="col-md-6 col-12">
+              <div className="mb-3">
+                <label className="form-label">Vendor Address3</label>
+                <input
+                  type="text"
+                  className="form-control"
+                  name="BankersBranch"
+                  onClick={handleInputChange}
+                />
+              </div>
+            </div>
+            <div className="col-md-6 col-12">
+              <div className="mb-3">
+                <label className="form-label">Vendor City</label>
+                <input
+                  type="text"
+                  className="form-control"
+                  name="BankersBranch"
+                  onClick={handleInputChange}
+                />
+              </div>
+            </div>
+            <div className="col-md-6 col-12">
+              <div className="mb-3">
+                <label className="form-label">Vendor Pin Code</label>
+                <input
+                  type="text"
+                  className="form-control"
+                  name="BankersBranch"
+                  onClick={handleInputChange}
+                />
+              </div>
+            </div>
+            <div className="col-md-6 col-12">
+              <div className="mb-3">
+                <label className="form-label">Extension Date1</label>
+                <input
+                  type="text"
+                  className="form-control"
+                  name="BankersBranch"
+                  onClick={handleInputChange}
+                />
+              </div>
+            </div>
+            <div className="col-md-6 col-12">
+              <div className="mb-3">
+                <label className="form-label">Extension Date2</label>
+                <input
+                  type="text"
+                  className="form-control"
+                  name="BankersBranch"
+                  onClick={handleInputChange}
+                />
+              </div>
+            </div>
+            <div className="col-md-6 col-12">
+              <div className="mb-3">
+                <label className="form-label">Extension Date3</label>
+                <input
+                  type="text"
+                  className="form-control"
+                  name="BankersBranch"
+                  onClick={handleInputChange}
+                />
+              </div>
+            </div>
+            <div className="col-md-6 col-12">
+              <div className="mb-3">
+                <label className="form-label">Extension Date4</label>
+                <input
+                  type="text"
+                  className="form-control"
+                  name="BankersBranch"
+                  onClick={handleInputChange}
+                />
+              </div>
+            </div>
+            <div className="col-md-6 col-12">
+              <div className="mb-3">
+                <label className="form-label">Extension Date5</label>
+                <input
+                  type="text"
+                  className="form-control"
+                  name="BankersBranch"
+                  onClick={handleInputChange}
+                />
+              </div>
+            </div>
+            <div className="col-md-6 col-12">
+              <div className="mb-3">
+                <label className="form-label">Extension Date6</label>
+                <input
+                  type="text"
+                  className="form-control"
+                  name="BankersBranch"
+                  onClick={handleInputChange}
+                />
+              </div>
+            </div>
+            <div className="col-md-6 col-12">
+              <div className="mb-3">
+                <label className="form-label">Release Date</label>
+                <input
+                  type="text"
+                  className="form-control"
+                  name="BankersBranch"
+                  onClick={handleInputChange}
+                />
+              </div>
+            </div>
+            <div className="col-md-6 col-12">
+              <div className="mb-3">
+                <label className="form-label">Demand Notice Date</label>
+                <input
+                  type="text"
+                  className="form-control"
+                  name="BankersBranch"
+                  onClick={handleInputChange}
+                />
+              </div>
+            </div>
+            <div className="col-md-6 col-12">
+              <div className="mb-3">
+                <label className="form-label">Entension Letter Date</label>
+                <input
+                  type="text"
+                  className="form-control"
+                  name="BankersBranch"
+                  onClick={handleInputChange}
+                />
+              </div>
+            </div>
+            <div className="col-12">
+              <div className="mb-3 d-flex justify-content-between">
+                {/* for dealing officer */}
+                {/* <button
+                  onClick={() => updateSDBG("NotApproved")}
+                  className="btn fw-bold btn-primary"
+                  type="submit"
+                >
+                  Forward To Finance
+                </button> */}
+
+                {/* for finance officer  */}
+                <button
+                  onClick={() => updateSDBG("NotApproved")}
+                  className="btn fw-bold btn-primary me-3"
+                  type="submit"
+                >
+                  Accept
+                </button>
+
+                <button
+                  onClick={() => updateSDBG("NotApproved")}
+                  className="btn fw-bold btn-primary"
+                  type="submit"
+                >
+                  Return to Dealing Officer
+                </button>
+                <button
+                  onClick={() => updateSDBG("NotApproved")}
+                  className="btn fw-bold btn-primary"
+                  type="submit"
+                >
+                  Reject
+                </button>
               </div>
             </div>
           </div>

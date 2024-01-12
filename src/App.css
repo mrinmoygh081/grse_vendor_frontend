@@ -14,11 +14,11 @@
   width: 100%; /* or specify the desired width */
 }
 
-.navbar {
+/* .navbar {
   margin-bottom: 90px;
 }
 
-/* .container {
+.container {
   margin-top: 120px;
 } */
 
@@ -53,16 +53,8 @@
 .custom-text {
   color: #000; /* Black text color */
 }
-.mx-3 {
-  margin-right: 1rem !important;
-  margin-left: 34rem !important;
-}
 /* Header.css or your global stylesheet */
 .container.mt-4 {
-  margin-top: -80px; /* Adjust the value as needed */
-}
-
-.report-box {
   margin-top: -80px; /* Adjust the value as needed */
 }
 .navbar-light .navbar-text {

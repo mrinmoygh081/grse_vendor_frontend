@@ -55,10 +55,6 @@ export const sidebarData = [
     title: "PBG Upload",
     link: "/pbg-upload",
   },
-  {
-    title: "BG Extension/Release",
-    link: "/bg-extension",
-  },
 ];
 
 export const sidebarGRSEData = [
@@ -117,9 +113,5 @@ export const sidebarGRSEData = [
   {
     title: "PBG Upload",
     link: "/pbg-upload",
-  },
-  {
-    title: "BG Extension/Release",
-    link: "/bg-extension",
   },
 ];

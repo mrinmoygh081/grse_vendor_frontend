@@ -3,37 +3,54 @@ import React, { useState } from "react";
 import { toast } from "react-toastify";
 import { useDispatch } from "react-redux";
 import { postAPI } from "../utils/fetchAPIs";
+import { logoutHandler } from "../redux/slices/loginSlice";
 import { loginHandler } from "../redux/slices/loginSlice";
+import { useNavigate } from "react-router-dom";
 
-export default function Login() {
+export default function WBS() {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
-  const [loginData, setLoginData] = useState({
-    vendor_code: "",
-    password: "",
+  const [form, setForm] = useState({
+    type: "",
+    val: "",
   });
 
-  const loginSubmit = async (e) => {
+  console.log(form);
+  const submitHandler = async (e) => {
     e.preventDefault();
-    console.log(loginData);
-    if (!loginData.vendor_code) {
-      toast.error("Please provide a valid username to login");
+    const { type, val } = form;
+    if (type === "" && val === "") {
+      toast.warn("Please fill all fields!");
       return;
     }
-    if (loginData.password === "" || loginData.password === null) {
-      toast.error("Please provide a valid password to login");
-      return;
-    }
-    setIsLoading(true);
-    let res = await postAPI("auth2/login", loginData, null);
-    console.log(res, "kkkkkkkkkkk");
-    if (res?.status) {
-      dispatch(loginHandler(res));
-      toast.success("Successfully logged in");
-    } else {
-      toast.error("Please provide correct username and password");
-    }
+    navigate(`/pos`);
+    // if (!loginData.vendor_code) {
+    //   toast.error("Please provide a valid username to login");
+    //   return;
+    // }
+    // if (loginData.password === "" || loginData.password === null) {
+    //   toast.error("Please provide a valid password to login");
+    //   return;
+    // }
+    // setIsLoading(true);
+    // let res = await postAPI("auth2/login", loginData, null);
+    // console.log(res, "kkkkkkkkkkk");
+    // if (res?.status) {
+    //   dispatch(loginHandler(res));
+    //   toast.success("Successfully logged in");
+    // } else {
+    //   toast.error("Please provide correct username and password");
+    // }
     setIsLoading(false);
+  };
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setForm((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
   };
 
   return (
@@ -41,55 +58,39 @@ export default function Login() {
       <div className="d-flex flex-column flex-root" style={{ height: "100vh" }}>
         <div className="d-flex flex-column flex-column-fluid bgi-position-y-bottom position-x-center bgi-no-repeat bgi-size-contain bgi-attachment-fixed">
           <div className="d-flex flex-center flex-column flex-column-fluid p-10 pb-lg-20">
-            <h3 className="text-center">
-              Garden Reach Shipbuilders & Engineers Ltd. <br /> (A GOVT.OF INDIA
-              UNDERTAKING)
-            </h3>
             <div className="w-lg-500px bg-body rounded shadow-sm p-10 p-lg-15 mx-auto border">
-              <form onSubmit={loginSubmit} className="form w-100">
+              <form onSubmit={submitHandler} className="form w-100">
                 <div className="text-center mb-5">
-                  <img
+                  {/* <img
                     src={require("../images/logo.png")}
                     alt=""
                     className="img-fluid"
                     style={{ width: "120px" }}
-                  />
-                  <h3 className="text-dark">Login to Portal</h3>
+                  />*/}
+                  <h3 className="text-dark">WBS / Project Code</h3>
                 </div>
                 <div className="fv-row mb-3">
                   <label className="form-label fs-6 fw-bolder text-dark">
-                    User code
+                    Choose your option
                   </label>
 
-                  <input
+                  <select
                     className="form-control form-control-lg form-control-solid"
-                    type="username"
-                    name="vendor_code"
-                    autoComplete="off"
-                    value={loginData.vendor_code}
-                    onChange={(e) =>
-                      setLoginData({
-                        ...loginData,
-                        vendor_code: e.target.value,
-                      })
-                    }
-                  />
+                    name="type"
+                    onChange={handleInputChange}
+                  >
+                    <option value="">Choose the type</option>
+                    <option value="WBSELEMENT">WBS element</option>
+                    <option value="PROJECTCODE">Project Code</option>
+                  </select>
                 </div>
                 <div className="fv-row mb-3">
-                  <div className="d-flex flex-stack mb-2">
-                    <label className="form-label fw-bolder text-dark fs-6 mb-0">
-                      Password
-                    </label>
-                  </div>
                   <input
                     className="form-control form-control-lg form-control-solid"
-                    type="password"
-                    name="password"
+                    type="text"
+                    name="val"
                     autoComplete="off"
-                    value={loginData.password}
-                    onChange={(e) =>
-                      setLoginData({ ...loginData, password: e.target.value })
-                    }
+                    onChange={handleInputChange}
                   />
                 </div>
                 <div className="text-center">
@@ -108,6 +109,15 @@ export default function Login() {
             </div>
           </div>
         </div>
+      </div>
+
+      <div className="pos_bottom">
+        <button
+          className="btn btn-danger"
+          onClick={() => dispatch(logoutHandler())}
+        >
+          Log Out
+        </button>
       </div>
     </>
   );

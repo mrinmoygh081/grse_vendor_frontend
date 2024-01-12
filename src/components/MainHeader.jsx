@@ -2,7 +2,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 import logoheader from "../images/logo.png";
 
-const MainHeader = () => {
+const MainHeader = ({ title }) => {
   return (
     <nav className="custom-navbar navbar navbar-expand-lg navbar-light bg-light">
       <div className="container">
@@ -11,18 +11,23 @@ const MainHeader = () => {
           <span className="navbar-text custom-text">GRSE</span>
         </Link>
         <div className="my-3">
-          <h1>Purchase Orders</h1>
+          <h1>{title}</h1>
         </div>
         <div className="" id="navbarNav">
           <ul className="navbar-nav ms-auto">
             <li className="nav-item">
-              <Link className="nav-link text-black" to="/">
+              <Link className="nav-link text-black" to="/pos">
                 Purchase Orders
               </Link>
             </li>
             <li className="nav-item">
               <Link className="nav-link text-black" to={`/log-report`}>
-                Report
+                Dashboard
+              </Link>
+            </li>
+            <li className="nav-item">
+              <Link className="nav-link text-black" to="/bg-extension">
+                BG Extension
               </Link>
             </li>
           </ul>

@@ -40,7 +40,7 @@ const POs = () => {
 
   return (
     <>
-      <MainHeader />
+      <MainHeader title={"POs"} />
       <div className="container">
         <div className="row justify-content-center">
           <div className="col-md-8 col-12">
@@ -205,7 +205,10 @@ const POs = () => {
       <div className="pos_bottom">
         <button
           className="btn btn-danger"
-          onClick={() => dispatch(logoutHandler())}
+          onClick={() => {
+            dispatch(logoutHandler());
+            window.location.href = "/";
+          }}
         >
           Log Out
         </button>

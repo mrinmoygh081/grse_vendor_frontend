@@ -96,7 +96,7 @@ const Shippingdocuments = () => {
               <div className="post d-flex flex-column-fluid">
                 <div className="container">
                   <div className="row g-5 g-xl-8">
-                    <div className="col-12">
+                    {/* <div className="col-12">
                       <div className="screen_header">
                         <button
                           onClick={() => setIsPopup(true)}
@@ -105,7 +105,7 @@ const Shippingdocuments = () => {
                           Upload Shipping documents
                         </button>
                       </div>
-                    </div>
+                    </div> */}
                     <div className="col-12">
                       <div className="card-body p-3">
                         <div className="tab-content">
@@ -122,7 +122,47 @@ const Shippingdocuments = () => {
                                 </tr>
                               </thead>
                               <tbody style={{ maxHeight: "100%" }}>
-                                {shippingdocumentss.map((document, index) => (
+                                <tr>
+                                  <td className="table_center">24-12-2022</td>
+                                  <td>
+                                    <a
+                                      href={`${process.env.REACT_APP_BACKEND_API}po/download?id=${document.file_path}&type=qap`}
+                                      target="_blank"
+                                      rel="noreferrer"
+                                    >
+                                      Check File
+                                    </a>
+                                  </td>
+                                  <td>MTC</td>
+                                  <td>Mrinmoy Ghosh(65432)</td>
+                                  <td>Shipping Documents Uploaded</td>
+                                  <td className="">
+                                    {document.status === "APPROVED"
+                                      ? "APPROVED"
+                                      : "PENDING"}
+                                  </td>
+                                </tr>
+                                <tr>
+                                  <td className="table_center">24-12-2022</td>
+                                  <td>
+                                    <a
+                                      href={`${process.env.REACT_APP_BACKEND_API}po/download?id=${document.file_path}&type=qap`}
+                                      target="_blank"
+                                      rel="noreferrer"
+                                    >
+                                      Check File
+                                    </a>
+                                  </td>
+                                  <td>GC</td>
+                                  <td>Mrinmoy Ghosh(65432)</td>
+                                  <td>Shipping Documents Uploaded</td>
+                                  <td className="">
+                                    {document.status === "APPROVED"
+                                      ? "APPROVED"
+                                      : "PENDING"}
+                                  </td>
+                                </tr>
+                                {/* {shippingdocumentss.map((document, index) => (
                                   <tr key={index}>
                                     <td className="table_center">
                                       {moment(document.created_at)
@@ -147,7 +187,7 @@ const Shippingdocuments = () => {
                                         : "PENDING"}
                                     </td>
                                   </tr>
-                                ))}
+                                ))} */}
                               </tbody>
                             </table>
                           </div>
@@ -214,9 +254,9 @@ const Shippingdocuments = () => {
                     className="btn fw-bold btn-primary"
                     type="button"
                   >
-                    UPDATE
+                    UPLOAD
                   </button>
-                  {userType !== 1 ? (
+                  {/* {userType !== 1 ? (
                     <button
                       onClick={() => shippingdocumentsBtn("APPROVED")}
                       className="btn fw-bold btn-primary"
@@ -226,7 +266,7 @@ const Shippingdocuments = () => {
                     </button>
                   ) : (
                     ""
-                  )}
+                  )} */}
                 </div>
               </div>
             </div>

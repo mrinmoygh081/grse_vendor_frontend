@@ -53,12 +53,25 @@ const PaymentAdvisesSub = () => {
                                   <th>DateTime </th>
                                   <th>Document</th>
                                   <th>Document Type</th>
-                                  <th>ID</th>
                                   <th>Updated By</th>
                                 </tr>
                               </thead>
                               <tbody style={{ maxHeight: "100%" }}>
-                                {paymentAdvisesData.map(
+                                <tr>
+                                  <td className="table_center">29-12-2023</td>
+                                  <td>
+                                    <a
+                                      href={`#`}
+                                      target="_blank"
+                                      rel="noreferrer"
+                                    >
+                                      Check File
+                                    </a>
+                                  </td>
+                                  <td>Payment Advice</td>
+                                  <td>Mrinmoy Ghosh</td>
+                                </tr>
+                                {/* {paymentAdvisesData.map(
                                   (paymentItem, index) => (
                                     <tr key={index}>
                                       <td className="table_center">
@@ -80,7 +93,7 @@ const PaymentAdvisesSub = () => {
                                       <td>{paymentItem.updated_by}</td>
                                     </tr>
                                   )
-                                )}
+                                )} */}
                               </tbody>
                             </table>
                           </div>

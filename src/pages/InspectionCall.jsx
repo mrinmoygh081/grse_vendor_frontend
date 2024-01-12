@@ -96,7 +96,7 @@ const InspectionCall = () => {
                           onClick={() => setIsPopup(true)}
                           className="btn fw-bold btn-primary"
                         >
-                          Upload Inspection call letter
+                          Upload File
                         </button>
                       </div>
                     </div>
@@ -157,7 +157,7 @@ const InspectionCall = () => {
       </div>
       <div className={isPopup ? "popup active" : "popup"}>
         <div className="card card-xxl-stretch mb-5 mb-xxl-8">
-          <div className="card-header border-0 pt-5">
+          <div className="card-header border-0 pt-5 pb-3">
             <h3 className="card-title align-items-start flex-column">
               <span className="card-label fw-bold fs-3 mb-1">
                 Upload Inspection call letter
@@ -173,6 +173,27 @@ const InspectionCall = () => {
           <form>
             <div className="row">
               <div className="col-12">
+                {/* for vendor or nic */}
+                {/* <div className="mb-3">
+                  <select name="" id="" className="form-control">
+                    <option value="">Choose File Type</option>
+                    <option value="">Inspection call letter stage 1</option>
+                    <option value="">Inspection call letter stage 2</option>
+                    <option value="">Inspection call letter stage 3</option>
+                    <option value="">Inspection release note</option>
+                    <option value="">Form-4</option>
+                    <option value="">Dispatch clearance</option>
+                    <option value="">Inspection report</option>
+                  </select>
+                </div> */}
+                {/* for lan or cdo (drawing officer) or qa */}
+                <div className="mb-3">
+                  <select name="" id="" className="form-control">
+                    <option value="">Choose File Type</option>
+                    <option value="">WDC</option>
+                    <option value="">Final Dispatch Clearance</option>
+                  </select>
+                </div>
                 <div className="mb-3">
                   <input
                     type="file"
@@ -207,9 +228,9 @@ const InspectionCall = () => {
                     className="btn fw-bold btn-primary"
                     type="button"
                   >
-                    UPDATE
+                    UPLOAD
                   </button>
-                  {userType !== 1 ? (
+                  {/* {userType !== 1 ? (
                     <button
                       onClick={() => updateInspectionCall("APPROVED")}
                       className="btn fw-bold btn-primary"
@@ -219,7 +240,7 @@ const InspectionCall = () => {
                     </button>
                   ) : (
                     ""
-                  )}
+                  )} */}
                 </div>
               </div>
             </div>

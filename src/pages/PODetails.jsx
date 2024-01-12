@@ -51,7 +51,20 @@ const PODetails = () => {
                           </div>
                         </div>
                         <div>
-                          <h1>Purchase Order Details</h1>
+                          <div className="d-flex align-items-center pb-3 justify-content-between">
+                            <h1>Purchase Order Details</h1>
+                            <div className="d-flex">
+                              <button className="btn btn-primary me-3">
+                                Upload TNC Minutes
+                              </button>
+                              <button className="btn btn-primary me-3">
+                                Download TNC Minutes
+                              </button>
+                              <button className="btn btn-primary">
+                                Download SAP PO
+                              </button>
+                            </div>
+                          </div>
                           {poDetails.map((po) => (
                             <div key={po.EBELN}>
                               <div className="row">

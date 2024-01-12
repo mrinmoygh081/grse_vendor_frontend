@@ -32,6 +32,7 @@ const ReportComponent = () => {
 
   const handleSearch = async () => {
     try {
+      const miliSec = 1000;
       const formDataToSend = {
         user_id: parseInt(user?.vendor_code),
         page: currentPage,
@@ -40,8 +41,8 @@ const ReportComponent = () => {
         // vendor_code: "50007545",
         // action: "ACCEPTED",
         depertment: user?.department_id,
-        startDate: dates?.start,
-        endDate: dates?.end,
+        startDate: dates?.start * miliSec,
+        endDate: dates?.end * miliSec,
         // groupBy: "PO",
       };
 
@@ -99,65 +100,124 @@ const ReportComponent = () => {
   return (
     <>
       {/* <SideBar /> */}
-      <MainHeadery />
+      <MainHeadery title="DASHBOARD" />
       <div className="d-flex flex-column flex-row-fluid">
         {/* <Header title={"Log Report"} id={id} /> */}
         <div className="container mt-4">
           <div className="report-box">
-            <form>
-              <div className="row mb-3">
-                <div className="col">
-                  <div className="form-group">
-                    <label htmlFor="startDate">Start Date</label>
-                    <input
-                      type="date"
-                      className="form-control"
-                      id="startDate"
-                      onChange={(e) =>
-                        setDates({
-                          ...dates,
-                          start: Math.floor(
-                            new Date(e.target.value).getTime() / 1000
-                          ),
-                        })
-                      }
-                    />
-                  </div>
-                </div>
-                <div className="col">
-                  <div className="form-group">
-                    <label htmlFor="endDate">End Date</label>
-                    <input
-                      type="date"
-                      className="form-control"
-                      id="endDate"
-                      onChange={(e) =>
-                        setDates({
-                          ...dates,
-                          end: Math.floor(
-                            new Date(e.target.value).getTime() / 1000
-                          ),
-                        })
-                      }
-                    />
-                  </div>
-                </div>
-                <div className="col align-self-end">
-                  <button
-                    type="button"
-                    className="btn btn-primary"
-                    onClick={handleSearch}
-                  >
-                    Search
-                  </button>
-                </div>
-              </div>
-            </form>
-
             <div className="row mt-4 justify-content-center">
-              <div className="col-12 col-md-6">
-                <Bar data={chartData} options={options} />
+              <div className="col-12">
+                <form>
+                  <div className="row mb-3">
+                    {/* <div className="col">
+                      <div className="form-group">
+                        <label htmlFor="startDate">Start Date</label>
+                        <input
+                          type="date"
+                          className="form-control"
+                          id="startDate"
+                          onChange={(e) =>
+                            setDates({
+                              ...dates,
+                              start: Math.floor(
+                                new Date(e.target.value).getTime() / 1000
+                              ),
+                            })
+                          }
+                        />
+                      </div>
+                    </div>
+                    <div className="col">
+                      <div className="form-group">
+                        <label htmlFor="endDate">End Date</label>
+                        <input
+                          type="date"
+                          className="form-control"
+                          id="endDate"
+                          onChange={(e) =>
+                            setDates({
+                              ...dates,
+                              end: Math.floor(
+                                new Date(e.target.value).getTime() / 1000
+                              ),
+                            })
+                          }
+                        />
+                      </div>
+                    </div> */}
+                    <div className="col">
+                      <div className="form-group">
+                        <label htmlFor="searchInput">Choose Dept</label>
+                        <select name="" id="" className="form-control">
+                          <option value="">All Depts</option>
+                          <option value="">Hull</option>
+                          <option value="">Electrical</option>
+                          <option value="">Engineering</option>
+                        </select>
+                      </div>
+                    </div>
+                    <div className="col">
+                      <div className="form-group">
+                        <label htmlFor="searchInput">Choose Employee</label>
+                        <select name="" id="" className="form-control">
+                          <option value="">All</option>
+                          <option value="">Mrinmoy Ghosh(876670)</option>
+                          <option value="">Dr. Abhinit Anand(54659)</option>
+                          <option value="">Mrs. Kamal Ruidas(889670)</option>
+                          <option value="">Mr. Preetham S(889670)</option>
+                        </select>
+                      </div>
+                    </div>
+                    <div className="col">
+                      <div className="form-group">
+                        <label htmlFor="searchInput">Status</label>
+                        <select name="" id="" className="form-control">
+                          <option value="">All</option>
+                          <option value="">PENDING</option>
+                          <option value="">ACCEPTED</option>
+                          <option value="">REJECTED</option>
+                          <option value="">APPROVED</option>
+                        </select>
+                      </div>
+                    </div>
+                    <div className="col">
+                      <div className="form-group">
+                        <label htmlFor="searchInput">Start Date</label>
+                        <input
+                          type="date"
+                          className="form-control"
+                          id="startDate"
+                        />
+                      </div>
+                    </div>
+                    <div className="col">
+                      <div className="form-group">
+                        <label htmlFor="searchInput">End Date</label>
+                        <input
+                          type="date"
+                          className="form-control"
+                          id="endDate"
+                        />
+                      </div>
+                    </div>
+                    <div className="col">
+                      <div className="form-group">
+                        <label htmlFor="searchInput">Search PO</label>
+                        <input
+                          type="text"
+                          className="form-control"
+                          id="searchInput"
+                          placeholder="search..."
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </form>
               </div>
+
+              {/* <div className="col-12 col-md-6">
+                <Bar data={chartData} options={options} />
+              </div> */}
             </div>
 
             <div className="row mt-4">
@@ -165,14 +225,33 @@ const ReportComponent = () => {
                 <table className="table table-striped table-bordered table-hover">
                   <thead>
                     <tr>
-                      <th>Date Time</th>
+                      <th>Date</th>
                       <th>PO Number</th>
-                      <th>Remarks</th>
+                      <th>QAP</th>
+                      <th>Status</th>
                       <th>Updated By</th>
                     </tr>
                   </thead>
                   <tbody>
-                    {tableData.map((row, index) => (
+                    <tr>
+                      <td>29-11-2022</td>
+                      <td>848238756</td>
+                      <td>
+                        <a href="">Click here</a>
+                      </td>
+                      <td>PENDING</td>
+                      <td>Mrinmoy Ghosh(876670)</td>
+                    </tr>
+                    <tr>
+                      <td>29-11-2022</td>
+                      <td>848238756</td>
+                      <td>
+                        <a href="">Click here</a>
+                      </td>
+                      <td>ACCEPTED</td>
+                      <td>Mrinmoy Ghosh(876670)</td>
+                    </tr>
+                    {/* {tableData.map((row, index) => (
                       <tr key={index}>
                         <td>
                           {row.datetime
@@ -183,7 +262,7 @@ const ReportComponent = () => {
                         <td>{row.remarks}</td>
                         <td>Mrinmoy Ghosh ({row.id})</td>
                       </tr>
-                    ))}
+                    ))} */}
                   </tbody>
                 </table>
               </div>
