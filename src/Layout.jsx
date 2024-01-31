@@ -37,7 +37,7 @@ function Layout() {
           </Routes>
         ) : userType === 1 ? (
           <Routes>
-            {/* <Route exact path="/pos" element={<WBS />} /> */}
+            <Route exact path="/wdc" element={<WBS />} />
             <Route exact path="/" element={<POs />} />
             <Route exact path="/po/:id" element={<PODetails />} />
             <Route exact path="/sdbg/:id" element={<SDBGSub />} />
@@ -87,7 +87,7 @@ function Layout() {
         ) : (
           <Routes>
             <Route exact path="/" element={<POs />} />
-            {/* <Route exact path="/pos" element={<WBS />} /> */}
+            <Route exact path="/wdc" element={<WBS />} />
             <Route exact path="/po/:id" element={<PODetails />} />
             <Route exact path="/sdbg/:id" element={<SDBGSub />} />
             <Route exact path="/drawing/:id" element={<DrawingSub />} />

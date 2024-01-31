@@ -26,7 +26,8 @@ export const postAPI = (path, body, token) => {
 };
 
 export const apiCallBack = async (method, slug, payload, token) => {
-  let path = `${process.env.REACT_APP_BACKEND_API}/${slug}`;
+  let path = `${process.env.REACT_APP_BACKEND_API}${slug}`;
+  console.log("Path", path);
 
   let config = {
     method: method,

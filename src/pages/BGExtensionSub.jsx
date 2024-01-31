@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import Footer from "../components/Footer";
-import SideBar from "../components/SideBar";
-import Header from "../components/Header";
-import { useParams } from "react-router-dom";
+// import SideBar from "../components/SideBar";
+// import Header from "../components/Header";
+// import { useParams } from "react-router-dom";
 import MainHeader from "../components/MainHeader";
 
 const BGExtensionSub = () => {
@@ -47,13 +47,13 @@ const BGExtensionSub = () => {
                                     01/11/2023-10:30AM
                                   </td>
                                   <td>
-                                    <a
+                                    {/* <a
                                       href={require("C:/Users/admin/Downloads/sample.pdf")}
                                       target="_blank"
                                       rel="noreferrer"
                                     >
                                       Check File
-                                    </a>
+                                    </a> */}
                                   </td>
                                   <td>BG extension request lette</td>
                                   <td>
@@ -61,7 +61,7 @@ const BGExtensionSub = () => {
                                       name=""
                                       id=""
                                       className="form-control"
-                                      disabled
+                                      // disabled
                                     >
                                       <option value="">Extension</option>
                                       <option value="">Release</option>
@@ -73,13 +73,13 @@ const BGExtensionSub = () => {
                                     31/10/2023-12:36PM
                                   </td>
                                   <td>
-                                    <a
+                                    {/* <a
                                       href={require("C:/Users/admin/Downloads/sample.pdf")}
                                       target="_blank"
                                       rel="noreferrer"
                                     >
                                       Check File
-                                    </a>
+                                    </a> */}
                                   </td>
                                   <td>BG release letter</td>
                                   <td>
@@ -88,7 +88,7 @@ const BGExtensionSub = () => {
                                       name=""
                                       id=""
                                       className="form-control"
-                                      disabled
+                                      // disabled
                                     >
                                       <option value="">Extension</option>
                                       <option value="">Release</option>

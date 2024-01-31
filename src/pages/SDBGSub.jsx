@@ -7,6 +7,7 @@ import { useSelector } from "react-redux";
 import { apiCallBack } from "../utils/fetchAPIs";
 import { toast } from "react-toastify";
 import moment from "moment";
+import DatePicker from "react-datepicker";
 const SDBGSub = () => {
   const [isPopup, setIsPopup] = useState(false);
   const [isEntryPopup, setIsEntryPopup] = useState(false);
@@ -16,6 +17,43 @@ const SDBGSub = () => {
     transactionId: "",
     sdbgFile: null,
     remarks: "",
+  });
+
+  const [formDatainput, setFormDatainput] = useState({
+    BankersName: "",
+    BankersBranch: "",
+    BankersAddress1: "",
+    BankersAddress2: "",
+    BankersAddress3: "",
+    BankersCity: "",
+    pincode: "",
+    BankersGuarantee: "",
+    bgDate: null,
+    BGAmount: "",
+    po: "",
+    BankersBranch: "",
+    poDate: null,
+    YardNo: "",
+    ValidityDate: null,
+    ClaimPeriod: "",
+    ChecklistReference: "",
+    ChecklistDate: null,
+    BGType: "",
+    VendorName: "",
+    VendorAddress1: "",
+    VendorAddress2: "",
+    VendorAddress3: "",
+    VendorCity: "",
+    VendorPinCode: "",
+    ExtensionDate1: null,
+    ExtensionDate2: null,
+    ExtensionDate3: null,
+    ExtensionDate4: null,
+    ExtensionDate5: null,
+    ExtensionDate6: null,
+    ReleaseDate: null,
+    DemandNoticeDate: null,
+    EntensionLetterDate: null,
   });
   const { id } = useParams();
 
@@ -361,7 +399,12 @@ const SDBGSub = () => {
                   type="text"
                   className="form-control"
                   name="BankersName"
-                  onClick={handleInputChange}
+                  onChange={(e) =>
+                    setFormDatainput({
+                      ...formDatainput,
+                      BankersName: e.target.files[0],
+                    })
+                  }
                 />
               </div>
             </div>
@@ -372,7 +415,12 @@ const SDBGSub = () => {
                   type="text"
                   className="form-control"
                   name="BankersBranch"
-                  onClick={handleInputChange}
+                  onChange={(e) =>
+                    setFormDatainput({
+                      ...formDatainput,
+                      BankersBranch: e.target.files[0],
+                    })
+                  }
                 />
               </div>
             </div>
@@ -383,7 +431,12 @@ const SDBGSub = () => {
                   type="text"
                   className="form-control"
                   name="BankersAddress1"
-                  onClick={handleInputChange}
+                  onChange={(e) =>
+                    setFormDatainput({
+                      ...formDatainput,
+                      BankersAddress1: e.target.files[0],
+                    })
+                  }
                 />
               </div>
             </div>
@@ -394,7 +447,12 @@ const SDBGSub = () => {
                   type="text"
                   className="form-control"
                   name="BankersAddress2"
-                  onClick={handleInputChange}
+                  onChange={(e) =>
+                    setFormDatainput({
+                      ...formDatainput,
+                      BankersAddress2: e.target.files[0],
+                    })
+                  }
                 />
               </div>
             </div>
@@ -405,7 +463,12 @@ const SDBGSub = () => {
                   type="text"
                   className="form-control"
                   name="BankersAddress3"
-                  onClick={handleInputChange}
+                  onChange={(e) =>
+                    setFormDatainput({
+                      ...formDatainput,
+                      BankersAddress3: e.target.files[0],
+                    })
+                  }
                 />
               </div>
             </div>
@@ -416,7 +479,12 @@ const SDBGSub = () => {
                   type="text"
                   className="form-control"
                   name="BankersCity"
-                  onClick={handleInputChange}
+                  onChange={(e) =>
+                    setFormDatainput({
+                      ...formDatainput,
+                      BankersCity: e.target.files[0],
+                    })
+                  }
                 />
               </div>
             </div>
@@ -427,7 +495,12 @@ const SDBGSub = () => {
                   type="text"
                   className="form-control"
                   name="pincode"
-                  onClick={handleInputChange}
+                  onChange={(e) =>
+                    setFormDatainput({
+                      ...formDatainput,
+                      pincode: e.target.files[0],
+                    })
+                  }
                 />
               </div>
             </div>
@@ -438,18 +511,25 @@ const SDBGSub = () => {
                   type="text"
                   className="form-control"
                   name="BankersGuarantee"
-                  onClick={handleInputChange}
+                  onChange={(e) =>
+                    setFormDatainput({
+                      ...formDatainput,
+                      BankersGuarantee: e.target.files[0],
+                    })
+                  }
                 />
               </div>
             </div>
             <div className="col-md-6 col-12">
               <div className="mb-3">
                 <label className="form-label">BG Date</label>
-                <input
-                  type="text"
+                <DatePicker
+                  selected={formDatainput.bgDate}
+                  onChange={(date) =>
+                    setFormDatainput({ ...formDatainput, bgDate: date })
+                  }
+                  dateFormat="yyyy-MM-dd"
                   className="form-control"
-                  name="BG Date"
-                  onClick={handleInputChange}
                 />
               </div>
             </div>
@@ -460,7 +540,12 @@ const SDBGSub = () => {
                   type="text"
                   className="form-control"
                   name="BGAmount"
-                  onClick={handleInputChange}
+                  onChange={(e) =>
+                    setFormDatainput({
+                      ...formDatainput,
+                      BGAmount: e.target.files[0],
+                    })
+                  }
                 />
               </div>
             </div>
@@ -472,7 +557,12 @@ const SDBGSub = () => {
                   type="text"
                   className="form-control"
                   name="po"
-                  onClick={handleInputChange}
+                  onChange={(e) =>
+                    setFormDatainput({
+                      ...formDatainput,
+                      po: e.target.files[0],
+                    })
+                  }
                 />
               </div>
             </div>
@@ -483,18 +573,25 @@ const SDBGSub = () => {
                   type="text"
                   className="form-control"
                   name="BankersBranch"
-                  onClick={handleInputChange}
+                  onChange={(e) =>
+                    setFormDatainput({
+                      ...formDatainput,
+                      BankersBranch: e.target.files[0],
+                    })
+                  }
                 />
               </div>
             </div>
             <div className="col-md-6 col-12">
               <div className="mb-3">
                 <label className="form-label">PO Date</label>
-                <input
-                  type="text"
+                <DatePicker
+                  selected={formDatainput.poDate}
+                  onChange={(date) =>
+                    setFormDatainput({ ...formDatainput, poDate: date })
+                  }
+                  dateFormat="yyyy-MM-dd"
                   className="form-control"
-                  name="BankersBranch"
-                  onClick={handleInputChange}
                 />
               </div>
             </div>
@@ -505,18 +602,25 @@ const SDBGSub = () => {
                   type="text"
                   className="form-control"
                   name="BankersBranch"
-                  onClick={handleInputChange}
+                  onChange={(e) =>
+                    setFormDatainput({
+                      ...formDatainput,
+                      YardNo: e.target.files[0],
+                    })
+                  }
                 />
               </div>
             </div>
             <div className="col-md-6 col-12">
               <div className="mb-3">
                 <label className="form-label">Validity Date</label>
-                <input
-                  type="text"
+                <DatePicker
+                  selected={formDatainput.ValidityDate}
+                  onChange={(date) =>
+                    setFormDatainput({ ...formDatainput, ValidityDate: date })
+                  }
+                  dateFormat="yyyy-MM-dd"
                   className="form-control"
-                  name="BankersBranch"
-                  onClick={handleInputChange}
                 />
               </div>
             </div>
@@ -527,7 +631,12 @@ const SDBGSub = () => {
                   type="text"
                   className="form-control"
                   name="BankersBranch"
-                  onClick={handleInputChange}
+                  onChange={(e) =>
+                    setFormDatainput({
+                      ...formDatainput,
+                      ClaimPeriod: e.target.files[0],
+                    })
+                  }
                 />
               </div>
             </div>
@@ -538,18 +647,25 @@ const SDBGSub = () => {
                   type="text"
                   className="form-control"
                   name="BankersBranch"
-                  onClick={handleInputChange}
+                  onChange={(e) =>
+                    setFormDatainput({
+                      ...formDatainput,
+                      ChecklistReference: e.target.files[0],
+                    })
+                  }
                 />
               </div>
             </div>
             <div className="col-md-6 col-12">
               <div className="mb-3">
                 <label className="form-label">Checklist Date</label>
-                <input
-                  type="text"
+                <DatePicker
+                  selected={formDatainput.ChecklistDate}
+                  onChange={(date) =>
+                    setFormDatainput({ ...formDatainput, ChecklistDate: date })
+                  }
+                  dateFormat="yyyy-MM-dd"
                   className="form-control"
-                  name="BankersBranch"
-                  onClick={handleInputChange}
                 />
               </div>
             </div>
@@ -559,8 +675,13 @@ const SDBGSub = () => {
                 <input
                   type="text"
                   className="form-control"
-                  name="BankersBranch"
-                  onClick={handleInputChange}
+                  name="BGType"
+                  onChange={(e) =>
+                    setFormDatainput({
+                      ...formDatainput,
+                      BGType: e.target.files[0],
+                    })
+                  }
                 />
               </div>
             </div>
@@ -570,8 +691,13 @@ const SDBGSub = () => {
                 <input
                   type="text"
                   className="form-control"
-                  name="BankersBranch"
-                  onClick={handleInputChange}
+                  name="VendorName"
+                  onChange={(e) =>
+                    setFormDatainput({
+                      ...formDatainput,
+                      VendorName: e.target.files[0],
+                    })
+                  }
                 />
               </div>
             </div>
@@ -581,8 +707,13 @@ const SDBGSub = () => {
                 <input
                   type="text"
                   className="form-control"
-                  name="BankersBranch"
-                  onClick={handleInputChange}
+                  name="VendorAddress1"
+                  onChange={(e) =>
+                    setFormDatainput({
+                      ...formDatainput,
+                      VendorAddress1: e.target.files[0],
+                    })
+                  }
                 />
               </div>
             </div>
@@ -592,8 +723,13 @@ const SDBGSub = () => {
                 <input
                   type="text"
                   className="form-control"
-                  name="BankersBranch"
-                  onClick={handleInputChange}
+                  name="VendorAddress2"
+                  onChange={(e) =>
+                    setFormDatainput({
+                      ...formDatainput,
+                      VendorAddress2: e.target.files[0],
+                    })
+                  }
                 />
               </div>
             </div>
@@ -603,8 +739,13 @@ const SDBGSub = () => {
                 <input
                   type="text"
                   className="form-control"
-                  name="BankersBranch"
-                  onClick={handleInputChange}
+                  name="VendorAddress3"
+                  onChange={(e) =>
+                    setFormDatainput({
+                      ...formDatainput,
+                      VendorAddress3: e.target.files[0],
+                    })
+                  }
                 />
               </div>
             </div>
@@ -614,8 +755,13 @@ const SDBGSub = () => {
                 <input
                   type="text"
                   className="form-control"
-                  name="BankersBranch"
-                  onClick={handleInputChange}
+                  name="VendorCity"
+                  onChange={(e) =>
+                    setFormDatainput({
+                      ...formDatainput,
+                      VendorCity: e.target.files[0],
+                    })
+                  }
                 />
               </div>
             </div>
@@ -625,107 +771,136 @@ const SDBGSub = () => {
                 <input
                   type="text"
                   className="form-control"
-                  name="BankersBranch"
-                  onClick={handleInputChange}
+                  name="VendorPinCode"
+                  onChange={(e) =>
+                    setFormDatainput({
+                      ...formDatainput,
+                      VendorPinCode: e.target.files[0],
+                    })
+                  }
                 />
               </div>
             </div>
             <div className="col-md-6 col-12">
               <div className="mb-3">
                 <label className="form-label">Extension Date1</label>
-                <input
-                  type="text"
+                <DatePicker
+                  selected={formDatainput.ExtensionDate1}
+                  onChange={(date) =>
+                    setFormDatainput({ ...formDatainput, ExtensionDate1: date })
+                  }
+                  dateFormat="yyyy-MM-dd"
                   className="form-control"
-                  name="BankersBranch"
-                  onClick={handleInputChange}
                 />
               </div>
             </div>
             <div className="col-md-6 col-12">
               <div className="mb-3">
                 <label className="form-label">Extension Date2</label>
-                <input
-                  type="text"
+                <DatePicker
+                  selected={formDatainput.ExtensionDate2}
+                  onChange={(date) =>
+                    setFormDatainput({ ...formDatainput, ExtensionDate2: date })
+                  }
+                  dateFormat="yyyy-MM-dd"
                   className="form-control"
-                  name="BankersBranch"
-                  onClick={handleInputChange}
                 />
               </div>
             </div>
             <div className="col-md-6 col-12">
               <div className="mb-3">
                 <label className="form-label">Extension Date3</label>
-                <input
-                  type="text"
+                <DatePicker
+                  selected={formDatainput.ExtensionDate3}
+                  onChange={(date) =>
+                    setFormDatainput({ ...formDatainput, ExtensionDate3: date })
+                  }
+                  dateFormat="yyyy-MM-dd"
                   className="form-control"
-                  name="BankersBranch"
-                  onClick={handleInputChange}
                 />
               </div>
             </div>
             <div className="col-md-6 col-12">
               <div className="mb-3">
                 <label className="form-label">Extension Date4</label>
-                <input
-                  type="text"
+                <DatePicker
+                  selected={formDatainput.formDatainput}
+                  onChange={(date) =>
+                    setFormDatainput({ ...formDatainput, formDatainput: date })
+                  }
+                  dateFormat="yyyy-MM-dd"
                   className="form-control"
-                  name="BankersBranch"
-                  onClick={handleInputChange}
                 />
               </div>
             </div>
             <div className="col-md-6 col-12">
               <div className="mb-3">
                 <label className="form-label">Extension Date5</label>
-                <input
-                  type="text"
+                <DatePicker
+                  selected={formDatainput.ExtensionDate5}
+                  onChange={(date) =>
+                    setFormDatainput({ ...formDatainput, ExtensionDate5: date })
+                  }
+                  dateFormat="yyyy-MM-dd"
                   className="form-control"
-                  name="BankersBranch"
-                  onClick={handleInputChange}
                 />
               </div>
             </div>
             <div className="col-md-6 col-12">
               <div className="mb-3">
                 <label className="form-label">Extension Date6</label>
-                <input
-                  type="text"
+                <DatePicker
+                  selected={formDatainput.ExtensionDate6}
+                  onChange={(date) =>
+                    setFormDatainput({ ...formDatainput, ExtensionDate6: date })
+                  }
+                  dateFormat="yyyy-MM-dd"
                   className="form-control"
-                  name="BankersBranch"
-                  onClick={handleInputChange}
                 />
               </div>
             </div>
             <div className="col-md-6 col-12">
               <div className="mb-3">
                 <label className="form-label">Release Date</label>
-                <input
-                  type="text"
+                <DatePicker
+                  selected={formDatainput.ReleaseDate}
+                  onChange={(date) =>
+                    setFormDatainput({ ...formDatainput, ReleaseDate: date })
+                  }
+                  dateFormat="yyyy-MM-dd"
                   className="form-control"
-                  name="BankersBranch"
-                  onClick={handleInputChange}
                 />
               </div>
             </div>
             <div className="col-md-6 col-12">
               <div className="mb-3">
                 <label className="form-label">Demand Notice Date</label>
-                <input
-                  type="text"
+                <DatePicker
+                  selected={formDatainput.DemandNoticeDate}
+                  onChange={(date) =>
+                    setFormDatainput({
+                      ...formDatainput,
+                      DemandNoticeDate: date,
+                    })
+                  }
+                  dateFormat="yyyy-MM-dd"
                   className="form-control"
-                  name="BankersBranch"
-                  onClick={handleInputChange}
                 />
               </div>
             </div>
             <div className="col-md-6 col-12">
               <div className="mb-3">
                 <label className="form-label">Entension Letter Date</label>
-                <input
-                  type="text"
+                <DatePicker
+                  selected={formDatainput.EntensionLetterDate}
+                  onChange={(date) =>
+                    setFormDatainput({
+                      ...formDatainput,
+                      EntensionLetterDate: date,
+                    })
+                  }
+                  dateFormat="yyyy-MM-dd"
                   className="form-control"
-                  name="BankersBranch"
-                  onClick={handleInputChange}
                 />
               </div>
             </div>

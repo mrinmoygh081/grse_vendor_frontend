@@ -6,26 +6,91 @@ import { useParams } from "react-router-dom";
 import { apiCallBack } from "../utils/fetchAPIs";
 import { useSelector } from "react-redux";
 import moment from "moment";
+import { toast } from "react-toastify";
+import axios from "axios";
 
 const PODetails = () => {
   const [poDetails, setPoDetails] = useState([]);
+  const [file, setFile] = useState(null);
   const { id } = useParams();
   const { token } = useSelector((state) => state.auth);
   console.log(token, "tokentoken");
+  const [isPopup, setIsPopup] = useState(false);
+
+  console.log(poDetails, "poDetails");
 
   useEffect(() => {
     (async () => {
-      const data = await apiCallBack(
-        "GET",
-        `po/details?id=${id}`, // Adjust the API endpoint as needed
-        null,
-        token
-      );
+      const data = await apiCallBack("GET", `po/details?id=${id}`, null, token);
       if (data?.status) {
         setPoDetails(data?.data);
       }
     })();
   }, [id]);
+
+  const handleFileChange = (e) => {
+    const selectedFile = e.target.files[0];
+    setFile(selectedFile);
+  };
+
+  const handleUploadTNCMinutes = async (event) => {
+    try {
+      event.preventDefault();
+
+      const formData = new FormData();
+      formData.append("purchasing_doc_no", id);
+      formData.append("file", file);
+
+      const response = await apiCallBack(
+        "POST",
+        "upload/tncminutes",
+        formData,
+        token
+      );
+
+      if (response.status === true) {
+        toast.success("TNC Minutes uploaded successfully!");
+
+        setIsPopup(false);
+      } else {
+        toast.error("Error uploading TNC Minutes. Please try again.");
+      }
+    } catch (error) {
+      console.error("Error uploading TNC Minutes:", error.message);
+      toast.error("Error uploading TNC Minutes. Please try again.");
+    }
+  };
+  const handleViewTNCMinutes = async () => {
+    try {
+      const response = await axios.get(
+        `http://localhost:4001/uploads/tncminutes/${id}.pdf`,
+        {
+          responseType: "blob",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      const contentType = response.headers["content-type"];
+      if (contentType !== "application/pdf") {
+        console.error("Invalid content type:", contentType);
+        toast.error("Invalid content type. Expected application/pdf.");
+        return;
+      }
+
+      const blob = new Blob([response.data], {
+        type: "application/pdf",
+      });
+
+      const url = window.URL.createObjectURL(blob);
+
+      window.open(url, "_blank");
+    } catch (error) {
+      console.error("Error viewing TNC Minutes:", error.message);
+      toast.error("Error viewing TNC Minutes. Please try again.");
+    }
+  };
 
   return (
     <>
@@ -54,11 +119,23 @@ const PODetails = () => {
                           <div className="d-flex align-items-center pb-3 justify-content-between">
                             <h1>Purchase Order Details</h1>
                             <div className="d-flex">
-                              <button className="btn btn-primary me-3">
+                              <button
+                                className="btn btn-primary me-3"
+                                onClick={() => setIsPopup(true)}
+                                style={{
+                                  display:
+                                    poDetails.length > 0 && poDetails[0].isDO
+                                      ? "inline-block"
+                                      : "none",
+                                }}
+                              >
                                 Upload TNC Minutes
                               </button>
-                              <button className="btn btn-primary me-3">
-                                Download TNC Minutes
+                              <button
+                                className="btn btn-primary me-3"
+                                onClick={handleViewTNCMinutes}
+                              >
+                                View TNC Minutes
                               </button>
                               <button className="btn btn-primary">
                                 Download SAP PO
@@ -286,6 +363,50 @@ const PODetails = () => {
                               </div>
                             </div>
                           </div>
+                        </div>
+                      </div>
+
+                      <div className={isPopup ? "popup active" : "popup"}>
+                        <div className="card card-xxl-stretch mb-5 mb-xxl-8">
+                          <div className="card-header border-0 pt-5">
+                            <h3 className="card-title align-items-start flex-column">
+                              <span className="card-label fw-bold fs-3 mb-1">
+                                Upload TNC Minutes
+                              </span>
+                            </h3>
+                            <button
+                              className="btn fw-bold btn-danger"
+                              onClick={() => setIsPopup(false)}
+                            >
+                              Close
+                            </button>
+                          </div>
+                          <form>
+                            <div className="row">
+                              <div className="col-12">
+                                <div className="mb-3">
+                                  <label className="form-label">
+                                    Choose File
+                                  </label>
+                                  <input
+                                    type="file"
+                                    className="form-control"
+                                    onChange={handleFileChange}
+                                  />
+                                </div>
+                              </div>
+                              <div className="col-12">
+                                <div className="mb-3">
+                                  <button
+                                    className="btn fw-bold btn-primary"
+                                    onClick={handleUploadTNCMinutes}
+                                  >
+                                    UPDATE
+                                  </button>
+                                </div>
+                              </div>
+                            </div>
+                          </form>
                         </div>
                       </div>
                     </div>

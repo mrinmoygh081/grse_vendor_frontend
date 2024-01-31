@@ -12,12 +12,26 @@ const Shippingdocuments = () => {
   const [isPopup, setIsPopup] = useState(false);
   const [shippingdocumentss, setShippingdocumentss] = useState([]);
   const { id } = useParams();
+  console.log(shippingdocumentss, "shippingdocumentss");
 
   const { user, token, userType } = useSelector((state) => state.auth);
   const [formData, setFormData] = useState({
     shippingdocumentssFile: null,
     remarks: "",
   });
+  const [selectedFileTypeId, setSelectedFileTypeId] = useState("");
+  const [selectedFileTypeName, setSelectedFileTypeName] = useState("");
+
+  const optionss = [
+    {
+      file_type_name: "WDC",
+      file_type_id: 1,
+    },
+    {
+      file_type_name: "Final Dispatch Clearance",
+      file_type_id: 2,
+    },
+  ];
 
   const getData = async () => {
     try {
@@ -52,11 +66,13 @@ const Shippingdocuments = () => {
       formDataToSend.append("purchasing_doc_no", id);
       formDataToSend.append("file", formData.shippingdocumentssFile);
       formDataToSend.append("remarks", formData.remarks);
-      formDataToSend.append("status", isApproved);
-      formDataToSend.append("updated_by", uType); // or use user.updated_by if available
-      formDataToSend.append("vendor_code", user.vendor_code);
-      formDataToSend.append("action_by_name", user.name);
-      formDataToSend.append("action_by_id", user.email);
+      formDataToSend.append("file_type_id", selectedFileTypeId);
+      formDataToSend.append("file_type_name", selectedFileTypeName);
+      // formDataToSend.append("status", isApproved);
+      // formDataToSend.append("updated_by", uType);
+      // formDataToSend.append("vendor_code", user.vendor_code);
+      // formDataToSend.append("action_by_name", user.name);
+      // formDataToSend.append("action_by_id", user.email);
 
       const response = await apiCallBack(
         "POST",
@@ -96,7 +112,7 @@ const Shippingdocuments = () => {
               <div className="post d-flex flex-column-fluid">
                 <div className="container">
                   <div className="row g-5 g-xl-8">
-                    {/* <div className="col-12">
+                    <div className="col-12">
                       <div className="screen_header">
                         <button
                           onClick={() => setIsPopup(true)}
@@ -105,7 +121,7 @@ const Shippingdocuments = () => {
                           Upload Shipping documents
                         </button>
                       </div>
-                    </div> */}
+                    </div>
                     <div className="col-12">
                       <div className="card-body p-3">
                         <div className="tab-content">
@@ -122,7 +138,34 @@ const Shippingdocuments = () => {
                                 </tr>
                               </thead>
                               <tbody style={{ maxHeight: "100%" }}>
-                                <tr>
+                                {shippingdocumentss.map((document) => (
+                                  <tr key={document.id}>
+                                    <td className="table_center">
+                                      {moment(document.created_at)
+                                        .utc()
+                                        .format("YYYY-MM-DD")}
+                                    </td>
+                                    <td>
+                                      <a
+                                        href={`${process.env.REACT_APP_BACKEND_API}${document.file_path}`}
+                                        target="_blank"
+                                        rel="noreferrer"
+                                      >
+                                        {document.file_name}
+                                      </a>
+                                    </td>
+                                    <td>{document.file_type_name}</td>
+                                    <td>{document.updated_by}</td>
+                                    <td>{document.remarks}</td>
+                                    <td className="">
+                                      {document.status === "APPROVED"
+                                        ? "APPROVED"
+                                        : "PENDING"}
+                                    </td>
+                                  </tr>
+                                ))}
+
+                                {/* <tr>
                                   <td className="table_center">24-12-2022</td>
                                   <td>
                                     <a
@@ -161,7 +204,7 @@ const Shippingdocuments = () => {
                                       ? "APPROVED"
                                       : "PENDING"}
                                   </td>
-                                </tr>
+                                </tr> */}
                                 {/* {shippingdocumentss.map((document, index) => (
                                   <tr key={index}>
                                     <td className="table_center">
@@ -220,6 +263,29 @@ const Shippingdocuments = () => {
           <form>
             <div className="row">
               <div className="col-12">
+                <div className="mb-3">
+                  <select
+                    name=""
+                    id=""
+                    className="form-control"
+                    onChange={(e) => {
+                      setSelectedFileTypeId(e.target.value);
+                      setSelectedFileTypeName(
+                        e.target.options[e.target.selectedIndex].text
+                      );
+                    }}
+                  >
+                    <option value="">Choose File Type</option>
+                    {optionss.map((option) => (
+                      <option
+                        key={option.file_type_id}
+                        value={option.file_type_id}
+                      >
+                        {option.file_type_name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
                 <div className="mb-3">
                   <input
                     type="file"

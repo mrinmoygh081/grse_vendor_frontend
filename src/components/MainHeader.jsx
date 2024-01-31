@@ -16,7 +16,7 @@ const MainHeader = ({ title }) => {
         <div className="" id="navbarNav">
           <ul className="navbar-nav ms-auto">
             <li className="nav-item">
-              <Link className="nav-link text-black" to="/pos">
+              <Link className="nav-link text-black" to="/">
                 Purchase Orders
               </Link>
             </li>

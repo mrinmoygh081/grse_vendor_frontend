@@ -19,6 +19,9 @@ const InspectionCall = () => {
     remarks: "",
   });
 
+  const [selectedFileTypeId, setSelectedFileTypeId] = useState("");
+  const [selectedFileTypeName, setSelectedFileTypeName] = useState("");
+
   const getData = async () => {
     try {
       const data = await apiCallBack(
@@ -39,6 +42,17 @@ const InspectionCall = () => {
     getData();
   }, [id, token]);
 
+  const optionss = [
+    {
+      file_type_name: "WDC",
+      file_type_id: 1,
+    },
+    {
+      file_type_name: "Final Dispatch Clearance",
+      file_type_id: 2,
+    },
+  ];
+
   const updateInspectionCall = async (flag) => {
     try {
       let isApproved = flag;
@@ -52,11 +66,13 @@ const InspectionCall = () => {
       formDataToSend.append("purchasing_doc_no", id);
       formDataToSend.append("file", formData.InspectioncallFile);
       formDataToSend.append("remarks", formData.remarks);
-      formDataToSend.append("status", isApproved);
-      formDataToSend.append("updated_by", uType);
-      formDataToSend.append("vendor_code", user.vendor_code);
-      formDataToSend.append("action_by_name", user.name);
-      formDataToSend.append("action_by_id", user.email);
+      formDataToSend.append("file_type_id", selectedFileTypeId);
+      formDataToSend.append("file_type_name", selectedFileTypeName);
+      // formDataToSend.append("status", isApproved);
+      // formDataToSend.append("updated_by", uType);
+      // formDataToSend.append("vendor_code", user.vendor_code);
+      // formDataToSend.append("action_by_name", user.name);
+      // formDataToSend.append("action_by_id", user.email);
 
       const response = await apiCallBack(
         "POST",
@@ -188,12 +204,29 @@ const InspectionCall = () => {
                 </div> */}
                 {/* for lan or cdo (drawing officer) or qa */}
                 <div className="mb-3">
-                  <select name="" id="" className="form-control">
+                  <select
+                    name=""
+                    id=""
+                    className="form-control"
+                    onChange={(e) => {
+                      setSelectedFileTypeId(e.target.value);
+                      setSelectedFileTypeName(
+                        e.target.options[e.target.selectedIndex].text
+                      );
+                    }}
+                  >
                     <option value="">Choose File Type</option>
-                    <option value="">WDC</option>
-                    <option value="">Final Dispatch Clearance</option>
+                    {optionss.map((option) => (
+                      <option
+                        key={option.file_type_id}
+                        value={option.file_type_id}
+                      >
+                        {option.file_type_name}
+                      </option>
+                    ))}
                   </select>
                 </div>
+
                 <div className="mb-3">
                   <input
                     type="file"

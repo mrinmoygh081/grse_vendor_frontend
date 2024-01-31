@@ -75,13 +75,13 @@ const PBGuploadSub = () => {
                                     01/11/2023-10:30AM
                                   </td>
                                   <td>
-                                    <a
+                                    {/* <a
                                       href={require("C:/Users/admin/Downloads/sample.pdf")}
                                       target="_blank"
                                       rel="noreferrer"
                                     >
                                       Check File
-                                    </a>
+                                    </a> */}
                                   </td>
                                   <td>Claim Letter</td>
 
@@ -93,13 +93,13 @@ const PBGuploadSub = () => {
                                     01/11/2023-10:30AM
                                   </td>
                                   <td>
-                                    <a
+                                    {/* <a
                                       href={require("C:/Users/admin/Downloads/sample.pdf")}
                                       target="_blank"
                                       rel="noreferrer"
                                     >
                                       Check File
-                                    </a>
+                                    </a> */}
                                   </td>
                                   <td>Upload of PBG</td>
 

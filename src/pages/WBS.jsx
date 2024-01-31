@@ -2,9 +2,9 @@ import React, { useState } from "react";
 // import bg from "assets/media/illustrations/sketchy-1/14-dark.png";
 import { toast } from "react-toastify";
 import { useDispatch } from "react-redux";
-import { postAPI } from "../utils/fetchAPIs";
+// import { postAPI } from "../utils/fetchAPIs";
 import { logoutHandler } from "../redux/slices/loginSlice";
-import { loginHandler } from "../redux/slices/loginSlice";
+// import { loginHandler } from "../redux/slices/loginSlice";
 import { useNavigate } from "react-router-dom";
 
 export default function WBS() {
@@ -111,14 +111,14 @@ export default function WBS() {
         </div>
       </div>
 
-      <div className="pos_bottom">
+      {/* <div className="pos_bottom">
         <button
           className="btn btn-danger"
           onClick={() => dispatch(logoutHandler())}
         >
           Log Out
         </button>
-      </div>
+      </div> */}
     </>
   );
 }
