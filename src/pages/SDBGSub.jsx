@@ -18,7 +18,6 @@ const SDBGSub = () => {
     sdbgFile: null,
     remarks: "",
   });
-
   const [formDatainput, setFormDatainput] = useState({
     BankersName: "",
     BankersBranch: "",
@@ -28,7 +27,7 @@ const SDBGSub = () => {
     BankersCity: "",
     pincode: "",
     BankersGuarantee: "",
-    bgDate: null,
+    BGDate: null,
     BGAmount: "",
     po: "",
     BankersBranch: "",
@@ -56,13 +55,15 @@ const SDBGSub = () => {
     EntensionLetterDate: null,
   });
   const { id } = useParams();
-
   const { user, token, userType } = useSelector((state) => state.auth);
+  const { isDO } = useSelector((state) => state.selectedPO);
+
+  console.log(formDatainput);
 
   const getSDBG = async () => {
     const data = await apiCallBack(
       "GET",
-      `po/sdbgList?poNo=${id}`,
+      `po/sdbg/getSDBGData?poNo=${id}`,
       null,
       token
     );
@@ -74,6 +75,13 @@ const SDBGSub = () => {
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
+  };
+  const handleInputChange2 = (e) => {
+    const { name, value } = e.target;
+    setFormDatainput((prevData) => ({
       ...prevData,
       [name]: value,
     }));
@@ -102,19 +110,24 @@ const SDBGSub = () => {
       form.append("file", formData.sdbgFile);
       form.append("remarks", formData.remarks);
       form.append("status", isApproved);
-      form.append("updated_by", uType);
-      form.append("bank_name", formData.bankName);
-      form.append("transaction_id", formData.transactionId);
-      form.append("vendor_code", user.vendor_code);
+      // form.append("updated_by", uType);
+      // form.append("bank_name", formData.bankName);
+      // form.append("transaction_id", formData.transactionId);
+      // form.append("vendor_code", user.vendor_code);
       // form.append("vendor_name", user.vendor_code);
-      form.append("mailSendTo", "aabhinit96@gmail.com");
-      form.append("action_by_name", user.name);
-      form.append("action_by_id", user.email);
+      // form.append("mailSendTo", "aabhinit96@gmail.com");
+      // form.append("action_by_name", user.name);
+      // form.append("action_by_id", user.email);
 
-      const response = await apiCallBack("POST", `po/sdbg`, form, token);
+      const response = await apiCallBack(
+        "POST",
+        `po/sdbg/submitSDBG`,
+        form,
+        token
+      );
       if (response.statusCode === 200) {
-        const data = response.data;
-        console.log(data, "abhinit");
+        // const data = response.data;
+        // console.log(data, "abhinit");
         setIsPopup(false);
         toast.success("Form submitted successfully");
         setFormData({
@@ -147,18 +160,51 @@ const SDBGSub = () => {
                   <div className="row g-5 g-xl-8">
                     <div className="col-12">
                       <div className="screen_header">
-                        <button
-                          onClick={() => setIsEntryPopup(true)}
-                          className="btn fw-bold btn-primary me-3"
-                        >
-                          SDBG Entry
-                        </button>
-                        <button
-                          onClick={() => setIsPopup(true)}
-                          className="btn fw-bold btn-primary"
-                        >
-                          Upload SDBG
-                        </button>
+                        {/* Not Vendor */}
+                        {user?.user_type !== 1 && (
+                          <>
+                            {/* Finance Head (deptid = 15 and internal_role_Id 1) */}
+                            {user?.department_id === 15 &&
+                              user?.internal_role_id === 1 && (
+                                <>
+                                  <button
+                                    onClick={() => setIsEntryPopup(true)}
+                                    className="btn fw-bold btn-primary me-3"
+                                  >
+                                    ASSIGN
+                                  </button>
+                                </>
+                              )}
+                            {/* For DO */}
+                            {isDO && (
+                              <>
+                                <button
+                                  onClick={() => setIsEntryPopup(true)}
+                                  className="btn fw-bold btn-primary me-3"
+                                >
+                                  SDBG Entry
+                                </button>
+                                <button
+                                  onClick={() => setIsEntryPopup(true)}
+                                  className="btn fw-bold btn-primary me-3"
+                                >
+                                  Check SDBG Entry
+                                </button>
+                              </>
+                            )}
+                          </>
+                        )}
+                        {/* Vendor  */}
+                        {user?.user_type === 1 && (
+                          <>
+                            <button
+                              onClick={() => setIsPopup(true)}
+                              className="btn fw-bold btn-primary"
+                            >
+                              Upload SDBG
+                            </button>
+                          </>
+                        )}
                       </div>
                     </div>
                     <div className="col-12">
@@ -169,8 +215,8 @@ const SDBGSub = () => {
                               <thead>
                                 <tr className="border-0">
                                   <th>DateTime </th>
-                                  <th>Bank name</th>
-                                  <th>Transaction ID</th>
+                                  {/* <th>Bank name</th> */}
+                                  {/* <th>Transaction ID</th> */}
                                   <th>SDBG File</th>
                                   <th>Updated By</th>
                                   <th className="min-w-150px">Remarks</th>
@@ -186,18 +232,20 @@ const SDBGSub = () => {
                                           .utc()
                                           .format("YYYY-MM-DD")}
                                       </td>
-                                      <td>{item.bank_name}</td>
-                                      <td>{item.transaction_id}</td>
+                                      {/* <td>{item.bank_name}</td>
+                                      <td>{item.transaction_id}</td> */}
                                       <td>
                                         <a
-                                          href={`${process.env.REACT_APP_BACKEND_API}po/download?id=${item.id}&type=sdbg`}
+                                          href={`${process.env.REACT_APP_PDF_URL}/submitSDBG/${item.file_name}`}
                                           target="_blank"
                                           rel="noreferrer"
                                         >
                                           Check File
                                         </a>
                                       </td>
-                                      <td> {item.created_by_name}</td>
+                                      <td>
+                                        {item.updated_by} ({item.created_by_id})
+                                      </td>
                                       <td>{item.remarks}</td>
                                       <td>
                                         {item.status === "ACKNOWLEDGED"
@@ -299,7 +347,7 @@ const SDBGSub = () => {
           </div>
 
           <div className="row">
-            <div className="col-md-6 col-12">
+            {/* <div className="col-md-6 col-12">
               <div className="mb-3">
                 <label className="form-label">Bank Name</label>
                 <input
@@ -310,8 +358,8 @@ const SDBGSub = () => {
                   }
                 />
               </div>
-            </div>
-            <div className="col-md-6 col-12">
+            </div> */}
+            {/* <div className="col-md-6 col-12">
               <div className="mb-3">
                 <label className="form-label">Transaction ID</label>
                 <input
@@ -325,7 +373,7 @@ const SDBGSub = () => {
                   }
                 />
               </div>
-            </div>
+            </div> */}
             <div className="col-12">
               <div className="mb-3">
                 <label className="form-label">SDBG File</label>
@@ -359,7 +407,7 @@ const SDBGSub = () => {
                   className="btn fw-bold btn-primary"
                   type="submit"
                 >
-                  UPDATE
+                  UPLOAD
                 </button>
                 {userType !== 1 ? (
                   <button
@@ -399,12 +447,7 @@ const SDBGSub = () => {
                   type="text"
                   className="form-control"
                   name="BankersName"
-                  onChange={(e) =>
-                    setFormDatainput({
-                      ...formDatainput,
-                      BankersName: e.target.files[0],
-                    })
-                  }
+                  onChange={handleInputChange2}
                 />
               </div>
             </div>
@@ -415,12 +458,7 @@ const SDBGSub = () => {
                   type="text"
                   className="form-control"
                   name="BankersBranch"
-                  onChange={(e) =>
-                    setFormDatainput({
-                      ...formDatainput,
-                      BankersBranch: e.target.files[0],
-                    })
-                  }
+                  onChange={handleInputChange2}
                 />
               </div>
             </div>
@@ -431,12 +469,7 @@ const SDBGSub = () => {
                   type="text"
                   className="form-control"
                   name="BankersAddress1"
-                  onChange={(e) =>
-                    setFormDatainput({
-                      ...formDatainput,
-                      BankersAddress1: e.target.files[0],
-                    })
-                  }
+                  onChange={handleInputChange2}
                 />
               </div>
             </div>
@@ -447,12 +480,7 @@ const SDBGSub = () => {
                   type="text"
                   className="form-control"
                   name="BankersAddress2"
-                  onChange={(e) =>
-                    setFormDatainput({
-                      ...formDatainput,
-                      BankersAddress2: e.target.files[0],
-                    })
-                  }
+                  onChange={handleInputChange2}
                 />
               </div>
             </div>
@@ -463,12 +491,7 @@ const SDBGSub = () => {
                   type="text"
                   className="form-control"
                   name="BankersAddress3"
-                  onChange={(e) =>
-                    setFormDatainput({
-                      ...formDatainput,
-                      BankersAddress3: e.target.files[0],
-                    })
-                  }
+                  onChange={handleInputChange2}
                 />
               </div>
             </div>
@@ -479,12 +502,7 @@ const SDBGSub = () => {
                   type="text"
                   className="form-control"
                   name="BankersCity"
-                  onChange={(e) =>
-                    setFormDatainput({
-                      ...formDatainput,
-                      BankersCity: e.target.files[0],
-                    })
-                  }
+                  onChange={handleInputChange2}
                 />
               </div>
             </div>
@@ -495,12 +513,7 @@ const SDBGSub = () => {
                   type="text"
                   className="form-control"
                   name="pincode"
-                  onChange={(e) =>
-                    setFormDatainput({
-                      ...formDatainput,
-                      pincode: e.target.files[0],
-                    })
-                  }
+                  onChange={handleInputChange2}
                 />
               </div>
             </div>
@@ -511,12 +524,7 @@ const SDBGSub = () => {
                   type="text"
                   className="form-control"
                   name="BankersGuarantee"
-                  onChange={(e) =>
-                    setFormDatainput({
-                      ...formDatainput,
-                      BankersGuarantee: e.target.files[0],
-                    })
-                  }
+                  onChange={handleInputChange2}
                 />
               </div>
             </div>
@@ -524,9 +532,9 @@ const SDBGSub = () => {
               <div className="mb-3">
                 <label className="form-label">BG Date</label>
                 <DatePicker
-                  selected={formDatainput.bgDate}
+                  selected={formDatainput.BGDate}
                   onChange={(date) =>
-                    setFormDatainput({ ...formDatainput, bgDate: date })
+                    setFormDatainput({ ...formDatainput, BGDate: date })
                   }
                   dateFormat="yyyy-MM-dd"
                   className="form-control"
@@ -540,12 +548,7 @@ const SDBGSub = () => {
                   type="text"
                   className="form-control"
                   name="BGAmount"
-                  onChange={(e) =>
-                    setFormDatainput({
-                      ...formDatainput,
-                      BGAmount: e.target.files[0],
-                    })
-                  }
+                  onChange={handleInputChange2}
                 />
               </div>
             </div>
@@ -557,12 +560,7 @@ const SDBGSub = () => {
                   type="text"
                   className="form-control"
                   name="po"
-                  onChange={(e) =>
-                    setFormDatainput({
-                      ...formDatainput,
-                      po: e.target.files[0],
-                    })
-                  }
+                  onChange={handleInputChange2}
                 />
               </div>
             </div>
@@ -573,12 +571,7 @@ const SDBGSub = () => {
                   type="text"
                   className="form-control"
                   name="BankersBranch"
-                  onChange={(e) =>
-                    setFormDatainput({
-                      ...formDatainput,
-                      BankersBranch: e.target.files[0],
-                    })
-                  }
+                  onChange={handleInputChange2}
                 />
               </div>
             </div>
@@ -907,37 +900,45 @@ const SDBGSub = () => {
             <div className="col-12">
               <div className="mb-3 d-flex justify-content-between">
                 {/* for dealing officer */}
-                {/* <button
-                  onClick={() => updateSDBG("NotApproved")}
-                  className="btn fw-bold btn-primary"
-                  type="submit"
-                >
-                  Forward To Finance
-                </button> */}
+                {isDO && (
+                  <>
+                    <button
+                      onClick={() => updateSDBG("NotApproved")}
+                      className="btn fw-bold btn-primary"
+                      type="submit"
+                    >
+                      Forward To Finance
+                    </button>
+                  </>
+                )}
 
                 {/* for finance officer  */}
-                <button
-                  onClick={() => updateSDBG("NotApproved")}
-                  className="btn fw-bold btn-primary me-3"
-                  type="submit"
-                >
-                  Accept
-                </button>
+                {user?.department_id === 15 && user?.internal_role_id === 1 && (
+                  <>
+                    <button
+                      onClick={() => updateSDBG("NotApproved")}
+                      className="btn fw-bold btn-primary me-3"
+                      type="submit"
+                    >
+                      Accept
+                    </button>
 
-                <button
-                  onClick={() => updateSDBG("NotApproved")}
-                  className="btn fw-bold btn-primary"
-                  type="submit"
-                >
-                  Return to Dealing Officer
-                </button>
-                <button
-                  onClick={() => updateSDBG("NotApproved")}
-                  className="btn fw-bold btn-primary"
-                  type="submit"
-                >
-                  Reject
-                </button>
+                    <button
+                      onClick={() => updateSDBG("NotApproved")}
+                      className="btn fw-bold btn-primary"
+                      type="submit"
+                    >
+                      Return to Dealing Officer
+                    </button>
+                    <button
+                      onClick={() => updateSDBG("NotApproved")}
+                      className="btn fw-bold btn-primary"
+                      type="submit"
+                    >
+                      Reject
+                    </button>
+                  </>
+                )}
               </div>
             </div>
           </div>

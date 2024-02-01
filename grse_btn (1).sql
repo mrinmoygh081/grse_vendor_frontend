@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jan 31, 2024 at 10:48 AM
+-- Generation Time: Feb 01, 2024 at 05:53 AM
 -- Server version: 10.4.28-MariaDB
 -- PHP Version: 8.1.17
 
@@ -114,7 +114,7 @@ INSERT INTO `auth` (`id`, `user_type`, `department_id`, `internal_role_id`, `use
 (3, 1, 0, 0, 'vendor2', '1234', 'Vendor2', '50000435', '2023-10-12 15:56:56', NULL),
 (4, 3, 3, 2, '600231', '1234', 'grse qap staff', '600231', '2023-10-12 15:57:39', NULL),
 (5, 4, 3, 1, '600229', '1234', 'grse qap assigner', '600229', '2023-10-12 15:58:16', NULL),
-(6, 6, 13, 4, 'super_admin', '1234', 'Kamal Ruidas', '600230', '2023-09-12 10:25:51', NULL),
+(6, 6, 13, 4, 'super_admin', '0000', 'Kamal Ruidas', '600230', '2023-09-12 10:25:51', NULL),
 (7, 2, 3, 2, '600947', '1234', 'grse qap staff', '600947', '2023-10-12 15:58:16', NULL),
 (8, 2, 3, 2, '600948', '1234', 'grse qap staff', '600948', '2023-10-12 15:58:16', NULL),
 (9, 2, 3, 2, '600232', '1234', 'grse qap staff', '600232', '2023-10-12 15:58:16', NULL),
@@ -125,11 +125,10 @@ INSERT INTO `auth` (`id`, `user_type`, `department_id`, `internal_role_id`, `use
 (14, 2, 3, 2, '600950', '1234', 'grse qap staff', '600950', '2023-10-12 15:58:16', NULL),
 (15, 2, 3, 2, '600252', '1234', 'grse qap staff', '600252', '2023-10-12 15:58:16', NULL),
 (16, 0, 14, NULL, 'PPC user', '1234', 'ppc_user', '600100', '2024-01-15 14:08:08', NULL),
-(17, 0, 1, 1, '493834', '1234', 'dealing Officer(created PO)', '493834', '2024-01-22 14:18:21', NULL),
 (18, 0, 15, 1, 'grse_FINANCE_ASSIGNER', '1234', 'grse_FINANCE_ASSIGNER', '600200', '2024-01-23 16:44:53', NULL),
 (19, 0, 16, 0, 'RIC', '1234', 'grse_RIC', '600300', '2024-01-23 16:44:53', NULL),
 (20, 0, 15, 2, 'grse_FINANCE_STAFF', '1234', 'grse_FINANCE_STAFF', '600201', '2024-01-23 16:44:53', NULL),
-(21, 0, 17, 2, '493834', '1234', 'DO', '493834', '2024-01-23 16:44:53', NULL);
+(21, 0, 17, 1, 'Po dealing officer', '1234', 'Po dealing officer', '493834', '2024-01-23 16:44:53', NULL);
 
 -- --------------------------------------------------------
 
@@ -333,7 +332,7 @@ INSERT INTO `depertment_master` (`id`, `name`) VALUES
 (14, 'PPC'),
 (15, 'FINANCE'),
 (16, 'RIC'),
-(17, 'purchase');
+(17, 'PURCHASE');
 
 -- --------------------------------------------------------
 
@@ -1046,7 +1045,6 @@ CREATE TABLE `pa0002` (
 
 INSERT INTO `pa0002` (`PERNR`, `SUBTY`, `OBJPS`, `SPRPS`, `ENDDA`, `BEGDA`, `SEQNR`, `AEDTM`, `UNAME`, `CNAME`, `GESCH`, `GBDAT`, `NATIO`) VALUES
 (60020, 'NA', 'NA', 'N', '0000-00-00', '0000-00-00', 0, '0000-00-00', '601621', 'TAPAS PAL', '1', '0000-00-00', 'IN'),
-(493834, 'NA', 'NA', 'N', '0000-00-00', '0000-00-00', 0, '0000-00-00', '493834', 'ABHINIT PAL ', '1', '0000-00-00', 'IN'),
 (600201, 'NA', 'NA', 'N', '0000-00-00', '0000-00-00', 0, '0000-00-00', '601621', 'Rabi Teja', '1', '0000-00-00', 'IN'),
 (600202, 'NA', 'NA', 'N', '0000-00-00', '0000-00-00', 0, '0000-00-00', '601621', 'Mohit Kumar', '1', '0000-00-00', 'IN'),
 (600203, 'NA', 'NA', 'N', '0000-00-00', '0000-00-00', 0, '0000-00-00', '601621', 'Amit Sha', '1', '0000-00-00', 'IN'),
@@ -1104,8 +1102,7 @@ INSERT INTO `pa0105` (`PERNR`, `SUBTY`, `OBJPS`, `SPRPS`, `ENDDA`, `BEGDA`, `SEQ
 (600953, '0030', NULL, NULL, NULL, NULL, NULL, NULL, 'ERPDM1', '10', NULL, 'tapaspal_tapaspal@gmail.com'),
 (600201, '0030', NULL, NULL, NULL, NULL, NULL, NULL, 'ERPDM1', '10', NULL, 'finance1@gmail.com'),
 (600202, '0030', NULL, NULL, NULL, NULL, NULL, NULL, 'ERPDM1', '10', NULL, 'finance2@gmail.com'),
-(600203, '0030', NULL, NULL, NULL, NULL, NULL, NULL, 'ERPDM1', '10', NULL, 'finance3@gmail.com'),
-(493834, '0030', NULL, NULL, NULL, NULL, NULL, NULL, '493834', '10', NULL, 'ABHINITPAL@GMAIL.COM');
+(600203, '0030', NULL, NULL, NULL, NULL, NULL, NULL, 'ERPDM1', '10', NULL, 'finance3@gmail.com');
 
 -- --------------------------------------------------------
 
@@ -1235,13 +1232,7 @@ CREATE TABLE `sdbg` (
 --
 
 INSERT INTO `sdbg` (`id`, `purchasing_doc_no`, `file_name`, `file_path`, `remarks`, `status`, `vendor_code`, `assigned_from`, `assigned_to`, `created_at`, `created_by_name`, `created_by_id`, `updated_by`) VALUES
-(1, '7800000040', '1706525325326-sample.pdf', 'uploads\\submitSDBG\\1706525325326-sample.pdf', 'REMARKS', 'PENDING', '50007545', '', '', 1706525325330, '', '50007545', 'VENDOR'),
-(2, '7800000040', '1706525325326-sample.pdf', 'uploads\\submitSDBG\\1706525325326-sample.pdf', 'send to finance', 'FORWARD_TO_FINANCE', '50007545', '493834', '600200', 1706526365555, 'Dealing officer', '493834', 'GRSE'),
-(3, '7800000040', '1706525325326-sample.pdf', 'uploads\\submitSDBG\\1706525325326-sample.pdf', 'sdbg accepted.', 'ACCEPTED', '50007545', '600200', '600201', 1706526535930, 'finance dept', '600200', 'GRSE'),
-(4, '7800000040', '1706525325326-sample.pdf', 'uploads\\submitSDBG\\1706525325326-sample.pdf', 'sdbg accepted.', 'ACCEPTED', '50007545', NULL, NULL, 1706526735880, 'finance dept', '600201', 'GRSE'),
-(5, '7800000040', '1706525325326-sample.pdf', 'uploads\\submitSDBG\\1706525325326-sample.pdf', 'sdbg accepted.', 'ACCEPTED', '50007545', NULL, NULL, 1706527413007, 'finance dept', '600201', 'GRSE'),
-(6, '7800000040', '1706525325326-sample.pdf', 'uploads\\submitSDBG\\1706525325326-sample.pdf', 'sdbg accepted.', 'ACCEPTED', '50007545', NULL, NULL, 1706527890431, 'finance dept', '600201', 'GRSE'),
-(7, '7800000040', '1706525325326-sample.pdf', 'uploads\\submitSDBG\\1706525325326-sample.pdf', 'sdbg accepted.', 'ACCEPTED', '50007545', '50007545', '50007545', 1706527890431, 'finance dept', '50007545', 'GRSE');
+(1, '7800000040', '1706697429773-sample.pdf', 'uploads\\submitSDBG\\1706697429773-sample.pdf', 'Uploading SDBG', 'PENDING', '50007545', NULL, NULL, 1706697429775, '', '50007545', 'VENDOR');
 
 -- --------------------------------------------------------
 
@@ -1304,13 +1295,6 @@ CREATE TABLE `sdbg_entry` (
   `created_at` bigint(20) NOT NULL,
   `created_by` varchar(12) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='sdbg entry';
-
---
--- Dumping data for table `sdbg_entry`
---
-
-INSERT INTO `sdbg_entry` (`id`, `purchasing_doc_no`, `bank_name`, `branch_name`, `ifsc_code`, `bank_addr1`, `bank_addr2`, `bank_addr3`, `bank_city`, `pincode`, `bg_no`, `bg_date`, `bg_ammount`, `department`, `po_date`, `yard_no`, `vendor_pincode`, `extension_date1`, `extension_date2`, `extension_date3`, `extension_date4`, `extension_date5`, `extension_date6`, `release_date`, `demand_notice_date`, `extension_date`, `status`, `created_at`, `created_by`) VALUES
-(1, '7800000040', 'State bank of India', 'gerdenrich', 'ESWD12A', 'gerdenrich, kol - 157', NULL, NULL, NULL, '2123', 'yr6egg', 12345678, 234567, 'SDBG', 25465, 'fghhh', '4345', 543233454, NULL, NULL, NULL, NULL, NULL, 64637633, 12345555, 12344, 'FORWARD_TO_FINANCE', 1706526365527, '493834');
 
 -- --------------------------------------------------------
 
@@ -2110,7 +2094,7 @@ ALTER TABLE `qap_submission`
 -- AUTO_INCREMENT for table `sdbg`
 --
 ALTER TABLE `sdbg`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `sdbg_acknowledgement`
@@ -2122,7 +2106,7 @@ ALTER TABLE `sdbg_acknowledgement`
 -- AUTO_INCREMENT for table `sdbg_entry`
 --
 ALTER TABLE `sdbg_entry`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `sdbg_return_submisson`

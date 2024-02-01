@@ -4,26 +4,26 @@ import Header from "../components/Header";
 import Footer from "../components/Footer";
 import { useParams } from "react-router-dom";
 import { apiCallBack } from "../utils/fetchAPIs";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { doHandler } from "../redux/slices/poSlice";
 import moment from "moment";
 import { toast } from "react-toastify";
 import axios from "axios";
 
 const PODetails = () => {
+  const dispatch = useDispatch();
   const [poDetails, setPoDetails] = useState([]);
   const [file, setFile] = useState(null);
   const { id } = useParams();
   const { token } = useSelector((state) => state.auth);
-  console.log(token, "tokentoken");
   const [isPopup, setIsPopup] = useState(false);
-
-  console.log(poDetails, "poDetails");
 
   useEffect(() => {
     (async () => {
       const data = await apiCallBack("GET", `po/details?id=${id}`, null, token);
       if (data?.status) {
         setPoDetails(data?.data);
+        dispatch(doHandler(data?.data[0].isDO));
       }
     })();
   }, [id]);
