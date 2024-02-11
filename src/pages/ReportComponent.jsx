@@ -34,7 +34,6 @@ const ReportComponent = () => {
   const [employeeList, setEmployeeList] = useState([]);
   const [selectedEmployee, setSelectedEmployee] = useState("");
   const [searchInput, setSearchInput] = useState("");
-  console.log(user);
 
   useEffect(() => {
     (async () => {
@@ -84,7 +83,7 @@ const ReportComponent = () => {
         // user_id: parseInt(user?.vendor_code),
         page: currentPage,
         limit: 2,
-        action: "ACCEPTED",
+        // action: "",
         depertment: user?.department_id,
         // startDate: dates?.start * miliSec,
         // endDate: dates?.end * miliSec,

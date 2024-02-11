@@ -1,8 +1,23 @@
 import React from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { reConfirm } from "../utils/reConfirm";
+import { logoutHandler } from "../redux/slices/loginSlice";
+import { poRemoveHandler } from "../redux/slices/poSlice";
 
 export default function Header({ title, id }) {
   const user = useSelector((state) => state.auth);
+
+  const dispatch = useDispatch();
+
+  const logOutFun = () => {
+    dispatch(logoutHandler());
+    dispatch(poRemoveHandler());
+    window.location.href = "/";
+    // Persistor.pause();
+    // Persistor.flush().then(() => {
+    //   return Persistor.purge();
+    // });
+  };
 
   return (
     <>
@@ -38,28 +53,42 @@ export default function Header({ title, id }) {
             </div>
           </div>
           <div className="d-flex align-items-stretch justify-content-between w-100">
-            <div className="d-flex align-items-stretch">
-              <div className="header-menu align-items-stretch">
-                <div className="menu menu-lg-rounded menu-column menu-lg-row menu-state-bg menu-title-gray-700 menu-state-title-primary menu-state-icon-primary menu-state-bullet-primary menu-arrow-gray-400 fw-bold my-5 my-lg-0 align-items-stretch">
-                  <div className="menu-item here show menu-lg-down-accordion me-lg-1">
-                    <span className="menu-link py-3">
-                      <span className="menu-title">{title}</span>
-                      <span className="menu-arrow d-lg-none"></span>
-                    </span>
+            <div className="header-menu align-items-stretch justify-content-between w-100">
+              <div className="menu menu-lg-rounded menu-column menu-lg-row menu-state-bg menu-title-gray-700 menu-state-title-primary menu-state-icon-primary menu-state-bullet-primary menu-arrow-gray-400 fw-bold my-5 my-lg-0 align-items-stretch">
+                <div className="menu-item here show menu-lg-down-accordion me-lg-1">
+                  <span className="menu-link py-3">
+                    <span className="menu-title">{title}</span>
+                    <span className="menu-arrow d-lg-none"></span>
+                  </span>
+                </div>
+              </div>
+              <div className="d-flex align-items-center justify-content-end">
+                <div
+                  className="menu menu-lg-rounded menu-column menu-state-bg menu-title-gray-700 menu-state-title-primary menu-state-icon-primary menu-state-bullet-primary menu-arrow-gray-400 fw-bold my-5 my-lg-0 align-items-stretch"
+                  style={{ width: "110px" }}
+                >
+                  <div className="menu-item here show menu-lg-down-accordion pe-lg-2">
+                    PO number: <br /> <span className="menu-title">{id}</span>
                   </div>
                 </div>
-                <div className="d-flex align-items-center justify-content-between w-100">
-                  <div className="menu menu-lg-rounded menu-column menu-lg-row menu-state-bg menu-title-gray-700 menu-state-title-primary menu-state-icon-primary menu-state-bullet-primary menu-arrow-gray-400 fw-bold my-5 my-lg-0 align-items-stretch">
-                    <div className="menu-item here show menu-lg-down-accordion me-lg-1">
-                      <span className="menu-title">PO number: {id}</span>
-                    </div>
-                  </div>
-                  <div className="menu menu-lg-rounded menu-column menu-lg-row menu-state-bg menu-title-gray-700 menu-state-title-primary menu-state-icon-primary menu-state-bullet-primary menu-arrow-gray-400 fw-bold my-5 my-lg-0 align-items-stretch">
-                    <div className="menu-item here show menu-lg-down-accordion me-lg-1">
-                      <span className="menu-title">
-                        Vendor Code: {user.user.vendor_code}
-                      </span>
-                    </div>
+                <div
+                  className="menu menu-lg-rounded menu-column menu-state-bg menu-title-gray-700 menu-state-title-primary menu-state-icon-primary menu-state-bullet-primary menu-arrow-gray-400 fw-bold my-5 my-lg-0 align-items-stretch"
+                  style={{ width: "110px" }}
+                >
+                  <div className="menu-item here show menu-lg-down-accordion pe-lg-2">
+                    Logged In: <br />
+                    <span className="menu-title">{user.user.vendor_code}</span>
+                    <span
+                      onClick={() =>
+                        reConfirm(
+                          { file: true },
+                          logOutFun,
+                          "You're going to Logout!"
+                        )
+                      }
+                    >
+                      (<u className="red">Logout?</u>)
+                    </span>
                   </div>
                 </div>
               </div>

@@ -26,7 +26,7 @@ const InspectionCall = () => {
     try {
       const data = await apiCallBack(
         "GET",
-        `po/ListOfInspectionCallLetter?poNo=${id}`,
+        `po/inspectioncallletter/list?poNo=${id}`,
         null,
         token
       );
@@ -44,12 +44,32 @@ const InspectionCall = () => {
 
   const optionss = [
     {
-      file_type_name: "WDC",
+      file_type_name: "Inspection Call Letter - Stage 1",
       file_type_id: 1,
     },
     {
-      file_type_name: "Final Dispatch Clearance",
+      file_type_name: "Inspection Call Letter - Stage 2",
       file_type_id: 2,
+    },
+    {
+      file_type_name: "Inspection Call Letter - Stage 3",
+      file_type_id: 3,
+    },
+    {
+      file_type_name: "Inspection release note by TPI",
+      file_type_id: 4,
+    },
+    {
+      file_type_name: "Class /Form-4",
+      file_type_id: 5,
+    },
+    {
+      file_type_name: "Dispatch Clearance by CQAE",
+      file_type_id: 6,
+    },
+    {
+      file_type_name: "Others",
+      file_type_id: 30,
     },
   ];
 
@@ -126,6 +146,7 @@ const InspectionCall = () => {
                                   <th>DateTime </th>
                                   <th>Inspection Call Letter</th>
                                   <th>Updated By</th>
+                                  <th>File Type</th>
                                   <th className="min-w-150px">Remarks</th>
                                 </tr>
                               </thead>
@@ -147,14 +168,18 @@ const InspectionCall = () => {
                                       </a>
                                     </td>
                                     <td className="">
-                                      {inspection.created_by_name}
+                                      {inspection.updated_by} (
+                                      {inspection.created_by_id})
+                                    </td>
+                                    <td className="">
+                                      {inspection.file_type_name}
                                     </td>
                                     <td className="">{inspection.remarks}</td>
-                                    <td className="">
+                                    {/* <td className="">
                                       {inspection.status === "APPROVED"
                                         ? "APPROVED"
                                         : "PENDING"}
-                                    </td>
+                                    </td> */}
                                   </tr>
                                 ))}
                               </tbody>
@@ -207,7 +232,7 @@ const InspectionCall = () => {
                   <select
                     name=""
                     id=""
-                    className="form-control"
+                    className="form-select"
                     onChange={(e) => {
                       setSelectedFileTypeId(e.target.value);
                       setSelectedFileTypeName(

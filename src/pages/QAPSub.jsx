@@ -9,20 +9,6 @@ import moment from "moment";
 import { toast } from "react-toastify";
 import Select from "react-select";
 
-// const options = [
-//   { value: "Hull", label: "Hull" },
-//   { value: "Electrical", label: "Electrical" },
-//   { value: "Machinery", label: "Machinery" },
-//   { value: "Plumbing", label: "Plumbing" },
-// ];
-
-// const empOptions = [
-//   { value: "Mr. X Ghosh", label: "Mr. X Ghosh" },
-//   { value: "Mr. Y Chowdhury", label: "Mr. Y Chowdhury" },
-//   { value: "Mrs. M Ghosh", label: "Mrs. M Ghosh" },
-//   { value: "Mrs. D Das", label: "Mrs. D Das" },
-// ];
-
 const QAPSub = () => {
   const [isPopup, setIsPopup] = useState(false);
   const [isPopupAssign, setIsPopupAssign] = useState(false);
@@ -249,35 +235,38 @@ const QAPSub = () => {
                                 </tr>
                               </thead>
                               <tbody style={{ maxHeight: "100%" }}>
-                                {allqap.map((qap, index) => (
-                                  <tr key={index}>
-                                    <td className="table_center">
-                                      {moment(qap.created_at)
-                                        .utc()
-                                        .format("YYYY-MM-DD")}
-                                    </td>
-                                    <td className="">
-                                      <a
-                                        href={`${process.env.REACT_APP_BACKEND_API}po/download?id=${qap.drawing_id}&type=qap`}
-                                        target="_blank"
-                                        rel="noreferrer"
-                                      >
-                                        {qap.file_name}
-                                      </a>
-                                    </td>
-                                    <td className="">{qap.created_by_name}</td>
-                                    <td className="">{qap.remarks}</td>
-                                    <td className="">
-                                      {qap.status === "APPROVED"
-                                        ? "APPROVED"
-                                        : qap.status === "REJECTED"
-                                        ? "REJECTED"
-                                        : qap.status === "ACCEPTED"
-                                        ? "ACCEPTED"
-                                        : "PENDING"}
-                                    </td>
-                                  </tr>
-                                ))}
+                                {allqap &&
+                                  allqap.map((qap, index) => (
+                                    <tr key={index}>
+                                      <td className="table_center">
+                                        {moment(qap.created_at)
+                                          .utc()
+                                          .format("YYYY-MM-DD")}
+                                      </td>
+                                      <td className="">
+                                        <a
+                                          href={`${process.env.REACT_APP_BACKEND_API}po/download?id=${qap.drawing_id}&type=qap`}
+                                          target="_blank"
+                                          rel="noreferrer"
+                                        >
+                                          {qap.file_name}
+                                        </a>
+                                      </td>
+                                      <td className="">
+                                        {qap.created_by_name}
+                                      </td>
+                                      <td className="">{qap.remarks}</td>
+                                      <td className="">
+                                        {qap.status === "APPROVED"
+                                          ? "APPROVED"
+                                          : qap.status === "REJECTED"
+                                          ? "REJECTED"
+                                          : qap.status === "ACCEPTED"
+                                          ? "ACCEPTED"
+                                          : "PENDING"}
+                                      </td>
+                                    </tr>
+                                  ))}
                               </tbody>
                             </table>
                           </div>

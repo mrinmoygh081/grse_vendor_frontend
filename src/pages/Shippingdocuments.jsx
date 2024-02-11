@@ -12,7 +12,6 @@ const Shippingdocuments = () => {
   const [isPopup, setIsPopup] = useState(false);
   const [shippingdocumentss, setShippingdocumentss] = useState([]);
   const { id } = useParams();
-  console.log(shippingdocumentss, "shippingdocumentss");
 
   const { user, token, userType } = useSelector((state) => state.auth);
   const [formData, setFormData] = useState({
@@ -30,6 +29,10 @@ const Shippingdocuments = () => {
     {
       file_type_name: "Final Dispatch Clearance",
       file_type_id: 2,
+    },
+    {
+      file_type_name: "Others",
+      file_type_id: 30,
     },
   ];
 
@@ -138,32 +141,33 @@ const Shippingdocuments = () => {
                                 </tr>
                               </thead>
                               <tbody style={{ maxHeight: "100%" }}>
-                                {shippingdocumentss.map((document) => (
-                                  <tr key={document.id}>
-                                    <td className="table_center">
-                                      {moment(document.created_at)
-                                        .utc()
-                                        .format("YYYY-MM-DD")}
-                                    </td>
-                                    <td>
-                                      <a
-                                        href={`${process.env.REACT_APP_BACKEND_API}${document.file_path}`}
-                                        target="_blank"
-                                        rel="noreferrer"
-                                      >
-                                        {document.file_name}
-                                      </a>
-                                    </td>
-                                    <td>{document.file_type_name}</td>
-                                    <td>{document.updated_by}</td>
-                                    <td>{document.remarks}</td>
-                                    <td className="">
-                                      {document.status === "APPROVED"
-                                        ? "APPROVED"
-                                        : "PENDING"}
-                                    </td>
-                                  </tr>
-                                ))}
+                                {shippingdocumentss &&
+                                  shippingdocumentss.map((document) => (
+                                    <tr key={document.id}>
+                                      <td className="table_center">
+                                        {moment(document.created_at)
+                                          .utc()
+                                          .format("YYYY-MM-DD")}
+                                      </td>
+                                      <td>
+                                        <a
+                                          href={`${process.env.REACT_APP_BACKEND_API}${document.file_path}`}
+                                          target="_blank"
+                                          rel="noreferrer"
+                                        >
+                                          {document.file_name}
+                                        </a>
+                                      </td>
+                                      <td>{document.file_type_name}</td>
+                                      <td>{document.updated_by}</td>
+                                      <td>{document.remarks}</td>
+                                      <td className="">
+                                        {document.status === "APPROVED"
+                                          ? "APPROVED"
+                                          : "PENDING"}
+                                      </td>
+                                    </tr>
+                                  ))}
 
                                 {/* <tr>
                                   <td className="table_center">24-12-2022</td>
@@ -247,7 +251,7 @@ const Shippingdocuments = () => {
       </div>
       <div className={isPopup ? "popup active" : "popup"}>
         <div className="card card-xxl-stretch mb-5 mb-xxl-8">
-          <div className="card-header border-0 pt-5">
+          <div className="card-header border-0 pt-5 pb-3">
             <h3 className="card-title align-items-start flex-column">
               <span className="card-label fw-bold fs-3 mb-1">
                 Upload Shipping Documents
@@ -267,7 +271,7 @@ const Shippingdocuments = () => {
                   <select
                     name=""
                     id=""
-                    className="form-control"
+                    className="form-select"
                     onChange={(e) => {
                       setSelectedFileTypeId(e.target.value);
                       setSelectedFileTypeName(

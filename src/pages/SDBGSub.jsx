@@ -54,6 +54,38 @@ const SDBGSub = () => {
     DemandNoticeDate: null,
     EntensionLetterDate: null,
   });
+  const [formDatainput1, setFormDatainput1] = useState({
+    purchasing_doc_no: "",
+    bank_name: "",
+    branch_name: "",
+    ifsc_code: "",
+    bank_addr1: "",
+    bank_addr2: "",
+    bank_addr3: "",
+    bank_city: "",
+    pincode: "",
+    bg_no: "",
+    bg_date: "",
+    bg_ammount: "",
+    department: "",
+    po_date: "",
+    yard_no: "",
+    vendor_pincode: "",
+    extension_date1: "",
+    extension_date2: "",
+    extension_date3: "",
+    extension_date4: "",
+    extension_date5: "",
+    extension_date6: "",
+    release_date: "",
+    demand_notice_date: "",
+    extension_date: "",
+    status: "",
+    created_at: "",
+    created_by: "",
+    remarks: "",
+    assigned_to: "",
+  });
   const { id } = useParams();
   const { user, token, userType } = useSelector((state) => state.auth);
   const { isDO } = useSelector((state) => state.selectedPO);

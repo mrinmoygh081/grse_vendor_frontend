@@ -17,6 +17,8 @@ const POs = () => {
   const { po } = useSelector((state) => state.selectedPO);
   const navigate = useNavigate();
 
+  console.log(polist);
+
   useEffect(() => {
     (async () => {
       const data = await apiCallBack("GET", `po/poList`, null, token);
@@ -35,8 +37,18 @@ const POs = () => {
   // Filter the polist based on the searchQuery
   const filteredPolist = polist.filter(
     (po) =>
-      po.poNumber.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      po.poType.toLowerCase().includes(searchQuery.toLowerCase())
+      (po?.poNumber &&
+        po?.poNumber.toLowerCase().includes(searchQuery.toLowerCase())) ||
+      (po?.poType &&
+        po?.poType.toLowerCase().includes(searchQuery.toLowerCase())) ||
+      (po?.vendor_code &&
+        po?.vendor_code.toLowerCase().includes(searchQuery.toLowerCase())) ||
+      (po?.vendor_name &&
+        po?.vendor_name.toLowerCase().includes(searchQuery.toLowerCase())) ||
+      (po?.wbs_id &&
+        po?.wbs_id.toLowerCase().includes(searchQuery.toLowerCase())) ||
+      (po?.project_code &&
+        po?.project_code.toLowerCase().includes(searchQuery.toLowerCase()))
   );
 
   return (
@@ -92,6 +104,14 @@ const POs = () => {
                                   </span>
                                   {po.poType}
                                 </span>
+                                <br />
+                                <span>
+                                  Vendor: {po.vendor_code} ({po.vendor_name})
+                                </span>
+                                <br />
+                                <span>Project Code: {po.project_code}</span>
+                                <br />
+                                <span>WBS: {po.wbs_id}</span>
                               </td>
                               <td>
                                 {/* SDBG Date:{" "} */}

@@ -8,6 +8,7 @@ import { apiCallBack } from "../utils/fetchAPIs";
 import moment from "moment";
 import { toast } from "react-toastify";
 import Select from "react-select";
+import swal from "sweetalert";
 
 const options = [
   { value: "Hull", label: "Hull" },
@@ -42,10 +43,11 @@ const DrawingSub = () => {
     try {
       const data = await apiCallBack(
         "GET",
-        `po/drawingList?poNo=${id}`,
+        `po/drawing/drawingList?poNo=${id}`,
         null,
         token
       );
+      console.log(data);
       if (data?.status) {
         setAlldrawing(data?.data);
       }
@@ -84,7 +86,7 @@ const DrawingSub = () => {
 
       const response = await apiCallBack(
         "POST",
-        "po/drawing",
+        "po/drawing/submitDrawing",
         formDataToSend,
         token
       );
@@ -112,6 +114,29 @@ const DrawingSub = () => {
     }
   };
 
+  const reConfirmcheckHandleUploadChange = () => {
+    if (formData?.drawingFile) {
+      swal({
+        title: "Are you sure?",
+        text: "You're confirming that this drawing has been approved!",
+        icon: "warning",
+        buttons: true,
+        dangerMode: true,
+      }).then((willDelete) => {
+        if (willDelete) {
+          updateDrawing("APPROVED");
+        }
+      });
+    } else {
+      swal({
+        title: "Warning",
+        text: "You forget to add a file!",
+        icon: "warning",
+        button: true,
+      });
+    }
+  };
+
   const assignDrawing = async () => {};
 
   return (
@@ -131,7 +156,7 @@ const DrawingSub = () => {
                           onClick={() => setIsPopup(true)}
                           className="btn fw-bold btn-primary mx-3"
                         >
-                          Upload Covering Letter
+                          Upload
                         </button>
                       </div>
                     </div>
@@ -150,37 +175,39 @@ const DrawingSub = () => {
                                 </tr>
                               </thead>
                               <tbody style={{ maxHeight: "100%" }}>
-                                {alldrawing.map((drawing) => (
-                                  <tr key={drawing.drawing_id}>
-                                    <td className="table_center">
-                                      {moment(drawing.created_at)
-                                        .utc()
-                                        .format("YYYY-MM-DD")}
-                                    </td>
-                                    <td className="">
-                                      <a
-                                        href={`${process.env.REACT_APP_BACKEND_API}po/download?id=${drawing.drawing_id}&type=drawing`}
-                                        target="_blank"
-                                        rel="noreferrer"
-                                      >
-                                        {drawing.file_name}
-                                      </a>
-                                    </td>
-                                    <td className="">
-                                      {drawing.created_by_name}
-                                    </td>
-                                    <td className="">{drawing.remarks}</td>
-                                    <td className="">
-                                      {drawing.status === "APPROVED"
-                                        ? "APPROVED"
-                                        : drawing.status === "REJECTED"
-                                        ? "REJECTED"
-                                        : drawing.status === "ACCEPTED"
-                                        ? "ACCEPTED, Not APPROVED Yet"
-                                        : "PENDING"}
-                                    </td>
-                                  </tr>
-                                ))}
+                                {console.log(alldrawing)}
+                                {alldrawing &&
+                                  alldrawing.map((drawing, index) => (
+                                    <tr key={index}>
+                                      <td className="table_center">
+                                        {moment(drawing.created_at)
+                                          .utc()
+                                          .format("YYYY-MM-DD")}
+                                      </td>
+                                      <td className="">
+                                        <a
+                                          href={`${process.env.REACT_APP_PDF_URL}submitDrawing/${drawing.file_name}`}
+                                          target="_blank"
+                                          rel="noreferrer"
+                                        >
+                                          {drawing.file_name}
+                                        </a>
+                                      </td>
+                                      <td className="">
+                                        {drawing.created_by_id}
+                                      </td>
+                                      <td className="">{drawing.remarks}</td>
+                                      <td className="">
+                                        {drawing.status === "APPROVED"
+                                          ? "APPROVED"
+                                          : drawing.status === "REJECTED"
+                                          ? "REJECTED"
+                                          : drawing.status === "ACCEPTED"
+                                          ? "ACCEPTED, Not APPROVED Yet"
+                                          : "PENDING"}
+                                      </td>
+                                    </tr>
+                                  ))}
                               </tbody>
                             </table>
                           </div>
@@ -245,13 +272,13 @@ const DrawingSub = () => {
                 <div className="mb-3 d-flex justify-content-between">
                   {userType !== 1 && poType === "material" ? (
                     <div>
-                      <button
+                      {/* <button
                         onClick={() => updateDrawing("SAVED")}
                         className="btn fw-bold btn-primary me-2"
                         type="button"
                       >
                         SAVE
-                      </button>
+                      </button> */}
                       <button
                         onClick={() => updateDrawing("PENDING")}
                         className="btn fw-bold btn-warning me-2"
@@ -259,20 +286,20 @@ const DrawingSub = () => {
                       >
                         UPDATE
                       </button>
-                      <button
+                      {/* <button
                         onClick={() => updateDrawing("ACCEPTED")}
                         className="btn fw-bold btn-success me-2"
                         type="button"
                       >
                         ACCEPT
-                      </button>
+                      </button> 
                       <button
                         onClick={() => updateDrawing("REJECTED")}
                         className="btn fw-bold btn-danger"
                         type="button"
                       >
                         REJECT
-                      </button>
+                      </button> */}
                     </div>
                   ) : (
                     <>
@@ -288,7 +315,7 @@ const DrawingSub = () => {
 
                   {userType !== 1 && (
                     <button
-                      onClick={() => updateDrawing("APPROVED")}
+                      onClick={() => reConfirmcheckHandleUploadChange()}
                       className="btn fw-bold btn-primary"
                       type="button"
                     >

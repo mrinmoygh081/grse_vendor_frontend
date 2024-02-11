@@ -1,4 +1,10 @@
+u {
+  cursor: pointer;
+}
 .form-label span.star {
+  color: red;
+}
+.red {
   color: red;
 }
 .w_30 {
@@ -91,4 +97,7 @@
 }
 .react-datepicker-wrapper {
   width: 100%;
+}
+.menu-item .menu-title {
+  color: #2a2d93;
 }
