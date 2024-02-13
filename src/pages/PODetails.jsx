@@ -1,15 +1,14 @@
-import React, { Fragment, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import SideBar from "../components/SideBar";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 import { useParams } from "react-router-dom";
-import { apiCallBack, postAPI } from "../utils/fetchAPIs";
+import { apiCallBack } from "../utils/fetchAPIs";
 import { useDispatch, useSelector } from "react-redux";
 import { doHandler } from "../redux/slices/poSlice";
 import moment from "moment";
 import { toast } from "react-toastify";
 import axios from "axios";
-import swal from "sweetalert";
 
 const PODetails = () => {
   const dispatch = useDispatch();
@@ -34,31 +33,10 @@ const PODetails = () => {
     setFile(selectedFile);
   };
 
-  const reConfirmcheckHandleUploadChange = () => {
-    if (file) {
-      swal({
-        title: "Are you sure?",
-        text: "Once updated, the previous TNC minutes will be updated if uploaded!",
-        icon: "warning",
-        buttons: true,
-        dangerMode: true,
-      }).then((willDelete) => {
-        if (willDelete) {
-          handleUploadTNCMinutes();
-        }
-      });
-    } else {
-      swal({
-        title: "Warning",
-        text: "You forget to add a file!",
-        icon: "warning",
-        button: true,
-      });
-    }
-  };
-
-  const handleUploadTNCMinutes = async () => {
+  const handleUploadTNCMinutes = async (event) => {
     try {
+      event.preventDefault();
+
       const formData = new FormData();
       formData.append("purchasing_doc_no", id);
       formData.append("file", file);
@@ -75,7 +53,7 @@ const PODetails = () => {
 
         setIsPopup(false);
       } else {
-        toast.error(response?.message);
+        toast.error("Error uploading TNC Minutes. Please try again.");
       }
     } catch (error) {
       console.error("Error uploading TNC Minutes:", error.message);
@@ -84,9 +62,8 @@ const PODetails = () => {
   };
   const handleViewTNCMinutes = async () => {
     try {
-      console.log(process.env.REACT_APP_PDF_URL);
       const response = await axios.get(
-        `${process.env.REACT_APP_PDF_URL}/tncminutes/${id}.pdf`,
+        `http://localhost:4001/uploads/tncminutes/${id}.pdf`,
         {
           responseType: "blob",
           headers: {
@@ -114,22 +91,33 @@ const PODetails = () => {
       toast.error("Error viewing TNC Minutes. Please try again.");
     }
   };
-  const handleViewSAPPO = async () => {
+
+  const handleDownloadSAPPO = async () => {
     try {
-      const d = await apiCallBack(
-        "GET",
-        `po/download/latestDocFile?poNo=${id}`,
-        null,
-        token
+      const response = await axios.get(
+        `http://localhost:4001/api/v1/po/download/latestDocFile?poNo=${id}`,
+        {
+          responseType: "blob",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
       );
-      if (d?.status) {
-        window.open(
-          `${process.env.REACT_APP_ROOT_URL}sapuploads/po/${d.data[0].file_name}`
-        );
-      }
+
+      const contentDisposition = response.headers["content-disposition"];
+      const fileName = contentDisposition
+        ? contentDisposition.split("filename=")[1]
+        : "SAP_PO.pdf";
+
+      const blob = new Blob([response.data], { type: "application/pdf" });
+
+      const link = document.createElement("a");
+      link.href = window.URL.createObjectURL(blob);
+      link.download = fileName;
+      link.click();
     } catch (error) {
-      console.error("Error viewing TNC Minutes:", error.message);
-      toast.error("Error viewing TNC Minutes. Please try again.");
+      console.error("Error downloading SAP PO:", error.message);
+      toast.error("Error downloading SAP PO. Please try again.");
     }
   };
 
@@ -176,120 +164,136 @@ const PODetails = () => {
                                 className="btn btn-primary me-3"
                                 onClick={handleViewTNCMinutes}
                               >
-                                Download TNC Minutes
+                                View TNC Minutes
                               </button>
                               <button
                                 className="btn btn-primary"
-                                onClick={handleViewSAPPO}
+                                onClick={handleDownloadSAPPO}
                               >
                                 Download SAP PO
                               </button>
                             </div>
                           </div>
-                          {poDetails &&
-                            poDetails.map((po, index) => (
-                              <div key={index}>
-                                <div className="row">
-                                  <div className="col-12 col-md-5">
+                          {poDetails.map((po) => (
+                            <div key={po.EBELN}>
+                              <div className="row">
+                                <div className="col-6">
+                                  <div className="card card-xxl-stretch mb-5 mb-xxl-8">
+                                    <div className="card-body py-3">
+                                      <div className="card_header_data">
+                                        <span className="label">
+                                          PO Number:
+                                        </span>
+                                        <span className="label_data">
+                                          {po.EBELN}
+                                        </span>
+                                      </div>
+                                      <div className="card_header_data">
+                                        <span className="label">PO Date:</span>
+                                        <span className="label_data">
+                                          {moment(po.AEDAT)
+                                            .utc()
+                                            .format("DD/MM/YY (HH:mm)")}
+                                          {/* {po.AEDAT} */}
+                                        </span>
+                                      </div>
+                                      <div className="card_header_data">
+                                        <span className="label">MAN:</span>
+                                        <span className="label_data">
+                                          {po.ERNAM}
+                                        </span>
+                                      </div>
+                                      <div className="card_header_data">
+                                        <span className="label">
+                                          Vendor Name:
+                                        </span>
+                                        <span className="label_data">
+                                          {po.LIFNR} (<span>{po.NAME1}</span>)
+                                        </span>
+                                      </div>
+                                      <div className="card_header_data">
+                                        <span className="label">
+                                          Purchase Group:
+                                        </span>
+                                        <span className="label_data">
+                                          {po.EKGRP}
+                                        </span>
+                                      </div>
+                                      <div className="card_header_data">
+                                        <span className="label_data">
+                                          {/* PO Acceptance Date */}
+                                        </span>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                                {po.timeline === "" ? (
+                                  ""
+                                ) : (
+                                  <div className="col-6">
                                     <div className="card card-xxl-stretch mb-5 mb-xxl-8">
                                       <div className="card-body py-3">
                                         <div className="card_header_data">
                                           <span className="label">
-                                            PO Number:
+                                            {/* Contractual SDBG/IB submission date: */}
+                                            {po.timeline[0]?.MTEXT} :
                                           </span>
                                           <span className="label_data">
-                                            {po.EBELN}
+                                            {moment(
+                                              po.timeline[0]?.PLAN_DATE
+                                            ).format("DD/MM/YY (HH:mm)")}
                                           </span>
                                         </div>
                                         <div className="card_header_data">
                                           <span className="label">
-                                            PO Date:
+                                            {/* Contractual drawing submission date: */}
+                                            {po.timeline[1]?.MTEXT} :
                                           </span>
                                           <span className="label_data">
-                                            {moment(po.AEDAT)
-                                              .utc()
-                                              .format("YYYY-MM-DD")}
-                                            {/* {po.AEDAT} */}
-                                          </span>
-                                        </div>
-                                        <div className="card_header_data">
-                                          <span className="label">Vendor:</span>
-                                          <span className="label_data">
-                                            {po.LIFNR} (<span>{po.NAME1}</span>)
+                                            {moment(
+                                              po.timeline[1]?.PLAN_DATE
+                                            ).format("DD/MM/YY (HH:mm)")}
                                           </span>
                                         </div>
                                         <div className="card_header_data">
                                           <span className="label">
-                                            Purchase Group:
+                                            {/* Contractual QAP submission date: */}
+                                            {po.timeline[2]?.MTEXT} :
                                           </span>
                                           <span className="label_data">
-                                            {po.EKGRP}
+                                            {moment(
+                                              po.timeline[2]?.PLAN_DATE
+                                            ).format("DD/MM/YY (HH:mm)")}
                                           </span>
                                         </div>
                                         <div className="card_header_data">
+                                          {/* <span className="label">
+                                          Raw material stamping date/Test
+                                          witness date:
+                                        </span> */}
                                           <span className="label_data">
-                                            {/* PO Acceptance Date */}
+                                            {/* Stamping/Test witness date */}
+                                          </span>
+                                        </div>
+                                        <div className="card_header_data">
+                                          {/* <span className="label">
+                                          Final inspection date/FAT:
+                                        </span> */}
+                                          <span className="label_data">
+                                            {/* Final inspection date */}
                                           </span>
                                         </div>
                                       </div>
                                     </div>
                                   </div>
-                                  {po.timeline === "" ? (
-                                    ""
-                                  ) : (
-                                    <div className="col-12 col-md-7">
-                                      <div className="card card-xxl-stretch mb-5 mb-xxl-8">
-                                        <div className="card-body py-3">
-                                          {po?.timeline &&
-                                            po.timeline.map((it, index) => (
-                                              <Fragment key={index}>
-                                                <div className="card_header_data">
-                                                  <span className="label">
-                                                    {/* Contractual SDBG/IB submission date: */}
-                                                    {it?.MTEXT} :
-                                                  </span>
-                                                  <span className="label_data">
-                                                    {moment(
-                                                      it?.PLAN_DATE
-                                                    ).format("YYYY-MM-DD")}{" "}
-                                                    (
-                                                    <span
-                                                      style={{
-                                                        fontWeight: "bold",
-                                                        color:
-                                                          it?.status ===
-                                                          "ASSIGNED"
-                                                            ? "#a7a700"
-                                                            : it?.status ===
-                                                              "APPROVED"
-                                                            ? "green"
-                                                            : it?.status ===
-                                                              "REJECTED"
-                                                            ? "red"
-                                                            : it?.status ===
-                                                              "ACCEPTED"
-                                                            ? "#04bd92"
-                                                            : "orange",
-                                                      }}
-                                                    >
-                                                      {it?.status}
-                                                    </span>
-                                                    )
-                                                  </span>
-                                                </div>
-                                              </Fragment>
-                                            ))}
-                                        </div>
-                                      </div>
-                                    </div>
-                                  )}
-                                </div>
-
-                                <div className="card card-xxl-stretch mb-5 mb-xxl-8 customer_feedback">
-                                  {/* Add customer feedback information here */}
-                                </div>
+                                )}
                               </div>
-                            ))}
+
+                              <div className="card card-xxl-stretch mb-5 mb-xxl-8 customer_feedback">
+                                {/* Add customer feedback information here */}
+                              </div>
+                            </div>
+                          ))}
                         </div>
                       </div>
 
@@ -360,7 +364,9 @@ const PODetails = () => {
                                                   ? "no date found"
                                                   : moment(
                                                       material.contractual_delivery_date
-                                                    ).format("YYYY-MM-DD")}
+                                                    ).format(
+                                                      "DD/MM/YY (HH:mm)"
+                                                    )}
                                               </td>
                                             </tr>
                                           )
@@ -426,9 +432,8 @@ const PODetails = () => {
                               <div className="col-12">
                                 <div className="mb-3">
                                   <button
-                                    type="button"
                                     className="btn fw-bold btn-primary"
-                                    onClick={reConfirmcheckHandleUploadChange}
+                                    onClick={handleUploadTNCMinutes}
                                   >
                                     UPDATE
                                   </button>
