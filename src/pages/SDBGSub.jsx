@@ -485,6 +485,28 @@ const SDBGSub = () => {
             </div>
             <div className="col-md-6 col-12">
               <div className="mb-3">
+                <label className="form-label">Ifse Code</label>
+                <input
+                  type="text"
+                  className="form-control"
+                  name="ifsc_code"
+                  onChange={handleInputChange2}
+                />
+              </div>
+            </div>
+            <div className="col-md-6 col-12">
+              <div className="mb-3">
+                <label className="form-label">Ifse Code</label>
+                <input
+                  type="text"
+                  className="form-control"
+                  name="ifsc_code"
+                  onChange={handleInputChange2}
+                />
+              </div>
+            </div>
+            <div className="col-md-6 col-12">
+              <div className="mb-3">
                 <label className="form-label">Bankers Branch</label>
                 <input
                   type="text"
@@ -754,7 +776,7 @@ const SDBGSub = () => {
                 <input
                   type="text"
                   className="form-control"
-                  name="vendor_pincode"
+                  name="vendor_pin_code"
                   onChange={handleInputChange2}
                 />
               </div>
@@ -888,11 +910,11 @@ const SDBGSub = () => {
               <div className="mb-3">
                 <label className="form-label">Entension Letter Date</label>
                 <DatePicker
-                  selected={formDatainput.EntensionLetterDate}
+                  selected={formDatainput.entension_letter_date}
                   onChange={(date) =>
                     setFormDatainput({
                       ...formDatainput,
-                      EntensionLetterDate: date,
+                      entension_letter_date: date,
                     })
                   }
                   dateFormat="yyyy-MM-dd"
