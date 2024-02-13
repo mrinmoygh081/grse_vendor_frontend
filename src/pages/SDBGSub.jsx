@@ -478,7 +478,29 @@ const SDBGSub = () => {
                 <input
                   type="text"
                   className="form-control"
-                  name="BankersName"
+                  name="bank_name"
+                  onChange={handleInputChange2}
+                />
+              </div>
+            </div>
+            <div className="col-md-6 col-12">
+              <div className="mb-3">
+                <label className="form-label">Ifse Code</label>
+                <input
+                  type="text"
+                  className="form-control"
+                  name="ifsc_code"
+                  onChange={handleInputChange2}
+                />
+              </div>
+            </div>
+            <div className="col-md-6 col-12">
+              <div className="mb-3">
+                <label className="form-label">Ifse Code</label>
+                <input
+                  type="text"
+                  className="form-control"
+                  name="ifsc_code"
                   onChange={handleInputChange2}
                 />
               </div>
@@ -489,7 +511,7 @@ const SDBGSub = () => {
                 <input
                   type="text"
                   className="form-control"
-                  name="BankersBranch"
+                  name="branch_name"
                   onChange={handleInputChange2}
                 />
               </div>
@@ -500,7 +522,7 @@ const SDBGSub = () => {
                 <input
                   type="text"
                   className="form-control"
-                  name="BankersAddress1"
+                  name="bank_addr1"
                   onChange={handleInputChange2}
                 />
               </div>
@@ -511,7 +533,7 @@ const SDBGSub = () => {
                 <input
                   type="text"
                   className="form-control"
-                  name="BankersAddress2"
+                  name="bank_addr2"
                   onChange={handleInputChange2}
                 />
               </div>
@@ -522,7 +544,7 @@ const SDBGSub = () => {
                 <input
                   type="text"
                   className="form-control"
-                  name="BankersAddress3"
+                  name="bank_addr3"
                   onChange={handleInputChange2}
                 />
               </div>
@@ -533,7 +555,7 @@ const SDBGSub = () => {
                 <input
                   type="text"
                   className="form-control"
-                  name="BankersCity"
+                  name="bank_city"
                   onChange={handleInputChange2}
                 />
               </div>
@@ -555,7 +577,7 @@ const SDBGSub = () => {
                 <input
                   type="text"
                   className="form-control"
-                  name="BankersGuarantee"
+                  name="bg_no"
                   onChange={handleInputChange2}
                 />
               </div>
@@ -564,9 +586,9 @@ const SDBGSub = () => {
               <div className="mb-3">
                 <label className="form-label">BG Date</label>
                 <DatePicker
-                  selected={formDatainput.BGDate}
+                  selected={formDatainput.bg_date}
                   onChange={(date) =>
-                    setFormDatainput({ ...formDatainput, BGDate: date })
+                    setFormDatainput({ ...formDatainput, bg_date: date })
                   }
                   dateFormat="yyyy-MM-dd"
                   className="form-control"
@@ -579,7 +601,7 @@ const SDBGSub = () => {
                 <input
                   type="text"
                   className="form-control"
-                  name="BGAmount"
+                  name="bg_ammount"
                   onChange={handleInputChange2}
                 />
               </div>
@@ -591,7 +613,7 @@ const SDBGSub = () => {
                 <input
                   type="text"
                   className="form-control"
-                  name="po"
+                  name="purchasing_doc_no"
                   onChange={handleInputChange2}
                 />
               </div>
@@ -602,7 +624,7 @@ const SDBGSub = () => {
                 <input
                   type="text"
                   className="form-control"
-                  name="BankersBranch"
+                  name="department"
                   onChange={handleInputChange2}
                 />
               </div>
@@ -611,9 +633,9 @@ const SDBGSub = () => {
               <div className="mb-3">
                 <label className="form-label">PO Date</label>
                 <DatePicker
-                  selected={formDatainput.poDate}
+                  selected={formDatainput.po_date}
                   onChange={(date) =>
-                    setFormDatainput({ ...formDatainput, poDate: date })
+                    setFormDatainput({ ...formDatainput, po_date: date })
                   }
                   dateFormat="yyyy-MM-dd"
                   className="form-control"
@@ -626,13 +648,8 @@ const SDBGSub = () => {
                 <input
                   type="text"
                   className="form-control"
-                  name="BankersBranch"
-                  onChange={(e) =>
-                    setFormDatainput({
-                      ...formDatainput,
-                      YardNo: e.target.files[0],
-                    })
-                  }
+                  name="yard_no"
+                  onChange={handleInputChange2}
                 />
               </div>
             </div>
@@ -640,9 +657,9 @@ const SDBGSub = () => {
               <div className="mb-3">
                 <label className="form-label">Validity Date</label>
                 <DatePicker
-                  selected={formDatainput.ValidityDate}
+                  selected={formDatainput.validity_date}
                   onChange={(date) =>
-                    setFormDatainput({ ...formDatainput, ValidityDate: date })
+                    setFormDatainput({ ...formDatainput, validity_date: date })
                   }
                   dateFormat="yyyy-MM-dd"
                   className="form-control"
@@ -655,13 +672,8 @@ const SDBGSub = () => {
                 <input
                   type="text"
                   className="form-control"
-                  name="BankersBranch"
-                  onChange={(e) =>
-                    setFormDatainput({
-                      ...formDatainput,
-                      ClaimPeriod: e.target.files[0],
-                    })
-                  }
+                  name="claim_priod"
+                  onChange={handleInputChange2}
                 />
               </div>
             </div>
@@ -671,13 +683,8 @@ const SDBGSub = () => {
                 <input
                   type="text"
                   className="form-control"
-                  name="BankersBranch"
-                  onChange={(e) =>
-                    setFormDatainput({
-                      ...formDatainput,
-                      ChecklistReference: e.target.files[0],
-                    })
-                  }
+                  name="check_list_reference"
+                  onChange={handleInputChange2}
                 />
               </div>
             </div>
@@ -685,9 +692,12 @@ const SDBGSub = () => {
               <div className="mb-3">
                 <label className="form-label">Checklist Date</label>
                 <DatePicker
-                  selected={formDatainput.ChecklistDate}
+                  selected={formDatainput.check_list_date}
                   onChange={(date) =>
-                    setFormDatainput({ ...formDatainput, ChecklistDate: date })
+                    setFormDatainput({
+                      ...formDatainput,
+                      check_list_date: date,
+                    })
                   }
                   dateFormat="yyyy-MM-dd"
                   className="form-control"
@@ -700,13 +710,8 @@ const SDBGSub = () => {
                 <input
                   type="text"
                   className="form-control"
-                  name="BGType"
-                  onChange={(e) =>
-                    setFormDatainput({
-                      ...formDatainput,
-                      BGType: e.target.files[0],
-                    })
-                  }
+                  name="bg_type"
+                  onChange={handleInputChange2}
                 />
               </div>
             </div>
@@ -716,13 +721,8 @@ const SDBGSub = () => {
                 <input
                   type="text"
                   className="form-control"
-                  name="VendorName"
-                  onChange={(e) =>
-                    setFormDatainput({
-                      ...formDatainput,
-                      VendorName: e.target.files[0],
-                    })
-                  }
+                  name="vendor_name"
+                  onChange={handleInputChange2}
                 />
               </div>
             </div>
@@ -732,13 +732,8 @@ const SDBGSub = () => {
                 <input
                   type="text"
                   className="form-control"
-                  name="VendorAddress1"
-                  onChange={(e) =>
-                    setFormDatainput({
-                      ...formDatainput,
-                      VendorAddress1: e.target.files[0],
-                    })
-                  }
+                  name="vendor_address1"
+                  onChange={handleInputChange2}
                 />
               </div>
             </div>
@@ -748,13 +743,8 @@ const SDBGSub = () => {
                 <input
                   type="text"
                   className="form-control"
-                  name="VendorAddress2"
-                  onChange={(e) =>
-                    setFormDatainput({
-                      ...formDatainput,
-                      VendorAddress2: e.target.files[0],
-                    })
-                  }
+                  name="vendor_address2"
+                  onChange={handleInputChange2}
                 />
               </div>
             </div>
@@ -764,13 +754,8 @@ const SDBGSub = () => {
                 <input
                   type="text"
                   className="form-control"
-                  name="VendorAddress3"
-                  onChange={(e) =>
-                    setFormDatainput({
-                      ...formDatainput,
-                      VendorAddress3: e.target.files[0],
-                    })
-                  }
+                  name="vendor_address3"
+                  onChange={handleInputChange2}
                 />
               </div>
             </div>
@@ -780,13 +765,8 @@ const SDBGSub = () => {
                 <input
                   type="text"
                   className="form-control"
-                  name="VendorCity"
-                  onChange={(e) =>
-                    setFormDatainput({
-                      ...formDatainput,
-                      VendorCity: e.target.files[0],
-                    })
-                  }
+                  name="vendor_city"
+                  onChange={handleInputChange2}
                 />
               </div>
             </div>
@@ -796,13 +776,8 @@ const SDBGSub = () => {
                 <input
                   type="text"
                   className="form-control"
-                  name="VendorPinCode"
-                  onChange={(e) =>
-                    setFormDatainput({
-                      ...formDatainput,
-                      VendorPinCode: e.target.files[0],
-                    })
-                  }
+                  name="vendor_pin_code"
+                  onChange={handleInputChange2}
                 />
               </div>
             </div>
@@ -810,9 +785,12 @@ const SDBGSub = () => {
               <div className="mb-3">
                 <label className="form-label">Extension Date1</label>
                 <DatePicker
-                  selected={formDatainput.ExtensionDate1}
+                  selected={formDatainput.extension_date1}
                   onChange={(date) =>
-                    setFormDatainput({ ...formDatainput, ExtensionDate1: date })
+                    setFormDatainput({
+                      ...formDatainput,
+                      extension_date1: date,
+                    })
                   }
                   dateFormat="yyyy-MM-dd"
                   className="form-control"
@@ -823,9 +801,12 @@ const SDBGSub = () => {
               <div className="mb-3">
                 <label className="form-label">Extension Date2</label>
                 <DatePicker
-                  selected={formDatainput.ExtensionDate2}
+                  selected={formDatainput.extension_date2}
                   onChange={(date) =>
-                    setFormDatainput({ ...formDatainput, ExtensionDate2: date })
+                    setFormDatainput({
+                      ...formDatainput,
+                      extension_date2: date,
+                    })
                   }
                   dateFormat="yyyy-MM-dd"
                   className="form-control"
@@ -836,9 +817,12 @@ const SDBGSub = () => {
               <div className="mb-3">
                 <label className="form-label">Extension Date3</label>
                 <DatePicker
-                  selected={formDatainput.ExtensionDate3}
+                  selected={formDatainput.extension_date3}
                   onChange={(date) =>
-                    setFormDatainput({ ...formDatainput, ExtensionDate3: date })
+                    setFormDatainput({
+                      ...formDatainput,
+                      extension_date3: date,
+                    })
                   }
                   dateFormat="yyyy-MM-dd"
                   className="form-control"
@@ -849,9 +833,12 @@ const SDBGSub = () => {
               <div className="mb-3">
                 <label className="form-label">Extension Date4</label>
                 <DatePicker
-                  selected={formDatainput.formDatainput}
+                  selected={formDatainput.extension_date4}
                   onChange={(date) =>
-                    setFormDatainput({ ...formDatainput, formDatainput: date })
+                    setFormDatainput({
+                      ...formDatainput,
+                      extension_date4: date,
+                    })
                   }
                   dateFormat="yyyy-MM-dd"
                   className="form-control"
@@ -862,9 +849,12 @@ const SDBGSub = () => {
               <div className="mb-3">
                 <label className="form-label">Extension Date5</label>
                 <DatePicker
-                  selected={formDatainput.ExtensionDate5}
+                  selected={formDatainput.extension_date5}
                   onChange={(date) =>
-                    setFormDatainput({ ...formDatainput, ExtensionDate5: date })
+                    setFormDatainput({
+                      ...formDatainput,
+                      extension_date5: date,
+                    })
                   }
                   dateFormat="yyyy-MM-dd"
                   className="form-control"
@@ -875,9 +865,12 @@ const SDBGSub = () => {
               <div className="mb-3">
                 <label className="form-label">Extension Date6</label>
                 <DatePicker
-                  selected={formDatainput.ExtensionDate6}
+                  selected={formDatainput.extension_date6}
                   onChange={(date) =>
-                    setFormDatainput({ ...formDatainput, ExtensionDate6: date })
+                    setFormDatainput({
+                      ...formDatainput,
+                      extension_date6: date,
+                    })
                   }
                   dateFormat="yyyy-MM-dd"
                   className="form-control"
@@ -888,9 +881,9 @@ const SDBGSub = () => {
               <div className="mb-3">
                 <label className="form-label">Release Date</label>
                 <DatePicker
-                  selected={formDatainput.ReleaseDate}
+                  selected={formDatainput.release_date}
                   onChange={(date) =>
-                    setFormDatainput({ ...formDatainput, ReleaseDate: date })
+                    setFormDatainput({ ...formDatainput, release_date: date })
                   }
                   dateFormat="yyyy-MM-dd"
                   className="form-control"
@@ -901,11 +894,11 @@ const SDBGSub = () => {
               <div className="mb-3">
                 <label className="form-label">Demand Notice Date</label>
                 <DatePicker
-                  selected={formDatainput.DemandNoticeDate}
+                  selected={formDatainput.demand_notice_date}
                   onChange={(date) =>
                     setFormDatainput({
                       ...formDatainput,
-                      DemandNoticeDate: date,
+                      demand_notice_date: date,
                     })
                   }
                   dateFormat="yyyy-MM-dd"
@@ -917,11 +910,11 @@ const SDBGSub = () => {
               <div className="mb-3">
                 <label className="form-label">Entension Letter Date</label>
                 <DatePicker
-                  selected={formDatainput.EntensionLetterDate}
+                  selected={formDatainput.entension_letter_date}
                   onChange={(date) =>
                     setFormDatainput({
                       ...formDatainput,
-                      EntensionLetterDate: date,
+                      entension_letter_date: date,
                     })
                   }
                   dateFormat="yyyy-MM-dd"
