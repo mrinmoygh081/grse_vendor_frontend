@@ -152,7 +152,7 @@ const WDCSub = () => {
           </div>
           <form>
             <div className="row">
-              {/* <div className="col-12">
+              <div className="col-12">
                 <div className="mb-3">
                   <input
                     type="file"
@@ -165,7 +165,7 @@ const WDCSub = () => {
                     }
                   />
                 </div>
-              </div> */}
+              </div>
               <div className="col-12">
                 <div className="mb-3">
                   <label className="form-label">Remarks</label>

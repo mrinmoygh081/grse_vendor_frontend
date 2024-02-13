@@ -216,7 +216,7 @@ const QAPSub = () => {
                           onClick={() => setIsPopup(true)}
                           className="btn fw-bold btn-primary"
                         >
-                          Upload QAP
+                          ACTION
                         </button>
                       </div>
                     </div>
@@ -341,7 +341,7 @@ const QAPSub = () => {
                           className="btn fw-bold btn-warning me-2"
                           type="button"
                         >
-                          UPDATE
+                          SUBMIT
                         </button>
                         <button
                           onClick={() => updateQAP("ACCEPTED")}

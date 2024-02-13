@@ -121,7 +121,7 @@ const Shippingdocuments = () => {
                           onClick={() => setIsPopup(true)}
                           className="btn fw-bold btn-primary"
                         >
-                          Upload Shipping documents
+                          ACTION
                         </button>
                       </div>
                     </div>
@@ -137,7 +137,6 @@ const Shippingdocuments = () => {
                                   <th>Document Type</th>
                                   <th>Updated By</th>
                                   <th className="min-w-150px">Remarks</th>
-                                  <th className="min-w-150px">Status</th>
                                 </tr>
                               </thead>
                               <tbody style={{ maxHeight: "100%" }}>
@@ -161,11 +160,6 @@ const Shippingdocuments = () => {
                                       <td>{document.file_type_name}</td>
                                       <td>{document.updated_by}</td>
                                       <td>{document.remarks}</td>
-                                      <td className="">
-                                        {document.status === "APPROVED"
-                                          ? "APPROVED"
-                                          : "PENDING"}
-                                      </td>
                                     </tr>
                                   ))}
 
@@ -279,7 +273,8 @@ const Shippingdocuments = () => {
                       );
                     }}
                   >
-                    <option value="">Choose File Type</option>
+                    <option value="">Select...</option>
+                    <option value="">Remarks</option>
                     {optionss.map((option) => (
                       <option
                         key={option.file_type_id}
@@ -324,7 +319,7 @@ const Shippingdocuments = () => {
                     className="btn fw-bold btn-primary"
                     type="button"
                   >
-                    UPLOAD
+                    SUBMIT
                   </button>
                   {/* {userType !== 1 ? (
                     <button

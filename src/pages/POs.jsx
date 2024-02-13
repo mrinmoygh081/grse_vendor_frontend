@@ -17,7 +17,7 @@ const POs = () => {
   const { po } = useSelector((state) => state.selectedPO);
   const navigate = useNavigate();
 
-  console.log(polist);
+  console.log(user);
 
   useEffect(() => {
     (async () => {
@@ -108,10 +108,14 @@ const POs = () => {
                                 <span>
                                   Vendor: {po.vendor_code} ({po.vendor_name})
                                 </span>
-                                <br />
-                                <span>Project Code: {po.project_code}</span>
-                                <br />
-                                <span>WBS: {po.wbs_id}</span>
+                                {user && user?.user_type !== 1 && (
+                                  <>
+                                    <br />
+                                    <span>Project Code: {po.project_code}</span>
+                                    <br />
+                                    <span>WBS: {po.wbs_id}</span>
+                                  </>
+                                )}
                               </td>
                               <td>
                                 {/* SDBG Date:{" "} */}

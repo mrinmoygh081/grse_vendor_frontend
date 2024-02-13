@@ -307,37 +307,23 @@ const ReportComponent = () => {
                       <th>Date</th>
                       <th>PO Number</th>
                       <th>File</th>
+                      <th>Remarks</th>
                       <th>Status</th>
                       <th>Updated By</th>
+                      <th>Is email triggered?</th>
                     </tr>
                   </thead>
                   <tbody>
-                    {/* <tr>
-                      <td>29-11-2022</td>
-                      <td>848238756</td>
-                      <td>
-                        <a href="">Click here</a>
-                      </td>
-                      <td>PENDING</td>
-                      <td>Mrinmoy Ghosh(876670)</td>
-                    </tr>
-                    <tr>
-                      <td>29-11-2022</td>
-                      <td>848238756</td>
-                      <td>
-                        <a href="">Click here</a>
-                      </td>
-                      <td>ACCEPTED</td>
-                      <td>Mrinmoy Ghosh(876670)</td>
-                    </tr> */}
                     {filteredTableData.map((row, index) => (
                       <tr key={index}>
                         <td>
-                          {row.datetime
-                            ? moment(row.datetime * 1000).format("DD-MM-YYYY ")
+                          {row && row.datetime
+                            ? moment(row.datetime * 1000).format(
+                                "DD/MM/YY HH:mm "
+                              )
                             : "N/A"}
                         </td>
-                        <td>{row.purchasing_doc_no}</td>
+                        <td>{row?.purchasing_doc_no}</td>
                         <td>
                           {row?.depertment === "3" ? (
                             <>
@@ -354,7 +340,13 @@ const ReportComponent = () => {
                           )}
                         </td>
                         <td>{row.remarks}</td>
-                        <td>Mrinmoy Ghosh ({row.id})</td>
+                        <td>{row.status}</td>
+                        <td>
+                          {row?.name} ({row?.id})
+                        </td>
+                        <td>
+                          <span style={{ color: "red" }}>Failed</span>
+                        </td>
                       </tr>
                     ))}
                   </tbody>
