@@ -252,7 +252,29 @@ const PODetails = () => {
                                                     {moment(
                                                       it?.PLAN_DATE
                                                     ).format("YYYY-MM-DD")}{" "}
-                                                    ({it?.status})
+                                                    (
+                                                    <span
+                                                      style={{
+                                                        fontWeight: "bold",
+                                                        color:
+                                                          it?.status ===
+                                                          "ASSIGNED"
+                                                            ? "#a7a700"
+                                                            : it?.status ===
+                                                              "APPROVED"
+                                                            ? "green"
+                                                            : it?.status ===
+                                                              "REJECTED"
+                                                            ? "red"
+                                                            : it?.status ===
+                                                              "ACCEPTED"
+                                                            ? "#04bd92"
+                                                            : "orange",
+                                                      }}
+                                                    >
+                                                      {it?.status}
+                                                    </span>
+                                                    )
                                                   </span>
                                                 </div>
                                               </Fragment>

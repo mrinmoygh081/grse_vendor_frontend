@@ -202,7 +202,7 @@ const BRNSub = () => {
                           onClick={handleSubmit}
                           className="btn btn-primary"
                         >
-                          UPDATE
+                          SUBMIT
                         </button>
                       </div>
                     </div>
