@@ -15,6 +15,8 @@ const WDCSub = () => {
     // wdcFile: null,
     remarks: "",
   });
+  const [selectedFileTypeId, setSelectedFileTypeId] = useState("");
+  const [selectedFileTypeName, setSelectedFileTypeName] = useState("");
   const { id } = useParams();
   const { user, token, userType } = useSelector((state) => state.auth);
 
@@ -38,6 +40,21 @@ const WDCSub = () => {
     getData();
   }, [id, token]);
 
+  const optionss = [
+    {
+      file_type_name: "Upload WDC",
+      file_type_id: 1,
+    },
+    {
+      file_type_name: "Remarks",
+      file_type_id: 2,
+    },
+    {
+      file_type_name: "Others",
+      file_type_id: 3,
+    },
+  ];
+
   const wdcBtn = async (status) => {
     try {
       let isApproved = status;
@@ -50,6 +67,8 @@ const WDCSub = () => {
         updated_by: uType,
         action_by_name: user.name,
         action_by_id: user.email,
+        file_type_id: selectedFileTypeId,
+        file_type_name: selectedFileTypeName,
       };
 
       const response = await apiCallBack("POST", "po/wdc", payload, token);
@@ -153,6 +172,29 @@ const WDCSub = () => {
           <form>
             <div className="row">
               <div className="col-12">
+                <div className="mb-3">
+                  <select
+                    name=""
+                    id=""
+                    className="form-select"
+                    onChange={(e) => {
+                      setSelectedFileTypeId(e.target.value);
+                      setSelectedFileTypeName(
+                        e.target.options[e.target.selectedIndex].text
+                      );
+                    }}
+                  >
+                    <option value="">Choose File Type</option>
+                    {optionss.map((option) => (
+                      <option
+                        key={option.file_type_id}
+                        value={option.file_type_id}
+                      >
+                        {option.file_type_name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
                 <div className="mb-3">
                   <input
                     type="file"

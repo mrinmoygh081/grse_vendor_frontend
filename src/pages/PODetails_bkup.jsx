@@ -74,7 +74,7 @@ const PODetails = () => {
                                         <span className="label_data">
                                           {moment(po.AEDAT)
                                             .utc()
-                                            .format("YYYY-MM-DD")}
+                                            .format("DD/MM/YY (HH:mm)")}
                                           {/* {po.AEDAT} */}
                                         </span>
                                       </div>

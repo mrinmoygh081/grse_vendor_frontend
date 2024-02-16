@@ -132,7 +132,7 @@ const POs = () => {
                                     {po.SDVG.contractual_submission_date
                                       ? moment(
                                           po.SDVG.contractual_submission_date
-                                        ).format("DD-MM-YYYY ")
+                                        ).format("DD/MM/YY HH:mm ")
                                       : "N/A"}
                                     <br />
                                     Actual Submission:
@@ -140,7 +140,7 @@ const POs = () => {
                                     {po.SDVG.actual_submission_date
                                       ? moment(
                                           po.SDVG.actual_submission_date
-                                        ).format("DD-MM-YYYY ")
+                                        ).format("DD/MM/YY HH:mm ")
                                       : "N/A"}
                                     <br />
                                     Status:
@@ -165,7 +165,7 @@ const POs = () => {
                                     {po.Drawing.contractual_submission_date
                                       ? moment(
                                           po.Drawing.contractual_submission_date
-                                        ).format("DD-MM-YYYY ")
+                                        ).format("DD/MM/YY HH:mm ")
                                       : "N/A"}
                                     <br />
                                     Actual Submission:
@@ -173,7 +173,7 @@ const POs = () => {
                                     {po.Drawing.actual_submission_date
                                       ? moment(
                                           po.Drawing.actual_submission_date
-                                        ).format("DD-MM-YYYY ")
+                                        ).format("DD/MM/YY HH:mm ")
                                       : "N/A"}
                                     <br />
                                     Status:
@@ -201,7 +201,7 @@ const POs = () => {
                                       ? moment(
                                           po.qapSubmission
                                             .contractual_submission_date
-                                        ).format("DD-MM-YYYY ")
+                                        ).format("DD/MM/YY HH:mm ")
                                       : "N/A"}
                                     <br />
                                     Actual Submission: <br />
@@ -209,7 +209,7 @@ const POs = () => {
                                       ? moment(
                                           po.qapSubmission
                                             .actual_submission_date
-                                        ).format("DD-MM-YYYY ")
+                                        ).format("DD/MM/YY HH:mm ")
                                       : "N/A"}
                                     <br />
                                     Status:

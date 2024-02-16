@@ -156,7 +156,7 @@ const InspectionCall = () => {
                                     <td className="table_center">
                                       {moment(inspection.created_at)
                                         .utc()
-                                        .format("YYYY-MM-DD")}
+                                        .format("DD/MM/YY (HH:mm)")}
                                     </td>
                                     <td className="">
                                       <a
