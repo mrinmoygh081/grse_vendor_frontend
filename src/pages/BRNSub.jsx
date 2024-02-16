@@ -198,7 +198,7 @@ const BRNSub = () => {
                       </div>
                       <div className="col-12 mt-3">
                         <button
-                          type="submit"
+                          type="button"
                           onClick={handleSubmit}
                           className="btn btn-primary"
                         >

@@ -4,7 +4,7 @@ import SideBar from "../components/SideBar";
 import Header from "../components/Header";
 import { useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
-import { apiCallBack } from "../utils/fetchAPIs";
+import { apiCallBack, postAPI } from "../utils/fetchAPIs";
 import { toast } from "react-toastify";
 import moment from "moment";
 import DatePicker from "react-datepicker";
@@ -19,50 +19,14 @@ const SDBGSub = () => {
     remarks: "",
   });
   const [formDatainput, setFormDatainput] = useState({
-    BankersName: "",
-    BankersBranch: "",
-    BankersAddress1: "",
-    BankersAddress2: "",
-    BankersAddress3: "",
-    BankersCity: "",
-    pincode: "",
-    BankersGuarantee: "",
-    BGDate: null,
-    BGAmount: "",
-    po: "",
-    BankersBranch: "",
-    poDate: null,
-    YardNo: "",
-    ValidityDate: null,
-    ClaimPeriod: "",
-    ChecklistReference: "",
-    ChecklistDate: null,
-    BGType: "",
-    VendorName: "",
-    VendorAddress1: "",
-    VendorAddress2: "",
-    VendorAddress3: "",
-    VendorCity: "",
-    VendorPinCode: "",
-    ExtensionDate1: null,
-    ExtensionDate2: null,
-    ExtensionDate3: null,
-    ExtensionDate4: null,
-    ExtensionDate5: null,
-    ExtensionDate6: null,
-    ReleaseDate: null,
-    DemandNoticeDate: null,
-    EntensionLetterDate: null,
-  });
-  const [formDatainput1, setFormDatainput1] = useState({
     purchasing_doc_no: "",
     bank_name: "",
     branch_name: "",
-    ifsc_code: "",
     bank_addr1: "",
     bank_addr2: "",
     bank_addr3: "",
     bank_city: "",
+    bank_pin_code: "",
     pincode: "",
     bg_no: "",
     bg_date: "",
@@ -70,7 +34,18 @@ const SDBGSub = () => {
     department: "",
     po_date: "",
     yard_no: "",
-    vendor_pincode: "",
+    validity_date: "",
+    claim_priod: "",
+    check_list_reference: "",
+    check_list_date: "",
+    bg_type: "",
+    vendor_name: "",
+    vendor_address1: "",
+    vendor_address2: "",
+    vendor_address3: "",
+    vendor_city: "",
+    vendor_pin_code: "",
+    confirmation: "",
     extension_date1: "",
     extension_date2: "",
     extension_date3: "",
@@ -79,7 +54,7 @@ const SDBGSub = () => {
     extension_date6: "",
     release_date: "",
     demand_notice_date: "",
-    extension_date: "",
+    entension_letter_date: "",
     status: "",
     created_at: "",
     created_by: "",
@@ -122,6 +97,14 @@ const SDBGSub = () => {
   useEffect(() => {
     getSDBG();
   }, []);
+
+  useEffect(() => {
+    if (id) {
+      setFormDatainput({ ...formDatainput, purchasing_doc_no: id });
+    } else {
+      toast.warn("You must provide PO Number!");
+    }
+  }, [id]);
 
   const updateSDBG = async (flag) => {
     let uType;
@@ -179,6 +162,15 @@ const SDBGSub = () => {
     }
   };
 
+  const uploadSDBGEntry = async () => {
+    const d = await postAPI(
+      "/po/sdbg/sdbgSubmitByDealingOfficer",
+      formDatainput,
+      token
+    );
+    console.log(d);
+  };
+
   return (
     <>
       <div className="d-flex flex-column flex-root">
@@ -233,7 +225,7 @@ const SDBGSub = () => {
                               onClick={() => setIsPopup(true)}
                               className="btn fw-bold btn-primary"
                             >
-                              Upload SDBG
+                              ACTION
                             </button>
                           </>
                         )}
@@ -485,28 +477,6 @@ const SDBGSub = () => {
             </div>
             <div className="col-md-6 col-12">
               <div className="mb-3">
-                <label className="form-label">Ifse Code</label>
-                <input
-                  type="text"
-                  className="form-control"
-                  name="ifsc_code"
-                  onChange={handleInputChange2}
-                />
-              </div>
-            </div>
-            <div className="col-md-6 col-12">
-              <div className="mb-3">
-                <label className="form-label">Ifse Code</label>
-                <input
-                  type="text"
-                  className="form-control"
-                  name="ifsc_code"
-                  onChange={handleInputChange2}
-                />
-              </div>
-            </div>
-            <div className="col-md-6 col-12">
-              <div className="mb-3">
                 <label className="form-label">Bankers Branch</label>
                 <input
                   type="text"
@@ -607,17 +577,6 @@ const SDBGSub = () => {
               </div>
             </div>
 
-            <div className="col-md-6 col-12">
-              <div className="mb-3">
-                <label className="form-label">Purchase Order</label>
-                <input
-                  type="text"
-                  className="form-control"
-                  name="purchasing_doc_no"
-                  onChange={handleInputChange2}
-                />
-              </div>
-            </div>
             <div className="col-md-6 col-12">
               <div className="mb-3">
                 <label className="form-label">Department</label>
@@ -928,7 +887,7 @@ const SDBGSub = () => {
                 {isDO && (
                   <>
                     <button
-                      onClick={() => updateSDBG("NotApproved")}
+                      onClick={() => uploadSDBGEntry("NotApproved")}
                       className="btn fw-bold btn-primary"
                       type="submit"
                     >
