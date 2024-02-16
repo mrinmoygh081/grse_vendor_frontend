@@ -7,11 +7,32 @@ import { useNavigate, useParams } from "react-router-dom";
 const ChecklistSub = () => {
   const [isPopup, setIsPopup] = useState(false);
   const [isSecPopup, setIsSecPopup] = useState(false);
+  const [selectedFileTypeId, setSelectedFileTypeId] = useState("");
+  const [selectedFileTypeName, setSelectedFileTypeName] = useState("");
   const { id } = useParams();
   const navigate = useNavigate();
   const ChecklistHandler = () => {
     navigate(`/checklistedit/${id}`);
   };
+
+  const optionss = [
+    {
+      file_type_name: "Upload Invoice",
+      file_type_id: 1,
+    },
+    {
+      file_type_name: "Upload PBG Copy",
+      file_type_id: 2,
+    },
+    {
+      file_type_name: "Remarks",
+      file_type_id: 3,
+    },
+    {
+      file_type_name: "Others",
+      file_type_id: 4,
+    },
+  ];
 
   return (
     <>
@@ -30,14 +51,14 @@ const ChecklistSub = () => {
                           onClick={() => setIsPopup(true)}
                           className="btn fw-bold btn-primary me-3"
                         >
-                          Upload Invoice
+                          Action
                         </button>
-                        <button
+                        {/* <button
                           onClick={() => setIsSecPopup(true)}
                           className="btn fw-bold btn-primary me-3"
                         >
                           Upload PBG Copy (optional)
-                        </button>
+                        </button> */}
                         <button
                           className="btn fw-bold btn-primary"
                           onClick={ChecklistHandler}
@@ -167,6 +188,29 @@ const ChecklistSub = () => {
             <div className="row">
               <div className="col-12">
                 <div className="mb-3">
+                  <div className="mb-3">
+                    <select
+                      name=""
+                      id=""
+                      className="form-select"
+                      onChange={(e) => {
+                        setSelectedFileTypeId(e.target.value);
+                        setSelectedFileTypeName(
+                          e.target.options[e.target.selectedIndex].text
+                        );
+                      }}
+                    >
+                      <option value="">Choose File Type</option>
+                      {optionss.map((option) => (
+                        <option
+                          key={option.file_type_id}
+                          value={option.file_type_id}
+                        >
+                          {option.file_type_name}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
                   <label className="form-label">
                     Invoice Number <span className="star">*</span>
                   </label>

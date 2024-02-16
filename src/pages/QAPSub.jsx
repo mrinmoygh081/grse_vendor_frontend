@@ -19,6 +19,9 @@ const QAPSub = () => {
     QapFile: null,
     remarks: "",
   });
+
+  const [selectedFileTypeId, setSelectedFileTypeId] = useState("");
+  const [selectedFileTypeName, setSelectedFileTypeName] = useState("");
   const [assign, setAssign] = useState({
     purchasing_doc_no: id,
     assigned_from: user?.vendor_code,
@@ -79,6 +82,21 @@ const QAPSub = () => {
     }
   }, [selectedDept]);
 
+  const optionss = [
+    {
+      file_type_name: "Upload QAP",
+      file_type_id: 1,
+    },
+    {
+      file_type_name: "Remarks",
+      file_type_id: 2,
+    },
+    {
+      file_type_name: "Others",
+      file_type_id: 3,
+    },
+  ];
+
   const getData = async () => {
     try {
       const data = await apiCallBack(
@@ -120,6 +138,8 @@ const QAPSub = () => {
       formDataToSend.append("mailSendTo", mailSendTo);
       formDataToSend.append("action_by_name", user.name);
       formDataToSend.append("action_by_id", user.email);
+      formDataToSend.append("file_type_id", selectedFileTypeId);
+      formDataToSend.append("file_type_name", selectedFileTypeName);
 
       const response = await apiCallBack(
         "POST",
@@ -297,6 +317,29 @@ const QAPSub = () => {
           <form>
             <div className="row">
               <div className="col-12">
+                <div className="mb-3">
+                  <select
+                    name=""
+                    id=""
+                    className="form-select"
+                    onChange={(e) => {
+                      setSelectedFileTypeId(e.target.value);
+                      setSelectedFileTypeName(
+                        e.target.options[e.target.selectedIndex].text
+                      );
+                    }}
+                  >
+                    <option value="">Choose File Type</option>
+                    {optionss.map((option) => (
+                      <option
+                        key={option.file_type_id}
+                        value={option.file_type_id}
+                      >
+                        {option.file_type_name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
                 <div className="mb-3">
                   <input
                     type="file"
