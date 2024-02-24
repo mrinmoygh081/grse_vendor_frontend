@@ -5,7 +5,6 @@ import Header from "../components/Header";
 import { useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { apiCallBack } from "../utils/fetchAPIs";
-import moment from "moment";
 import { toast } from "react-toastify";
 import Select from "react-select";
 
@@ -20,8 +19,7 @@ const QAPSub = () => {
     remarks: "",
   });
 
-  const [selectedFileTypeId, setSelectedFileTypeId] = useState("");
-  const [selectedFileTypeName, setSelectedFileTypeName] = useState("");
+  const [selectedActionType, setSelectedActionType] = useState("");
   const [assign, setAssign] = useState({
     purchasing_doc_no: id,
     assigned_from: user?.vendor_code,
@@ -82,21 +80,6 @@ const QAPSub = () => {
     }
   }, [selectedDept]);
 
-  const optionss = [
-    {
-      file_type_name: "Upload QAP",
-      file_type_id: 1,
-    },
-    {
-      file_type_name: "Remarks",
-      file_type_id: 2,
-    },
-    {
-      file_type_name: "Others",
-      file_type_id: 3,
-    },
-  ];
-
   const getData = async () => {
     try {
       const data = await apiCallBack(
@@ -138,8 +121,7 @@ const QAPSub = () => {
       formDataToSend.append("mailSendTo", mailSendTo);
       formDataToSend.append("action_by_name", user.name);
       formDataToSend.append("action_by_id", user.email);
-      formDataToSend.append("file_type_id", selectedFileTypeId);
-      formDataToSend.append("file_type_name", selectedFileTypeName);
+      formDataToSend.append("actionType", selectedActionType);
 
       const response = await apiCallBack(
         "POST",
@@ -259,9 +241,10 @@ const QAPSub = () => {
                                   allqap.map((qap, index) => (
                                     <tr key={index}>
                                       <td className="table_center">
-                                        {moment(qap.created_at)
-                                          .utc()
-                                          .format("YYYY-MM-DD")}
+                                        {qap?.created_at &&
+                                          new Date(
+                                            qap?.created_at
+                                          ).toLocaleString()}
                                       </td>
                                       <td className="">
                                         <a
@@ -317,27 +300,19 @@ const QAPSub = () => {
           <form>
             <div className="row">
               <div className="col-12">
-                <div className="mb-3">
+                <div className="my-3">
                   <select
                     name=""
                     id=""
                     className="form-select"
                     onChange={(e) => {
-                      setSelectedFileTypeId(e.target.value);
-                      setSelectedFileTypeName(
-                        e.target.options[e.target.selectedIndex].text
-                      );
+                      setSelectedActionType(e.target.value);
                     }}
                   >
-                    <option value="">Choose File Type</option>
-                    {optionss.map((option) => (
-                      <option
-                        key={option.file_type_id}
-                        value={option.file_type_id}
-                      >
-                        {option.file_type_name}
-                      </option>
-                    ))}
+                    <option value="">Choose Action Type</option>
+                    <option value="UPLOAD QAP File">UPLOAD QAP File</option>
+                    <option value="Remarks">Remarks</option>
+                    <option value="Others">Others</option>
                   </select>
                 </div>
                 <div className="mb-3">
@@ -361,6 +336,7 @@ const QAPSub = () => {
                     id=""
                     rows="4"
                     className="form-control"
+                    value={formData?.remarks}
                     onChange={(e) =>
                       setFormData({ ...formData, remarks: e.target.value })
                     }
@@ -416,7 +392,7 @@ const QAPSub = () => {
                         className="btn fw-bold btn-primary"
                         type="button"
                       >
-                        UPDATE
+                        SUBMIT
                       </button>
                     </>
                   )}
@@ -489,24 +465,20 @@ const QAPSub = () => {
                 </div>
               </div>
               <div className="col-12">
-                {console.log(user)}
-                {console.log(user.internal_role_id)}
                 <div className="mb-3 d-flex justify-content-between">
                   {userType !== 1 &&
-                  user.department_id === 3 &&
-                  user.internal_role_id === 1 ? (
-                    <>
-                      <button
-                        onClick={() => assignQAP()}
-                        className="btn fw-bold btn-primary"
-                        type="button"
-                      >
-                        ASSIGN
-                      </button>
-                    </>
-                  ) : (
-                    <></>
-                  )}
+                    user.department_id === 3 &&
+                    user.internal_role_id === 1 && (
+                      <>
+                        <button
+                          onClick={() => assignQAP()}
+                          className="btn fw-bold btn-primary"
+                          type="button"
+                        >
+                          ASSIGN
+                        </button>
+                      </>
+                    )}
                 </div>
               </div>
             </div>

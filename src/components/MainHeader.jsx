@@ -36,6 +36,11 @@ const MainHeader = ({ title }) => {
                 BG Extension
               </Link>
             </li>
+            <li className="nav-item">
+              <Link className="nav-link text-black" to="/checklist">
+                Checklists
+              </Link>
+            </li>
           </ul>
         </div>
       </div>

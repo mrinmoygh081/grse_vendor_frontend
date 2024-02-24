@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { Fragment, useEffect, useState } from "react";
 import SideBar from "../components/SideBar";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
@@ -17,6 +17,8 @@ const PODetails = () => {
   const { id } = useParams();
   const { token } = useSelector((state) => state.auth);
   const [isPopup, setIsPopup] = useState(false);
+
+  console.log(poDetails);
 
   useEffect(() => {
     (async () => {
@@ -63,7 +65,7 @@ const PODetails = () => {
   const handleViewTNCMinutes = async () => {
     try {
       const response = await axios.get(
-        `http://localhost:4001/uploads/tncminutes/${id}.pdf`,
+        `${process.env.REACT_APP_PDF_URL}tncminutes/${id}.pdf`,
         {
           responseType: "blob",
           headers: {
@@ -174,126 +176,114 @@ const PODetails = () => {
                               </button>
                             </div>
                           </div>
-                          {poDetails.map((po) => (
-                            <div key={po.EBELN}>
-                              <div className="row">
-                                <div className="col-6">
-                                  <div className="card card-xxl-stretch mb-5 mb-xxl-8">
-                                    <div className="card-body py-3">
-                                      <div className="card_header_data">
-                                        <span className="label">
-                                          PO Number:
-                                        </span>
-                                        <span className="label_data">
-                                          {po.EBELN}
-                                        </span>
-                                      </div>
-                                      <div className="card_header_data">
-                                        <span className="label">PO Date:</span>
-                                        <span className="label_data">
-                                          {moment(po.AEDAT)
-                                            .utc()
-                                            .format("DD/MM/YY (HH:mm)")}
-                                          {/* {po.AEDAT} */}
-                                        </span>
-                                      </div>
-                                      <div className="card_header_data">
-                                        <span className="label">MAN:</span>
-                                        <span className="label_data">
-                                          {po.ERNAM}
-                                        </span>
-                                      </div>
-                                      <div className="card_header_data">
-                                        <span className="label">
-                                          Vendor Name:
-                                        </span>
-                                        <span className="label_data">
-                                          {po.LIFNR} (<span>{po.NAME1}</span>)
-                                        </span>
-                                      </div>
-                                      <div className="card_header_data">
-                                        <span className="label">
-                                          Purchase Group:
-                                        </span>
-                                        <span className="label_data">
-                                          {po.EKGRP}
-                                        </span>
-                                      </div>
-                                      <div className="card_header_data">
-                                        <span className="label_data">
-                                          {/* PO Acceptance Date */}
-                                        </span>
-                                      </div>
-                                    </div>
-                                  </div>
-                                </div>
-                                {po.timeline === "" ? (
-                                  ""
-                                ) : (
-                                  <div className="col-6">
+                          {poDetails &&
+                            poDetails.length > 0 &&
+                            poDetails.map((po, i) => (
+                              <div key={i}>
+                                <div className="row">
+                                  <div className="col-4">
                                     <div className="card card-xxl-stretch mb-5 mb-xxl-8">
                                       <div className="card-body py-3">
                                         <div className="card_header_data">
                                           <span className="label">
-                                            {/* Contractual SDBG/IB submission date: */}
-                                            {po.timeline[0]?.MTEXT} :
+                                            PO Number:
                                           </span>
                                           <span className="label_data">
-                                            {moment(
-                                              po.timeline[0]?.PLAN_DATE
-                                            ).format("DD/MM/YY (HH:mm)")}
+                                            {po.EBELN}
                                           </span>
                                         </div>
                                         <div className="card_header_data">
                                           <span className="label">
-                                            {/* Contractual drawing submission date: */}
-                                            {po.timeline[1]?.MTEXT} :
+                                            PO Date:
                                           </span>
                                           <span className="label_data">
-                                            {moment(
-                                              po.timeline[1]?.PLAN_DATE
-                                            ).format("DD/MM/YY (HH:mm)")}
+                                            {moment(po.AEDAT)
+                                              .utc()
+                                              .format("DD/MM/YY HH:mm")}
+                                            {/* {po.AEDAT} */}
                                           </span>
                                         </div>
                                         <div className="card_header_data">
                                           <span className="label">
-                                            {/* Contractual QAP submission date: */}
-                                            {po.timeline[2]?.MTEXT} :
+                                            Vendor Name:
                                           </span>
                                           <span className="label_data">
-                                            {moment(
-                                              po.timeline[2]?.PLAN_DATE
-                                            ).format("DD/MM/YY (HH:mm)")}
+                                            {po.LIFNR} (<span>{po.NAME1}</span>)
                                           </span>
                                         </div>
                                         <div className="card_header_data">
-                                          {/* <span className="label">
-                                          Raw material stamping date/Test
-                                          witness date:
-                                        </span> */}
+                                          <span className="label">
+                                            Purchase Group:
+                                          </span>
                                           <span className="label_data">
-                                            {/* Stamping/Test witness date */}
+                                            {po.EKGRP}
                                           </span>
                                         </div>
                                         <div className="card_header_data">
-                                          {/* <span className="label">
-                                          Final inspection date/FAT:
-                                        </span> */}
                                           <span className="label_data">
-                                            {/* Final inspection date */}
+                                            {/* PO Acceptance Date */}
                                           </span>
                                         </div>
                                       </div>
                                     </div>
                                   </div>
-                                )}
-                              </div>
+                                  {po.timeline === "" ? (
+                                    ""
+                                  ) : (
+                                    <div className="col-8">
+                                      <div className="card card-xxl-stretch mb-5 mb-xxl-8">
+                                        <div className="card-body py-3">
+                                          {po?.timeline &&
+                                            po.timeline.map((item, i) => (
+                                              <Fragment key={i}>
+                                                <div className="card_header_data">
+                                                  <span className="label">
+                                                    {/* Contractual SDBG/IB submission date: */}
+                                                    {item?.MTEXT} :
+                                                  </span>
+                                                  <span className="label_data">
+                                                    {item?.PLAN_DATE &&
+                                                      new Date(
+                                                        item?.PLAN_DATE
+                                                      ).toLocaleString()}{" "}
+                                                    (
+                                                    <span
+                                                      style={{
+                                                        fontWeight: "bold",
+                                                        color:
+                                                          item?.status ===
+                                                          "ASSIGNED"
+                                                            ? "#a7a700"
+                                                            : item?.status ===
+                                                              "APPROVED"
+                                                            ? "green"
+                                                            : item?.status ===
+                                                              "REJECTED"
+                                                            ? "red"
+                                                            : item?.status ===
+                                                              "ACCEPTED"
+                                                            ? "#04bd92"
+                                                            : "orange",
+                                                      }}
+                                                    >
+                                                      {item?.status}
+                                                    </span>
+                                                    )
+                                                  </span>
+                                                </div>
+                                              </Fragment>
+                                            ))}
+                                        </div>
+                                      </div>
+                                    </div>
+                                  )}
+                                </div>
 
-                              <div className="card card-xxl-stretch mb-5 mb-xxl-8 customer_feedback">
-                                {/* Add customer feedback information here */}
+                                <div className="card card-xxl-stretch mb-5 mb-xxl-8 customer_feedback">
+                                  {/* Add customer feedback information here */}
+                                </div>
                               </div>
-                            </div>
-                          ))}
+                            ))}
                         </div>
                       </div>
 

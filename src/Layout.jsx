@@ -24,6 +24,14 @@ import WDCattach from "./pages/WDCattach";
 import ReportComponent from "./pages/ReportComponent";
 import RaiseDemand from "./pages/RaiseDemand";
 import WBS from "./pages/WBS";
+import ServiceContractBills from "./pages/checklists/ServiceContractBills";
+import AdvanceBillHybrid from "./pages/checklists/AdvanceBillHybrid";
+import BillsMaterialHybrid from "./pages/checklists/BillsMaterialHybrid";
+import ClaimAgainstPBGSubmission from "./pages/checklists/ClaimAgainstPBGSubmission";
+import Checklist from "./pages/Checklist";
+import ClaimIncorrectDeductions from "./pages/checklists/ClaimIncorrectDeductions";
+import HybridServicePOBills from "./pages/checklists/HybridServicePOBills";
+import LDPenaltyRefund from "./pages/checklists/LDPenaltyRefund";
 
 function Layout() {
   const { token, isLoggedIn, userType } = useSelector((state) => state.auth);
@@ -50,6 +58,42 @@ function Layout() {
               element={<Shippingdocuments />}
             />
             <Route exact path="/gate-in/:id" element={<GateInSub />} />
+            <Route exact path="/checklist" element={<Checklist />} />
+            <Route
+              exact
+              path="/checklist/hybrid-bill-material"
+              element={<BillsMaterialHybrid />}
+            />
+            <Route
+              exact
+              path="/checklist/hybrid-bill-service"
+              element={<HybridServicePOBills />}
+            />
+            <Route
+              exact
+              path="/checklist/contract-bill-service"
+              element={<ServiceContractBills />}
+            />
+            <Route
+              exact
+              path="/checklist/bill-incorrect-deductions"
+              element={<ClaimIncorrectDeductions />}
+            />
+            <Route
+              exact
+              path="/checklist/bill-advance-payment"
+              element={<AdvanceBillHybrid />}
+            />
+            <Route
+              exact
+              path="/checklist/claim-against-pbg"
+              element={<ClaimAgainstPBGSubmission />}
+            />
+            <Route
+              exact
+              path="/checklist/ld-penalty-refund"
+              element={<LDPenaltyRefund />}
+            />
             <Route exact path="/checklist/:id" element={<ChecklistSub />} />
             <Route
               exact
@@ -99,6 +143,42 @@ function Layout() {
               element={<Shippingdocuments />}
             />
             <Route exact path="/gate-in/:id" element={<GateInSub />} />
+            <Route exact path="/checklist" element={<Checklist />} />
+            <Route
+              exact
+              path="/checklist/hybrid-bill-material"
+              element={<BillsMaterialHybrid />}
+            />
+            <Route
+              exact
+              path="/checklist/hybrid-bill-service"
+              element={<HybridServicePOBills />}
+            />
+            <Route
+              exact
+              path="/checklist/contract-bill-service"
+              element={<ServiceContractBills />}
+            />
+            <Route
+              exact
+              path="/checklist/bill-incorrect-deductions"
+              element={<ClaimIncorrectDeductions />}
+            />
+            <Route
+              exact
+              path="/checklist/bill-advance-payment"
+              element={<AdvanceBillHybrid />}
+            />
+            <Route
+              exact
+              path="/checklist/claim-against-pbg"
+              element={<ClaimAgainstPBGSubmission />}
+            />
+            <Route
+              exact
+              path="/checklist/ld-penalty-refund"
+              element={<LDPenaltyRefund />}
+            />
             <Route exact path="/checklist/:id" element={<ChecklistSub />} />
             <Route
               exact

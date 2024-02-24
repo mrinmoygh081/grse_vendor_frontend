@@ -17,8 +17,6 @@ const POs = () => {
   const { po } = useSelector((state) => state.selectedPO);
   const navigate = useNavigate();
 
-  console.log(user);
-
   useEffect(() => {
     (async () => {
       const data = await apiCallBack("GET", `po/poList`, null, token);
@@ -85,7 +83,7 @@ const POs = () => {
                         </tr>
                       </thead>
                       <tbody>
-                        {filteredPolist.length === 0 ? (
+                        {filteredPolist && filteredPolist.length === 0 ? (
                           <tr>
                             <td colSpan="7">No data found</td>
                           </tr>
@@ -119,23 +117,17 @@ const POs = () => {
                               </td>
                               <td>
                                 {/* SDBG Date:{" "} */}
-                                {po.SDVG ? (
+                                {po?.SDVG ? (
                                   <>
-                                    {/* {typeof po.SDVG.created_at === "number"
-                                    ? moment(po.SDVG.created_at).format(
-                                        "DD-MM-YYYY "
-                                      )
-                                    : "N/A"}{" "}
-                                  <br /> */}
-                                    Contractual Submission:
+                                    Contractual:
                                     <br />
-                                    {po.SDVG.contractual_submission_date
-                                      ? moment(
+                                    {po?.SDVG?.contractual_submission_date
+                                      ? new Date(
                                           po.SDVG.contractual_submission_date
-                                        ).format("DD/MM/YY HH:mm ")
+                                        ).toLocaleString()
                                       : "N/A"}
                                     <br />
-                                    Actual Submission:
+                                    Actual:
                                     <br />
                                     {po.SDVG.actual_submission_date
                                       ? moment(

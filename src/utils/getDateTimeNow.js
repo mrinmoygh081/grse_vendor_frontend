@@ -27,3 +27,11 @@ export const tenDaysEarlierDate = () => {
   // console.log("10 days earlier timestamp:", tenDaysEarlierTimestamp);
   return tenDaysEarlierTimestamp;
 };
+
+export const convertToEpoch = (date) => {
+  if (date) {
+    return Math.floor(date.getTime() / 1000);
+  } else {
+    return null;
+  }
+};

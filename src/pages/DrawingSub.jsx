@@ -5,41 +5,41 @@ import Header from "../components/Header";
 import { useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { apiCallBack } from "../utils/fetchAPIs";
-import moment from "moment";
+// import moment from "moment";
 import { toast } from "react-toastify";
-import Select from "react-select";
+// import Select from "react-select";
 import swal from "sweetalert";
+import { reConfirm } from "../utils/reConfirm";
 
-const options = [
-  { value: "Hull", label: "Hull" },
-  { value: "Electrical", label: "Electrical" },
-  { value: "Machinery", label: "Machinery" },
-  { value: "Plumbing", label: "Plumbing" },
-];
+// const options = [
+//   { value: "Hull", label: "Hull" },
+//   { value: "Electrical", label: "Electrical" },
+//   { value: "Machinery", label: "Machinery" },
+//   { value: "Plumbing", label: "Plumbing" },
+// ];
 
-const empOptions = [
-  { value: "Mr. X Ghosh", label: "Mr. X Ghosh" },
-  { value: "Mr. Y Chowdhury", label: "Mr. Y Chowdhury" },
-  { value: "Mrs. M Ghosh", label: "Mrs. M Ghosh" },
-  { value: "Mrs. D Das", label: "Mrs. D Das" },
-];
+// const empOptions = [
+//   { value: "Mr. X Ghosh", label: "Mr. X Ghosh" },
+//   { value: "Mr. Y Chowdhury", label: "Mr. Y Chowdhury" },
+//   { value: "Mrs. M Ghosh", label: "Mrs. M Ghosh" },
+//   { value: "Mrs. D Das", label: "Mrs. D Das" },
+// ];
 
 const DrawingSub = () => {
   const [isPopup, setIsPopup] = useState(false);
-  const [isPopupAssign, setIsPopupAssign] = useState(false);
+  // const [isPopupAssign, setIsPopupAssign] = useState(false);
   const [alldrawing, setAlldrawing] = useState([]);
   const [formData, setFormData] = useState({
     drawingFile: null,
     remarks: "",
   });
-  const [selectedFileTypeId, setSelectedFileTypeId] = useState("");
-  const [selectedFileTypeName, setSelectedFileTypeName] = useState("");
+  const [selectedActionType, setSelectedActionType] = useState("");
   const { id } = useParams();
   const { user, token, userType } = useSelector((state) => state.auth);
   const { poType } = useSelector((state) => state.selectedPO);
-  // console.log(user, "useruser");
-  console.log(poType, "poType");
-  console.log(userType, "userType");
+  console.log(user, "useruser");
+  // console.log(poType, "poType");
+  // console.log(userType, "userType");
 
   const getData = async () => {
     try {
@@ -49,7 +49,7 @@ const DrawingSub = () => {
         null,
         token
       );
-      console.log(data);
+      // console.log(data);
       if (data?.status) {
         setAlldrawing(data?.data);
       }
@@ -61,21 +61,6 @@ const DrawingSub = () => {
   useEffect(() => {
     getData();
   }, [id, token]);
-
-  const optionss = [
-    {
-      file_type_name: "Upload Drawing",
-      file_type_id: 1,
-    },
-    {
-      file_type_name: "Remarks",
-      file_type_id: 2,
-    },
-    {
-      file_type_name: "Others",
-      file_type_id: 3,
-    },
-  ];
 
   const updateDrawing = async (flag) => {
     let isApproved = flag;
@@ -100,8 +85,9 @@ const DrawingSub = () => {
       formDataToSend.append("vendor_code", user.vendor_code);
       formDataToSend.append("action_by_name", user.name);
       formDataToSend.append("action_by_id", user.email);
-      formDataToSend.append("file_type_id", selectedFileTypeId);
-      formDataToSend.append("file_type_name", selectedFileTypeName);
+      formDataToSend.append("actionType", selectedActionType);
+      // formDataToSend.append("file_type_id", selectedFileTypeId);
+      // formDataToSend.append("file_type_name", selectedFileTypeName);
 
       const response = await apiCallBack(
         "POST",
@@ -112,10 +98,8 @@ const DrawingSub = () => {
 
       if (response?.status) {
         if (response.message.includes("This drawing aleready APPROVED")) {
-          // Drawing is already approved, show a specific toast message
           toast.warning(response.message);
         } else {
-          // Handle success, e.g., show a success message or update the drawing list
           toast.success("Drawing uploaded successfully");
           setIsPopup(false);
           setFormData({
@@ -125,7 +109,6 @@ const DrawingSub = () => {
           getData();
         }
       } else {
-        // Handle failure, e.g., show an error message
         toast.error("Failed to upload drawing");
       }
     } catch (error) {
@@ -156,7 +139,7 @@ const DrawingSub = () => {
     }
   };
 
-  const assignDrawing = async () => {};
+  // const assignDrawing = async () => {};
 
   return (
     <>
@@ -171,12 +154,14 @@ const DrawingSub = () => {
                   <div className="row g-5 g-xl-8">
                     <div className="col-12">
                       <div className="screen_header">
-                        <button
-                          onClick={() => setIsPopup(true)}
-                          className="btn fw-bold btn-primary mx-3"
-                        >
-                          Upload
-                        </button>
+                        {(userType === 1 || user?.department_id === 2) && (
+                          <button
+                            onClick={() => setIsPopup(true)}
+                            className="btn fw-bold btn-primary mx-3"
+                          >
+                            ACTION
+                          </button>
+                        )}
                       </div>
                     </div>
                     <div className="col-12">
@@ -194,16 +179,16 @@ const DrawingSub = () => {
                                 </tr>
                               </thead>
                               <tbody style={{ maxHeight: "100%" }}>
-                                {console.log(alldrawing)}
                                 {alldrawing &&
                                   alldrawing.map((drawing, index) => (
                                     <tr key={index}>
                                       <td className="table_center">
-                                        {moment(drawing.created_at)
-                                          .utc()
-                                          .format("DD/MM/YY (HH:mm)")}
+                                        {drawing?.created_at &&
+                                          new Date(
+                                            drawing?.created_at
+                                          ).toLocaleString()}
                                       </td>
-                                      <td className="">
+                                      <td>
                                         <a
                                           href={`${process.env.REACT_APP_PDF_URL}submitDrawing/${drawing.file_name}`}
                                           target="_blank"
@@ -212,19 +197,9 @@ const DrawingSub = () => {
                                           {drawing.file_name}
                                         </a>
                                       </td>
-                                      <td className="">
-                                        {drawing.created_by_id}
-                                      </td>
-                                      <td className="">{drawing.remarks}</td>
-                                      <td className="">
-                                        {drawing.status === "APPROVED"
-                                          ? "APPROVED"
-                                          : drawing.status === "REJECTED"
-                                          ? "REJECTED"
-                                          : drawing.status === "ACCEPTED"
-                                          ? "ACCEPTED, Not APPROVED Yet"
-                                          : "PENDING"}
-                                      </td>
+                                      <td>{drawing.created_by_id}</td>
+                                      <td>{drawing.remarks}</td>
+                                      <td>{drawing.status}</td>
                                     </tr>
                                   ))}
                               </tbody>
@@ -242,136 +217,106 @@ const DrawingSub = () => {
         </div>
       </div>
 
-      <div className={isPopup ? "popup active" : "popup"}>
-        <div className="card card-xxl-stretch mb-5 mb-xxl-8">
-          <div className="card-header border-0 pt-5">
-            <h3 className="card-title align-items-start flex-column">
-              <span className="card-label fw-bold fs-3 mb-1">
-                UPLOAD Drawing
-              </span>
-            </h3>
-            <button
-              className="btn fw-bold btn-danger"
-              onClick={() => setIsPopup(false)}
-            >
-              Close
-            </button>
-          </div>
-          <form>
-            <div className="row">
-              <div className="col-12">
-                <div className="mb-3">
-                  <select
-                    name=""
-                    id=""
-                    className="form-select"
-                    onChange={(e) => {
-                      setSelectedFileTypeId(e.target.value);
-                      setSelectedFileTypeName(
-                        e.target.options[e.target.selectedIndex].text
-                      );
-                    }}
-                  >
-                    <option value="">Choose File Type</option>
-                    {optionss.map((option) => (
-                      <option
-                        key={option.file_type_id}
-                        value={option.file_type_id}
-                      >
-                        {option.file_type_name}
+      {(userType === 1 || user?.department_id === 2) && (
+        <div className={isPopup ? "popup active" : "popup"}>
+          <div className="card card-xxl-stretch mb-5 mb-xxl-8">
+            <div className="card-header border-0 pt-5">
+              <h3 className="card-title align-items-start flex-column">
+                <span className="card-label fw-bold fs-3 mb-1">
+                  UPLOAD Drawing
+                </span>
+              </h3>
+              <button
+                className="btn fw-bold btn-danger"
+                onClick={() => setIsPopup(false)}
+              >
+                Close
+              </button>
+            </div>
+            <form>
+              <div className="row">
+                <div className="col-12">
+                  <div className="my-3">
+                    <select
+                      name=""
+                      id=""
+                      className="form-select"
+                      onChange={(e) => {
+                        setSelectedActionType(e.target.value);
+                      }}
+                    >
+                      <option value="">Choose Action Type</option>
+                      <option value="Upload Drawing ail Chain">
+                        Upload Drawing Covering Letter
                       </option>
-                    ))}
-                  </select>
+                      <option value="Remarks">Remarks</option>
+                      <option value="Others">Others</option>
+                    </select>
+                  </div>
+                  <div className="mb-3">
+                    <input
+                      type="file"
+                      className="form-control"
+                      onChange={(e) =>
+                        setFormData({
+                          ...formData,
+                          drawingFile: e.target.files[0],
+                        })
+                      }
+                    />
+                  </div>
                 </div>
-                <div className="mb-3">
-                  <input
-                    type="file"
-                    className="form-control"
-                    onChange={(e) =>
-                      setFormData({
-                        ...formData,
-                        drawingFile: e.target.files[0],
-                      })
-                    }
-                  />
+                <div className="col-12">
+                  <div className="mb-3">
+                    <label className="form-label">Remarks</label>
+                    <textarea
+                      name=""
+                      id=""
+                      rows="4"
+                      className="form-control"
+                      onChange={(e) =>
+                        setFormData({ ...formData, remarks: e.target.value })
+                      }
+                      value={formData?.remarks}
+                    ></textarea>
+                  </div>
                 </div>
-              </div>
-              <div className="col-12">
-                <div className="mb-3">
-                  <label className="form-label">Remarks</label>
-                  <textarea
-                    name=""
-                    id=""
-                    rows="4"
-                    className="form-control"
-                    onChange={(e) =>
-                      setFormData({ ...formData, remarks: e.target.value })
-                    }
-                  ></textarea>
-                </div>
-              </div>
-              <div className="col-12">
-                <div className="mb-3 d-flex justify-content-between">
-                  {userType !== 1 && poType === "material" ? (
-                    <div>
-                      {/* <button
-                        onClick={() => updateDrawing("SAVED")}
-                        className="btn fw-bold btn-primary me-2"
-                        type="button"
-                      >
-                        SAVE
-                      </button> */}
-                      <button
-                        onClick={() => updateDrawing("PENDING")}
-                        className="btn fw-bold btn-warning me-2"
-                        type="button"
-                      >
-                        UPDATE
-                      </button>
-                      {/* <button
-                        onClick={() => updateDrawing("ACCEPTED")}
-                        className="btn fw-bold btn-success me-2"
-                        type="button"
-                      >
-                        ACCEPT
-                      </button> 
-                      <button
-                        onClick={() => updateDrawing("REJECTED")}
-                        className="btn fw-bold btn-danger"
-                        type="button"
-                      >
-                        REJECT
-                      </button> */}
-                    </div>
-                  ) : (
-                    <>
-                      <button
-                        onClick={() => updateDrawing("PENDING")}
-                        className="btn fw-bold btn-primary"
-                        type="button"
-                      >
-                        UPDATE
-                      </button>
-                    </>
-                  )}
-
-                  {userType !== 1 && (
+                <div className="col-12">
+                  <div className="mb-3 d-flex justify-content-between">
                     <button
-                      onClick={() => reConfirmcheckHandleUploadChange()}
+                      onClick={() => updateDrawing("PENDING")}
                       className="btn fw-bold btn-primary"
                       type="button"
                     >
-                      APPROVE
+                      SUBMIT
                     </button>
-                  )}
+
+                    {userType === 2 &&
+                      user?.department_id === 2 &&
+                      user?.internal_role_id === 1 && (
+                        <button
+                          onClick={() =>
+                            reConfirm(
+                              { file: true },
+                              () => updateDrawing("APPROVED"),
+                              "Please confirm your approving the drawing."
+                            )
+                          }
+                          className="btn fw-bold btn-primary"
+                          type="button"
+                        >
+                          APPROVE
+                        </button>
+                      )}
+                  </div>
                 </div>
               </div>
-            </div>
-          </form>
+            </form>
+          </div>
         </div>
-      </div>
+      )}
 
-      <div className={isPopupAssign ? "popup active" : "popup"}>
+      {/* <div className={isPopupAssign ? "popup active" : "popup"}>
         <div className="card card-xxl-stretch mb-5 mb-xxl-8">
           <div className="card-header border-0 pt-5">
             <h3 className="card-title align-items-start flex-column">
@@ -434,7 +379,7 @@ const DrawingSub = () => {
             </div>
           </form>
         </div>
-      </div>
+      </div> */}
     </>
   );
 };

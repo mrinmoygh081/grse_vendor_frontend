@@ -19,8 +19,9 @@ const InspectionCall = () => {
     remarks: "",
   });
 
-  const [selectedFileTypeId, setSelectedFileTypeId] = useState("");
-  const [selectedFileTypeName, setSelectedFileTypeName] = useState("");
+  const [selectedFileType, setSelectedFileType] = useState("");
+
+  console.log(user);
 
   const getData = async () => {
     try {
@@ -42,37 +43,6 @@ const InspectionCall = () => {
     getData();
   }, [id, token]);
 
-  const optionss = [
-    {
-      file_type_name: "Inspection Call Letter - Stage 1",
-      file_type_id: 1,
-    },
-    {
-      file_type_name: "Inspection Call Letter - Stage 2",
-      file_type_id: 2,
-    },
-    {
-      file_type_name: "Inspection Call Letter - Stage 3",
-      file_type_id: 3,
-    },
-    {
-      file_type_name: "Inspection release note by TPI",
-      file_type_id: 4,
-    },
-    {
-      file_type_name: "Class /Form-4",
-      file_type_id: 5,
-    },
-    {
-      file_type_name: "Dispatch Clearance by CQAE",
-      file_type_id: 6,
-    },
-    {
-      file_type_name: "Others",
-      file_type_id: 30,
-    },
-  ];
-
   const updateInspectionCall = async (flag) => {
     try {
       let isApproved = flag;
@@ -86,8 +56,7 @@ const InspectionCall = () => {
       formDataToSend.append("purchasing_doc_no", id);
       formDataToSend.append("file", formData.InspectioncallFile);
       formDataToSend.append("remarks", formData.remarks);
-      formDataToSend.append("file_type_id", selectedFileTypeId);
-      formDataToSend.append("file_type_name", selectedFileTypeName);
+      formDataToSend.append("file_type", selectedFileType);
       // formDataToSend.append("status", isApproved);
       // formDataToSend.append("updated_by", uType);
       // formDataToSend.append("vendor_code", user.vendor_code);
@@ -128,12 +97,14 @@ const InspectionCall = () => {
                   <div className="row g-5 g-xl-8">
                     <div className="col-12">
                       <div className="screen_header">
-                        <button
-                          onClick={() => setIsPopup(true)}
-                          className="btn fw-bold btn-primary"
-                        >
-                          Upload File
-                        </button>
+                        {user?.user_type === 1 && (
+                          <button
+                            onClick={() => setIsPopup(true)}
+                            className="btn fw-bold btn-primary"
+                          >
+                            ACTION
+                          </button>
+                        )}
                       </div>
                     </div>
                     <div className="col-12">
@@ -196,26 +167,27 @@ const InspectionCall = () => {
           </div>
         </div>
       </div>
-      <div className={isPopup ? "popup active" : "popup"}>
-        <div className="card card-xxl-stretch mb-5 mb-xxl-8">
-          <div className="card-header border-0 pt-5 pb-3">
-            <h3 className="card-title align-items-start flex-column">
-              <span className="card-label fw-bold fs-3 mb-1">
-                Upload Inspection call letter
-              </span>
-            </h3>
-            <button
-              className="btn fw-bold btn-danger"
-              onClick={() => setIsPopup(false)}
-            >
-              Close
-            </button>
-          </div>
-          <form>
-            <div className="row">
-              <div className="col-12">
-                {/* for vendor or nic */}
-                {/* <div className="mb-3">
+      {user?.user_type === 1 && (
+        <div className={isPopup ? "popup active" : "popup"}>
+          <div className="card card-xxl-stretch mb-5 mb-xxl-8">
+            <div className="card-header border-0 pt-5 pb-3">
+              <h3 className="card-title align-items-start flex-column">
+                <span className="card-label fw-bold fs-3 mb-1">
+                  Upload Inspection call letter
+                </span>
+              </h3>
+              <button
+                className="btn fw-bold btn-danger"
+                onClick={() => setIsPopup(false)}
+              >
+                Close
+              </button>
+            </div>
+            <form>
+              <div className="row">
+                <div className="col-12">
+                  {/* for vendor or nic */}
+                  {/* <div className="mb-3">
                   <select name="" id="" className="form-control">
                     <option value="">Choose File Type</option>
                     <option value="">Inspection call letter stage 1</option>
@@ -227,68 +199,74 @@ const InspectionCall = () => {
                     <option value="">Inspection report</option>
                   </select>
                 </div> */}
-                {/* for lan or cdo (drawing officer) or qa */}
-                <div className="mb-3">
-                  <select
-                    name=""
-                    id=""
-                    className="form-select"
-                    onChange={(e) => {
-                      setSelectedFileTypeId(e.target.value);
-                      setSelectedFileTypeName(
-                        e.target.options[e.target.selectedIndex].text
-                      );
-                    }}
-                  >
-                    <option value="">Choose File Type</option>
-                    {optionss.map((option) => (
-                      <option
-                        key={option.file_type_id}
-                        value={option.file_type_id}
-                      >
-                        {option.file_type_name}
+                  {/* for lan or cdo (drawing officer) or qa */}
+                  <div className="mb-3">
+                    <select
+                      name=""
+                      id=""
+                      className="form-select"
+                      onChange={(e) => {
+                        setSelectedFileType(e.target.value);
+                      }}
+                    >
+                      <option value="">Choose Action Type</option>
+                      <option value="Inspection Call Letter - Stage 1">
+                        Inspection Call Letter - Stage 1
                       </option>
-                    ))}
-                  </select>
-                </div>
+                      <option value="Inspection Call Letter - Stage 2">
+                        Inspection Call Letter - Stage 2
+                      </option>
+                      <option value="Inspection Call Letter - Stage 3">
+                        Inspection Call Letter - Stage 3
+                      </option>
+                      <option value="Inspection release note by TPI">
+                        Inspection release note by TPI
+                      </option>
+                      <option value="Class /Form-4">Class /Form-4</option>
+                      <option value="Dispatch Clearance by CQAE">
+                        Dispatch Clearance by CQAE
+                      </option>
+                      <option value="Others">Others</option>
+                    </select>
+                  </div>
 
-                <div className="mb-3">
-                  <input
-                    type="file"
-                    className="form-control"
-                    onChange={(e) =>
-                      setFormData({
-                        ...formData,
-                        InspectioncallFile: e.target.files[0],
-                      })
-                    }
-                  />
+                  <div className="mb-3">
+                    <input
+                      type="file"
+                      className="form-control"
+                      onChange={(e) =>
+                        setFormData({
+                          ...formData,
+                          InspectioncallFile: e.target.files[0],
+                        })
+                      }
+                    />
+                  </div>
                 </div>
-              </div>
-              <div className="col-12">
-                <div className="mb-3">
-                  <label className="form-label">Remarks</label>
-                  <textarea
-                    name=""
-                    id=""
-                    rows="4"
-                    className="form-control"
-                    onChange={(e) =>
-                      setFormData({ ...formData, remarks: e.target.value })
-                    }
-                  ></textarea>
+                <div className="col-12">
+                  <div className="mb-3">
+                    <label className="form-label">Remarks</label>
+                    <textarea
+                      name=""
+                      id=""
+                      rows="4"
+                      className="form-control"
+                      onChange={(e) =>
+                        setFormData({ ...formData, remarks: e.target.value })
+                      }
+                    ></textarea>
+                  </div>
                 </div>
-              </div>
-              <div className="col-12">
-                <div className="mb-3 d-flex justify-content-between">
-                  <button
-                    onClick={() => updateInspectionCall("PENDING")}
-                    className="btn fw-bold btn-primary"
-                    type="button"
-                  >
-                    UPLOAD
-                  </button>
-                  {/* {userType !== 1 ? (
+                <div className="col-12">
+                  <div className="mb-3 d-flex justify-content-between">
+                    <button
+                      onClick={() => updateInspectionCall("PENDING")}
+                      className="btn fw-bold btn-primary"
+                      type="button"
+                    >
+                      SUBMIT
+                    </button>
+                    {/* {userType !== 1 ? (
                     <button
                       onClick={() => updateInspectionCall("APPROVED")}
                       className="btn fw-bold btn-primary"
@@ -299,12 +277,13 @@ const InspectionCall = () => {
                   ) : (
                     ""
                   )} */}
+                  </div>
                 </div>
               </div>
-            </div>
-          </form>
+            </form>
+          </div>
         </div>
-      </div>
+      )}
     </>
   );
 };
