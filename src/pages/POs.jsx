@@ -3,11 +3,12 @@ import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { logoutHandler } from "../redux/slices/loginSlice";
 import { apiCallBack } from "../utils/fetchAPIs";
-import { poHandler } from "../redux/slices/poSlice";
+import { poHandler, poRemoveHandler } from "../redux/slices/poSlice";
 import { FiSearch } from "react-icons/fi";
 import moment from "moment";
 import MainHeader from "../components/MainHeader";
 import WBS from "./WBS";
+import { reConfirm } from "../utils/reConfirm";
 
 const POs = () => {
   const dispatch = useDispatch();
@@ -48,7 +49,15 @@ const POs = () => {
       (po?.project_code &&
         po?.project_code.toLowerCase().includes(searchQuery.toLowerCase()))
   );
-
+  const logOutFun = () => {
+    dispatch(logoutHandler());
+    dispatch(poRemoveHandler());
+    window.location.href = "/";
+    // Persistor.pause();
+    // Persistor.flush().then(() => {
+    //   return Persistor.purge();
+    // });
+  };
   return (
     <>
       {user.department_name !== "PPC" && <MainHeader title={"POs"} />}
@@ -129,10 +138,10 @@ const POs = () => {
                                     <br />
                                     Actual:
                                     <br />
-                                    {po.SDVG.actual_submission_date
-                                      ? moment(
+                                    {po?.SDVG?.actual_submission_date
+                                      ? new Date(
                                           po.SDVG.actual_submission_date
-                                        ).format("DD/MM/YY HH:mm ")
+                                        ).toLocaleDateString()
                                       : "N/A"}
                                     <br />
                                     Status:
@@ -154,18 +163,23 @@ const POs = () => {
                                   <br /> */}
                                     Contractual Submission:
                                     <br />
-                                    {po.Drawing.contractual_submission_date
+                                    {/* {po.Drawing.contractual_submission_date
                                       ? moment(
                                           po.Drawing.contractual_submission_date
                                         ).format("DD/MM/YY HH:mm ")
+                                      : "N/A"} */}
+                                    {po?.Drawing?.contractual_submission_date
+                                      ? new Date(
+                                          po.Drawing.contractual_submission_date
+                                        ).toLocaleDateString()
                                       : "N/A"}
                                     <br />
                                     Actual Submission:
                                     <br />
-                                    {po.Drawing.actual_submission_date
-                                      ? moment(
+                                    {po?.Drawing?.actual_submission_date
+                                      ? new Date(
                                           po.Drawing.actual_submission_date
-                                        ).format("DD/MM/YY HH:mm ")
+                                        ).toLocaleDateString()
                                       : "N/A"}
                                     <br />
                                     Status:
@@ -179,29 +193,20 @@ const POs = () => {
                                 {/* QAP Date:{" "} */}
                                 {po.qapSubmission ? (
                                   <>
-                                    {/* {typeof po.qapSubmission.created_at ===
-                                  "number"
-                                    ? moment(
-                                        po.qapSubmission.created_at
-                                      ).format("DD-MM-YYYY ")
-                                    : "N/A"}{" "}
-                                  <br /> */}
                                     Contractual Submission:
                                     <br />
-                                    {po.qapSubmission
-                                      .contractual_submission_date
-                                      ? moment(
-                                          po.qapSubmission
-                                            .contractual_submission_date
-                                        ).format("DD/MM/YY HH:mm ")
+                                    {po?.qapSubmission
+                                      ?.contractual_submission_date
+                                      ? new Date(
+                                          po.qapSubmission.contractual_submission_date
+                                        ).toLocaleDateString()
                                       : "N/A"}
                                     <br />
                                     Actual Submission: <br />
-                                    {po.qapSubmission.actual_submission_date
-                                      ? moment(
-                                          po.qapSubmission
-                                            .actual_submission_date
-                                        ).format("DD/MM/YY HH:mm ")
+                                    {po?.qapSubmission?.actual_submission_date
+                                      ? new Date(
+                                          po.qapSubmission.actual_submission_date
+                                        ).toLocaleDateString()
                                       : "N/A"}
                                     <br />
                                     Status:
@@ -228,10 +233,9 @@ const POs = () => {
       <div className="pos_bottom">
         <button
           className="btn btn-danger"
-          onClick={() => {
-            dispatch(logoutHandler());
-            window.location.href = "/";
-          }}
+          onClick={() =>
+            reConfirm({ file: true }, logOutFun, "You're going to Logout!")
+          }
         >
           Log Out
         </button>

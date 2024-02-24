@@ -4,6 +4,7 @@ import { logoutHandler } from "../redux/slices/loginSlice";
 import { Link } from "react-router-dom";
 import { sidebarData, sidebarGRSEData } from "../data/sidebarData";
 import { poRemoveHandler } from "../redux/slices/poSlice";
+import { reConfirm } from "../utils/reConfirm";
 
 export default function SideBar({ id }) {
   const dispatch = useDispatch();
@@ -279,7 +280,17 @@ export default function SideBar({ id }) {
                 </div>
               </div>
               <div data-kt-menu-trigger="click" className="menu-item">
-                <Link href={"#"} onClick={logOutFun} className="menu-link">
+                <Link
+                  href={"#"}
+                  onClick={() =>
+                    reConfirm(
+                      { file: true },
+                      logOutFun,
+                      "You're going to Logout!"
+                    )
+                  }
+                  className="menu-link"
+                >
                   <span className="menu-icon">
                     <span className="svg-icon svg-icon-2">
                       <svg
