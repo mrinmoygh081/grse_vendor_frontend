@@ -7,6 +7,7 @@ import { useSelector } from "react-redux";
 import { apiCallBack } from "../utils/fetchAPIs";
 import { toast } from "react-toastify";
 import Select from "react-select";
+import { reConfirm } from "../utils/reConfirm";
 
 const QAPSub = () => {
   const [isPopup, setIsPopup] = useState(false);
@@ -95,6 +96,7 @@ const QAPSub = () => {
       console.error("Error fetching drawing list:", error);
     }
   };
+  console.log(allqap);
 
   useEffect(() => {
     getData();
@@ -131,7 +133,6 @@ const QAPSub = () => {
       );
 
       if (response?.status) {
-        // Handle success, e.g., show a success message or update the QAP list
         toast.success("QAP uploaded successfully");
         setIsPopup(false);
         setFormData({
@@ -140,8 +141,7 @@ const QAPSub = () => {
         });
         getData();
       } else {
-        // Handle failure, e.g., show an error message
-        toast.error("Failed to upload QAP");
+        toast.warn(response?.message);
       }
     } catch (error) {
       toast.error("Error uploading QAP:", error);
@@ -172,7 +172,6 @@ const QAPSub = () => {
 
     try {
       const res = await apiCallBack("POST", "po/qap", formDataToSend, token);
-      console.log(res);
       if (res?.status) {
         toast.success(res.message);
         setIsPopupAssign(false);
@@ -182,6 +181,7 @@ const QAPSub = () => {
           assigned_to: null,
           remarksallqap: "",
         });
+        getData();
       } else {
         toast.error(res.message);
       }
@@ -204,22 +204,34 @@ const QAPSub = () => {
                   <div className="row g-5 g-xl-8">
                     <div className="col-12">
                       <div className="screen_header">
+                        {console.log(allqap)}
                         {userType !== 1 &&
                           user.department_id === 3 &&
                           user.internal_role_id === 1 && (
-                            <button
-                              onClick={() => setIsPopupAssign(true)}
-                              className="btn fw-bold btn-primary me-2"
-                            >
-                              Assign
-                            </button>
+                            <>
+                              <p className="m-0 p-2">
+                                {!allqap[allqap?.length - 1]?.assigned_to
+                                  ? "(Not Assigned!)"
+                                  : `Assigned to ${
+                                      allqap[allqap?.length - 1]?.assigned_to
+                                    }`}
+                              </p>
+                              <button
+                                onClick={() => setIsPopupAssign(true)}
+                                className="btn fw-bold btn-primary me-3"
+                              >
+                                ASSIGN
+                              </button>
+                            </>
                           )}
-                        <button
-                          onClick={() => setIsPopup(true)}
-                          className="btn fw-bold btn-primary"
-                        >
-                          ACTION
-                        </button>
+                        {(userType === 1 || user.department_id === 3) && (
+                          <button
+                            onClick={() => setIsPopup(true)}
+                            className="btn fw-bold btn-primary"
+                          >
+                            ACTION
+                          </button>
+                        )}
                       </div>
                     </div>
                     <div className="col-12">
@@ -255,19 +267,9 @@ const QAPSub = () => {
                                           {qap.file_name}
                                         </a>
                                       </td>
-                                      <td className="">
-                                        {qap.created_by_name}
-                                      </td>
+                                      <td className="">{qap.created_by_id}</td>
                                       <td className="">{qap.remarks}</td>
-                                      <td className="">
-                                        {qap.status === "APPROVED"
-                                          ? "APPROVED"
-                                          : qap.status === "REJECTED"
-                                          ? "REJECTED"
-                                          : qap.status === "ACCEPTED"
-                                          ? "ACCEPTED"
-                                          : "PENDING"}
-                                      </td>
+                                      <td className="">{qap.status}</td>
                                     </tr>
                                   ))}
                               </tbody>
@@ -284,207 +286,243 @@ const QAPSub = () => {
           </div>
         </div>
       </div>
-      <div className={isPopup ? "popup active" : "popup"}>
-        <div className="card card-xxl-stretch mb-5 mb-xxl-8">
-          <div className="card-header border-0 pt-5">
-            <h3 className="card-title align-items-start flex-column">
-              <span className="card-label fw-bold fs-3 mb-1">UPLOAD QAP</span>
-            </h3>
-            <button
-              className="btn fw-bold btn-danger"
-              onClick={() => setIsPopup(false)}
-            >
-              Close
-            </button>
-          </div>
-          <form>
-            <div className="row">
-              <div className="col-12">
-                <div className="my-3">
-                  <select
-                    name=""
-                    id=""
-                    className="form-select"
-                    onChange={(e) => {
-                      setSelectedActionType(e.target.value);
-                    }}
-                  >
-                    <option value="">Choose Action Type</option>
-                    <option value="UPLOAD QAP File">UPLOAD QAP File</option>
-                    <option value="Remarks">Remarks</option>
-                    <option value="Others">Others</option>
-                  </select>
+
+      {(userType === 1 || user.department_id === 3) && (
+        <div className={isPopup ? "popup active" : "popup"}>
+          <div className="card card-xxl-stretch mb-5 mb-xxl-8">
+            <div className="card-header border-0 pt-5">
+              <h3 className="card-title align-items-start flex-column">
+                <span className="card-label fw-bold fs-3 mb-1">UPLOAD QAP</span>
+              </h3>
+              <button
+                className="btn fw-bold btn-danger"
+                onClick={() => setIsPopup(false)}
+              >
+                Close
+              </button>
+            </div>
+            <form>
+              <div className="row">
+                <div className="col-12">
+                  <div className="my-3">
+                    <select
+                      name=""
+                      id=""
+                      className="form-select"
+                      onChange={(e) => {
+                        setSelectedActionType(e.target.value);
+                      }}
+                    >
+                      <option value="">Choose Action Type</option>
+                      <option value="UPLOAD QAP File">UPLOAD QAP File</option>
+                      <option value="Remarks">Remarks</option>
+                      <option value="Others">Others</option>
+                    </select>
+                  </div>
+                  <div className="mb-3">
+                    <input
+                      type="file"
+                      className="form-control"
+                      onChange={(e) =>
+                        setFormData({
+                          ...formData,
+                          QapFile: e.target.files[0],
+                        })
+                      }
+                    />
+                  </div>
                 </div>
-                <div className="mb-3">
-                  <input
-                    type="file"
-                    className="form-control"
-                    onChange={(e) =>
-                      setFormData({
-                        ...formData,
-                        QapFile: e.target.files[0],
-                      })
-                    }
-                  />
+                <div className="col-12">
+                  <div className="mb-3">
+                    <label className="form-label">
+                      Remarks <span className="red">*</span>
+                    </label>
+                    <textarea
+                      name=""
+                      id=""
+                      rows="4"
+                      className="form-control"
+                      value={formData?.remarks}
+                      onChange={(e) =>
+                        setFormData({ ...formData, remarks: e.target.value })
+                      }
+                    ></textarea>
+                  </div>
                 </div>
-              </div>
-              <div className="col-12">
-                <div className="mb-3">
-                  <label className="form-label">Remarks</label>
-                  <textarea
-                    name=""
-                    id=""
-                    rows="4"
-                    className="form-control"
-                    value={formData?.remarks}
-                    onChange={(e) =>
-                      setFormData({ ...formData, remarks: e.target.value })
-                    }
-                  ></textarea>
-                </div>
-              </div>
-              <div className="col-12">
-                <div className="mb-3 d-flex justify-content-between">
-                  {userType !== 1 ? (
-                    <>
-                      <div>
+                <div className="col-12">
+                  <div className="mb-3 d-flex justify-content-between">
+                    {userType !== 1 ? (
+                      <>
+                        <div>
+                          <button
+                            onClick={() => updateQAP("SAVED")}
+                            className="btn fw-bold btn-primary me-2"
+                            type="button"
+                          >
+                            SAVE
+                          </button>
+                          <button
+                            onClick={() =>
+                              reConfirm(
+                                { file: true },
+                                () => updateQAP("UPDATED"),
+                                "Please confirm your sending info to Vendor."
+                              )
+                            }
+                            className="btn fw-bold btn-warning me-2"
+                            type="button"
+                          >
+                            SUBMIT
+                          </button>
+                          <button
+                            onClick={() =>
+                              reConfirm(
+                                { file: true },
+                                () => updateQAP("ACCEPTED"),
+                                "Please confirm your accepting the QAP. You're not approving it now."
+                              )
+                            }
+                            className="btn fw-bold btn-success me-2"
+                            type="button"
+                          >
+                            ACCEPT
+                          </button>
+                          <button
+                            onClick={() =>
+                              reConfirm(
+                                { file: true },
+                                () => updateQAP("REJECTED"),
+                                "Please confirm your rejecting the QAP."
+                              )
+                            }
+                            className="btn fw-bold btn-danger"
+                            type="button"
+                          >
+                            REJECT
+                          </button>
+                        </div>
                         <button
-                          onClick={() => updateQAP("SAVED")}
-                          className="btn fw-bold btn-primary me-2"
+                          onClick={() =>
+                            reConfirm(
+                              { file: true },
+                              () => updateQAP("APPROVED"),
+                              "Please confirm your approving the QAP."
+                            )
+                          }
+                          className="btn fw-bold btn-success"
                           type="button"
                         >
-                          SAVE
+                          APPROVE
                         </button>
+                      </>
+                    ) : (
+                      <>
                         <button
-                          onClick={() => updateQAP("UPDATED")}
-                          className="btn fw-bold btn-warning me-2"
+                          onClick={() => updateQAP("PENDING")}
+                          className="btn fw-bold btn-primary"
                           type="button"
                         >
                           SUBMIT
                         </button>
-                        <button
-                          onClick={() => updateQAP("ACCEPTED")}
-                          className="btn fw-bold btn-success me-2"
-                          type="button"
-                        >
-                          ACCEPT
-                        </button>
-                        <button
-                          onClick={() => updateQAP("REJECTED")}
-                          className="btn fw-bold btn-danger"
-                          type="button"
-                        >
-                          REJECT
-                        </button>
-                      </div>
-                      <button
-                        onClick={() => updateQAP("APPROVED")}
-                        className="btn fw-bold btn-success"
-                        type="button"
-                      >
-                        APPROVE
-                      </button>
-                    </>
-                  ) : (
-                    <>
-                      <button
-                        onClick={() => updateQAP("PENDING")}
-                        className="btn fw-bold btn-primary"
-                        type="button"
-                      >
-                        SUBMIT
-                      </button>
-                    </>
-                  )}
-                </div>
-              </div>
-            </div>
-          </form>
-        </div>
-      </div>
-      <div className={isPopupAssign ? "popup active" : "popup"}>
-        <div className="card card-xxl-stretch mb-5 mb-xxl-8">
-          <div className="card-header border-0 pt-5">
-            <h3 className="card-title align-items-start flex-column">
-              <span className="card-label fw-bold fs-3 mb-1">Assign</span>
-            </h3>
-            <button
-              className="btn fw-bold btn-danger"
-              onClick={() => setIsPopupAssign(false)}
-            >
-              Close
-            </button>
-          </div>
-          <form>
-            <div className="row" style={{ overflow: "unset" }}>
-              <div className="col-12">
-                <div className="mb-3">
-                  <label htmlFor="empCategory">Employee Category</label>
-                  <Select
-                    className="basic-single"
-                    classNamePrefix="select"
-                    isClearable={true}
-                    isSearchable={true}
-                    name="empCategory"
-                    id="empCategory"
-                    options={empOption.depts}
-                    onChange={(val) => setSelectedDept(val.value)}
-                  />
-                </div>
-              </div>
-              <div className="col-12">
-                <div className="mb-3">
-                  <label htmlFor="empName">Employee Name</label>
-                  <Select
-                    className="basic-single"
-                    classNamePrefix="select"
-                    isClearable={true}
-                    isSearchable={true}
-                    name="empName"
-                    id="empName"
-                    options={empOption.emps}
-                    onChange={(val) =>
-                      setAssign({ ...assign, assigned_to: val.value })
-                    }
-                  />
-                </div>
-              </div>
-              <div className="col-12">
-                <div className="mb-3">
-                  <label className="form-label">Remarks</label>
-                  <textarea
-                    name=""
-                    id=""
-                    rows="4"
-                    className="form-control"
-                    value={assign?.remarksallqap}
-                    onChange={(e) =>
-                      setAssign({ ...assign, remarksallqap: e.target.value })
-                    }
-                  ></textarea>
-                </div>
-              </div>
-              <div className="col-12">
-                <div className="mb-3 d-flex justify-content-between">
-                  {userType !== 1 &&
-                    user.department_id === 3 &&
-                    user.internal_role_id === 1 && (
-                      <>
-                        <button
-                          onClick={() => assignQAP()}
-                          className="btn fw-bold btn-primary"
-                          type="button"
-                        >
-                          ASSIGN
-                        </button>
                       </>
                     )}
+                  </div>
                 </div>
               </div>
-            </div>
-          </form>
+            </form>
+          </div>
         </div>
-      </div>
+      )}
+      {userType !== 1 &&
+        user.department_id === 3 &&
+        user.internal_role_id === 1 && (
+          <div className={isPopupAssign ? "popup active" : "popup"}>
+            <div className="card card-xxl-stretch mb-5 mb-xxl-8">
+              <div className="card-header border-0 pt-5">
+                <h3 className="card-title align-items-start flex-column">
+                  <span className="card-label fw-bold fs-3 mb-1">Assign</span>
+                </h3>
+                <button
+                  className="btn fw-bold btn-danger"
+                  onClick={() => setIsPopupAssign(false)}
+                >
+                  Close
+                </button>
+              </div>
+              <form>
+                <div className="row" style={{ overflow: "unset" }}>
+                  <div className="col-12">
+                    <div className="mb-3">
+                      <label htmlFor="empCategory">Employee Category</label>
+                      <Select
+                        className="basic-single"
+                        classNamePrefix="select"
+                        isClearable={true}
+                        isSearchable={true}
+                        name="empCategory"
+                        id="empCategory"
+                        options={empOption.depts}
+                        onChange={(val) => setSelectedDept(val.value)}
+                      />
+                    </div>
+                  </div>
+                  <div className="col-12">
+                    <div className="mb-3">
+                      <label htmlFor="empName">Employee Name</label>
+                      <Select
+                        className="basic-single"
+                        classNamePrefix="select"
+                        isClearable={true}
+                        isSearchable={true}
+                        name="empName"
+                        id="empName"
+                        options={empOption.emps}
+                        onChange={(val) =>
+                          setAssign({ ...assign, assigned_to: val.value })
+                        }
+                      />
+                    </div>
+                  </div>
+                  <div className="col-12">
+                    <div className="mb-3">
+                      <label className="form-label">Remarks</label>
+                      <textarea
+                        name=""
+                        id=""
+                        rows="4"
+                        className="form-control"
+                        value={assign?.remarksallqap}
+                        onChange={(e) =>
+                          setAssign({
+                            ...assign,
+                            remarksallqap: e.target.value,
+                          })
+                        }
+                      ></textarea>
+                    </div>
+                  </div>
+                  <div className="col-12">
+                    <div className="mb-3 d-flex justify-content-between">
+                      {userType !== 1 &&
+                        user.department_id === 3 &&
+                        user.internal_role_id === 1 && (
+                          <>
+                            <button
+                              onClick={() => assignQAP()}
+                              className="btn fw-bold btn-primary"
+                              type="button"
+                            >
+                              ASSIGN
+                            </button>
+                          </>
+                        )}
+                    </div>
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div>
+        )}
     </>
   );
 };

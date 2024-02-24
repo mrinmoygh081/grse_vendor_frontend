@@ -124,7 +124,7 @@ const POs = () => {
                                     {po?.SDVG?.contractual_submission_date
                                       ? new Date(
                                           po.SDVG.contractual_submission_date
-                                        ).toLocaleString()
+                                        ).toLocaleDateString()
                                       : "N/A"}
                                     <br />
                                     Actual:

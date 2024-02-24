@@ -45,23 +45,12 @@ const InspectionCall = () => {
 
   const updateInspectionCall = async (flag) => {
     try {
-      let isApproved = flag;
-      let uType;
-      if (userType === 1) {
-        uType = "VENDOR";
-      } else {
-        uType = "GRSE";
-      }
       const formDataToSend = new FormData();
       formDataToSend.append("purchasing_doc_no", id);
       formDataToSend.append("file", formData.InspectioncallFile);
       formDataToSend.append("remarks", formData.remarks);
-      formDataToSend.append("file_type", selectedFileType);
-      // formDataToSend.append("status", isApproved);
-      // formDataToSend.append("updated_by", uType);
-      // formDataToSend.append("vendor_code", user.vendor_code);
-      // formDataToSend.append("action_by_name", user.name);
-      // formDataToSend.append("action_by_id", user.email);
+      formDataToSend.append("file_type_id", selectedFileType);
+      formDataToSend.append("file_type_name", selectedFileType);
 
       const response = await apiCallBack(
         "POST",
@@ -71,12 +60,10 @@ const InspectionCall = () => {
       );
 
       if (response?.status) {
-        // Handle success, e.g., show a success message or update the inspection call letter list
         toast.success("Inspection call letter uploaded successfully");
         setIsPopup(false);
-        getData(); // Refresh the data after successful upload
+        getData();
       } else {
-        // Handle failure, e.g., show an error message
         toast.error("Failed to upload inspection call letter");
       }
     } catch (error) {
@@ -90,7 +77,10 @@ const InspectionCall = () => {
         <div className="page d-flex flex-row flex-column-fluid">
           <SideBar />
           <div className="wrapper d-flex flex-column flex-row-fluid">
-            <Header title={"Inspection Call Letter"} id={id} />
+            <Header
+              title={"Inspection Call Letter / Inspection Release Note"}
+              id={id}
+            />
             <div className="content d-flex flex-column flex-column-fluid">
               <div className="post d-flex flex-column-fluid">
                 <div className="container">
@@ -115,7 +105,7 @@ const InspectionCall = () => {
                               <thead>
                                 <tr className="border-0">
                                   <th>DateTime </th>
-                                  <th>Inspection Call Letter</th>
+                                  <th>File Info</th>
                                   <th>Updated By</th>
                                   <th>File Type</th>
                                   <th className="min-w-150px">Remarks</th>
@@ -173,7 +163,7 @@ const InspectionCall = () => {
             <div className="card-header border-0 pt-5 pb-3">
               <h3 className="card-title align-items-start flex-column">
                 <span className="card-label fw-bold fs-3 mb-1">
-                  Upload Inspection call letter
+                  Take Your Action
                 </span>
               </h3>
               <button

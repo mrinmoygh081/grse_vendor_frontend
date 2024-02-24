@@ -116,28 +116,28 @@ const DrawingSub = () => {
     }
   };
 
-  const reConfirmcheckHandleUploadChange = () => {
-    if (formData?.drawingFile) {
-      swal({
-        title: "Are you sure?",
-        text: "You're confirming that this drawing has been approved!",
-        icon: "warning",
-        buttons: true,
-        dangerMode: true,
-      }).then((willDelete) => {
-        if (willDelete) {
-          updateDrawing("APPROVED");
-        }
-      });
-    } else {
-      swal({
-        title: "Warning",
-        text: "You forget to add a file!",
-        icon: "warning",
-        button: true,
-      });
-    }
-  };
+  // const reConfirmcheckHandleUploadChange = () => {
+  //   if (formData?.drawingFile) {
+  //     swal({
+  //       title: "Are you sure?",
+  //       text: "You're confirming that this drawing has been approved!",
+  //       icon: "warning",
+  //       buttons: true,
+  //       dangerMode: true,
+  //     }).then((willDelete) => {
+  //       if (willDelete) {
+  //         updateDrawing("APPROVED");
+  //       }
+  //     });
+  //   } else {
+  //     swal({
+  //       title: "Warning",
+  //       text: "You forget to add a file!",
+  //       icon: "warning",
+  //       button: true,
+  //     });
+  //   }
+  // };
 
   // const assignDrawing = async () => {};
 
