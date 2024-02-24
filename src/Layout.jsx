@@ -33,6 +33,8 @@ import ClaimIncorrectDeductions from "./pages/checklists/ClaimIncorrectDeduction
 import HybridServicePOBills from "./pages/checklists/HybridServicePOBills";
 import LDPenaltyRefund from "./pages/checklists/LDPenaltyRefund";
 import IlmsSub from "./pages/IlmsSub";
+import MRSSub from "./pages/MRSSub";
+import MaterialIssueReqSub from "./pages/MaterialIssueReqSub";
 
 function Layout() {
   const { token, isLoggedIn, userType } = useSelector((state) => state.auth);
@@ -129,6 +131,8 @@ function Layout() {
             <Route exact path="/raise-demand" element={<RaiseDemand />} />
             <Route exact path="/log-report" element={<ReportComponent />} />
             <Route exact path="/ilms/:id" element={<IlmsSub />} />
+            <Route exact path="/mrs/:id" element={<MRSSub />} />
+            <Route exact path="/mir/:id" element={<MaterialIssueReqSub />} />
           </Routes>
         ) : (
           <Routes>
@@ -215,6 +219,8 @@ function Layout() {
             <Route exact path="/raise-demand" element={<RaiseDemand />} />
             <Route exact path="/log-report" element={<ReportComponent />} />
             <Route exact path="/ilms/:id" element={<IlmsSub />} />
+            <Route exact path="/mrs/:id" element={<MRSSub />} />
+            <Route exact path="/mir/:id" element={<MaterialIssueReqSub />} />
           </Routes>
         )}
       </BrowserRouter>

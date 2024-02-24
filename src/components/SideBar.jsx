@@ -1,8 +1,12 @@
-import React from "react";
+import React, { Fragment } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { logoutHandler } from "../redux/slices/loginSlice";
 import { Link } from "react-router-dom";
-import { sidebarData, sidebarGRSEData } from "../data/sidebarData";
+import {
+  sidebarData,
+  sidebarGRSEData,
+  sidebarServicePOData,
+} from "../data/sidebarData";
 import { poRemoveHandler } from "../redux/slices/poSlice";
 import { reConfirm } from "../utils/reConfirm";
 
@@ -26,7 +30,6 @@ export default function SideBar({ id }) {
       <div id="kt_aside" className="aside aside-dark aside-hoverable">
         <div
           className="aside-logo flex-column-auto"
-          id="kt_aside_logo"
           onClick={() => dispatch(poRemoveHandler())}
         >
           <Link to="/" className="logo_link">
@@ -47,8 +50,119 @@ export default function SideBar({ id }) {
           >
             <div className="menu menu-column menu-title-gray-800 menu-state-title-primary menu-state-icon-primary menu-state-bullet-primary menu-arrow-gray-500">
               {/* vendor  */}
-              {userType === 1 &&
-                sidebarData &&
+              {poType === "hybrid" || poType === "material"
+                ? sidebarData &&
+                  sidebarData.map((item, i) => (
+                    <div className="menu-item" key={i}>
+                      <Link to={`${item?.link}/${po}`} className="menu-link">
+                        <span className="menu-icon">
+                          <span className="svg-icon svg-icon-2">
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              width="24"
+                              height="24"
+                              viewBox="0 0 24 24"
+                              fill="none"
+                            >
+                              <rect
+                                x="2"
+                                y="2"
+                                width="9"
+                                height="9"
+                                rx="2"
+                                fill="currentColor"
+                              />
+                              <rect
+                                opacity="0.3"
+                                x="13"
+                                y="2"
+                                width="9"
+                                height="9"
+                                rx="2"
+                                fill="currentColor"
+                              />
+                              <rect
+                                opacity="0.3"
+                                x="13"
+                                y="13"
+                                width="9"
+                                height="9"
+                                rx="2"
+                                fill="currentColor"
+                              />
+                              <rect
+                                opacity="0.3"
+                                x="2"
+                                y="13"
+                                width="9"
+                                height="9"
+                                rx="2"
+                                fill="currentColor"
+                              />
+                            </svg>
+                          </span>
+                        </span>
+                        <span className="menu-title">{item?.title}</span>
+                      </Link>
+                    </div>
+                  ))
+                : sidebarServicePOData &&
+                  sidebarServicePOData.map((item, i) => (
+                    <div className="menu-item" key={i}>
+                      <Link to={`${item?.link}/${po}`} className="menu-link">
+                        <span className="menu-icon">
+                          <span className="svg-icon svg-icon-2">
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              width="24"
+                              height="24"
+                              viewBox="0 0 24 24"
+                              fill="none"
+                            >
+                              <rect
+                                x="2"
+                                y="2"
+                                width="9"
+                                height="9"
+                                rx="2"
+                                fill="currentColor"
+                              />
+                              <rect
+                                opacity="0.3"
+                                x="13"
+                                y="2"
+                                width="9"
+                                height="9"
+                                rx="2"
+                                fill="currentColor"
+                              />
+                              <rect
+                                opacity="0.3"
+                                x="13"
+                                y="13"
+                                width="9"
+                                height="9"
+                                rx="2"
+                                fill="currentColor"
+                              />
+                              <rect
+                                opacity="0.3"
+                                x="2"
+                                y="13"
+                                width="9"
+                                height="9"
+                                rx="2"
+                                fill="currentColor"
+                              />
+                            </svg>
+                          </span>
+                        </span>
+                        <span className="menu-title">{item?.title}</span>
+                      </Link>
+                    </div>
+                  ))}
+
+              {/* {sidebarData &&
                 sidebarData.map((item, index) => (
                   <div className="menu-item" key={index}>
                     {poType === "hybrid" || poType === "material" ? (
@@ -103,64 +217,62 @@ export default function SideBar({ id }) {
                         <span className="menu-title">{item?.title}</span>
                       </Link>
                     ) : (
-                      item.link !== "/gate-in" && (
-                        <Link to={`${item?.link}/${po}`} className="menu-link">
-                          <span className="menu-icon">
-                            <span className="svg-icon svg-icon-2">
-                              <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                width="24"
-                                height="24"
-                                viewBox="0 0 24 24"
-                                fill="none"
-                              >
-                                <rect
-                                  x="2"
-                                  y="2"
-                                  width="9"
-                                  height="9"
-                                  rx="2"
-                                  fill="currentColor"
-                                />
-                                <rect
-                                  opacity="0.3"
-                                  x="13"
-                                  y="2"
-                                  width="9"
-                                  height="9"
-                                  rx="2"
-                                  fill="currentColor"
-                                />
-                                <rect
-                                  opacity="0.3"
-                                  x="13"
-                                  y="13"
-                                  width="9"
-                                  height="9"
-                                  rx="2"
-                                  fill="currentColor"
-                                />
-                                <rect
-                                  opacity="0.3"
-                                  x="2"
-                                  y="13"
-                                  width="9"
-                                  height="9"
-                                  rx="2"
-                                  fill="currentColor"
-                                />
-                              </svg>
-                            </span>
+                      <Link to={`${item?.link}/${po}`} className="menu-link">
+                        <span className="menu-icon">
+                          <span className="svg-icon svg-icon-2">
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              width="24"
+                              height="24"
+                              viewBox="0 0 24 24"
+                              fill="none"
+                            >
+                              <rect
+                                x="2"
+                                y="2"
+                                width="9"
+                                height="9"
+                                rx="2"
+                                fill="currentColor"
+                              />
+                              <rect
+                                opacity="0.3"
+                                x="13"
+                                y="2"
+                                width="9"
+                                height="9"
+                                rx="2"
+                                fill="currentColor"
+                              />
+                              <rect
+                                opacity="0.3"
+                                x="13"
+                                y="13"
+                                width="9"
+                                height="9"
+                                rx="2"
+                                fill="currentColor"
+                              />
+                              <rect
+                                opacity="0.3"
+                                x="2"
+                                y="13"
+                                width="9"
+                                height="9"
+                                rx="2"
+                                fill="currentColor"
+                              />
+                            </svg>
                           </span>
-                          <span className="menu-title">{item?.title}</span>
-                        </Link>
-                      )
+                        </span>
+                        <span className="menu-title">{item?.title}</span>
+                      </Link>
                     )}
                   </div>
-                ))}
+                ))} */}
 
               {/* grse  */}
-              {userType !== 1 &&
+              {/* {userType !== 1 &&
                 sidebarGRSEData &&
                 sidebarGRSEData.map((item, index) => (
                   <div className="menu-item" key={index}>
@@ -270,7 +382,7 @@ export default function SideBar({ id }) {
                       )
                     )}
                   </div>
-                ))}
+                ))} */}
 
               <div className="menu-item">
                 <div className="menu-content pt-8 pb-2">

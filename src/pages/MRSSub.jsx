@@ -5,15 +5,14 @@ import Header from "../components/Header";
 import { useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { apiCallBack } from "../utils/fetchAPIs";
-import moment from "moment";
 import { toast } from "react-toastify";
 import { reConfirm } from "../utils/reConfirm";
 
-const IlmsSub = () => {
+const MRSSub = () => {
   const [isPopup, setIsPopup] = useState(false);
   const [allData, setAllData] = useState([]);
   const [formData, setFormData] = useState({
-    drawingFile: null,
+    mrsFile: null,
     remarks: "",
   });
   const [selectedActionTypeName, setSelectedActionTypeName] = useState("");
@@ -26,11 +25,10 @@ const IlmsSub = () => {
     try {
       const data = await apiCallBack(
         "GET",
-        `po/ilms/list?poNo=${id}`,
+        `po/Mrs/list?poNo=${id}`,
         null,
         token
       );
-      console.log(data);
       if (data?.status) {
         setAllData(data?.data);
       }
@@ -45,7 +43,7 @@ const IlmsSub = () => {
 
   const optionss = [
     {
-      file_type_name: "Upload ILMS",
+      file_type_name: "Upload MRS",
     },
     {
       file_type_name: "Remarks",
@@ -60,40 +58,40 @@ const IlmsSub = () => {
       if (selectedActionTypeName !== "") {
         const formDataToSend = new FormData();
         formDataToSend.append("purchasing_doc_no", id);
-        if (formData.drawingFile) {
-          formDataToSend.append("file", formData.drawingFile);
+        if (formData.mrsFile) {
+          formDataToSend.append("file", formData.mrsFile);
         }
         formDataToSend.append("remarks", formData.remarks);
         formDataToSend.append("status", flag);
-        formDataToSend.append("type", selectedActionTypeName);
+        formDataToSend.append("document_type", selectedActionTypeName);
 
         const response = await apiCallBack(
           "POST",
-          "po/ilms/submitILMS",
+          "po/mrs",
           formDataToSend,
           token
         );
 
         if (response?.status) {
-          if (response.message.includes("This ILMS aleready APPROVED")) {
+          if (response.message.includes("This MRS aleready APPROVED")) {
             toast.warning(response.message);
           } else {
-            toast.success("ILMS uploaded successfully");
+            toast.success("MRS uploaded successfully");
             setIsPopup(false);
             setFormData({
-              drawingFile: null,
+              mrsFile: null,
               remarks: "",
             });
             getData();
           }
         } else {
-          toast.error("Failed to upload ilms");
+          toast.error("Failed to upload MRS");
         }
       } else {
         toast.warn("Please choose action type!");
       }
     } catch (error) {
-      toast.error("Error uploading ilms:", error);
+      toast.error("Error uploading MRS:", error);
     }
   };
 
@@ -103,14 +101,14 @@ const IlmsSub = () => {
         <div className="page d-flex flex-row flex-column-fluid">
           <SideBar />
           <div className="wrapper d-flex flex-column flex-row-fluid">
-            <Header title={"ILMS Submission"} id={id} />
+            <Header title={"MRS"} id={id} />
             <div className="content d-flex flex-column flex-column-fluid">
               <div className="post d-flex flex-column-fluid">
                 <div className="container">
                   <div className="row g-5 g-xl-8">
                     <div className="col-12">
                       <div className="screen_header">
-                        {(userType === 1 || user?.department_id === 2) && (
+                        {userType === 1 && (
                           <button
                             onClick={() => setIsPopup(true)}
                             className="btn fw-bold btn-primary mx-3"
@@ -128,10 +126,10 @@ const IlmsSub = () => {
                               <thead>
                                 <tr className="border-0">
                                   <th>DateTime </th>
-                                  <th>ILMS File</th>
+                                  <th>MRS File</th>
                                   <th>Updated By</th>
                                   <th className="min-w-150px">Remarks</th>
-                                  <th>Status</th>
+                                  {/* <th>Status</th> */}
                                 </tr>
                               </thead>
                               <tbody style={{ maxHeight: "100%" }}>
@@ -146,7 +144,7 @@ const IlmsSub = () => {
                                       </td>
                                       <td className="">
                                         <a
-                                          href={`${process.env.REACT_APP_PDF_URL}submitDrawing/${item.file_name}`}
+                                          href={`${process.env.REACT_APP_PDF_URL}inspectionCallLetter/${item.file_name}`}
                                           target="_blank"
                                           rel="noreferrer"
                                         >
@@ -157,7 +155,7 @@ const IlmsSub = () => {
                                         {item?.created_by_id}
                                       </td>
                                       <td className="">{item?.remarks}</td>
-                                      <td className="">{item?.status}</td>
+                                      {/* <td className="">{item?.status}</td> */}
                                     </tr>
                                   ))}
                               </tbody>
@@ -175,14 +173,12 @@ const IlmsSub = () => {
         </div>
       </div>
 
-      {(userType === 1 || user?.department_id === 2) && (
+      {userType === 1 && (
         <div className={isPopup ? "popup active" : "popup"}>
           <div className="card card-xxl-stretch mb-5 mb-xxl-8">
             <div className="card-header border-0 pt-5">
               <h3 className="card-title align-items-start flex-column">
-                <span className="card-label fw-bold fs-3 mb-1">
-                  UPLOAD ILMS
-                </span>
+                <span className="card-label fw-bold fs-3 mb-1">UPLOAD MRS</span>
               </h3>
               <button
                 className="btn fw-bold btn-danger"
@@ -216,7 +212,7 @@ const IlmsSub = () => {
                       onChange={(e) =>
                         setFormData({
                           ...formData,
-                          drawingFile: e.target.files[0],
+                          mrsFile: e.target.files[0],
                         })
                       }
                     />
@@ -246,13 +242,13 @@ const IlmsSub = () => {
                       SUBMIT
                     </button>
 
-                    {userType !== 1 && (
+                    {/* {userType !== 1 && (
                       <button
                         onClick={() =>
                           reConfirm(
                             { file: true },
                             () => submitHandler("ACKNOWLEDGED"),
-                            "You're approving the ILMS. Please confirm!"
+                            "You're approving the MRS. Please confirm!"
                           )
                         }
                         className="btn fw-bold btn-success"
@@ -260,7 +256,7 @@ const IlmsSub = () => {
                       >
                         ACKNOWLEDGE
                       </button>
-                    )}
+                    )} */}
                   </div>
                 </div>
               </div>
@@ -272,4 +268,4 @@ const IlmsSub = () => {
   );
 };
 
-export default IlmsSub;
+export default MRSSub;
