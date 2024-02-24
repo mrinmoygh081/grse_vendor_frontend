@@ -23,16 +23,34 @@ const Shippingdocuments = () => {
 
   const optionss = [
     {
-      file_type_name: "WDC",
-      file_type_id: 1,
+      file_type_name: "Invoice",
     },
     {
-      file_type_name: "Final Dispatch Clearance",
-      file_type_id: 2,
+      file_type_name: "Packing list",
     },
     {
-      file_type_name: "Others",
-      file_type_id: 30,
+      file_type_name: "Delivery challan",
+    },
+    {
+      file_type_name: "Lorry Receipt (LR)",
+    },
+    {
+      file_type_name: "Inspection note",
+    },
+    {
+      file_type_name: "Manufacturers test certificates",
+    },
+    {
+      file_type_name: "Guarantee certificate",
+    },
+    {
+      file_type_name: "Certificate of compliance",
+    },
+    {
+      file_type_name: "Preservation certificate",
+    },
+    {
+      file_type_name: "Remarks",
     },
   ];
 
@@ -58,18 +76,11 @@ const Shippingdocuments = () => {
 
   const shippingdocumentsBtn = async (status) => {
     try {
-      let isApproved = status;
-      let uType;
-      if (userType === 1) {
-        uType = "VENDOR";
-      } else {
-        uType = "GRSE";
-      }
       const formDataToSend = new FormData();
       formDataToSend.append("purchasing_doc_no", id);
       formDataToSend.append("file", formData.shippingdocumentssFile);
       formDataToSend.append("remarks", formData.remarks);
-      formDataToSend.append("file_type_id", selectedFileTypeId);
+      formDataToSend.append("file_type_id", selectedFileTypeName);
       formDataToSend.append("file_type_name", selectedFileTypeName);
       // formDataToSend.append("status", isApproved);
       // formDataToSend.append("updated_by", uType);
@@ -274,12 +285,9 @@ const Shippingdocuments = () => {
                     }}
                   >
                     <option value="">Select...</option>
-                    <option value="">Remarks</option>
-                    {optionss.map((option) => (
-                      <option
-                        key={option.file_type_id}
-                        value={option.file_type_id}
-                      >
+
+                    {optionss.map((option, i) => (
+                      <option key={i} value={option.selectedFileTypeName}>
                         {option.file_type_name}
                       </option>
                     ))}

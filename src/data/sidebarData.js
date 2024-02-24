@@ -16,6 +16,10 @@ export const sidebarData = [
     link: "/qap",
   },
   {
+    title: "ILMS Submissions",
+    link: "/ilms",
+  },
+  {
     title: "Inspection call letter",
     link: "/inspection",
   },
@@ -73,6 +77,10 @@ export const sidebarGRSEData = [
   {
     title: "QAP Submissions",
     link: "/qap",
+  },
+  {
+    title: "ILMS Submissions",
+    link: "/ilms",
   },
   {
     title: "Inspection call letter",

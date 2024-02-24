@@ -32,6 +32,7 @@ import Checklist from "./pages/Checklist";
 import ClaimIncorrectDeductions from "./pages/checklists/ClaimIncorrectDeductions";
 import HybridServicePOBills from "./pages/checklists/HybridServicePOBills";
 import LDPenaltyRefund from "./pages/checklists/LDPenaltyRefund";
+import IlmsSub from "./pages/IlmsSub";
 
 function Layout() {
   const { token, isLoggedIn, userType } = useSelector((state) => state.auth);
@@ -127,6 +128,7 @@ function Layout() {
             <Route exact path="/WDCattach" element={<WDCattach />} />
             <Route exact path="/raise-demand" element={<RaiseDemand />} />
             <Route exact path="/log-report" element={<ReportComponent />} />
+            <Route exact path="/ilms/:id" element={<IlmsSub />} />
           </Routes>
         ) : (
           <Routes>
@@ -212,6 +214,7 @@ function Layout() {
             <Route exact path="/WDCattach" element={<WDCattach />} />
             <Route exact path="/raise-demand" element={<RaiseDemand />} />
             <Route exact path="/log-report" element={<ReportComponent />} />
+            <Route exact path="/ilms/:id" element={<IlmsSub />} />
           </Routes>
         )}
       </BrowserRouter>
