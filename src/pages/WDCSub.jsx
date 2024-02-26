@@ -6,33 +6,61 @@ import { useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { apiCallBack } from "../utils/fetchAPIs";
 import { toast } from "react-toastify";
-import moment from "moment";
+import { reConfirm } from "../utils/reConfirm";
+import ReactDatePicker from "react-datepicker";
+import { convertToEpoch } from "../utils/getDateTimeNow";
 
 const WDCSub = () => {
   const [isPopup, setIsPopup] = useState(false);
-  const [allwdc, setAllwdcp] = useState([]);
+  const [allData, setAllData] = useState([]);
   const [formData, setFormData] = useState({
-    // wdcFile: null,
+    file: null,
     remarks: "",
+    wdc_ref_no: "",
+    wdc_date: "",
+    po_line_iten_no: "",
+    job_location: "",
+    yard_no: "",
+    actual_start_date: "",
+    actual_completion_date: "",
+    unit: "",
+    messurment: "",
+    quantity: "",
+    entry_by_production: "",
+    stage_datiels: "",
+    actual_payable_amount: "",
   });
-  const [selectedFileTypeId, setSelectedFileTypeId] = useState("");
-  const [selectedFileTypeName, setSelectedFileTypeName] = useState("");
   const { id } = useParams();
   const { user, token, userType } = useSelector((state) => state.auth);
+
+  // useEffect(() => {
+  //   const handlePopState = (event) => {
+  //     if (event.state === null) {
+  //       console.log("Hello World!");
+  //     }
+  //     alert("Hello World!");
+  //   };
+
+  //   window.addEventListener("popstate", handlePopState);
+
+  //   return () => {
+  //     window.removeEventListener("popstate", handlePopState);
+  //   };
+  // }, []);
 
   const getData = async () => {
     try {
       const data = await apiCallBack(
         "GET",
-        `po/ListOfWdc?poNo=${id}`,
+        `po/wdc/wdcList?poNo=${id}`,
         null,
         token
       );
       if (data?.status) {
-        setAllwdcp(data?.data);
+        setAllData(data?.data);
       }
     } catch (error) {
-      console.error("Error fetching drawing list:", error);
+      console.error("Error fetching WDC list:", error);
     }
   };
 
@@ -40,48 +68,102 @@ const WDCSub = () => {
     getData();
   }, [id, token]);
 
-  const optionss = [
-    {
-      file_type_name: "Upload WDC",
-      file_type_id: 1,
-    },
-    {
-      file_type_name: "Remarks",
-      file_type_id: 2,
-    },
-    {
-      file_type_name: "Others",
-      file_type_id: 3,
-    },
-  ];
-
-  const wdcBtn = async (status) => {
+  const submitHandler = async (flag) => {
     try {
-      let isApproved = status;
-      let uType = userType === 1 ? "VENDOR" : "GRSE";
-      const payload = {
-        purchasing_doc_no: id,
-        vendor_code: user.vendor_code,
-        remarks: formData.remarks,
-        status: isApproved,
-        updated_by: uType,
-        action_by_name: user.name,
-        action_by_id: user.email,
-        file_type_id: selectedFileTypeId,
-        file_type_name: selectedFileTypeName,
-      };
+      const {
+        file,
+        remarks,
+        wdc_ref_no,
+        wdc_date,
+        po_line_iten_no,
+        job_location,
+        yard_no,
+        actual_start_date,
+        actual_completion_date,
+        unit,
+        messurment,
+        quantity,
+        entry_by_production,
+        stage_datiels,
+        actual_payable_amount,
+      } = formData;
+      if (
+        file &&
+        id !== "" &&
+        remarks !== "" &&
+        wdc_ref_no !== "" &&
+        wdc_date !== "" &&
+        po_line_iten_no !== "" &&
+        job_location !== "" &&
+        yard_no !== "" &&
+        actual_start_date !== "" &&
+        actual_completion_date !== "" &&
+        unit !== "" &&
+        messurment !== "" &&
+        quantity !== "" &&
+        entry_by_production !== "" &&
+        stage_datiels !== "" &&
+        actual_payable_amount !== ""
+      ) {
+        const fdToSend = new FormData();
+        fdToSend.append("purchasing_doc_no", id);
+        fdToSend.append("file", file);
+        fdToSend.append("remarks", remarks);
+        fdToSend.append("wdc_ref_no", wdc_ref_no);
+        fdToSend.append("wdc_date", convertToEpoch(wdc_date));
+        fdToSend.append("po_line_iten_no", po_line_iten_no);
+        fdToSend.append("job_location", job_location);
+        fdToSend.append("yard_no", yard_no);
+        fdToSend.append("actual_start_date", convertToEpoch(actual_start_date));
+        fdToSend.append(
+          "actual_completion_date",
+          convertToEpoch(actual_completion_date)
+        );
+        fdToSend.append("unit", unit);
+        fdToSend.append("messurment", messurment);
+        fdToSend.append("quantity", quantity);
+        fdToSend.append("entry_by_production", entry_by_production);
+        fdToSend.append("stage_datiels", stage_datiels);
+        fdToSend.append("actual_payable_amount", actual_payable_amount);
+        fdToSend.append("status", flag);
 
-      const response = await apiCallBack("POST", "po/wdc", payload, token);
+        const response = await apiCallBack(
+          "POST",
+          "po/wdc/submitWdc",
+          fdToSend,
+          token
+        );
 
-      if (response?.status) {
-        toast.success("WDC Updated Successfully");
-        setIsPopup(false);
-        getData(); // Fetch updated data
+        if (response?.status) {
+          toast.success("WDC uploaded successfully");
+          setIsPopup(false);
+          setFormData({
+            file: null,
+            remarks: "",
+            wdc_ref_no: "",
+            wdc_date: "",
+            po_line_iten_no: "",
+            job_location: "",
+            yard_no: "",
+            actual_start_date: "",
+            actual_completion_date: "",
+            unit: "",
+            messurment: "",
+            quantity: "",
+            entry_by_production: "",
+            stage_datiels: "",
+            actual_payable_amount: "",
+          });
+          getData();
+        } else {
+          toast.error("Failed to upload WDC");
+        }
       } else {
-        toast.error("Failed to update WDC");
+        toast.warn("All fields are required!");
       }
     } catch (error) {
-      console.error("Error updating WDC:", error);
+      toast.error("Error uploading WDC:", error);
+      console.error("error", error);
     }
   };
 
@@ -100,9 +182,9 @@ const WDCSub = () => {
                       <div className="screen_header">
                         <button
                           onClick={() => setIsPopup(true)}
-                          className="btn fw-bold btn-primary"
+                          className="btn fw-bold btn-primary mx-3"
                         >
-                          Upload WDC
+                          ACTION
                         </button>
                       </div>
                     </div>
@@ -113,35 +195,93 @@ const WDCSub = () => {
                             <table className="table table-striped table-bordered table_height">
                               <thead>
                                 <tr className="border-0">
-                                  <th>DateTime </th>
-                                  <th>WDC File</th>
-                                  <th>Updated By</th>
+                                  <th className="min-w-150px">DateTime </th>
+                                  <th className="min-w-150px">WDC File</th>
+                                  <th className="min-w-150px">Updated By</th>
+                                  <th className="min-w-150px">Wdc Ref NO</th>
+                                  <th className="min-w-150px">Wdc Date</th>
+                                  <th className="min-w-150px">
+                                    Po Line Iten No
+                                  </th>
+                                  <th className="min-w-150px">Job Location</th>
+                                  <th className="min-w-150px">Yard No</th>
+                                  <th className="min-w-150px">
+                                    Actual Start Date
+                                  </th>
+                                  <th className="min-w-150px">
+                                    Actual Completion Date
+                                  </th>
+                                  <th className="min-w-150px">Unit</th>
+                                  <th className="min-w-150px">Messurment</th>
+                                  <th className="min-w-150px">Quantity</th>
+                                  <th className="min-w-150px">
+                                    Entry By Production
+                                  </th>
+                                  <th className="min-w-150px">Stage Datiels</th>
+                                  <th className="min-w-150px">
+                                    Actual Payable Amount
+                                  </th>
+
                                   <th className="min-w-150px">Remarks</th>
-                                  <th>Status</th>
+                                  <th className="min-w-150px">Status</th>
                                 </tr>
                               </thead>
                               <tbody style={{ maxHeight: "100%" }}>
-                                {allwdc.map((wdcItem, index) => (
-                                  <tr key={index}>
-                                    <td className="table_center">
-                                      {moment(wdcItem.created_at)
-                                        .utc()
-                                        .format("YYYY-MM-DD")}
-                                    </td>
-                                    <td className="">
-                                      <a
-                                        href={`${process.env.REACT_APP_BACKEND_API}po/download?id=${wdcItem.file_path}&type=qap`}
-                                        target="_blank"
-                                        rel="noreferrer"
-                                      >
-                                        Check File
-                                      </a>
-                                    </td>
-                                    <td className="">{wdcItem.updated_by}</td>
-                                    <td className="">{wdcItem.remarks}</td>
-                                    <td className="">{wdcItem.status}</td>
-                                  </tr>
-                                ))}
+                                {allData &&
+                                  allData.map((item, index) => (
+                                    <tr key={index}>
+                                      <td className="table_center">
+                                        {/* {moment(item.created_at)
+                                          .utc()
+                                          .format("DD/MM/YY (HH:mm)")} */}
+
+                                        {item?.created_at &&
+                                          new Date(
+                                            item.created_at
+                                          ).toLocaleDateString()}
+                                      </td>
+                                      <td>
+                                        <a
+                                          href={`${process.env.REACT_APP_PDF_URL}wdc/${item.file_name}`}
+                                          target="_blank"
+                                          rel="noreferrer"
+                                        >
+                                          {item.file_name}
+                                        </a>
+                                      </td>
+                                      <td>{item.updated_by}</td>
+                                      <td>{item.wdc_ref_no}</td>
+                                      <td>
+                                        {item?.wdc_date &&
+                                          new Date(
+                                            item.wdc_date * 1000
+                                          ).toLocaleDateString()}
+                                      </td>
+                                      <td>{item.po_line_iten_no}</td>
+                                      <td>{item.job_location}</td>
+                                      <td>{item.yard_no}</td>
+                                      <td>
+                                        {item?.actual_start_date &&
+                                          new Date(
+                                            item.actual_start_date * 1000
+                                          ).toLocaleDateString()}
+                                      </td>
+                                      <td>
+                                        {item?.actual_completion_date &&
+                                          new Date(
+                                            item.actual_completion_date * 1000
+                                          ).toLocaleDateString()}
+                                      </td>
+                                      <td>{item.unit}</td>
+                                      <td>{item.messurment}</td>
+                                      <td>{item.quantity}</td>
+                                      <td>{item.entry_by_production}</td>
+                                      <td>{item.stage_datiels}</td>
+                                      <td>{item.actual_payable_amount}</td>
+                                      <td>{item.remarks}</td>
+                                      <td>{item.status}</td>
+                                    </tr>
+                                  ))}
                               </tbody>
                             </table>
                           </div>
@@ -156,9 +296,10 @@ const WDCSub = () => {
           </div>
         </div>
       </div>
+
       <div className={isPopup ? "popup active" : "popup"}>
         <div className="card card-xxl-stretch mb-5 mb-xxl-8">
-          <div className="card-header border-0 pt-5">
+          <div className="card-header border-0 pt-5 pb-3">
             <h3 className="card-title align-items-start flex-column">
               <span className="card-label fw-bold fs-3 mb-1">UPLOAD WDC</span>
             </h3>
@@ -171,38 +312,227 @@ const WDCSub = () => {
           </div>
           <form>
             <div className="row">
-              <div className="col-12">
+              <div className="col-12 col-md-6">
                 <div className="mb-3">
-                  <select
-                    name=""
-                    id=""
-                    className="form-select"
-                    onChange={(e) => {
-                      setSelectedFileTypeId(e.target.value);
-                      setSelectedFileTypeName(
-                        e.target.options[e.target.selectedIndex].text
-                      );
-                    }}
-                  >
-                    <option value="">Choose File Type</option>
-                    {optionss.map((option) => (
-                      <option
-                        key={option.file_type_id}
-                        value={option.file_type_id}
-                      >
-                        {option.file_type_name}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-                <div className="mb-3">
+                  <label className="form-label">
+                    WDC File <span className="red">*</span>{" "}
+                  </label>
                   <input
                     type="file"
                     className="form-control"
                     onChange={(e) =>
                       setFormData({
                         ...formData,
-                        wdcFile: e.target.files[0],
+                        file: e.target.files[0],
+                      })
+                    }
+                  />
+                </div>
+              </div>
+              <div className="col-12 col-md-6">
+                <div className="mb-3">
+                  <label className="form-label">
+                    WDC Ref No <span className="red">*</span>{" "}
+                  </label>
+                  <input
+                    type="text"
+                    className="form-control"
+                    onChange={(e) =>
+                      setFormData({ ...formData, wdc_ref_no: e.target.value })
+                    }
+                  />
+                </div>
+              </div>
+              <div className="col-12 col-md-6">
+                <div className="mb-3">
+                  <label className="form-label">
+                    WDC Ref Date <span className="red">*</span>{" "}
+                  </label>
+                  <ReactDatePicker
+                    selected={formData?.wdc_date}
+                    onChange={(date) =>
+                      setFormData({
+                        ...formData,
+                        wdc_date: date,
+                      })
+                    }
+                    dateFormat="dd/MM/yyyy"
+                    className="form-control"
+                    placeholderText="DD/MM/YYYY"
+                  />
+                </div>
+              </div>
+              <div className="col-12 col-md-6">
+                <div className="mb-3">
+                  <label className="form-label">
+                    PO Line Item No <span className="red">*</span>{" "}
+                  </label>
+                  <input
+                    type="text"
+                    className="form-control"
+                    onChange={(e) =>
+                      setFormData({
+                        ...formData,
+                        po_line_iten_no: e.target.value,
+                      })
+                    }
+                  />
+                </div>
+              </div>
+              <div className="col-12 col-md-6">
+                <div className="mb-3">
+                  <label className="form-label">
+                    JOB Location <span className="red">*</span>{" "}
+                  </label>
+                  <input
+                    type="text"
+                    className="form-control"
+                    onChange={(e) =>
+                      setFormData({ ...formData, job_location: e.target.value })
+                    }
+                  />
+                </div>
+              </div>
+              <div className="col-12 col-md-6">
+                <div className="mb-3">
+                  <label className="form-label">
+                    Yard No <span className="red">*</span>{" "}
+                  </label>
+                  <input
+                    type="text"
+                    className="form-control"
+                    onChange={(e) =>
+                      setFormData({ ...formData, yard_no: e.target.value })
+                    }
+                  />
+                </div>
+              </div>
+              <div className="col-12 col-md-6">
+                <div className="mb-3">
+                  <label className="form-label">
+                    Actual Start Date <span className="red">*</span>{" "}
+                  </label>
+                  <ReactDatePicker
+                    selected={formData?.actual_start_date}
+                    onChange={(date) =>
+                      setFormData({
+                        ...formData,
+                        actual_start_date: date,
+                      })
+                    }
+                    dateFormat="dd/MM/yyyy"
+                    className="form-control"
+                    placeholderText="DD/MM/YYYY"
+                  />
+                </div>
+              </div>
+              <div className="col-12 col-md-6">
+                <div className="mb-3">
+                  <label className="form-label">
+                    Actual Completion Date <span className="red">*</span>{" "}
+                  </label>
+                  <ReactDatePicker
+                    selected={formData?.actual_completion_date}
+                    onChange={(date) =>
+                      setFormData({
+                        ...formData,
+                        actual_completion_date: date,
+                      })
+                    }
+                    dateFormat="dd/MM/yyyy"
+                    className="form-control"
+                    placeholderText="DD/MM/YYYY"
+                  />
+                </div>
+              </div>
+              <div className="col-12 col-md-6">
+                <div className="mb-3">
+                  <label className="form-label">
+                    Unit <span className="red">*</span>{" "}
+                  </label>
+                  <input
+                    type="text"
+                    className="form-control"
+                    onChange={(e) =>
+                      setFormData({ ...formData, unit: e.target.value })
+                    }
+                  />
+                </div>
+              </div>
+              <div className="col-12 col-md-6">
+                <div className="mb-3">
+                  <label className="form-label">
+                    Measurement <span className="red">*</span>{" "}
+                  </label>
+                  <input
+                    type="text"
+                    className="form-control"
+                    onChange={(e) =>
+                      setFormData({ ...formData, messurment: e.target.value })
+                    }
+                  />
+                </div>
+              </div>
+              <div className="col-12 col-md-6">
+                <div className="mb-3">
+                  <label className="form-label">
+                    Quantity <span className="red">*</span>{" "}
+                  </label>
+                  <input
+                    type="text"
+                    className="form-control"
+                    onChange={(e) =>
+                      setFormData({ ...formData, quantity: e.target.value })
+                    }
+                  />
+                </div>
+              </div>
+              <div className="col-12 col-md-6">
+                <div className="mb-3">
+                  <label className="form-label">
+                    Entry By Production <span className="red">*</span>{" "}
+                  </label>
+                  <input
+                    type="text"
+                    className="form-control"
+                    onChange={(e) =>
+                      setFormData({
+                        ...formData,
+                        entry_by_production: e.target.value,
+                      })
+                    }
+                  />
+                </div>
+              </div>
+              <div className="col-12 col-md-6">
+                <div className="mb-3">
+                  <label className="form-label">
+                    Stage Details <span className="red">*</span>{" "}
+                  </label>
+                  <input
+                    type="text"
+                    className="form-control"
+                    onChange={(e) =>
+                      setFormData({
+                        ...formData,
+                        stage_datiels: e.target.value,
+                      })
+                    }
+                  />
+                </div>
+              </div>
+              <div className="col-12 col-md-6">
+                <div className="mb-3">
+                  <label className="form-label">
+                    Actual Payable Amount <span className="red">*</span>{" "}
+                  </label>
+                  <input
+                    type="text"
+                    className="form-control"
+                    onChange={(e) =>
+                      setFormData({
+                        ...formData,
+                        actual_payable_amount: e.target.value,
                       })
                     }
                   />
@@ -210,12 +540,15 @@ const WDCSub = () => {
               </div>
               <div className="col-12">
                 <div className="mb-3">
-                  <label className="form-label">Remarks</label>
+                  <label className="form-label">
+                    Remarks <span className="red">*</span>{" "}
+                  </label>
                   <textarea
                     name=""
                     id=""
                     rows="4"
                     className="form-control"
+                    value={formData?.remarks}
                     onChange={(e) =>
                       setFormData({ ...formData, remarks: e.target.value })
                     }
@@ -225,19 +558,26 @@ const WDCSub = () => {
               <div className="col-12">
                 <div className="mb-3 d-flex justify-content-between">
                   <button
-                    onClick={() => wdcBtn("PENDING")}
+                    onClick={() => submitHandler("PENDING")}
                     className="btn fw-bold btn-primary"
                     type="button"
                   >
-                    UPDATE
+                    SUBMIT
                   </button>
+
                   {userType !== 1 && (
                     <button
-                      onClick={() => wdcBtn("APPROVED")}
-                      className="btn fw-bold btn-primary"
+                      onClick={() =>
+                        reConfirm(
+                          { file: true },
+                          () => submitHandler("ACKNOWLEDGED"),
+                          "You're approving the WDC. Please confirm!"
+                        )
+                      }
+                      className="btn fw-bold btn-success"
                       type="button"
                     >
-                      Approved
+                      ACKNOWLEDGE
                     </button>
                   )}
                 </div>

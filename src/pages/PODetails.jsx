@@ -2,10 +2,10 @@ import React, { Fragment, useEffect, useState } from "react";
 import SideBar from "../components/SideBar";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { apiCallBack } from "../utils/fetchAPIs";
 import { useDispatch, useSelector } from "react-redux";
-import { doHandler } from "../redux/slices/poSlice";
+import { doHandler, poRemoveHandler } from "../redux/slices/poSlice";
 import moment from "moment";
 import { toast } from "react-toastify";
 import axios from "axios";
@@ -18,14 +18,23 @@ const PODetails = () => {
   const { token } = useSelector((state) => state.auth);
   const [isPopup, setIsPopup] = useState(false);
 
-  console.log(poDetails);
+  // window.addEventListener("popstate", () => {
+  //   dispatch(poRemoveHandler());
+  // });
 
   useEffect(() => {
     (async () => {
-      const data = await apiCallBack("GET", `po/details?id=${id}`, null, token);
-      if (data?.status) {
-        setPoDetails(data?.data);
-        dispatch(doHandler(data?.data[0].isDO));
+      if (id) {
+        const data = await apiCallBack(
+          "GET",
+          `po/details?id=${id}`,
+          null,
+          token
+        );
+        if (data?.status) {
+          setPoDetails(data?.data);
+          dispatch(doHandler(data?.data[0].isDO));
+        }
       }
     })();
   }, [id]);
@@ -76,7 +85,6 @@ const PODetails = () => {
 
       const contentType = response.headers["content-type"];
       if (contentType !== "application/pdf") {
-        console.error("Invalid content type:", contentType);
         toast.error("Invalid content type. Expected application/pdf.");
         return;
       }
@@ -96,27 +104,25 @@ const PODetails = () => {
 
   const handleDownloadSAPPO = async () => {
     try {
-      const response = await axios.get(
-        `http://localhost:4001/api/v1/po/download/latestDocFile?poNo=${id}`,
-        {
-          responseType: "blob",
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
+      // const response = await axios.get(
+      //   `http://localhost:4001/api/v1/po/download/latestDocFile?poNo=${id}`,
+      //   {
+      //     responseType: "blob",
+      //     headers: {
+      //       Authorization: `Bearer ${token}`,
+      //     },
+      //   }
+      // );
+      const response = await apiCallBack(
+        "GET",
+        `po/download/latestDocFile?poNo=${id}`,
+        null,
+        token
       );
-
-      const contentDisposition = response.headers["content-disposition"];
-      const fileName = contentDisposition
-        ? contentDisposition.split("filename=")[1]
-        : "SAP_PO.pdf";
-
-      const blob = new Blob([response.data], { type: "application/pdf" });
-
-      const link = document.createElement("a");
-      link.href = window.URL.createObjectURL(blob);
-      link.download = fileName;
-      link.click();
+      if (response?.status) {
+        const url = `${process.env.REACT_APP_ROOT_URL}sapuploads/po/${response?.data[0].file_name}`;
+        window.open(url, "_blank");
+      }
     } catch (error) {
       console.error("Error downloading SAP PO:", error.message);
       toast.error("Error downloading SAP PO. Please try again.");
@@ -227,50 +233,74 @@ const PODetails = () => {
                                       </div>
                                     </div>
                                   </div>
-                                  {po.timeline === "" ? (
+                                  {console.log("hello1", po.timeline)}
+                                  {po?.timeline === "" ? (
                                     ""
                                   ) : (
                                     <div className="col-8">
                                       <div className="card card-xxl-stretch mb-5 mb-xxl-8">
                                         <div className="card-body py-3">
                                           {po?.timeline &&
+                                            Array.isArray(po.timeline) &&
                                             po.timeline.map((item, i) => (
                                               <Fragment key={i}>
-                                                <div className="card_header_data">
-                                                  <span className="label">
-                                                    {/* Contractual SDBG/IB submission date: */}
-                                                    {item?.MTEXT} :
-                                                  </span>
-                                                  <span className="label_data">
-                                                    {item?.PLAN_DATE &&
-                                                      new Date(
-                                                        item?.PLAN_DATE
-                                                      ).toLocaleString()}{" "}
-                                                    (
-                                                    <span
-                                                      style={{
-                                                        fontWeight: "bold",
-                                                        color:
-                                                          item?.status ===
-                                                          "ASSIGNED"
-                                                            ? "#a7a700"
-                                                            : item?.status ===
-                                                              "APPROVED"
-                                                            ? "green"
-                                                            : item?.status ===
-                                                              "REJECTED"
-                                                            ? "red"
-                                                            : item?.status ===
-                                                              "ACCEPTED"
-                                                            ? "#04bd92"
-                                                            : "orange",
-                                                      }}
-                                                    >
-                                                      {item?.status}
-                                                    </span>
-                                                    )
-                                                  </span>
-                                                </div>
+                                                {item?.MTEXT &&
+                                                  item?.PLAN_DATE && (
+                                                    <div className="card_header_data">
+                                                      <span className="label">
+                                                        {/* Contractual */}
+                                                        {item?.MTEXT} :
+                                                      </span>
+                                                      <span className="label_data">
+                                                        {item?.PLAN_DATE
+                                                          ? new Date(
+                                                              item?.PLAN_DATE
+                                                            ).toLocaleDateString()
+                                                          : "Not Updated"}{" "}
+                                                      </span>
+                                                    </div>
+                                                  )}
+
+                                                {item?.milestoneText &&
+                                                  item?.actualSubmissionDate && (
+                                                    <div className="card_header_data">
+                                                      <span className="label">
+                                                        {/* Actual */}
+                                                        {item?.milestoneText} :
+                                                      </span>
+                                                      <span className="label_data">
+                                                        {item?.actualSubmissionDate
+                                                          ? new Date(
+                                                              item?.actualSubmissionDate
+                                                            ).toLocaleDateString()
+                                                          : "Not Updated"}{" "}
+                                                        (
+                                                        <span
+                                                          style={{
+                                                            fontWeight: "bold",
+                                                            color:
+                                                              item?.status ===
+                                                              "ASSIGNED"
+                                                                ? "#a7a700"
+                                                                : item?.status ===
+                                                                  "APPROVED"
+                                                                ? "green"
+                                                                : item?.status ===
+                                                                  "REJECTED"
+                                                                ? "red"
+                                                                : item?.status ===
+                                                                  "ACCEPTED"
+                                                                ? "#04bd92"
+                                                                : "orange",
+                                                          }}
+                                                        >
+                                                          {item?.status ||
+                                                            "Not Uploaded"}
+                                                        </span>
+                                                        )
+                                                      </span>
+                                                    </div>
+                                                  )}
                                               </Fragment>
                                             ))}
                                         </div>
@@ -289,14 +319,6 @@ const PODetails = () => {
 
                       <div className="col-12 customer_feedback">
                         <div className="card card-xxl-stretch mb-5 mb-xxl-8">
-                          {/* <div className="card-header border-0 pt-5 justify-content-between">
-                            <h3 className="card-title align-items-start flex-column">
-                              <span className="card-label fw-bold fs-3 mb-1">
-                                POs
-                              </span>
-                            </h3>
-                          </div> */}
-
                           <div className="card-body py-3">
                             <div className="tab-content">
                               <div className="table-responsive">
@@ -348,15 +370,13 @@ const PODetails = () => {
                                                 {material.material_quantity}
                                               </td>
                                               <td>{material.material_unit}</td>
+
                                               <td>
-                                                {material.contractual_delivery_date ==
-                                                null
-                                                  ? "no date found"
-                                                  : moment(
-                                                      material.contractual_delivery_date
-                                                    ).format(
-                                                      "DD/MM/YY (HH:mm)"
-                                                    )}
+                                                {!material?.contractual_delivery_date
+                                                  ? "No date found"
+                                                  : new Date(
+                                                      material?.contractual_delivery_date
+                                                    ).toDateString()}
                                               </td>
                                             </tr>
                                           )

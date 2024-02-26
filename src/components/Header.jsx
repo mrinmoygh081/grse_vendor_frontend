@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { reConfirm } from "../utils/reConfirm";
 import { logoutHandler } from "../redux/slices/loginSlice";
@@ -18,6 +18,14 @@ export default function Header({ title, id }) {
     //   return Persistor.purge();
     // });
   };
+
+  // useEffect(() => {
+  //   (async () => {
+  //     if (id === "null") {
+  //       dispatch(poRemoveHandler());
+  //     }
+  //   })();
+  // }, [id]);
 
   return (
     <>

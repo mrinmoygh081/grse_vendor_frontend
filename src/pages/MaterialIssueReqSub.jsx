@@ -41,29 +41,28 @@ const MaterialIssueReqSub = () => {
     getData();
   }, [id, token]);
 
-  const optionss = [
-    {
-      file_type_name: "Upload MRS",
-    },
-    {
-      file_type_name: "Remarks",
-    },
-    {
-      file_type_name: "Others",
-    },
-  ];
+  // const optionss = [
+  //   {
+  //     file_type_name: "Upload MRS",
+  //   },
+  //   {
+  //     file_type_name: "Remarks",
+  //   },
+  //   {
+  //     file_type_name: "Others",
+  //   },
+  // ];
 
   const submitHandler = async (flag) => {
     try {
-      if (selectedActionTypeName !== "") {
+      // if (selectedActionTypeName !== "") {
+      if (formData?.mrsFile) {
         const formDataToSend = new FormData();
         formDataToSend.append("purchasing_doc_no", id);
-        if (formData.mrsFile) {
-          formDataToSend.append("file", formData.mrsFile);
-        }
+        formDataToSend.append("file", formData.mrsFile);
         formDataToSend.append("remarks", formData.remarks);
         formDataToSend.append("status", flag);
-        formDataToSend.append("type", selectedActionTypeName);
+        formDataToSend.append("type", "Upload MRS");
 
         const response = await apiCallBack(
           "POST",
@@ -84,8 +83,11 @@ const MaterialIssueReqSub = () => {
           toast.error("Failed to upload Material Issue Requisition");
         }
       } else {
-        toast.warn("Please choose action type!");
+        toast.warn("File is mandatory!");
       }
+      // } else {
+      //   toast.warn("Please choose action type!");
+      // }
     } catch (error) {
       toast.error("Error uploading Material Issue Requisition:", error);
     }
@@ -188,7 +190,7 @@ const MaterialIssueReqSub = () => {
             <form>
               <div className="row">
                 <div className="col-12">
-                  <div className="my-3">
+                  {/* <div className="my-3">
                     <select
                       className="form-select"
                       onChange={(e) => {
@@ -202,8 +204,12 @@ const MaterialIssueReqSub = () => {
                         </option>
                       ))}
                     </select>
-                  </div>
+                  </div> */}
                   <div className="mb-3">
+                    <label className="form-label">
+                      Material Issue Requisition File{" "}
+                      <span className="red">*</span>
+                    </label>
                     <input
                       type="file"
                       className="form-control"

@@ -223,7 +223,7 @@ const DrawingSub = () => {
             <div className="card-header border-0 pt-5">
               <h3 className="card-title align-items-start flex-column">
                 <span className="card-label fw-bold fs-3 mb-1">
-                  UPLOAD Drawing
+                  Take Your Action
                 </span>
               </h3>
               <button
@@ -249,7 +249,10 @@ const DrawingSub = () => {
                       <option value="Upload Drawing ail Chain">
                         Upload Drawing Covering Letter
                       </option>
-                      <option value="Remarks">Remarks</option>
+
+                      <option value="Acknowledgement/Remarks">
+                        Acknowledgement / Remarks
+                      </option>
                       <option value="Others">Others</option>
                     </select>
                   </div>
@@ -302,7 +305,7 @@ const DrawingSub = () => {
                               "Please confirm your approving the drawing."
                             )
                           }
-                          className="btn fw-bold btn-primary"
+                          className="btn fw-bold btn-success"
                           type="button"
                         >
                           APPROVE

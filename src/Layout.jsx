@@ -35,6 +35,7 @@ import LDPenaltyRefund from "./pages/checklists/LDPenaltyRefund";
 import IlmsSub from "./pages/IlmsSub";
 import MRSSub from "./pages/MRSSub";
 import MaterialIssueReqSub from "./pages/MaterialIssueReqSub";
+import WMCSub from "./pages/WMCSub";
 
 function Layout() {
   const { token, isLoggedIn, userType } = useSelector((state) => state.auth);
@@ -133,6 +134,7 @@ function Layout() {
             <Route exact path="/ilms/:id" element={<IlmsSub />} />
             <Route exact path="/mrs/:id" element={<MRSSub />} />
             <Route exact path="/mir/:id" element={<MaterialIssueReqSub />} />
+            <Route exact path="/wmc/:id" element={<WMCSub />} />
           </Routes>
         ) : (
           <Routes>
@@ -221,6 +223,7 @@ function Layout() {
             <Route exact path="/ilms/:id" element={<IlmsSub />} />
             <Route exact path="/mrs/:id" element={<MRSSub />} />
             <Route exact path="/mir/:id" element={<MaterialIssueReqSub />} />
+            <Route exact path="/wmc/:id" element={<WMCSub />} />
           </Routes>
         )}
       </BrowserRouter>

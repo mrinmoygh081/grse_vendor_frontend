@@ -333,6 +333,7 @@ const SDBGSub = () => {
         token
       );
       if (res?.status) {
+        setIsAssignPopup(false);
         toast.success(`Successfully assigned to ${assign?.assigned_to}`);
         getSDBG();
       }

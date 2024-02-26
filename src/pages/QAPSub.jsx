@@ -96,14 +96,55 @@ const QAPSub = () => {
       console.error("Error fetching drawing list:", error);
     }
   };
-  console.log(allqap);
+
+  const getQapSave = async () => {
+    try {
+      const { status, data } = await apiCallBack(
+        "GET",
+        `po/getQapSave?poNo=${id}`,
+        null,
+        token
+      );
+      if (status && data) {
+        const { remarks } = data[0];
+        let f = {
+          QapFile: null,
+          remarks: remarks,
+        };
+        setFormData(f);
+      }
+    } catch (error) {
+      console.error("Error fetching drawing list:", error);
+    }
+  };
+
+  const deleteSavedQAP = async () => {
+    try {
+      const data = await apiCallBack(
+        "GET",
+        `po/deleteQapSave?poNo=${id}`,
+        null,
+        token
+      );
+      if (data?.status) {
+        setFormData({
+          QapFile: null,
+          remarks: "",
+        });
+      }
+    } catch (error) {
+      console.error("Error fetching drawing list:", error);
+    }
+  };
 
   useEffect(() => {
     getData();
+    getQapSave();
   }, [id, token]);
 
   const updateQAP = async (flag) => {
     try {
+      await deleteSavedQAP();
       let uType;
       let mailSendTo;
       if (userType === 1) {
@@ -191,6 +232,44 @@ const QAPSub = () => {
     }
   };
 
+  const savedQAPHandler = async () => {
+    await deleteSavedQAP();
+    const { remarks } = formData;
+
+    // Validate all required fields
+    if (!id) {
+      toast.error("PO Number is required!");
+      return;
+    }
+
+    const formDataToSend = new FormData();
+    formDataToSend.append("purchasing_doc_no", id);
+    if (formData?.QapFile) {
+      formDataToSend.append("file", formData?.QapFile);
+    }
+    formDataToSend.append("remarks", remarks);
+
+    try {
+      const res = await apiCallBack(
+        "POST",
+        `po/insertQapSave`,
+        formDataToSend,
+        token
+      );
+      if (res?.status) {
+        toast.success("Remarks have been saved successfully!");
+        setIsPopup(false);
+        getData();
+        getQapSave();
+      } else {
+        toast.error(res.message);
+      }
+    } catch (error) {
+      console.error("Error saving QAP:", error);
+      toast.error("Error saving QAP");
+    }
+  };
+
   return (
     <>
       <div className="d-flex flex-column flex-root">
@@ -204,7 +283,6 @@ const QAPSub = () => {
                   <div className="row g-5 g-xl-8">
                     <div className="col-12">
                       <div className="screen_header">
-                        {console.log(allqap)}
                         {userType !== 1 &&
                           user.department_id === 3 &&
                           user.internal_role_id === 1 && (
@@ -258,7 +336,7 @@ const QAPSub = () => {
                                             qap?.created_at
                                           ).toLocaleString()}
                                       </td>
-                                      <td className="">
+                                      <td>
                                         <a
                                           href={`${process.env.REACT_APP_BACKEND_API}po/download?id=${qap.drawing_id}&type=qap`}
                                           target="_blank"
@@ -267,9 +345,9 @@ const QAPSub = () => {
                                           {qap.file_name}
                                         </a>
                                       </td>
-                                      <td className="">{qap.created_by_id}</td>
-                                      <td className="">{qap.remarks}</td>
-                                      <td className="">{qap.status}</td>
+                                      <td>{qap.created_by_id}</td>
+                                      <td>{qap.remarks}</td>
+                                      <td>{qap.status}</td>
                                     </tr>
                                   ))}
                               </tbody>
@@ -355,7 +433,7 @@ const QAPSub = () => {
                       <>
                         <div>
                           <button
-                            onClick={() => updateQAP("SAVED")}
+                            onClick={() => savedQAPHandler()}
                             className="btn fw-bold btn-primary me-2"
                             type="button"
                           >

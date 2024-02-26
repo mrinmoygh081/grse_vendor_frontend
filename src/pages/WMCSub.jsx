@@ -6,26 +6,24 @@ import { useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { apiCallBack } from "../utils/fetchAPIs";
 import { toast } from "react-toastify";
-import { reConfirm } from "../utils/reConfirm";
 
-const MRSSub = () => {
+const WMCSub = () => {
   const [isPopup, setIsPopup] = useState(false);
   const [allData, setAllData] = useState([]);
   const [formData, setFormData] = useState({
-    mrsFile: null,
+    WMCFile: null,
     remarks: "",
   });
   const [selectedActionTypeName, setSelectedActionTypeName] = useState("");
   const { id } = useParams();
   const { user, token, userType } = useSelector((state) => state.auth);
   const { poType } = useSelector((state) => state.selectedPO);
-  console.log(user, "useruser");
 
   const getData = async () => {
     try {
       const data = await apiCallBack(
         "GET",
-        `po/Mrs/list?poNo=${id}`,
+        `po/material/wmc/list?poNo=${id}`,
         null,
         token
       );
@@ -33,7 +31,10 @@ const MRSSub = () => {
         setAllData(data?.data);
       }
     } catch (error) {
-      console.error("Error fetching drawing list:", error);
+      console.error(
+        "Error fetching Weight Measurement Certificate list:",
+        error
+      );
     }
   };
 
@@ -43,7 +44,7 @@ const MRSSub = () => {
 
   // const optionss = [
   //   {
-  //     file_type_name: "Upload MRS",
+  //     file_type_name: "Upload WMC",
   //   },
   //   {
   //     file_type_name: "Remarks",
@@ -56,44 +57,44 @@ const MRSSub = () => {
   const submitHandler = async (flag) => {
     try {
       // if (selectedActionTypeName !== "") {
-      if (formData?.mrsFile) {
+      if (formData?.WMCFile) {
         const formDataToSend = new FormData();
         formDataToSend.append("purchasing_doc_no", id);
-        formDataToSend.append("file", formData.mrsFile);
+        if (formData.WMCFile) {
+          formDataToSend.append("file", formData.WMCFile);
+        }
         formDataToSend.append("remarks", formData.remarks);
         formDataToSend.append("status", flag);
-        formDataToSend.append("document_type", "Upload MRS");
+        formDataToSend.append("document_type", "Upload WMC");
 
         const response = await apiCallBack(
           "POST",
-          "po/mrs",
+          "po/material/wmc",
           formDataToSend,
           token
         );
 
         if (response?.status) {
-          if (response.message.includes("This MRS aleready APPROVED")) {
-            toast.warning(response.message);
-          } else {
-            toast.success("MRS uploaded successfully");
-            setIsPopup(false);
-            setFormData({
-              mrsFile: null,
-              remarks: "",
-            });
-            getData();
-          }
+          toast.success("Weight Measurement Certificate uploaded successfully");
+          setIsPopup(false);
+          setFormData({
+            WMCFile: null,
+            remarks: "",
+          });
+          getData();
         } else {
-          toast.error("Failed to upload MRS!");
+          toast.error("Failed to upload Weight Measurement Certificate");
         }
       } else {
-        toast.warn("Please choose a valid file!");
+        toast.warn(
+          "Please choose a valid file for Weight Measurement Certificate"
+        );
       }
       // } else {
       //   toast.warn("Please choose action type!");
       // }
     } catch (error) {
-      toast.error("Error uploading MRS:", error);
+      toast.error("Error uploading Weight Measurement Certificate:", error);
     }
   };
 
@@ -103,7 +104,7 @@ const MRSSub = () => {
         <div className="page d-flex flex-row flex-column-fluid">
           <SideBar />
           <div className="wrapper d-flex flex-column flex-row-fluid">
-            <Header title={"Material Reconciliation Statement"} id={id} />
+            <Header title={"Weight Measurement Certificate"} id={id} />
             <div className="content d-flex flex-column flex-column-fluid">
               <div className="post d-flex flex-column-fluid">
                 <div className="container">
@@ -128,7 +129,7 @@ const MRSSub = () => {
                               <thead>
                                 <tr className="border-0">
                                   <th>DateTime </th>
-                                  <th>MRS File</th>
+                                  <th>WMC File</th>
                                   <th>Updated By</th>
                                   <th className="min-w-150px">Remarks</th>
                                   {/* <th>Status</th> */}
@@ -146,7 +147,7 @@ const MRSSub = () => {
                                       </td>
                                       <td className="">
                                         <a
-                                          href={`${process.env.REACT_APP_PDF_URL}mrs/${item.file_name}`}
+                                          href={`${process.env.REACT_APP_PDF_URL}wmc/${item.file_name}`}
                                           target="_blank"
                                           rel="noreferrer"
                                         >
@@ -180,7 +181,9 @@ const MRSSub = () => {
           <div className="card card-xxl-stretch mb-5 mb-xxl-8">
             <div className="card-header border-0 pt-5">
               <h3 className="card-title align-items-start flex-column">
-                <span className="card-label fw-bold fs-3 mb-1">UPLOAD MRS</span>
+                <span className="card-label fw-bold fs-3 mb-1">
+                  Weight Measurement Certificate
+                </span>
               </h3>
               <button
                 className="btn fw-bold btn-danger"
@@ -209,7 +212,8 @@ const MRSSub = () => {
                   </div> */}
                   <div className="mb-3">
                     <label className="form-label">
-                      MRS File <span className="red">*</span>
+                      Weight Measurement Certificate File{" "}
+                      <span className="red">*</span>
                     </label>
                     <input
                       type="file"
@@ -217,7 +221,7 @@ const MRSSub = () => {
                       onChange={(e) =>
                         setFormData({
                           ...formData,
-                          mrsFile: e.target.files[0],
+                          WMCFile: e.target.files[0],
                         })
                       }
                     />
@@ -231,7 +235,6 @@ const MRSSub = () => {
                       id=""
                       rows="4"
                       className="form-control"
-                      value={formData?.remarks}
                       onChange={(e) =>
                         setFormData({ ...formData, remarks: e.target.value })
                       }
@@ -254,7 +257,7 @@ const MRSSub = () => {
                           reConfirm(
                             { file: true },
                             () => submitHandler("ACKNOWLEDGED"),
-                            "You're approving the MRS. Please confirm!"
+                            "You're approving the WMC. Please confirm!"
                           )
                         }
                         className="btn fw-bold btn-success"
@@ -274,4 +277,4 @@ const MRSSub = () => {
   );
 };
 
-export default MRSSub;
+export default WMCSub;

@@ -95,6 +95,10 @@ export const sidebarServicePOData = [
     link: "/gate-in",
   },
   {
+    title: "Weight Measurement Certificate",
+    link: "/wmc",
+  },
+  {
     title: "WDC",
     link: "/wdc",
   },
