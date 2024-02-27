@@ -18,9 +18,9 @@ const PODetails = () => {
   const { token } = useSelector((state) => state.auth);
   const [isPopup, setIsPopup] = useState(false);
 
-  // window.addEventListener("popstate", () => {
-  //   dispatch(poRemoveHandler());
-  // });
+  window.addEventListener("popstate", () => {
+    dispatch(poRemoveHandler());
+  });
 
   useEffect(() => {
     (async () => {

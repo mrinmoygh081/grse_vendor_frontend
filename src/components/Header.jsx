@@ -19,13 +19,13 @@ export default function Header({ title, id }) {
     // });
   };
 
-  // useEffect(() => {
-  //   (async () => {
-  //     if (id === "null") {
-  //       dispatch(poRemoveHandler());
-  //     }
-  //   })();
-  // }, [id]);
+  useEffect(() => {
+    (async () => {
+      if (id === "null") {
+        dispatch(poRemoveHandler());
+      }
+    })();
+  }, [id]);
 
   return (
     <>

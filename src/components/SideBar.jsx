@@ -13,7 +13,7 @@ import { reConfirm } from "../utils/reConfirm";
 export default function SideBar({ id }) {
   const dispatch = useDispatch();
   const { po, poType } = useSelector((state) => state.selectedPO);
-  const { userType } = useSelector((state) => state.auth);
+  // const { userType } = useSelector((state) => state.auth);
 
   const logOutFun = () => {
     dispatch(logoutHandler());

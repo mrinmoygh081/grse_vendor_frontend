@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import Footer from "../components/Footer";
 import SideBar from "../components/SideBar";
 import Header from "../components/Header";
@@ -32,8 +32,6 @@ const WDCSub = () => {
   });
   const { id } = useParams();
   const { user, token, userType } = useSelector((state) => state.auth);
-
-  const fileInputRef = useRef(null);
 
   // useEffect(() => {
   //   const handlePopState = (event) => {
@@ -156,7 +154,6 @@ const WDCSub = () => {
             stage_datiels: "",
             actual_payable_amount: "",
           });
-          fileInputRef.current.value = null;
           getData();
         } else {
           toast.error("Failed to upload WDC");
@@ -329,7 +326,6 @@ const WDCSub = () => {
                         file: e.target.files[0],
                       })
                     }
-                    ref={fileInputRef}
                   />
                 </div>
               </div>
@@ -341,7 +337,6 @@ const WDCSub = () => {
                   <input
                     type="text"
                     className="form-control"
-                    value={formData?.wdc_ref_no}
                     onChange={(e) =>
                       setFormData({ ...formData, wdc_ref_no: e.target.value })
                     }
@@ -355,7 +350,6 @@ const WDCSub = () => {
                   </label>
                   <ReactDatePicker
                     selected={formData?.wdc_date}
-                    value={formData?.wdc_date}
                     onChange={(date) =>
                       setFormData({
                         ...formData,
@@ -376,7 +370,6 @@ const WDCSub = () => {
                   <input
                     type="text"
                     className="form-control"
-                    value={formData?.po_line_iten_no}
                     onChange={(e) =>
                       setFormData({
                         ...formData,
@@ -394,7 +387,6 @@ const WDCSub = () => {
                   <input
                     type="text"
                     className="form-control"
-                    value={formData?.job_location}
                     onChange={(e) =>
                       setFormData({ ...formData, job_location: e.target.value })
                     }
@@ -409,7 +401,6 @@ const WDCSub = () => {
                   <input
                     type="text"
                     className="form-control"
-                    value={formData?.yard_no}
                     onChange={(e) =>
                       setFormData({ ...formData, yard_no: e.target.value })
                     }
@@ -423,7 +414,6 @@ const WDCSub = () => {
                   </label>
                   <ReactDatePicker
                     selected={formData?.actual_start_date}
-                    value={formData?.actual_start_date}
                     onChange={(date) =>
                       setFormData({
                         ...formData,
@@ -443,7 +433,6 @@ const WDCSub = () => {
                   </label>
                   <ReactDatePicker
                     selected={formData?.actual_completion_date}
-                    value={formData?.actual_completion_date}
                     onChange={(date) =>
                       setFormData({
                         ...formData,
@@ -464,7 +453,6 @@ const WDCSub = () => {
                   <input
                     type="text"
                     className="form-control"
-                    value={formData?.unit}
                     onChange={(e) =>
                       setFormData({ ...formData, unit: e.target.value })
                     }
@@ -479,7 +467,6 @@ const WDCSub = () => {
                   <input
                     type="text"
                     className="form-control"
-                    value={formData?.messurment}
                     onChange={(e) =>
                       setFormData({ ...formData, messurment: e.target.value })
                     }
@@ -494,7 +481,6 @@ const WDCSub = () => {
                   <input
                     type="text"
                     className="form-control"
-                    value={formData?.quantity}
                     onChange={(e) =>
                       setFormData({ ...formData, quantity: e.target.value })
                     }
@@ -509,7 +495,6 @@ const WDCSub = () => {
                   <input
                     type="text"
                     className="form-control"
-                    value={formData?.entry_by_production}
                     onChange={(e) =>
                       setFormData({
                         ...formData,
@@ -527,7 +512,6 @@ const WDCSub = () => {
                   <input
                     type="text"
                     className="form-control"
-                    value={formData?.stage_datiels}
                     onChange={(e) =>
                       setFormData({
                         ...formData,
@@ -545,7 +529,6 @@ const WDCSub = () => {
                   <input
                     type="text"
                     className="form-control"
-                    value={formData?.actual_payable_amount}
                     onChange={(e) =>
                       setFormData({
                         ...formData,
