@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Feb 13, 2024 at 12:24 PM
+-- Generation Time: Feb 27, 2024 at 06:07 AM
 -- Server version: 10.4.28-MariaDB
 -- PHP Version: 8.1.17
 
@@ -20,6 +20,22 @@ SET time_zone = "+00:00";
 --
 -- Database: `grse_btn`
 --
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `actualsubmissiondate`
+--
+
+CREATE TABLE `actualsubmissiondate` (
+  `id` int(5) NOT NULL,
+  `purchasing_doc_no` varchar(10) NOT NULL,
+  `milestoneId` int(2) NOT NULL,
+  `milestoneText` text NOT NULL,
+  `actualSubmissionDate` bigint(20) NOT NULL,
+  `created_at` bigint(20) NOT NULL,
+  `created_by_id` varchar(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
@@ -89,7 +105,9 @@ INSERT INTO `auth` (`id`, `user_type`, `department_id`, `internal_role_id`, `use
 (19, 0, 16, 0, 'RIC', '1234', 'grse_RIC', '600300', '2024-01-23 16:44:53', NULL),
 (20, 0, 15, 2, 'grse_FINANCE_STAFF', '1234', 'grse_FINANCE_STAFF', '600201', '2024-01-23 16:44:53', NULL),
 (21, 0, 17, 1, 'Po dealing officer', '1234', 'Po dealing officer', '493834', '2024-01-23 16:44:53', NULL),
-(22, 2, 2, 1, 'CDO(drawing officer)', '1234', 'CDO(drawing officer)', '600400', '2024-01-23 16:44:53', NULL);
+(22, 2, 2, 1, 'CDO(drawing officer)', '1234', 'CDO(drawing officer)', '600400', '2024-01-23 16:44:53', NULL),
+(23, 0, 15, 2, 'grse_FINANCE_STAFF', '1234', 'grse_FINANCE_STAFF', '600202', '2024-01-23 16:44:53', NULL),
+(24, 0, 15, 2, 'grse_FINANCE_STAFF', '1234', 'grse_FINANCE_STAFF', '600203', '2024-01-23 16:44:53', NULL);
 
 -- --------------------------------------------------------
 
@@ -264,7 +282,24 @@ INSERT INTO `department_wise_log` (`id`, `user_id`, `vendor_code`, `depertment`,
 (600233, 493834, '50007545', '17', 'PENDING', 35, 'SDBG uploaded . . ', '7800000040', 1705747242, '493834'),
 (600234, 493834, '50007545', '17', 'PENDING', 4, 'QAP uploaded . . ', '7800000040', 1704073242, '493834'),
 (600235, 493834, '50007545', '17', 'ASSIGNED', 5, 'QAP ASSIGN ', '7800000040', 1704451242, '493834'),
-(600236, 600229, '50007545', '3', 'ASSIGNED', 36, 'hhh', '7800000040', 1707470818242, '600229');
+(600236, 600229, '50007545', '3', 'ASSIGNED', 36, 'hhh', '7800000040', 1707470818242, '600229'),
+(600237, 50007545, '50007545', '3', 'PENDING', 37, 'HELLLO', '7800000040', 1708593794721, '50007545'),
+(600238, 50007545, '50007545', '3', 'PENDING', 38, 'Hello', '7800000040', 1708595450561, '50007545'),
+(600239, 50007545, '50007545', '3', 'PENDING', 39, 'THis is a sample file', '7800000040', 1708752970259, '50007545'),
+(600240, 50007545, '50007545', '3', 'PENDING', 1, 'HEllo', '7800000040', 1708753398901, '50007545'),
+(600241, 50007545, '50007545', '3', 'PENDING', 2, 'Demo QAP Upload', '7800000040', 1708753854960, '50007545'),
+(600242, 50007545, '50007545', '3', 'PENDING', 1, 'QAP Upload', '7800000040', 1708753930033, '50007545'),
+(600243, 600229, '50007545', '3', 'ASSIGNED', 2, 'Assigned!', '7800000040', 1708754416054, '600229'),
+(600244, 50007545, '50007545', '3', 'PENDING', 3, 'again', '7800000040', 1708754938726, '50007545'),
+(600245, 600953, '50007545', '3', 'ACCEPTED', 5, 'Accepted!', '7800000040', 1708755581861, '600953'),
+(600246, 600953, '50007545', '3', 'ACCEPTED', 6, 'Again Accepted!', '7800000040', 1708755638235, '600953'),
+(600247, 600953, '50007545', '3', 'REJECTED', 7, 'Wrong File!', '7800000040', 1708755704641, '600953'),
+(600248, 600953, '50007545', '3', 'APPROVED', 8, 'Approved!', '7800000040', 1708755720085, '600953'),
+(600249, 50007545, '50007545', '3', 'PENDING', 9, 'Hello Dada, test krchi', '7800000040', 1708758829658, '50007545'),
+(600250, 50007545, '50007545', '3', 'PENDING', 1, 'Uploading QAP File.', '7800000040', 1708781018387, '50007545'),
+(600251, 600229, '50007545', '3', 'ASSIGNED', 2, 'ASsinged!', '7800000040', 1708781132164, '600229'),
+(600252, 600949, '50007545', '3', 'ACCEPTED', 4, 'this file is almost correct.', '7800000040', 1708781358259, '600949'),
+(600253, 600949, '50007545', '3', 'APPROVED', 5, 'Approved', '7800000040', 1708781481193, '600949');
 
 -- --------------------------------------------------------
 
@@ -309,26 +344,17 @@ INSERT INTO `depertment_master` (`id`, `name`) VALUES
 CREATE TABLE `drawing` (
   `id` int(11) NOT NULL,
   `purchasing_doc_no` varchar(11) NOT NULL,
-  `file_name` varchar(500) NOT NULL,
+  `file_name` varchar(500) DEFAULT NULL,
   `vendor_code` varchar(100) NOT NULL,
-  `file_path` varchar(500) NOT NULL,
+  `file_path` varchar(500) DEFAULT NULL,
   `remarks` text DEFAULT NULL,
   `status` varchar(20) NOT NULL,
   `updated_by` varchar(30) NOT NULL,
   `created_at` bigint(20) NOT NULL,
-  `created_by_id` varchar(200) NOT NULL
+  `created_by_id` varchar(200) NOT NULL,
+  `actionType` varchar(100) DEFAULT NULL,
+  `actionTypeId` int(2) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='drawing table';
-
---
--- Dumping data for table `drawing`
---
-
-INSERT INTO `drawing` (`id`, `purchasing_doc_no`, `file_name`, `vendor_code`, `file_path`, `remarks`, `status`, `updated_by`, `created_at`, `created_by_id`) VALUES
-(3, '7800000040', '1707459233515-sample.pdf', '50007545', 'uploads\\submitDrawing\\1707459233515-sample.pdf', 'Uploading Of Cover Letter', 'PENDING', 'VENDOR', 1707459233517, '50007545'),
-(5, '7800000040', '1707461829555-sample.pdf', '600400', 'uploads\\submitDrawing\\1707461829555-sample.pdf', 'This is approved!', 'APPROVED', 'GRSE', 1707461829557, '600400'),
-(6, '7800000040', '1707474366106-sample.pdf', '50007545', 'uploads\\submitDrawing\\1707474366106-sample.pdf', 'Testing file', 'PENDING', 'VENDOR', 1707474366111, '50007545'),
-(7, '7800000040', '1707474429282-sample.pdf', '493834', 'uploads\\submitDrawing\\1707474429282-sample.pdf', 'something is wrong. plz correct this this thnig', 'PENDING', 'GRSE', 1707474429285, '493834'),
-(8, '7800000040', '1707807179929-sample.pdf', '493834', 'uploads\\submitDrawing\\1707807179929-sample.pdf', 'The drawing has been approved!', 'APPROVED', 'GRSE', 1707807179938, '493834');
 
 -- --------------------------------------------------------
 
@@ -364,8 +390,27 @@ CREATE TABLE `eket` (
   `EBELN` varchar(10) NOT NULL COMMENT 'Purchasing Document\r\n Number',
   `EBELP` int(5) NOT NULL COMMENT 'Item Number of\r\n Purchasing Document',
   `ETENR` int(4) NOT NULL COMMENT 'Delivery Schedule\r\n Line Counter',
-  `EINDT` bigint(20) NOT NULL COMMENT 'Item Delivery Date'
+  `EINDT` date NOT NULL COMMENT 'Item Delivery Date'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `eket`
+--
+
+INSERT INTO `eket` (`EBELN`, `EBELP`, `ETENR`, `EINDT`) VALUES
+('7800000040', 10, 1, '2014-03-14'),
+('2100010812', 20, 1, '2014-03-15'),
+('7800000040', 10, 1, '2015-07-24'),
+('7800000040', 10, 1, '2016-07-04'),
+('4700013553', 15, 1, '2016-04-30'),
+('4700013553', 20, 1, '2016-04-30'),
+('7800000040', 30, 1, '2016-04-30'),
+('4700013553', 40, 1, '2016-04-30'),
+('4700013553', 50, 1, '2016-04-30'),
+('7800000040', 10, 1, '2016-04-29'),
+('7800000040', 10, 1, '2013-04-15'),
+('7800000040', 10, 1, '2014-03-22'),
+('4800003580', 20, 1, '2014-04-15');
 
 -- --------------------------------------------------------
 
@@ -410,7 +455,7 @@ INSERT INTO `ekko` (`EBELN`, `BUKRS`, `BSTYP`, `BSART`, `LOEKZ`, `AEDAT`, `ERNAM
 ('4800022835', 'GRSE', 'F', 'ZDM', NULL, '2022-09-13', '491646', '50005041', 'GRSE', 'DP3'),
 ('7800000040', 'GRSE', 'F', 'ZGSR', NULL, '2023-09-10', '493834', '50007545', 'GRSE', 'DP3'),
 ('7800000041', 'GRSE', 'F', 'ZGSR', NULL, '2024-01-23', '493834', '50007546', 'GRSE', 'DP3'),
-('7800000047', 'GRSE', 'F', 'ZDM', NULL, '2022-06-28', '485838', '50005041', 'GRSE', 'DP3'),
+('7800000047', 'GRSE', 'F', 'ZDM', NULL, '2022-06-28', '485838', '50007545', 'GRSE', 'DP3'),
 ('QQ00013227', '5788', 'S', 'ABCD', 'W', '2023-11-07', '34567656787', '1234567890', '1234', '123');
 
 -- --------------------------------------------------------
@@ -484,9 +529,9 @@ INSERT INTO `ekpo` (`EBELN`, `EBELP`, `LOEKZ`, `STATU`, `AEDAT`, `TXZ01`, `MATNR
 ('4800019411', 10, '', '', '12.06.2020', 'Devl & Impl of Proc Accelerator System', '', 'GRSE', '100', '', 'SE57', 0, 1, 'AU', '9,000,000.0', '9,000,000.00', '12'),
 ('4800022399', 10, '', '', '23.04.2022', 'REGULARISATION OF SUPPLEMENTARY PO', '', 'GRSE', '100', '', 'SE57', 0, 1, 'AU', '350,000.00', '350,000.00', '12'),
 ('4800022835', 10, '', '', '14.09.2022', 'PROJECT WIP PROCESS', '', 'GRSE', '100', '', 'SE57', 0, 1, 'AU', '211,864.40', '211,864.40', '12'),
-('7800000040', 10, '', '', '18.11.2022', 'Technical Service for ERP Q1', 'M433', 'GRSE', '100', '', 'SE57', 0, 1, 'AU', '1,436,475.0', '1,436,475.00', '12'),
-('7800000047', 10, '', '', '29.06.2022', 'Implementation of Wage revision in SAP', '', 'GRSE', '100', '', 'SE74', 0, 1, 'AU', '1,800,000.0', '1,800,000.00', '12'),
-('7800000047', 20, '', '', '02.01.2023', 'WageRevision forOA(non-ranchi)&RanchiEmp', '', 'GRSE', '100', '', 'SE57', 0, 1, 'AU', '1,000,000.0', '1,000,000.00', '12'),
+('7800000040', 10, '', '', '18.11.2022', 'Technical Service for ERP Q1', 'M433', 'GRSE', '100', '', 'SE57', 10, 1, 'AU', '1,436,475.0', '1,436,475.00', '12'),
+('7800000047', 10, '', '', '29.06.2022', 'Implementation of Wage revision in SAP', 'SER08205', 'GRSE', '100', '', 'SE74', 0, 1, 'AU', '1,800,000.0', '1,800,000.00', '12'),
+('7800000047', 20, '', '', '02.01.2023', 'WageRevision forOA(non-ranchi)&RanchiEmp', 'SER08205', 'GRSE', '100', '', 'SE57', 0, 1, 'AU', '1,000,000.0', '1,000,000.00', '12'),
 ('1234512354', 10023, 'W', '1', '07.03.2014', 'IncomeTax Rectification in SAP Payroll', NULL, 'GRSE', '100', NULL, 'SE57', 1244, 232131, 'AU', '0', '0', 'TV'),
 ('1234512354', 88, 'W', '1', '20.06.2019', '6. Warranty Support', NULL, 'GRSE', '100', NULL, 'SE74', 0, 1, 'AU', '9000,3222', '124,456,900', 'SG'),
 ('QQ00013227', 10023, 'W', '1', '07.03.2014', 'IncomeTax Rectification in SAP Payroll', NULL, 'GRSE', '100', NULL, 'SE57', 1244, 232131, 'AU', '0', '0', 'TV'),
@@ -602,6 +647,26 @@ INSERT INTO `icgrn` (`id`, `purchasing_doc_no`, `vendor_code`, `document_type`, 
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `ilms`
+--
+
+CREATE TABLE `ilms` (
+  `id` int(11) NOT NULL,
+  `purchasing_doc_no` varchar(11) NOT NULL,
+  `file_name` varchar(500) DEFAULT NULL,
+  `file_path` varchar(500) DEFAULT NULL,
+  `remarks` text DEFAULT NULL,
+  `status` varchar(20) NOT NULL,
+  `vendor_code` varchar(100) DEFAULT NULL,
+  `type` varchar(100) DEFAULT NULL,
+  `created_at` bigint(20) NOT NULL,
+  `created_by_id` varchar(200) NOT NULL,
+  `updated_by` varchar(255) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='drawing table';
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `inspection_call_letter`
 --
 
@@ -638,7 +703,8 @@ INSERT INTO `inspection_call_letter` (`id`, `purchasing_doc_no`, `file_name`, `f
 (18, '13141411411', '1706685388074-sample.pdf', 1, 'my', '600231', 'uploads\\inspectionCallLetter\\1706685388074-sample.pdf', 'test', 'GRSE', 1706685388076, '600231'),
 (20, '13141411411', '1706694209634-sample.pdf', 1, 'my', '600231', 'uploads\\inspectionCallLetter\\1706694209634-sample.pdf', 'test', 'GRSE', 1706694209635, '600231'),
 (22, '7800000040', '1707461949080-sample.pdf', 2, 'Inspection Call Letter - Stage 2', '600400', 'uploads\\inspectionCallLetter\\1707461949080-sample.pdf', 'fasd', 'GRSE', 1707461949082, '600400'),
-(23, '7800000040', '1707474675255-sample.pdf', 6, 'Dispatch Clearance by CQAE', '50007545', 'uploads\\inspectionCallLetter\\1707474675255-sample.pdf', 'fdsfasd', 'VENDOR', 1707474675260, '50007545');
+(23, '7800000040', '1707474675255-sample.pdf', 6, 'Dispatch Clearance by CQAE', '50007545', 'uploads\\inspectionCallLetter\\1707474675255-sample.pdf', 'fdsfasd', 'VENDOR', 1707474675260, '50007545'),
+(24, '7800000040', '1708757011264-sample.pdf', 0, 'Inspection Call Letter - Stage 2', '50007545', 'uploads\\inspectionCallLetter\\1708757011264-sample.pdf', 'vc', 'VENDOR', 1708757011266, '50007545');
 
 -- --------------------------------------------------------
 
@@ -718,7 +784,7 @@ INSERT INTO `makt` (`id`, `MATNR`, `SPRAS`, `MAKTX`, `MAKTG`) VALUES
 (2, '1000001009', '5', 'S', 'ABCD'),
 (3, '1000001009', '5', 'S', 'ABCD'),
 (4, '1000001009', '5', 'S', 'ABCD'),
-(5, '1000001009', '5', 'S', 'ABCD');
+(5, 'M433', '5', 'Some Dummy Description', 'ABCD');
 
 -- --------------------------------------------------------
 
@@ -736,13 +802,33 @@ CREATE TABLE `mara` (
 --
 
 INSERT INTO `mara` (`MATNR`, `MTART`) VALUES
+('000000015114117149', 'ZROH'),
+('000000015128076737', 'ZROH'),
 ('9200MAT', 'ZDIN'),
 ('9200SPARE-28', 'ZDIN'),
 ('9200SPARE18', 'ZDIN'),
+('M433', 'ZDIN'),
 ('SER08205', 'DIEN'),
-('SER08206', 'ZDIN'),
-('000000015114117149', 'ZROH'),
-('000000015128076737', 'ZROH');
+('SER08206', 'ZDIN');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `mir`
+--
+
+CREATE TABLE `mir` (
+  `id` int(11) NOT NULL DEFAULT 0,
+  `purchasing_doc_no` varchar(11) DEFAULT NULL,
+  `type` varchar(40) DEFAULT NULL,
+  `file_name` varchar(300) DEFAULT NULL,
+  `file_path` varchar(500) DEFAULT NULL,
+  `remarks` text DEFAULT NULL,
+  `status` varchar(20) NOT NULL,
+  `updated_by` varchar(30) NOT NULL,
+  `created_at` bigint(20) NOT NULL,
+  `created_by_id` varchar(200) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
@@ -762,17 +848,6 @@ CREATE TABLE `mrs` (
   `created_at` bigint(20) NOT NULL,
   `created_by_id` varchar(200) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Dumping data for table `mrs`
---
-
-INSERT INTO `mrs` (`id`, `purchasing_doc_no`, `document_type`, `file_name`, `file_path`, `remarks`, `status`, `updated_by`, `created_at`, `created_by_id`) VALUES
-(1, '2233445', '1', NULL, NULL, 'new', 'SUBMIT', 'GRSE', 1706868184785, '493834'),
-(2, '2233445', '1', NULL, NULL, 'new', 'SUBMIT', 'GRSE', 1706868301442, '493834'),
-(3, '2233445', '1', NULL, NULL, 'new', 'SUBMIT', 'GRSE', 1706868454093, '493834'),
-(4, '2233445', '1', '1706868465313-Flow chart- Service PO (1).pdf', 'uploads\\mrs\\1706868465313-Flow chart- Service PO (1).pdf', 'new', 'SUBMIT', 'GRSE', 1706868465319, '493834'),
-(5, '2233445', '1', '1706871008838-Flow chart- Service PO (1).pdf', 'uploads\\mrs\\1706871008838-Flow chart- Service PO (1).pdf', 'new', 'SUBMIT', 'GRSE', 1706871008840, '493834');
 
 -- --------------------------------------------------------
 
@@ -1247,6 +1322,58 @@ INSERT INTO `ppc_wbs_project_code` (`id`, `user_id`, `purchasing_doc_no`, `wbs_e
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `privilege`
+--
+
+CREATE TABLE `privilege` (
+  `id` int(4) NOT NULL,
+  `department_id` int(11) NOT NULL,
+  `internal_role_id` int(11) NOT NULL,
+  `sdbg` varchar(2) NOT NULL,
+  `drawing` varchar(2) NOT NULL,
+  `qap` varchar(2) NOT NULL,
+  `inspectionCallLetter` varchar(2) NOT NULL,
+  `shippingDocuments` varchar(2) NOT NULL,
+  `gateEntry` varchar(2) NOT NULL,
+  `grn` varchar(2) NOT NULL,
+  `icgrn` varchar(2) NOT NULL,
+  `wdc` varchar(2) NOT NULL,
+  `bpgCopy` varchar(2) NOT NULL,
+  `checkList` varchar(2) NOT NULL,
+  `billRegistration` varchar(2) NOT NULL,
+  `paymentVoucher` varchar(2) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `privilege`
+--
+
+INSERT INTO `privilege` (`id`, `department_id`, `internal_role_id`, `sdbg`, `drawing`, `qap`, `inspectionCallLetter`, `shippingDocuments`, `gateEntry`, `grn`, `icgrn`, `wdc`, `bpgCopy`, `checkList`, `billRegistration`, `paymentVoucher`) VALUES
+(1, 1, 1, 'W', 'R', 'R', 'R', 'R', 'R', 'R', 'R', 'R', 'R', 'R', 'R', 'R'),
+(2, 1, 2, 'W', 'R', 'R', 'R', 'R', 'R', 'R', 'R', 'R', 'R', 'R', 'R', 'R'),
+(3, 2, 3, 'W', 'R', 'R', 'R', 'R', 'R', 'R', 'R', 'R', 'R', 'R', 'R', 'R'),
+(4, 3, 1, 'W', 'R', 'R', 'R', 'R', 'R', 'R', 'R', 'R', 'R', 'R', 'R', 'R'),
+(5, 3, 2, 'W', 'R', 'R', 'R', 'R', 'R', 'R', 'R', 'R', 'R', 'R', 'R', 'R');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `qap_save`
+--
+
+CREATE TABLE `qap_save` (
+  `id` int(11) NOT NULL,
+  `purchasing_doc_no` varchar(11) NOT NULL,
+  `file_name` text NOT NULL,
+  `file_path` text NOT NULL,
+  `remarks` text NOT NULL,
+  `created_by_id` varchar(50) NOT NULL,
+  `created_at` bigint(20) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `qap_submission`
 --
 
@@ -1266,18 +1393,6 @@ CREATE TABLE `qap_submission` (
   `created_by_id` varchar(200) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='drawing table';
 
---
--- Dumping data for table `qap_submission`
---
-
-INSERT INTO `qap_submission` (`id`, `purchasing_doc_no`, `file_name`, `vendor_code`, `assigned_from`, `assigned_to`, `file_path`, `remarks`, `status`, `updated_by`, `created_at`, `created_by_name`, `created_by_id`) VALUES
-(21, '7800000040', '1702631142262-GRSE_OBPS_TO-BE DOC_27.11.2023 (1).pdf', '09383HAL', NULL, NULL, 'uploads\\qap\\1702631142262-GRSE_OBPS_TO-BE DOC_27.11.2023 (1).pdf', 'QAP SUBMITED', 'PENDING', 'VENDOR', 1702631142310, 'VENDOR', '09383HAL'),
-(32, '7800000040', '1707200314862-sample.pdf', '50007545', NULL, NULL, 'uploads\\qap\\1707200314862-sample.pdf', 'Uploading QAP', 'PENDING', 'VENDOR', 1707200314877, 'XYZ Pvt. Ltd', '50007545'),
-(33, '7800000040', '1707462272306-sample.pdf', '09383HAL', '600229', '600948', 'uploads\\qap\\1707462272306-sample.pdf', 'dsaf', 'UPDATED', 'GRSE', 1707462272308, 'undefined', '600400'),
-(34, '7800000040', '1707462353547-sample.pdf', '09383HAL', '600229', '600948', 'uploads\\qap\\1707462353547-sample.pdf', 'jkhjk', 'UPDATED', 'GRSE', 1707462353548, 'undefined', '600400'),
-(35, '7800000040', '1707462524446-sample.pdf', '09383HAL', '600229', '600948', 'uploads\\qap\\1707462524446-sample.pdf', 'hekoo', 'UPDATED', 'GRSE', 1707462524448, 'RAJENDRA BANERJEE', '600229'),
-(36, '7800000040', NULL, '50007545', '600229', '600947', NULL, 'hhh', 'ASSIGNED', 'GRSE', 1707470818242, NULL, '600229');
-
 -- --------------------------------------------------------
 
 --
@@ -1295,17 +1410,19 @@ CREATE TABLE `sdbg` (
   `assigned_from` varchar(100) DEFAULT NULL,
   `assigned_to` varchar(100) DEFAULT NULL,
   `created_at` bigint(20) NOT NULL,
-  `created_by_name` varchar(255) NOT NULL,
+  `created_by_name` varchar(255) DEFAULT NULL,
   `created_by_id` varchar(200) NOT NULL,
-  `updated_by` varchar(255) NOT NULL
+  `updated_by` varchar(255) NOT NULL,
+  `actionTypeId` int(11) DEFAULT NULL,
+  `actionType` varchar(100) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='drawing table';
 
 --
 -- Dumping data for table `sdbg`
 --
 
-INSERT INTO `sdbg` (`id`, `purchasing_doc_no`, `file_name`, `file_path`, `remarks`, `status`, `vendor_code`, `assigned_from`, `assigned_to`, `created_at`, `created_by_name`, `created_by_id`, `updated_by`) VALUES
-(1, '7800000040', '1706697429773-sample.pdf', 'uploads\\submitSDBG\\1706697429773-sample.pdf', 'Uploading SDBG', 'PENDING', '50007545', NULL, NULL, 1706697429775, '', '50007545', 'VENDOR');
+INSERT INTO `sdbg` (`id`, `purchasing_doc_no`, `file_name`, `file_path`, `remarks`, `status`, `vendor_code`, `assigned_from`, `assigned_to`, `created_at`, `created_by_name`, `created_by_id`, `updated_by`, `actionTypeId`, `actionType`) VALUES
+(1, '7800000040', '1709010032478-sample.pdf', 'uploads\\submitSDBG\\1709010032478-sample.pdf', 'HEllo', 'PENDING', '50007545', NULL, NULL, 1709010032484, NULL, '50007545', 'VENDOR', NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -1378,6 +1495,14 @@ CREATE TABLE `sdbg_entry` (
   `created_at` bigint(20) NOT NULL,
   `created_by` varchar(12) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='sdbg entry';
+
+--
+-- Dumping data for table `sdbg_entry`
+--
+
+INSERT INTO `sdbg_entry` (`id`, `purchasing_doc_no`, `bank_name`, `branch_name`, `ifsc_code`, `bank_addr1`, `bank_addr2`, `bank_addr3`, `bank_city`, `bank_pin_code`, `bg_no`, `bg_date`, `bg_ammount`, `department`, `po_date`, `yard_no`, `validity_date`, `claim_priod`, `check_list_reference`, `check_list_date`, `bg_type`, `vendor_name`, `vendor_address1`, `vendor_address2`, `vendor_address3`, `vendor_city`, `vendor_pin_code`, `extension_date1`, `extension_date2`, `extension_date3`, `extension_date4`, `extension_date5`, `extension_date6`, `release_date`, `demand_notice_date`, `entension_letter_date`, `status`, `created_at`, `created_by`) VALUES
+(2, '7800000040', 'SBI', 'MALDA', '', 'PATHAKPARA', 'address2', 'address3', 'MILKI', '732209', '123456', 1708540200, 4555, 'Dept', 1708626600, '30', 1708540200, '2 months', 'ref', 1709145000, 'PAID', 'DCG', 'PATHAKPARA', 'Vendor Address2', 'Vendor adress 3 fds', 'MILKI', '732209', 1708713000, 1709145000, 1709317800, 1711391400, 1709231400, 1709058600, 1709317800, 1707676200, 1708108200, 'FORWARD_TO_FINANCE', 1708778543752, '493834'),
+(3, '7800000041', 'SBI', 'SBIN0012572', '', 'PATHAKPARA', 'address2', 'address3', 'MILKI', '732209', '123456', 1708540200, 4555, 'Dept', 1708713000, '30', 1709145000, '2 month', 'refh', 1709231400, 'PAID', 'DCG', 'PATHAKPARA', 'Vendor Address2', 'Vendor adress 3 fds', 'MILKI', '732209', 1708626600, 1708540200, 1708713000, 1708540200, 1708108200, 1708626600, 1709317800, 1708972200, 1708713000, 'FORWARD_TO_FINANCE', 1708672236448, '493834');
 
 -- --------------------------------------------------------
 
@@ -1588,10 +1713,23 @@ CREATE TABLE `wdc` (
   `id` int(11) NOT NULL,
   `purchasing_doc_no` varchar(11) NOT NULL,
   `file_name` varchar(500) DEFAULT NULL,
-  `vendor_code` varchar(100) NOT NULL,
+  `vendor_code` varchar(100) DEFAULT NULL,
   `file_path` varchar(500) DEFAULT NULL,
   `remarks` text DEFAULT NULL,
   `status` varchar(10) NOT NULL,
+  `wdc_ref_no` varchar(100) NOT NULL,
+  `wdc_date` bigint(20) NOT NULL,
+  `po_line_iten_no` varchar(100) NOT NULL,
+  `job_location` varchar(200) NOT NULL,
+  `yard_no` varchar(60) NOT NULL,
+  `actual_start_date` bigint(20) NOT NULL,
+  `actual_completion_date` bigint(20) NOT NULL,
+  `unit` varchar(10) NOT NULL,
+  `messurment` varchar(30) NOT NULL,
+  `quantity` int(11) NOT NULL,
+  `entry_by_production` varchar(60) NOT NULL,
+  `stage_datiels` text NOT NULL,
+  `actual_payable_amount` int(11) NOT NULL,
   `updated_by` varchar(30) NOT NULL,
   `created_at` bigint(20) NOT NULL,
   `created_by_name` varchar(255) NOT NULL,
@@ -1602,8 +1740,43 @@ CREATE TABLE `wdc` (
 -- Dumping data for table `wdc`
 --
 
-INSERT INTO `wdc` (`id`, `purchasing_doc_no`, `file_name`, `vendor_code`, `file_path`, `remarks`, `status`, `updated_by`, `created_at`, `created_by_name`, `created_by_id`) VALUES
-(1, '4700013227', NULL, '50007545', NULL, 'test', 'PENDING', 'VENDOR', 1701250342186, 'XYZ Pvt. Ltd', 'aabhinit96@gmail.com');
+INSERT INTO `wdc` (`id`, `purchasing_doc_no`, `file_name`, `vendor_code`, `file_path`, `remarks`, `status`, `wdc_ref_no`, `wdc_date`, `po_line_iten_no`, `job_location`, `yard_no`, `actual_start_date`, `actual_completion_date`, `unit`, `messurment`, `quantity`, `entry_by_production`, `stage_datiels`, `actual_payable_amount`, `updated_by`, `created_at`, `created_by_name`, `created_by_id`) VALUES
+(1, '7800000047', '1708854873339-sample.pdf', '50007545', 'uploads\\submitWdc\\1708854873339-sample.pdf', 'TEST', 'PENDING', '', 0, '', '', '', 0, 0, '', '', 0, '', '', 0, 'VENDOR', 1708854873343, '', '50007545'),
+(2, '7800000047', '1708855199526-sample.pdf', '50007545', 'uploads\\submitWdc\\1708855199526-sample.pdf', 'fsdfv', 'PENDING', '', 0, '', '', '', 0, 0, '', '', 0, '', '', 0, 'VENDOR', 1708855199530, '', '50007545'),
+(3, '7800000047', '1708856633135-sample.pdf', '50007545', 'uploads\\submitWdc\\1708856633135-sample.pdf', 'teat', 'PENDING', '45', 1707330600, '4567', 'kolkata', '2', 1708540200, 1711477800, 'ncdgd', 'xfsttd', 56, 'defsdyh', 'rgsgd', 5678, 'VENDOR', 1708856633151, '', '50007545'),
+(4, '7800000040', '1708926626598-sample.pdf', NULL, 'uploads\\submitWdc\\1708926626598-sample.pdf', 'test', 'PENDING', '2345', 1707935400, 'efrrfr', 'kilkata', '3244554', 1708540200, 1708540200, '56', '45', 45, '45fvdfv', 'dsfsg', 45, 'GRSE', 1708926626603, '', '600949');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `wmc`
+--
+
+CREATE TABLE `wmc` (
+  `id` int(11) NOT NULL,
+  `purchasing_doc_no` varchar(11) NOT NULL,
+  `document_type` varchar(40) DEFAULT NULL,
+  `file_name` varchar(300) DEFAULT NULL,
+  `file_path` varchar(500) DEFAULT NULL,
+  `remarks` text DEFAULT NULL,
+  `status` varchar(20) NOT NULL,
+  `updated_by` varchar(30) NOT NULL,
+  `created_at` bigint(20) NOT NULL,
+  `created_by_id` varchar(200) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `wmc`
+--
+
+INSERT INTO `wmc` (`id`, `purchasing_doc_no`, `document_type`, `file_name`, `file_path`, `remarks`, `status`, `updated_by`, `created_at`, `created_by_id`) VALUES
+(1, '2233445', '1', '1706867143873-Flow chart- Service PO (1).pdf', 'uploads\\wmc\\1706867143873-Flow chart- Service PO (1).pdf', 'new', 'SUBMIT', 'GRSE', 1706867143939, '493834'),
+(2, '2233445', '1', '1706867725693-Flow chart- Service PO (1).pdf', 'uploads\\wmc\\1706867725693-Flow chart- Service PO (1).pdf', 'new', 'SUBMIT', 'GRSE', 1706867725698, '493834'),
+(3, '2233445', '1', '1706867726733-Flow chart- Service PO (1).pdf', 'uploads\\wmc\\1706867726733-Flow chart- Service PO (1).pdf', 'new', 'SUBMIT', 'GRSE', 1706867726738, '493834'),
+(4, '2233445', '1', '1706867727642-Flow chart- Service PO (1).pdf', 'uploads\\wmc\\1706867727642-Flow chart- Service PO (1).pdf', 'new', 'SUBMIT', 'GRSE', 1706867727645, '493834'),
+(5, '7800000047', 'Upload WMC', NULL, NULL, NULL, 'PENDING', 'VENDOR', 1708850885348, '50007545'),
+(6, '7800000047', 'Upload WMC', '1708851093778-SAP_PO.pdf', 'uploads\\wmc\\1708851093778-SAP_PO.pdf', NULL, 'PENDING', 'VENDOR', 1708851093782, '50007545'),
+(7, '7800000047', 'Upload WMC', NULL, NULL, 'dfa', 'PENDING', 'VENDOR', 1708851170371, '50007545');
 
 -- --------------------------------------------------------
 
@@ -1883,6 +2056,12 @@ INSERT INTO `zpo_milestone` (`MANDT`, `EBELN`, `MID`, `MTEXT`, `PLAN_DATE`, `MO`
 --
 
 --
+-- Indexes for table `actualsubmissiondate`
+--
+ALTER TABLE `actualsubmissiondate`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Indexes for table `auth`
 --
 ALTER TABLE `auth`
@@ -1937,6 +2116,12 @@ ALTER TABLE `icgrn`
   ADD PRIMARY KEY (`id`);
 
 --
+-- Indexes for table `ilms`
+--
+ALTER TABLE `ilms`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Indexes for table `inspection_call_letter`
 --
 ALTER TABLE `inspection_call_letter`
@@ -1959,6 +2144,12 @@ ALTER TABLE `lfa1`
 --
 ALTER TABLE `makt`
   ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `mara`
+--
+ALTER TABLE `mara`
+  ADD PRIMARY KEY (`MATNR`);
 
 --
 -- Indexes for table `mrs`
@@ -2024,6 +2215,18 @@ ALTER TABLE `po`
 -- Indexes for table `ppc_wbs_project_code`
 --
 ALTER TABLE `ppc_wbs_project_code`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `privilege`
+--
+ALTER TABLE `privilege`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `qap_save`
+--
+ALTER TABLE `qap_save`
   ADD PRIMARY KEY (`id`);
 
 --
@@ -2099,6 +2302,12 @@ ALTER TABLE `wdc`
   ADD PRIMARY KEY (`id`);
 
 --
+-- Indexes for table `wmc`
+--
+ALTER TABLE `wmc`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Indexes for table `zbtsi`
 --
 ALTER TABLE `zbtsi`
@@ -2122,10 +2331,16 @@ ALTER TABLE `zpo_milestone`
 --
 
 --
+-- AUTO_INCREMENT for table `actualsubmissiondate`
+--
+ALTER TABLE `actualsubmissiondate`
+  MODIFY `id` int(5) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+
+--
 -- AUTO_INCREMENT for table `auth`
 --
 ALTER TABLE `auth`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=23;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=25;
 
 --
 -- AUTO_INCREMENT for table `bill_registration`
@@ -2137,7 +2352,7 @@ ALTER TABLE `bill_registration`
 -- AUTO_INCREMENT for table `department_wise_log`
 --
 ALTER TABLE `department_wise_log`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=600237;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=600254;
 
 --
 -- AUTO_INCREMENT for table `depertment_master`
@@ -2149,7 +2364,7 @@ ALTER TABLE `depertment_master`
 -- AUTO_INCREMENT for table `drawing`
 --
 ALTER TABLE `drawing`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `emp_department_list`
@@ -2164,10 +2379,16 @@ ALTER TABLE `icgrn`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
+-- AUTO_INCREMENT for table `ilms`
+--
+ALTER TABLE `ilms`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
 -- AUTO_INCREMENT for table `inspection_call_letter`
 --
 ALTER TABLE `inspection_call_letter`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=24;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=25;
 
 --
 -- AUTO_INCREMENT for table `internal_role_master`
@@ -2185,7 +2406,7 @@ ALTER TABLE `makt`
 -- AUTO_INCREMENT for table `mrs`
 --
 ALTER TABLE `mrs`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- AUTO_INCREMENT for table `new_auth`
@@ -2224,10 +2445,22 @@ ALTER TABLE `ppc_wbs_project_code`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
+-- AUTO_INCREMENT for table `privilege`
+--
+ALTER TABLE `privilege`
+  MODIFY `id` int(4) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+
+--
+-- AUTO_INCREMENT for table `qap_save`
+--
+ALTER TABLE `qap_save`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+
+--
 -- AUTO_INCREMENT for table `qap_submission`
 --
 ALTER TABLE `qap_submission`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=37;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT for table `sdbg`
@@ -2245,7 +2478,7 @@ ALTER TABLE `sdbg_acknowledgement`
 -- AUTO_INCREMENT for table `sdbg_entry`
 --
 ALTER TABLE `sdbg_entry`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `sdbg_return_submisson`
@@ -2287,7 +2520,13 @@ ALTER TABLE `user_type`
 -- AUTO_INCREMENT for table `wdc`
 --
 ALTER TABLE `wdc`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+
+--
+-- AUTO_INCREMENT for table `wmc`
+--
+ALTER TABLE `wmc`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
