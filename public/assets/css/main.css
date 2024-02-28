@@ -10,7 +10,7 @@ label {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  width: min(900px, 80%);
+  width: 90%;
 }
 .card_headline {
   font-size: 24px;
@@ -21,7 +21,7 @@ label {
   overflow-y: scroll;
 }
 
-.table_styled tr {
+.table_styled tr button.btn_simple {
   cursor: pointer;
 }
 .table_styled tr td {
@@ -107,4 +107,7 @@ label {
   border: none;
   display: flex;
   align-items: center;
+}
+.log_in {
+  font-size: 14px;
 }

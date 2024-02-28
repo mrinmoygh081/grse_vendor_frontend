@@ -147,18 +147,12 @@ const SDBGSub = () => {
   }, [id]);
 
   const updateSDBG = async (flag) => {
-    let isApproved;
-    if (flag === "Approved") {
-      isApproved = "ACKNOWLEDGED";
-    } else {
-      isApproved = "PENDING";
-    }
     try {
       const form = new FormData();
       form.append("purchasing_doc_no", id);
       form.append("file", formData.sdbgFile);
       form.append("remarks", formData.remarks);
-      form.append("status", isApproved);
+      form.append("status", flag);
 
       const response = await apiCallBack(
         "POST",
@@ -561,7 +555,7 @@ const SDBGSub = () => {
               <div className="col-12">
                 <div className="mb-3 d-flex justify-content-between">
                   <button
-                    onClick={() => updateSDBG("NotApproved")}
+                    onClick={() => updateSDBG("SUBMITED")}
                     className="btn fw-bold btn-primary"
                     type="submit"
                   >

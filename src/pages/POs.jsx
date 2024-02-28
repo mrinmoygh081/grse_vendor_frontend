@@ -49,15 +49,7 @@ const POs = () => {
       (po?.project_code &&
         po?.project_code.toLowerCase().includes(searchQuery.toLowerCase()))
   );
-  const logOutFun = () => {
-    dispatch(logoutHandler());
-    dispatch(poRemoveHandler());
-    window.location.href = "/";
-    // Persistor.pause();
-    // Persistor.flush().then(() => {
-    //   return Persistor.purge();
-    // });
-  };
+
   return (
     <>
       {user.department_name !== "PPC" && <MainHeader title={"POs"} />}
@@ -100,120 +92,93 @@ const POs = () => {
                           filteredPolist.map((po, index) => (
                             <tr key={index}>
                               <td>
-                                <button onClick={() => dispatch(poHandler(po))}>
-                                  {po.poNumber}
-                                </button>
-                                <br />
-                                <span>
-                                  POTYPE
-                                  <span style={{ marginLeft: "5px" }}>
-                                    &#10163;
+                                <button
+                                  className="btn_simple"
+                                  onClick={() => dispatch(poHandler(po))}
+                                >
+                                  <u>{po.poNumber}</u> || {po.poType}
+                                  {user && user?.user_type !== 1 && (
+                                    <>
+                                      || {po.project_code} || {po.wbs_id}
+                                    </>
+                                  )}
+                                  <br />
+                                  <span>
+                                    {po.vendor_code} ({po.vendor_name})
                                   </span>
-                                  {po.poType}
-                                </span>
-                                <br />
-                                <span>
-                                  Vendor: {po.vendor_code} ({po.vendor_name})
-                                </span>
-                                {user && user?.user_type !== 1 && (
-                                  <>
-                                    <br />
-                                    <span>Project Code: {po.project_code}</span>
-                                    <br />
-                                    <span>WBS: {po.wbs_id}</span>
-                                  </>
-                                )}
+                                </button>
                               </td>
                               <td>
                                 {/* SDBG Date:{" "} */}
                                 {po?.SDVG ? (
                                   <>
-                                    Contractual:
-                                    <br />
+                                    Contractual:{" "}
                                     {po?.SDVG?.contractual_submission_date
                                       ? new Date(
                                           po.SDVG.contractual_submission_date
                                         ).toLocaleDateString()
-                                      : "N/A"}
+                                      : ""}
                                     <br />
-                                    Actual:
-                                    <br />
+                                    Actual:{" "}
                                     {po?.SDVG?.actual_submission_date
                                       ? new Date(
                                           po.SDVG.actual_submission_date
                                         ).toLocaleDateString()
-                                      : "N/A"}
+                                      : ""}
                                     <br />
-                                    Status:
-                                    {po.SDVG.status || "N/A"}
+                                    Status: {po.SDVG.status || ""}
                                   </>
                                 ) : (
-                                  "N/A"
+                                  ""
                                 )}
                               </td>
                               <td>
                                 {/* Drawing Date:{" "} */}
                                 {po.Drawing ? (
                                   <>
-                                    {/* {typeof po.Drawing.created_at === "number"
-                                    ? moment(po.Drawing.created_at).format(
-                                        "DD-MM-YYYY "
-                                      )
-                                    : "N/A"}{" "}
-                                  <br /> */}
-                                    Contractual Submission:
-                                    <br />
-                                    {/* {po.Drawing.contractual_submission_date
-                                      ? moment(
-                                          po.Drawing.contractual_submission_date
-                                        ).format("DD/MM/YY HH:mm ")
-                                      : "N/A"} */}
+                                    Contractual:
                                     {po?.Drawing?.contractual_submission_date
                                       ? new Date(
                                           po.Drawing.contractual_submission_date
                                         ).toLocaleDateString()
-                                      : "N/A"}
+                                      : ""}
                                     <br />
-                                    Actual Submission:
-                                    <br />
+                                    Actual:
                                     {po?.Drawing?.actual_submission_date
                                       ? new Date(
                                           po.Drawing.actual_submission_date
                                         ).toLocaleDateString()
-                                      : "N/A"}
+                                      : ""}
                                     <br />
-                                    Status:
-                                    {po.Drawing.status || "N/A"}
+                                    Status: {po.Drawing.status || ""}
                                   </>
                                 ) : (
-                                  "N/A"
+                                  ""
                                 )}
                               </td>
                               <td>
                                 {/* QAP Date:{" "} */}
                                 {po.qapSubmission ? (
                                   <>
-                                    Contractual Submission:
-                                    <br />
+                                    Contractual:
                                     {po?.qapSubmission
                                       ?.contractual_submission_date
                                       ? new Date(
                                           po.qapSubmission.contractual_submission_date
                                         ).toLocaleDateString()
-                                      : "N/A"}
+                                      : ""}
                                     <br />
-                                    Actual Submission: <br />
+                                    Actual:
                                     {po?.qapSubmission?.actual_submission_date
                                       ? new Date(
                                           po.qapSubmission.actual_submission_date
                                         ).toLocaleDateString()
-                                      : "N/A"}
+                                      : ""}
                                     <br />
-                                    Status:
-                                    {po.qapSubmission.status || "N/A"}
+                                    Status: {po.qapSubmission.status || ""}
                                   </>
                                 ) : (
-                                  "N/A"
+                                  ""
                                 )}
                               </td>
                             </tr>
@@ -230,16 +195,6 @@ const POs = () => {
       ) : (
         <WBS />
       )}
-      <div className="pos_bottom">
-        <button
-          className="btn btn-danger"
-          onClick={() =>
-            reConfirm({ file: true }, logOutFun, "You're going to Logout!")
-          }
-        >
-          Log Out
-        </button>
-      </div>
     </>
   );
 };

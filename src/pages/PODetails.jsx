@@ -257,23 +257,6 @@ const PODetails = () => {
                                                               item?.PLAN_DATE
                                                             ).toLocaleDateString()
                                                           : "Not Updated"}{" "}
-                                                      </span>
-                                                    </div>
-                                                  )}
-
-                                                {item?.milestoneText &&
-                                                  item?.actualSubmissionDate && (
-                                                    <div className="card_header_data">
-                                                      <span className="label">
-                                                        {/* Actual */}
-                                                        {item?.milestoneText} :
-                                                      </span>
-                                                      <span className="label_data">
-                                                        {item?.actualSubmissionDate
-                                                          ? new Date(
-                                                              item?.actualSubmissionDate
-                                                            ).toLocaleDateString()
-                                                          : "Not Updated"}{" "}
                                                         (
                                                         <span
                                                           style={{
@@ -298,6 +281,23 @@ const PODetails = () => {
                                                             "Not Uploaded"}
                                                         </span>
                                                         )
+                                                      </span>
+                                                    </div>
+                                                  )}
+
+                                                {item?.milestoneText &&
+                                                  item?.actualSubmissionDate && (
+                                                    <div className="card_header_data">
+                                                      <span className="label">
+                                                        {/* Actual */}
+                                                        {item?.milestoneText} :
+                                                      </span>
+                                                      <span className="label_data">
+                                                        {item?.actualSubmissionDate
+                                                          ? new Date(
+                                                              item?.actualSubmissionDate
+                                                            ).toLocaleDateString()
+                                                          : "Not Updated"}{" "}
                                                       </span>
                                                     </div>
                                                   )}
