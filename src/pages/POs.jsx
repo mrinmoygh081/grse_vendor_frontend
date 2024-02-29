@@ -81,6 +81,7 @@ const POs = () => {
                           <th>SDBG</th>
                           <th>Drawings</th>
                           <th>QAP</th>
+                          <th>Current Status</th>
                         </tr>
                       </thead>
                       <tbody>
@@ -181,6 +182,8 @@ const POs = () => {
                                   ""
                                 )}
                               </td>
+
+                              <td>{po?.currentStage?.current}</td>
                             </tr>
                           ))
                         )}

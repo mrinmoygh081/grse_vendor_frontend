@@ -288,11 +288,13 @@ const QAPSub = () => {
                           user.internal_role_id === 1 && (
                             <>
                               <p className="m-0 p-2">
-                                {!allqap[allqap?.length - 1]?.assigned_to
-                                  ? "(Not Assigned!)"
-                                  : `Assigned to ${
-                                      allqap[allqap?.length - 1]?.assigned_to
-                                    }`}
+                                {allqap
+                                  ? !allqap[allqap?.length - 1]?.assigned_to
+                                    ? "(Not Assigned!)"
+                                    : `Assigned to ${
+                                        allqap[allqap?.length - 1]?.assigned_to
+                                      }`
+                                  : ""}
                               </p>
                               <button
                                 onClick={() => setIsPopupAssign(true)}

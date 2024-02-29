@@ -10,6 +10,7 @@ import moment from "moment";
 
 const Shippingdocuments = () => {
   const [isPopup, setIsPopup] = useState(false);
+  const [isPopupstore, setIsPopupstore] = useState(false);
   const [shippingdocumentss, setShippingdocumentss] = useState([]);
   const { id } = useParams();
 
@@ -128,12 +129,26 @@ const Shippingdocuments = () => {
                   <div className="row g-5 g-xl-8">
                     <div className="col-12">
                       <div className="screen_header">
-                        <button
-                          onClick={() => setIsPopup(true)}
-                          className="btn fw-bold btn-primary"
-                        >
-                          ACTION
-                        </button>
+                        {user?.user_type === 1 && (
+                          <>
+                            <button
+                              onClick={() => setIsPopup(true)}
+                              className="btn fw-bold btn-primary me-3"
+                            >
+                              ACTION
+                            </button>
+                          </>
+                        )}
+                        {user?.user_type === 1 && (
+                          <>
+                            <button
+                              onClick={() => setIsPopupstore(true)}
+                              className="btn fw-bold btn-primary me-3"
+                            >
+                              ACTION
+                            </button>
+                          </>
+                        )}
                       </div>
                     </div>
                     <div className="col-12">
@@ -317,6 +332,66 @@ const Shippingdocuments = () => {
                     onChange={(e) =>
                       setFormData({ ...formData, remarks: e.target.value })
                     }
+                  ></textarea>
+                </div>
+              </div>
+              <div className="col-12">
+                <div className="mb-3 d-flex justify-content-between">
+                  <button
+                    onClick={() => shippingdocumentsBtn("PENDING")}
+                    className="btn fw-bold btn-primary"
+                    type="button"
+                  >
+                    SUBMIT
+                  </button>
+                  {/* {userType !== 1 ? (
+                    <button
+                      onClick={() => shippingdocumentsBtn("APPROVED")}
+                      className="btn fw-bold btn-primary"
+                      type="button"
+                    >
+                      Approved
+                    </button>
+                  ) : (
+                    ""
+                  )} */}
+                </div>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      {/* store  ric*/}
+
+      <div className={isPopupstore ? "popup active" : "popup"}>
+        <div className="card card-xxl-stretch mb-5 mb-xxl-8">
+          <div className="card-header border-0 pt-5 pb-3">
+            <h3 className="card-title align-items-start flex-column">
+              <span className="card-label fw-bold fs-3 mb-1">
+                Upload Shipping Documents
+              </span>
+            </h3>
+            <button
+              className="btn fw-bold btn-danger"
+              onClick={() => setIsPopupstore(false)}
+            >
+              Close
+            </button>
+          </div>
+          <form>
+            <div className="row">
+              <div className="col-12">
+                <div className="mb-3">
+                  <label className="form-label">Remarks</label>
+                  <textarea
+                    name=""
+                    id=""
+                    rows="4"
+                    className="form-control"
+                    // onChange={(e) =>
+                    //   setFormData({ ...formData, remarks: e.target.value })
+                    // }
                   ></textarea>
                 </div>
               </div>

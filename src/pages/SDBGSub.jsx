@@ -410,7 +410,7 @@ const SDBGSub = () => {
                                 </>
                               )}
                             {/* For DO */}
-                            {isDO && (
+                            {/* {isDO && (
                               <>
                                 <button
                                   onClick={() => setIsEntryPopup(true)}
@@ -419,7 +419,7 @@ const SDBGSub = () => {
                                   SDBG Entry
                                 </button>
                               </>
-                            )}
+                            )} */}
                             {/* for finance officer  */}
                             {user?.department_id === 15 && (
                               <>
@@ -453,12 +453,13 @@ const SDBGSub = () => {
                             <table className="table table-striped table-bordered table_height">
                               <thead>
                                 <tr className="border-0">
-                                  <th>Ref No </th>
-                                  <th>DateTime </th>
-                                  <th>SDBG File</th>
-                                  <th>Updated By</th>
+                                  <th className="min-w-150px">Ref No </th>
+                                  <th className="min-w-150px">DateTime </th>
+                                  <th className="min-w-150px">SDBG File</th>
+                                  <th className="min-w-150px">Updated By</th>
                                   <th className="min-w-150px">Remarks</th>
-                                  <th>Status</th>
+                                  <th className="min-w-150px">Status</th>
+                                  <th className="min-w-150px">Action</th>
                                 </tr>
                               </thead>
                               <tbody style={{ maxHeight: "100%" }}>
@@ -490,6 +491,20 @@ const SDBGSub = () => {
                                       </td>
                                       <td>{item.remarks}</td>
                                       <td>{item.status}</td>
+                                      <td>
+                                        {isDO && (
+                                          <>
+                                            <button
+                                              onClick={() =>
+                                                setIsEntryPopup(true)
+                                              }
+                                              className="btn fw-bold btn-primary me-3"
+                                            >
+                                              SDBG Entry
+                                            </button>
+                                          </>
+                                        )}
+                                      </td>
                                     </tr>
                                   ))}
                               </tbody>
@@ -848,6 +863,7 @@ const SDBGSub = () => {
                   <select className="form-select" name="" id="">
                     <option value="sdbg">SDBG</option>
                     <option value="pbg">PBG</option>
+                    <option value="pbg">Advance BG</option>
                   </select>
                   {/* <input
                     type="text"
@@ -1071,6 +1087,19 @@ const SDBGSub = () => {
                     }
                     dateFormat="dd/MM/yyyy"
                     className="form-control"
+                  />
+                </div>
+              </div>
+              <div className="col-md-6 col-12">
+                <div className="mb-3">
+                  <label className="form-label">Ref No</label>
+                  <input
+                    type="text"
+                    className="form-control"
+                    name="vendor_pin_code"
+                    value={"123456"}
+                    disabled
+                    // onChange={handleInputChange2}
                   />
                 </div>
               </div>
