@@ -2,7 +2,7 @@ import React, { Fragment, useEffect, useState } from "react";
 import SideBar from "../components/SideBar";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
-import { useNavigate, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { apiCallBack } from "../utils/fetchAPIs";
 import { useDispatch, useSelector } from "react-redux";
 import { doHandler, poRemoveHandler } from "../redux/slices/poSlice";
@@ -15,7 +15,7 @@ const PODetails = () => {
   const [poDetails, setPoDetails] = useState([]);
   const [file, setFile] = useState(null);
   const { id } = useParams();
-  const { token } = useSelector((state) => state.auth);
+  const { token, user } = useSelector((state) => state.auth);
   const [isPopup, setIsPopup] = useState(false);
 
   window.addEventListener("popstate", () => {
@@ -136,7 +136,17 @@ const PODetails = () => {
           <div className="page d-flex flex-row flex-column-fluid">
             <SideBar id={id} />
             <div className="wrapper d-flex flex-column flex-row-fluid">
-              <Header title={"Dashboard"} id={id} />
+              <Header
+                title={
+                  <div onClick={() => dispatch(poRemoveHandler())}>
+                    {" "}
+                    <Link className="btn btn-primary" to="/">
+                      Dashboard
+                    </Link>
+                  </div>
+                }
+                id={id}
+              />
               <div
                 className="content d-flex flex-column flex-column-fluid"
                 id="kt_content"
@@ -217,12 +227,21 @@ const PODetails = () => {
                                             {po.LIFNR} (<span>{po.NAME1}</span>)
                                           </span>
                                         </div>
-                                        <div className="card_header_data">
+                                        {/* <div className="card_header_data">
                                           <span className="label">
                                             Purchase Group:
                                           </span>
                                           <span className="label_data">
                                             {po.EKGRP}
+                                          </span>
+                                        </div> */}
+
+                                        <div className="card_header_data">
+                                          <span className="label">
+                                            Dealing Officer:
+                                          </span>
+                                          <span className="label_data">
+                                            {user.name}
                                           </span>
                                         </div>
                                         <div className="card_header_data">
@@ -247,11 +266,20 @@ const PODetails = () => {
                                                 {item?.MTEXT &&
                                                   item?.PLAN_DATE && (
                                                     <div className="card_header_data">
-                                                      <span className="label">
-                                                        {/* Contractual */}
+                                                      <span
+                                                        className="label"
+                                                        style={{
+                                                          fontSize: "small",
+                                                        }}
+                                                      >
                                                         {item?.MTEXT} :
                                                       </span>
-                                                      <span className="label_data">
+                                                      <span
+                                                        className="label_data"
+                                                        style={{
+                                                          fontSize: "small",
+                                                        }}
+                                                      >
                                                         {item?.PLAN_DATE
                                                           ? new Date(
                                                               item?.PLAN_DATE
@@ -288,11 +316,20 @@ const PODetails = () => {
                                                 {item?.milestoneText &&
                                                   item?.actualSubmissionDate && (
                                                     <div className="card_header_data">
-                                                      <span className="label">
-                                                        {/* Actual */}
+                                                      <span
+                                                        className="label"
+                                                        style={{
+                                                          fontSize: "small",
+                                                        }}
+                                                      >
                                                         {item?.milestoneText} :
                                                       </span>
-                                                      <span className="label_data">
+                                                      <span
+                                                        className="label_data"
+                                                        style={{
+                                                          fontSize: "small",
+                                                        }}
+                                                      >
                                                         {item?.actualSubmissionDate
                                                           ? new Date(
                                                               item?.actualSubmissionDate

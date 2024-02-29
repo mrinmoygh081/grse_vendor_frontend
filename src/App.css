@@ -111,3 +111,7 @@ u {
   background-color: transparent;
   padding: 0;
 }
+.mandatorystart {
+  color: red;
+  font-size: large;
+}

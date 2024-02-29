@@ -10,6 +10,7 @@ import DatePicker from "react-datepicker";
 import { convertToEpoch } from "../utils/getDateTimeNow";
 import Select from "react-select";
 import { reConfirm } from "../utils/reConfirm";
+import { inputOnWheelPrevent } from "../utils/inputOnWheelPrevent";
 
 const SDBGSub = () => {
   const [isPopup, setIsPopup] = useState(false);
@@ -42,7 +43,7 @@ const SDBGSub = () => {
     validity_date: "",
     claim_priod: "",
     check_list_reference: "",
-    check_list_date: "",
+    check_list_date: new Date(),
     bg_type: "",
     vendor_name: "",
     vendor_address1: "",
@@ -239,12 +240,9 @@ const SDBGSub = () => {
       vendor_address1 === "",
       vendor_city === "",
       vendor_pin_code === "",
-      confirmation === "",
-      release_date === "",
-      demand_notice_date === "",
-      entension_letter_date === "")
+      confirmation === "")
     ) {
-      toast.warn("Please enter all required fields!");
+      toast.warn("Please enter the required fields!");
       return;
     }
 
@@ -455,6 +453,7 @@ const SDBGSub = () => {
                             <table className="table table-striped table-bordered table_height">
                               <thead>
                                 <tr className="border-0">
+                                  <th>Ref No </th>
                                   <th>DateTime </th>
                                   <th>SDBG File</th>
                                   <th>Updated By</th>
@@ -467,6 +466,7 @@ const SDBGSub = () => {
                                   allsdbg.length > 0 &&
                                   allsdbg.map((item, index) => (
                                     <tr key={index}>
+                                      <td>{123456789}</td>
                                       <td className="table_center">
                                         {item?.created_at &&
                                           new Date(
@@ -596,7 +596,8 @@ const SDBGSub = () => {
             <div className="row">
               <div className="col-md-6 col-12">
                 <div className="mb-3">
-                  <label className="form-label">Bankers Name</label>
+                  <label className="form-label">Bankers Name</label>&nbsp;&nbsp;
+                  <span className="mandatorystart">*</span>
                   <input
                     type="text"
                     className="form-control"
@@ -608,6 +609,8 @@ const SDBGSub = () => {
               <div className="col-md-6 col-12">
                 <div className="mb-3">
                   <label className="form-label">Bankers Branch</label>
+                  &nbsp;&nbsp;
+                  <span className="mandatorystart">*</span>
                   <input
                     type="text"
                     className="form-control"
@@ -619,6 +622,8 @@ const SDBGSub = () => {
               <div className="col-md-6 col-12">
                 <div className="mb-3">
                   <label className="form-label">Bankers Address1</label>
+                  &nbsp;&nbsp;
+                  <span className="mandatorystart">*</span>
                   <input
                     type="text"
                     className="form-control"
@@ -630,6 +635,8 @@ const SDBGSub = () => {
               <div className="col-md-6 col-12">
                 <div className="mb-3">
                   <label className="form-label">Bankers Address2</label>
+                  &nbsp;&nbsp;
+                  <span className="mandatorystart">*</span>
                   <input
                     type="text"
                     className="form-control"
@@ -641,6 +648,8 @@ const SDBGSub = () => {
               <div className="col-md-6 col-12">
                 <div className="mb-3">
                   <label className="form-label">Bankers Address3</label>
+                  &nbsp;&nbsp;
+                  <span className="mandatorystart">*</span>
                   <input
                     type="text"
                     className="form-control"
@@ -651,7 +660,8 @@ const SDBGSub = () => {
               </div>
               <div className="col-md-6 col-12">
                 <div className="mb-3">
-                  <label className="form-label">Bankers City</label>
+                  <label className="form-label">Bankers City</label>&nbsp;&nbsp;
+                  <span className="mandatorystart">*</span>
                   <input
                     type="text"
                     className="form-control"
@@ -662,7 +672,8 @@ const SDBGSub = () => {
               </div>
               <div className="col-md-6 col-12">
                 <div className="mb-3">
-                  <label className="form-label">Bank Pincode</label>
+                  <label className="form-label">Bank Pincode</label>&nbsp;&nbsp;
+                  <span className="mandatorystart">*</span>
                   <input
                     type="text"
                     className="form-control"
@@ -674,6 +685,8 @@ const SDBGSub = () => {
               <div className="col-md-6 col-12">
                 <div className="mb-3">
                   <label className="form-label">Bank Guarantee No</label>
+                  &nbsp;&nbsp;
+                  <span className="mandatorystart">*</span>
                   <input
                     type="text"
                     className="form-control"
@@ -684,7 +697,8 @@ const SDBGSub = () => {
               </div>
               <div className="col-md-6 col-12">
                 <div className="mb-3">
-                  <label className="form-label">BG Date</label>
+                  <label className="form-label">BG Date</label>&nbsp;&nbsp;
+                  <span className="mandatorystart">*</span>
                   <DatePicker
                     selected={formDatainput?.bg_date}
                     onChange={(date) =>
@@ -697,19 +711,22 @@ const SDBGSub = () => {
               </div>
               <div className="col-md-6 col-12">
                 <div className="mb-3">
-                  <label className="form-label">BG Amount</label>
+                  <label className="form-label">BG Amount</label>&nbsp;&nbsp;
+                  <span className="mandatorystart">*</span>
                   <input
-                    type="text"
+                    type="number"
                     className="form-control"
                     name="bg_ammount"
                     onChange={handleInputChange2}
+                    onWheel={(e) => inputOnWheelPrevent(e)}
                   />
                 </div>
               </div>
 
               <div className="col-md-6 col-12">
                 <div className="mb-3">
-                  <label className="form-label">Department</label>
+                  <label className="form-label">Department</label>&nbsp;&nbsp;
+                  <span className="mandatorystart">*</span>
                   <input
                     type="text"
                     className="form-control"
@@ -720,7 +737,8 @@ const SDBGSub = () => {
               </div>
               <div className="col-md-6 col-12">
                 <div className="mb-3">
-                  <label className="form-label">PO Date</label>
+                  <label className="form-label">PO Date</label>&nbsp;&nbsp;
+                  <span className="mandatorystart">*</span>
                   <DatePicker
                     selected={formDatainput?.po_date}
                     onChange={(date) =>
@@ -733,7 +751,21 @@ const SDBGSub = () => {
               </div>
               <div className="col-md-6 col-12">
                 <div className="mb-3">
-                  <label className="form-label">Yard No</label>
+                  <label className="form-label">PO No</label>
+                  <input
+                    type="text"
+                    className="form-control"
+                    name="department"
+                    value={id}
+                    disabled
+                    // onChange={handleInputChange2}
+                  />
+                </div>
+              </div>
+              <div className="col-md-6 col-12">
+                <div className="mb-3">
+                  <label className="form-label">Yard No</label>&nbsp;&nbsp;
+                  <span className="mandatorystart">*</span>
                   <input
                     type="text"
                     className="form-control"
@@ -745,6 +777,8 @@ const SDBGSub = () => {
               <div className="col-md-6 col-12">
                 <div className="mb-3">
                   <label className="form-label">Validity Date</label>
+                  &nbsp;&nbsp;
+                  <span className="mandatorystart">*</span>
                   <DatePicker
                     selected={formDatainput?.validity_date}
                     onChange={(date) =>
@@ -760,18 +794,26 @@ const SDBGSub = () => {
               </div>
               <div className="col-md-6 col-12">
                 <div className="mb-3">
-                  <label className="form-label">Claim Period</label>
-                  <input
-                    type="text"
+                  <label className="form-label">Claim Period</label>&nbsp;&nbsp;
+                  <span className="mandatorystart">*</span>
+                  <DatePicker
+                    selected={formDatainput?.claim_priod}
+                    onChange={(date) =>
+                      setFormDatainput({
+                        ...formDatainput,
+                        claim_priod: date,
+                      })
+                    }
+                    dateFormat="dd/MM/yyyy"
                     className="form-control"
-                    name="claim_priod"
-                    onChange={handleInputChange2}
                   />
                 </div>
               </div>
               <div className="col-md-6 col-12">
                 <div className="mb-3">
                   <label className="form-label">Checklist Reference</label>
+                  &nbsp;&nbsp;
+                  <span className="mandatorystart">*</span>
                   <input
                     type="text"
                     className="form-control"
@@ -783,14 +825,17 @@ const SDBGSub = () => {
               <div className="col-md-6 col-12">
                 <div className="mb-3">
                   <label className="form-label">Checklist Date</label>
+                  &nbsp;&nbsp;
+                  <span className="mandatorystart">*</span>
                   <DatePicker
                     selected={formDatainput?.check_list_date}
-                    onChange={(date) =>
-                      setFormDatainput({
-                        ...formDatainput,
-                        check_list_date: date,
-                      })
-                    }
+                    // onChange={(date) =>
+                    //   setFormDatainput({
+                    //     ...formDatainput,
+                    //     check_list_date: date,
+                    //   })
+                    // }
+                    disabled
                     dateFormat="dd/MM/yyyy"
                     className="form-control"
                   />
@@ -798,18 +843,24 @@ const SDBGSub = () => {
               </div>
               <div className="col-md-6 col-12">
                 <div className="mb-3">
-                  <label className="form-label">BG Type</label>
-                  <input
+                  <label className="form-label">BG Type</label>&nbsp;&nbsp;
+                  <span className="mandatorystart">*</span>
+                  <select className="form-select" name="" id="">
+                    <option value="sdbg">SDBG</option>
+                    <option value="pbg">PBG</option>
+                  </select>
+                  {/* <input
                     type="text"
                     className="form-control"
                     name="bg_type"
                     onChange={handleInputChange2}
-                  />
+                  /> */}
                 </div>
               </div>
               <div className="col-md-6 col-12">
                 <div className="mb-3">
-                  <label className="form-label">Vendor Name</label>
+                  <label className="form-label">Vendor Name</label>&nbsp;&nbsp;
+                  <span className="mandatorystart">*</span>
                   <input
                     type="text"
                     className="form-control"
@@ -821,6 +872,8 @@ const SDBGSub = () => {
               <div className="col-md-6 col-12">
                 <div className="mb-3">
                   <label className="form-label">Vendor Address1</label>
+                  &nbsp;&nbsp;
+                  <span className="mandatorystart">*</span>
                   <input
                     type="text"
                     className="form-control"
@@ -832,6 +885,8 @@ const SDBGSub = () => {
               <div className="col-md-6 col-12">
                 <div className="mb-3">
                   <label className="form-label">Vendor Address2</label>
+                  &nbsp;&nbsp;
+                  <span className="mandatorystart">*</span>
                   <input
                     type="text"
                     className="form-control"
@@ -843,6 +898,8 @@ const SDBGSub = () => {
               <div className="col-md-6 col-12">
                 <div className="mb-3">
                   <label className="form-label">Vendor Address3</label>
+                  &nbsp;&nbsp;
+                  <span className="mandatorystart">*</span>
                   <input
                     type="text"
                     className="form-control"
@@ -853,7 +910,8 @@ const SDBGSub = () => {
               </div>
               <div className="col-md-6 col-12">
                 <div className="mb-3">
-                  <label className="form-label">Vendor City</label>
+                  <label className="form-label">Vendor City</label>&nbsp;&nbsp;
+                  <span className="mandatorystart">*</span>
                   <input
                     type="text"
                     className="form-control"
@@ -865,6 +923,8 @@ const SDBGSub = () => {
               <div className="col-md-6 col-12">
                 <div className="mb-3">
                   <label className="form-label">Vendor Pincode</label>
+                  &nbsp;&nbsp;
+                  <span className="mandatorystart">*</span>
                   <input
                     type="text"
                     className="form-control"
