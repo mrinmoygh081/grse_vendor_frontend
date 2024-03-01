@@ -4,7 +4,7 @@ export const sidebarData = [
     link: "/po",
   },
   {
-    title: "SDBG Submissions",
+    title: "BG Submissions",
     link: "/sdbg",
   },
   {
@@ -67,7 +67,7 @@ export const sidebarServicePOData = [
     link: "/po",
   },
   {
-    title: "SDBG Submissions",
+    title: "BG Submissions",
     link: "/sdbg",
   },
   {

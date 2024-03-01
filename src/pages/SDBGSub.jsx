@@ -19,6 +19,7 @@ const SDBGSub = () => {
   const [isCheckEntryPopup, setIsCheckEntryPopup] = useState(false);
   const [allsdbg, setAllsdbg] = useState([]);
   const [sdbgEntry, setSdbgEntry] = useState([]);
+  const [selectedActionType, setSelectedActionType] = useState("");
   const [formData, setFormData] = useState({
     bankName: "",
     transactionId: "",
@@ -154,6 +155,7 @@ const SDBGSub = () => {
       form.append("file", formData.sdbgFile);
       form.append("remarks", formData.remarks);
       form.append("status", flag);
+      form.append("action_type", selectedActionType);
 
       const response = await apiCallBack(
         "POST",
@@ -379,7 +381,7 @@ const SDBGSub = () => {
         <div className="page d-flex flex-row flex-column-fluid">
           <SideBar />
           <div className="wrapper d-flex flex-column flex-row-fluid">
-            <Header title={"SDBG Submission"} id={id} />
+            <Header title={"SDBG Submission / "} id={id} />
             <div className="content d-flex flex-column flex-column-fluid">
               <div className="post d-flex flex-column-fluid">
                 <div className="container">
@@ -528,9 +530,7 @@ const SDBGSub = () => {
           <div className="card card-xxl-stretch mb-5 mb-xxl-8">
             <div className="card-header border-0 pt-5">
               <h3 className="card-title align-items-start flex-column">
-                <span className="card-label fw-bold fs-3 mb-1">
-                  UPLOAD SDBG
-                </span>
+                <span className="card-label fw-bold fs-3 mb-1">UPLOAD BG</span>
               </h3>
               <button
                 className="btn fw-bold btn-danger"
@@ -542,8 +542,30 @@ const SDBGSub = () => {
 
             <div className="row">
               <div className="col-12">
+                <div className="my-3">
+                  <select
+                    name=""
+                    id=""
+                    className="form-select"
+                    onChange={(e) => {
+                      setSelectedActionType(e.target.value);
+                    }}
+                  >
+                    <option value="">Choose Action Type</option>
+                    <option value="SDBG">Upload SDBG</option>
+
+                    <option value="PBG">Upload PBG</option>
+                    <option value="ABG">Upload Advanced BG</option>
+                    <option value="Remarks">Remarks</option>
+                    <option value="Others">Others</option>
+                  </select>
+                </div>
+              </div>
+              <div className="col-12">
                 <div className="mb-3">
                   <label className="form-label">SDBG File</label>
+                  &nbsp;&nbsp;
+                  <span className="mandatorystart">*</span>
                   <input
                     type="file"
                     className="form-control"

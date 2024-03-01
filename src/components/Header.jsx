@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { reConfirm } from "../utils/reConfirm";
 import { logoutHandler } from "../redux/slices/loginSlice";
 import { poRemoveHandler } from "../redux/slices/poSlice";
+import { Link } from "react-router-dom";
 
 export default function Header({ title, id }) {
   const user = useSelector((state) => state.auth);
@@ -65,7 +66,18 @@ export default function Header({ title, id }) {
               <div className="menu menu-lg-rounded menu-column menu-lg-row menu-state-bg menu-title-gray-700 menu-state-title-primary menu-state-icon-primary menu-state-bullet-primary menu-arrow-gray-400 fw-bold my-5 my-lg-0 align-items-stretch">
                 <div className="menu-item here show menu-lg-down-accordion me-lg-1">
                   <span className="menu-link py-3">
-                    <span className="menu-title">{title}</span>
+                    <span className="menu-title">
+                      {title}
+
+                      {
+                        <div onClick={() => dispatch(poRemoveHandler())}>
+                          {" "}
+                          <Link className="menu-title" to="/">
+                            Dashboard
+                          </Link>
+                        </div>
+                      }
+                    </span>
                     <span className="menu-arrow d-lg-none"></span>
                   </span>
                 </div>

@@ -22,6 +22,8 @@ const PODetails = () => {
     dispatch(poRemoveHandler());
   });
 
+  const currentStage = poDetails[0]?.currentStage?.current;
+
   useEffect(() => {
     (async () => {
       if (id) {
@@ -136,17 +138,7 @@ const PODetails = () => {
           <div className="page d-flex flex-row flex-column-fluid">
             <SideBar id={id} />
             <div className="wrapper d-flex flex-column flex-row-fluid">
-              <Header
-                title={
-                  <div onClick={() => dispatch(poRemoveHandler())}>
-                    {" "}
-                    <Link className="btn btn-primary" to="/">
-                      Dashboard
-                    </Link>
-                  </div>
-                }
-                id={id}
-              />
+              <Header title={""} id={id} />
               <div
                 className="content d-flex flex-column flex-column-fluid"
                 id="kt_content"
@@ -259,6 +251,20 @@ const PODetails = () => {
                                     <div className="col-8">
                                       <div className="card card-xxl-stretch mb-5 mb-xxl-8">
                                         <div className="card-body py-3">
+                                          <div className="card_header_data">
+                                            <span
+                                              className="label"
+                                              style={{ fontSize: "medium" }}
+                                            >
+                                              Current Stage:
+                                            </span>
+                                            <span
+                                              className="label_data"
+                                              style={{ fontSize: "medium" }}
+                                            >
+                                              {currentStage || "Not available"}
+                                            </span>
+                                          </div>
                                           {po?.timeline &&
                                             Array.isArray(po.timeline) &&
                                             po.timeline.map((item, i) => (

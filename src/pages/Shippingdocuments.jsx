@@ -122,7 +122,7 @@ const Shippingdocuments = () => {
         <div className="page d-flex flex-row flex-column-fluid">
           <SideBar />
           <div className="wrapper d-flex flex-column flex-row-fluid">
-            <Header title={"Shipping Documents"} id={id} />
+            <Header title={"Shipping Documents /"} id={id} />
             <div className="content d-flex flex-column flex-column-fluid">
               <div className="post d-flex flex-column-fluid">
                 <div className="container">
@@ -139,7 +139,17 @@ const Shippingdocuments = () => {
                             </button>
                           </>
                         )}
-                        {user?.user_type === 1 && (
+                        {user?.department_id === 5 && (
+                          <>
+                            <button
+                              onClick={() => setIsPopupstore(true)}
+                              className="btn fw-bold btn-primary me-3"
+                            >
+                              ACTION
+                            </button>
+                          </>
+                        )}
+                        {user?.department_id === 16 && (
                           <>
                             <button
                               onClick={() => setIsPopupstore(true)}
@@ -309,6 +319,9 @@ const Shippingdocuments = () => {
                   </select>
                 </div>
                 <div className="mb-3">
+                  <label className="form-label">Shipping Documents File</label>
+                  &nbsp;&nbsp;
+                  <span className="mandatorystart">*</span>
                   <input
                     type="file"
                     className="form-control"
@@ -384,6 +397,8 @@ const Shippingdocuments = () => {
               <div className="col-12">
                 <div className="mb-3">
                   <label className="form-label">Remarks</label>
+                  &nbsp;&nbsp;
+                  <span className="mandatorystart">*</span>
                   <textarea
                     name=""
                     id=""

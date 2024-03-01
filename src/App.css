@@ -115,3 +115,12 @@ u {
   color: red;
   font-size: large;
 }
+.searchfun {
+  display: flex;
+  justify-content: space-between;
+}
+.search_top {
+  padding: 1px;
+  font-size: 20px;
+  color: #5b5656;
+}

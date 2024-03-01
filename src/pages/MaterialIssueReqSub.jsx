@@ -99,7 +99,7 @@ const MaterialIssueReqSub = () => {
         <div className="page d-flex flex-row flex-column-fluid">
           <SideBar />
           <div className="wrapper d-flex flex-column flex-row-fluid">
-            <Header title={"Material Issue Requisition"} id={id} />
+            <Header title={"Material Issue Requisition /"} id={id} />
             <div className="content d-flex flex-column flex-column-fluid">
               <div className="post d-flex flex-column-fluid">
                 <div className="container">

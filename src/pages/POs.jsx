@@ -17,6 +17,8 @@ const POs = () => {
   const { token, user } = useSelector((state) => state.auth);
   const { po } = useSelector((state) => state.selectedPO);
   const navigate = useNavigate();
+  const [selectedStatus, setSelectedStatus] = useState("All");
+  console.log(selectedStatus, "selectedStatus");
 
   useEffect(() => {
     (async () => {
@@ -47,7 +49,12 @@ const POs = () => {
       (po?.wbs_id &&
         po?.wbs_id.toLowerCase().includes(searchQuery.toLowerCase())) ||
       (po?.project_code &&
-        po?.project_code.toLowerCase().includes(searchQuery.toLowerCase()))
+        po?.project_code.toLowerCase().includes(searchQuery.toLowerCase())) ||
+      (selectedStatus === "All" &&
+        po?.currentStage?.current &&
+        po?.currentStage?.current
+          .toLowerCase()
+          .includes(selectedStatus.toLowerCase()))
   );
 
   return (
@@ -59,18 +66,71 @@ const POs = () => {
             <div className="col-md-8 col-12">
               <div className="card_pos">
                 <div className="card">
-                  <div className="card_headline">
-                    <div className="input_search">
-                      <input
-                        type="text"
-                        className="form-control"
-                        value={searchQuery}
-                        onChange={(e) => setSearchQuery(e.target.value)}
-                        placeholder="Search..."
-                      />
-                      <button className="search_btn">
-                        <FiSearch />
-                      </button>
+                  <div className="searchfun">
+                    <div className="card_headline">
+                      <div>
+                        <div className="search_top">
+                          <label htmlFor="">Search by PO</label>
+                        </div>
+                        <div className="input_search">
+                          <input
+                            type="text"
+                            className="form-control"
+                            value={searchQuery}
+                            onChange={(e) => setSearchQuery(e.target.value)}
+                            placeholder="Search..."
+                          />
+                          <button className="search_btn">
+                            <FiSearch />
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="card_headline">
+                      <div>
+                        <div className="search_top">
+                          <label htmlFor="">Select Current Status</label>
+                        </div>
+                        <div className="input_search">
+                          <select
+                            className="form-select"
+                            value={selectedStatus}
+                            onChange={(e) => {
+                              console.log(e.target.value);
+                              setSelectedStatus(e.target.value);
+                            }}
+                          >
+                            <option value="All">All</option>
+                            <option value="SDBG has been submitted">
+                              SDBG has been submitted
+                            </option>
+                            <option value="Drawing has been submitted">
+                              Drawing has been submitted
+                            </option>
+                            <option value=" QAP has been submitted">
+                              QAP has been submitted
+                            </option>
+                            <option value=" ILMS has been submitted">
+                              ILMS has been submitted
+                            </option>
+                            <option value="Inspection call letter has been submitted">
+                              Inspection call letter has been submitted
+                            </option>
+                            <option value=" Shipping documents has been submitted">
+                              Shipping documents has been submitted
+                            </option>
+                            <option value="ICGRN has been submitted">
+                              ICGRN has been submitted
+                            </option>
+                            <option value=" WDC has been submitted">
+                              WDC has been submitted
+                            </option>
+                          </select>
+                          {/* <button className="search_btn">
+                            <FiSearch />
+                          </button> */}
+                        </div>
+                      </div>
                     </div>
                   </div>
                   <div className="table-responsive res_height">
