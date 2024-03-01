@@ -28,7 +28,7 @@ const Checklist = () => {
         <div className="page d-flex flex-row flex-column-fluid">
           {/* <SideBar /> */}
           <div className="d-flex flex-column flex-row-fluid">
-            <MainHeader title={"Check List /"} />
+            <MainHeader title={"Check List"} />
             <div className="content d-flex flex-column flex-column-fluid">
               <div className="post d-flex flex-column-fluid">
                 <div className="container">

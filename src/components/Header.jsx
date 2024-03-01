@@ -67,16 +67,14 @@ export default function Header({ title, id }) {
                 <div className="menu-item here show menu-lg-down-accordion me-lg-1">
                   <span className="menu-link py-3">
                     <span className="menu-title">
-                      {title}
-
                       {
                         <div onClick={() => dispatch(poRemoveHandler())}>
-                          {" "}
                           <Link className="menu-title" to="/">
                             Dashboard
                           </Link>
                         </div>
                       }
+                      {" / " + title}
                     </span>
                     <span className="menu-arrow d-lg-none"></span>
                   </span>

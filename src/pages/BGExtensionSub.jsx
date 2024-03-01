@@ -14,7 +14,7 @@ const BGExtensionSub = () => {
         <div className="page d-flex flex-row flex-column-fluid">
           {/* <SideBar /> */}
           <div className="d-flex flex-column flex-row-fluid">
-            <MainHeader title={"BG Extension/Release /"} />
+            <MainHeader title={"BG Extension/Release"} />
             <div className="content d-flex flex-column flex-column-fluid">
               <div className="post d-flex flex-column-fluid">
                 <div className="container">

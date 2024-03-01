@@ -78,7 +78,7 @@ const InspectionCall = () => {
           <SideBar />
           <div className="wrapper d-flex flex-column flex-row-fluid">
             <Header
-              title={"Inspection Call Letter / Inspection Release Note /"}
+              title={"Inspection Call Letter / Inspection Release Note"}
               id={id}
             />
             <div className="content d-flex flex-column flex-column-fluid">
