@@ -566,7 +566,9 @@ const SDBGSub = () => {
                       DEMAND DRAFT SUBMISSION
                     </option>
                     <option value="PBG SUBMISISON">PBG SUBMISISON</option>
-                    <option value="ABG SUBMISISON">ABG SUBMISISON</option>
+                    <option value="ABG SUBMISISON">
+                      Advanced BG SUBMISISON
+                    </option>
                     <option value="REMARKS">REMARKS</option>
                     <option value="OTHERS">OTHERS</option>
                   </select>

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Footer from "../components/Footer";
 import SideBar from "../components/SideBar";
 import Header from "../components/Header";
@@ -10,17 +10,18 @@ import Select from "react-select";
 import { reConfirm } from "../utils/reConfirm";
 
 const QAPSub = () => {
+  const inputRef = useRef(null);
   const [isPopup, setIsPopup] = useState(false);
   const [isPopupAssign, setIsPopupAssign] = useState(false);
   const [allqap, setAllqap] = useState([]);
   const { id } = useParams();
   const { user, token, userType } = useSelector((state) => state.auth);
   const [formData, setFormData] = useState({
+    action_type: "",
     QapFile: null,
     remarks: "",
   });
 
-  const [selectedActionType, setSelectedActionType] = useState("");
   const [assign, setAssign] = useState({
     purchasing_doc_no: id,
     assigned_from: user?.vendor_code,
@@ -128,6 +129,7 @@ const QAPSub = () => {
       );
       if (data?.status) {
         setFormData({
+          action_type: "",
           QapFile: null,
           remarks: "",
         });
@@ -143,49 +145,55 @@ const QAPSub = () => {
   }, [id, token]);
 
   const updateQAP = async (flag) => {
-    try {
-      await deleteSavedQAP();
-      let uType;
-      let mailSendTo;
-      if (userType === 1) {
-        uType = "VENDOR";
-        mailSendTo = "mrinmoygh081@gmail.com";
-      } else {
-        uType = "GRSE";
-        mailSendTo = "aabhinit96@gmail.com";
-      }
-      const formDataToSend = new FormData();
-      formDataToSend.append("purchasing_doc_no", id);
-      formDataToSend.append("file", formData.QapFile);
-      formDataToSend.append("remarks", formData.remarks);
-      formDataToSend.append("status", flag);
-      formDataToSend.append("updated_by", uType);
-      formDataToSend.append("vendor_code", user.vendor_code);
-      formDataToSend.append("mailSendTo", mailSendTo);
-      formDataToSend.append("action_by_name", user.name);
-      formDataToSend.append("action_by_id", user.email);
-      formDataToSend.append("actionType", selectedActionType);
+    if (formData?.action_type !== "") {
+      try {
+        await deleteSavedQAP();
+        let uType;
+        let mailSendTo;
+        if (userType === 1) {
+          uType = "VENDOR";
+          mailSendTo = "mrinmoygh081@gmail.com";
+        } else {
+          uType = "GRSE";
+          mailSendTo = "aabhinit96@gmail.com";
+        }
+        const formDataToSend = new FormData();
+        formDataToSend.append("purchasing_doc_no", id);
+        formDataToSend.append("file", formData.QapFile);
+        formDataToSend.append("remarks", formData.remarks);
+        formDataToSend.append("status", flag);
+        formDataToSend.append("updated_by", uType);
+        formDataToSend.append("vendor_code", user.vendor_code);
+        formDataToSend.append("mailSendTo", mailSendTo);
+        formDataToSend.append("action_by_name", user.name);
+        formDataToSend.append("action_by_id", user.email);
+        formDataToSend.append("action_type", formData?.action_type);
 
-      const response = await apiCallBack(
-        "POST",
-        "po/qap",
-        formDataToSend,
-        token
-      );
+        const response = await apiCallBack(
+          "POST",
+          "po/qap",
+          formDataToSend,
+          token
+        );
 
-      if (response?.status) {
-        toast.success("QAP uploaded successfully");
-        setIsPopup(false);
-        setFormData({
-          QapFile: null,
-          remarks: "",
-        });
-        getData();
-      } else {
-        toast.warn(response?.message);
+        if (response?.status) {
+          toast.success("QAP uploaded successfully");
+          setIsPopup(false);
+          setFormData({
+            action_type: "",
+            QapFile: null,
+            remarks: "",
+          });
+          inputRef.current.value = null;
+          getData();
+        } else {
+          toast.warn(response?.message);
+        }
+      } catch (error) {
+        toast.error("Error uploading QAP:", error);
       }
-    } catch (error) {
-      toast.error("Error uploading QAP:", error);
+    } else {
+      toast.warn("Please choose action type!");
     }
   };
 
@@ -322,6 +330,7 @@ const QAPSub = () => {
                               <thead>
                                 <tr className="border-0">
                                   <th>DateTime </th>
+                                  <th>Action Type </th>
                                   <th>QAP File</th>
                                   <th>Updated By</th>
                                   <th className="min-w-150px">Remarks</th>
@@ -338,9 +347,10 @@ const QAPSub = () => {
                                             qap?.created_at
                                           ).toLocaleString()}
                                       </td>
+                                      <td>{qap.action_type}</td>
                                       <td>
                                         <a
-                                          href={`${process.env.REACT_APP_BACKEND_API}po/download?id=${qap.drawing_id}&type=qap`}
+                                          href={`${process.env.REACT_APP_PDF_URL}qap/${qap.file_name}`}
                                           target="_blank"
                                           rel="noreferrer"
                                         >
@@ -372,7 +382,7 @@ const QAPSub = () => {
           <div className="card card-xxl-stretch mb-5 mb-xxl-8">
             <div className="card-header border-0 pt-5">
               <h3 className="card-title align-items-start flex-column">
-                <span className="card-label fw-bold fs-3 mb-1">UPLOAD QAP</span>
+                <span className="card-label fw-bold fs-3 mb-1">QAP Status</span>
               </h3>
               <button
                 className="btn fw-bold btn-danger"
@@ -390,7 +400,10 @@ const QAPSub = () => {
                       id=""
                       className="form-select"
                       onChange={(e) => {
-                        setSelectedActionType(e.target.value);
+                        setFormData({
+                          ...formData,
+                          action_type: e.target.value,
+                        });
                       }}
                     >
                       <option value="">Choose Action Type</option>
@@ -406,6 +419,7 @@ const QAPSub = () => {
                     <input
                       type="file"
                       className="form-control"
+                      ref={inputRef}
                       onChange={(e) =>
                         setFormData({
                           ...formData,
@@ -501,7 +515,7 @@ const QAPSub = () => {
                     ) : (
                       <>
                         <button
-                          onClick={() => updateQAP("PENDING")}
+                          onClick={() => updateQAP("SUBMITTED")}
                           className="btn fw-bold btn-primary"
                           type="button"
                         >

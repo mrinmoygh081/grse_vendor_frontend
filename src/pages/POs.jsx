@@ -160,6 +160,7 @@ const POs = () => {
                                   <u>{po.poNumber}</u> || {po.poType}
                                   {user && user?.user_type !== 1 && (
                                     <>
+                                      {" "}
                                       || {po.project_code} || {po.wbs_id}
                                     </>
                                   )}
