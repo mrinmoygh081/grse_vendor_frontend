@@ -36,6 +36,13 @@ import IlmsSub from "./pages/IlmsSub";
 import MRSSub from "./pages/MRSSub";
 import MaterialIssueReqSub from "./pages/MaterialIssueReqSub";
 import WMCSub from "./pages/WMCSub";
+import DemandDeliveryLeadTime from "./pages/DemandDeliveryLeadTime";
+import Inspectionreleasenote from "./pages/Inspectionreleasenote";
+import HrCompliance from "./pages/HrCompliance";
+import DemandManagement from "./pages/DemandManagement";
+import DisplayStoreActions from "./pages/DisplayStoreActions";
+import ManageVendorActivities from "./pages/ManageVendorActivities";
+import InvoiceAndPaymentProcess from "./pages/InvoiceAndPaymentProcess";
 
 function Layout() {
   const { token, isLoggedIn, userType } = useSelector((state) => state.auth);
@@ -55,7 +62,39 @@ function Layout() {
             <Route exact path="/sdbg/:id" element={<SDBGSub />} />
             <Route exact path="/drawing/:id" element={<DrawingSub />} />
             <Route exact path="/qap/:id" element={<QAPSub />} />
+            <Route exact path="/qap/:id" element={<QAPSub />} />
             <Route exact path="/inspection/:id" element={<InspectionCall />} />
+            <Route
+              exact
+              path="/demand-management/:id"
+              element={<DemandManagement />}
+            />
+            <Route
+              exact
+              path="/display-store-actions/:id"
+              element={<DisplayStoreActions />}
+            />
+            <Route
+              exact
+              path="/manage-vendor-activities/:id"
+              element={<ManageVendorActivities />}
+            />
+            <Route
+              exact
+              path="/invoice-and-payment-process/:id"
+              element={<InvoiceAndPaymentProcess />}
+            />
+            <Route
+              exact
+              path="/inspection-release-note/:id"
+              element={<Inspectionreleasenote />}
+            />
+            <Route exact path="/hr-compliance/:id" element={<HrCompliance />} />
+            <Route
+              exact
+              path="/demand-delivery-lead-time/:id"
+              element={<DemandDeliveryLeadTime />}
+            />
             <Route
               exact
               path="/shipping-documents/:id"
@@ -144,7 +183,38 @@ function Layout() {
             <Route exact path="/sdbg/:id" element={<SDBGSub />} />
             <Route exact path="/drawing/:id" element={<DrawingSub />} />
             <Route exact path="/qap/:id" element={<QAPSub />} />
+            <Route
+              exact
+              path="/demand-delivery-lead-time/:id"
+              element={<DemandDeliveryLeadTime />}
+            />
             <Route exact path="/inspection/:id" element={<InspectionCall />} />
+            <Route
+              exact
+              path="/demand-management/:id"
+              element={<DemandManagement />}
+            />
+            <Route
+              exact
+              path="/display-store-actions/:id"
+              element={<DisplayStoreActions />}
+            />
+            <Route
+              exact
+              path="/manage-vendor-activities/:id"
+              element={<ManageVendorActivities />}
+            />
+            <Route
+              exact
+              path="/invoice-and-payment-process/:id"
+              element={<InvoiceAndPaymentProcess />}
+            />
+            <Route
+              exact
+              path="/inspection-release-note/:id"
+              element={<Inspectionreleasenote />}
+            />
+            <Route exact path="/hr-compliance/:id" element={<HrCompliance />} />
             <Route
               exact
               path="/shipping-documents/:id"

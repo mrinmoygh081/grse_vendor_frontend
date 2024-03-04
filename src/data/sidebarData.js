@@ -4,28 +4,52 @@ export const sidebarData = [
     link: "/po",
   },
   {
-    title: "BG Submissions",
+    title: "Security Deposits Status",
     link: "/sdbg",
   },
   {
-    title: "Drawing Submissions",
+    title: "Drawing Approval Status",
     link: "/drawing",
   },
   {
-    title: "QAP Submissions",
+    title: "QAP Status",
     link: "/qap",
   },
   {
-    title: "ILMS Submissions",
+    title: "ILMS Status",
     link: "/ilms",
+  },
+  {
+    title: "Demand Delivery Lead Time",
+    link: "/demand-delivery-lead-time",
   },
   {
     title: "Inspection call letter",
     link: "/inspection",
   },
   {
+    title: "Inspection Release Note",
+    link: "/inspection-release-note",
+  },
+  {
     title: "Shipping documents",
     link: "/shipping-documents",
+  },
+  {
+    title: "HR Compliance",
+    link: "/hr-compliance",
+  },
+  {
+    title: "Demand Management",
+    link: "/demand-management",
+  },
+  {
+    title: "Display Store Actions",
+    link: "/display-store-actions",
+  },
+  {
+    title: "Manage Vendor Activities",
+    link: "/manage-vendor-activities",
   },
   {
     title: "Gate In Entry / GR / ICGRN",
@@ -34,6 +58,10 @@ export const sidebarData = [
   {
     title: "WDC",
     link: "/wdc",
+  },
+  {
+    title: "Invoice And Payment Process",
+    link: "/invoice-and-payment-process",
   },
   {
     title: "Invoice, PBG Copy & Checklist",
@@ -67,29 +95,54 @@ export const sidebarServicePOData = [
     link: "/po",
   },
   {
-    title: "BG Submissions",
+    title: "Security Deposits Status",
     link: "/sdbg",
   },
   {
-    title: "Drawing Submissions",
+    title: "Drawing Approval Status",
     link: "/drawing",
   },
   {
-    title: "QAP Submissions",
+    title: "QAP Status",
     link: "/qap",
   },
   {
-    title: "ILMS Submissions",
+    title: "ILMS Status",
     link: "/ilms",
+  },
+  {
+    title: "Demand Delivery Lead Time",
+    link: "/demand-delivery-lead-time",
   },
   {
     title: "Inspection call letter",
     link: "/inspection",
   },
   {
+    title: "Inspection Release Note",
+    link: "/inspection-release-note",
+  },
+  {
     title: "Shipping documents",
     link: "/shipping-documents",
   },
+  {
+    title: "HR Compliance",
+    link: "/hr-compliance",
+  },
+  {
+    title: "Demand Management",
+    link: "/demand-management",
+  },
+  {
+    title: "Display Store Actions",
+    link: "/display-store-actions",
+  },
+  {
+    title: "Manage Vendor Activities",
+    link: "/manage-vendor-activities",
+  },
+
   {
     title: "Gate In Entry / GR / ICGRN",
     link: "/gate-in",
@@ -101,6 +154,10 @@ export const sidebarServicePOData = [
   {
     title: "WDC",
     link: "/wdc",
+  },
+  {
+    title: "Invoice And Payment Process",
+    link: "/invoice-and-payment-process",
   },
   {
     title: "MRS",

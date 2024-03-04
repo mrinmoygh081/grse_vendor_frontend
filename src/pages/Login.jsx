@@ -26,10 +26,9 @@ export default function Login() {
     }
     setIsLoading(true);
     let res = await postAPI("auth2/login", loginData, null);
-    console.log(res, "kkkkkkkkkkk");
     if (res?.status) {
       dispatch(loginHandler(res));
-      toast.success("Successfully logged in");
+      // toast.success("Successfully logged in");
     } else {
       toast.error("Please provide correct username and password");
     }

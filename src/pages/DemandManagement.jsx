@@ -8,7 +8,7 @@ import { apiCallBack } from "../utils/fetchAPIs";
 import { toast } from "react-toastify";
 import moment from "moment";
 
-const InspectionCall = () => {
+const DemandManagement = () => {
   const [isPopup, setIsPopup] = useState(false);
   const [inspectioncall, setInspectioncall] = useState([]);
   const { id } = useParams();
@@ -77,7 +77,7 @@ const InspectionCall = () => {
         <div className="page d-flex flex-row flex-column-fluid">
           <SideBar />
           <div className="wrapper d-flex flex-column flex-row-fluid">
-            <Header title={"Inspection Call Letter"} id={id} />
+            <Header title={"Demand Management"} id={id} />
             <div className="content d-flex flex-column flex-column-fluid">
               <div className="post d-flex flex-column-fluid">
                 <div className="container">
@@ -197,15 +197,13 @@ const InspectionCall = () => {
                       }}
                     >
                       <option value="">Choose Action Type</option>
-                      <option value="UPLOAD RM INSPECTION CALL LETTER">
-                        UPLOAD RM INSPECTION CALL LETTER
+                      <option value="UPLOAD MATERIAL DEMAND">
+                        UPLOAD MATERIAL DEMAND
                       </option>
-                      <option value="UPLOAD TEST WITNESS INSPECTION CALL LETTER">
-                        UPLOAD TEST WITNESS INSPECTION CALL LETTER
+                      <option value="UPLOAD SERVICE ENGG DEMAND">
+                        UPLOAD SERVICE ENGG DEMAND
                       </option>
-                      <option value="UPLOAD FINAL INSPECTION/FATS CALL LETTER">
-                        UPLOAD FINAL INSPECTION/FATS CALL LETTER
-                      </option>
+
                       <option value="REMARKS">REMARKS</option>
 
                       <option value="OTHERS">OTHERS</option>
@@ -213,7 +211,7 @@ const InspectionCall = () => {
                   </div>
 
                   <div className="mb-3">
-                    <label className="form-label">Inspection Call File</label>
+                    <label className="form-label">File</label>
                     &nbsp;&nbsp;
                     <span className="mandatorystart">*</span>
                     <input
@@ -273,4 +271,4 @@ const InspectionCall = () => {
   );
 };
 
-export default InspectionCall;
+export default DemandManagement;

@@ -26,8 +26,10 @@ const SDBGSub = () => {
     sdbgFile: null,
     remarks: "",
   });
+  console.log(allsdbg, "allsdbg");
   const [formDatainput, setFormDatainput] = useState({
     purchasing_doc_no: "",
+    reference_no: "",
     bank_name: "",
     branch_name: "",
     bank_addr1: "",
@@ -188,6 +190,7 @@ const SDBGSub = () => {
   const uploadSDBGEntry = async () => {
     const {
       purchasing_doc_no,
+      reference_no,
       bank_name,
       branch_name,
       bank_addr1,
@@ -220,33 +223,34 @@ const SDBGSub = () => {
       entension_letter_date,
     } = formDatainput;
 
-    if (
-      (purchasing_doc_no === "",
-      bank_name === "",
-      branch_name === "",
-      bank_addr1 === "",
-      bank_city === "",
-      bank_pin_code === "",
-      bg_no === "",
-      bg_date === "",
-      bg_ammount === "",
-      department === "",
-      po_date === "",
-      yard_no === "",
-      validity_date === "",
-      claim_priod === "",
-      check_list_reference === "",
-      check_list_date === "",
-      bg_type === "",
-      vendor_name === "",
-      vendor_address1 === "",
-      vendor_city === "",
-      vendor_pin_code === "",
-      confirmation === "")
-    ) {
-      toast.warn("Please enter the required fields!");
-      return;
-    }
+    // if (
+    //   (purchasing_doc_no === "",
+    //   reference_no === "",
+    //   bank_name === "",
+    //   branch_name === "",
+    //   bank_addr1 === "",
+    //   bank_city === "",
+    //   bank_pin_code === "",
+    //   bg_no === "",
+    //   bg_date === "",
+    //   bg_ammount === "",
+    //   department === "",
+    //   po_date === "",
+    //   yard_no === "",
+    //   validity_date === "",
+    //   claim_priod === "",
+    //   check_list_reference === "",
+    //   check_list_date === "",
+    //   bg_type === "",
+    //   vendor_name === "",
+    //   vendor_address1 === "",
+    //   vendor_city === "",
+    //   vendor_pin_code === "",
+    //   confirmation === "")
+    // ) {
+    //   toast.warn("Please enter the required fields!");
+    //   return;
+    // }
 
     let form = {
       ...formDatainput,
@@ -263,6 +267,7 @@ const SDBGSub = () => {
       extension_date4: convertToEpoch(extension_date4),
       extension_date5: convertToEpoch(extension_date5),
       extension_date6: convertToEpoch(extension_date6),
+      claim_priod: convertToEpoch(claim_priod),
     };
     const d = await postAPI("/po/sdbg/sdbgSubmitByDealingOfficer", form, token);
     if (d?.status) {
@@ -469,7 +474,7 @@ const SDBGSub = () => {
                                   allsdbg.length > 0 &&
                                   allsdbg.map((item, index) => (
                                     <tr key={index}>
-                                      <td>{123456789}</td>
+                                      <td>{item?.reference_no}</td>
                                       <td className="table_center">
                                         {item?.created_at &&
                                           new Date(
@@ -488,11 +493,11 @@ const SDBGSub = () => {
                                         </a>
                                       </td>
                                       <td>
-                                        {item.created_by_name} (
-                                        {item.created_by_id})
+                                        {item?.created_by_name} (
+                                        {item?.created_by_id})
                                       </td>
-                                      <td>{item.remarks}</td>
-                                      <td>{item.status}</td>
+                                      <td>{item?.remarks}</td>
+                                      <td>{item?.status}</td>
                                       <td>
                                         {isDO && (
                                           <>
@@ -552,12 +557,18 @@ const SDBGSub = () => {
                     }}
                   >
                     <option value="">Choose Action Type</option>
-                    <option value="SDBG">Upload SDBG</option>
+                    <option value="SDBG SUBMISSION">SDBG SUBMISSION</option>
 
-                    <option value="PBG">Upload PBG</option>
-                    <option value="ABG">Upload Advanced BG</option>
-                    <option value="Remarks">Remarks</option>
-                    <option value="Others">Others</option>
+                    <option value="INDEMNITY BOND SUBMISSION">
+                      INDEMNITY BOND SUBMISSION
+                    </option>
+                    <option value="DEMAND DRAFT SUBMISSION">
+                      DEMAND DRAFT SUBMISSION
+                    </option>
+                    <option value="PBG SUBMISISON">PBG SUBMISISON</option>
+                    <option value="ABG SUBMISISON">ABG SUBMISISON</option>
+                    <option value="REMARKS">REMARKS</option>
+                    <option value="OTHERS">OTHERS</option>
                   </select>
                 </div>
               </div>
@@ -631,6 +642,18 @@ const SDBGSub = () => {
             </div>
 
             <div className="row">
+              <div className="col-md-6 col-12">
+                <div className="mb-3">
+                  <label className="form-label">Ref No</label>
+                  <input
+                    type="text"
+                    className="form-control"
+                    name="vendor_pin_code"
+                    value={allsdbg?.[0]?.reference_no || ""}
+                    disabled
+                  />
+                </div>
+              </div>
               <div className="col-md-6 col-12">
                 <div className="mb-3">
                   <label className="form-label">Bankers Name</label>&nbsp;&nbsp;
@@ -866,13 +889,12 @@ const SDBGSub = () => {
                   <span className="mandatorystart">*</span>
                   <DatePicker
                     selected={formDatainput?.check_list_date}
-                    // onChange={(date) =>
-                    //   setFormDatainput({
-                    //     ...formDatainput,
-                    //     check_list_date: date,
-                    //   })
-                    // }
-                    disabled
+                    onChange={(date) =>
+                      setFormDatainput({
+                        ...formDatainput,
+                        check_list_date: date,
+                      })
+                    }
                     dateFormat="dd/MM/yyyy"
                     className="form-control"
                   />
@@ -1112,27 +1134,22 @@ const SDBGSub = () => {
                   />
                 </div>
               </div>
-              <div className="col-md-6 col-12">
-                <div className="mb-3">
-                  <label className="form-label">Ref No</label>
-                  <input
-                    type="text"
-                    className="form-control"
-                    name="vendor_pin_code"
-                    value={"123456"}
-                    disabled
-                    // onChange={handleInputChange2}
-                  />
-                </div>
-              </div>
+
               <div className="col-12">
                 <div className="mb-3 d-flex justify-content-between">
                   <button
-                    onClick={() => uploadSDBGEntry("NotApproved")}
+                    onClick={() => uploadSDBGEntry("FORWARD_TO_FINANCE")}
                     className="btn fw-bold btn-primary"
                     type="submit"
                   >
                     Forward To Finance
+                  </button>
+                  <button
+                    onClick={() => uploadSDBGEntry("REJECTED")}
+                    className="btn fw-bold btn-primary"
+                    type="submit"
+                  >
+                    REJECTED
                   </button>
                 </div>
               </div>

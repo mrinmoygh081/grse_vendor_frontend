@@ -8,7 +8,7 @@ import { apiCallBack } from "../utils/fetchAPIs";
 import { toast } from "react-toastify";
 import moment from "moment";
 
-const InspectionCall = () => {
+const Inspectionreleasenote = () => {
   const [isPopup, setIsPopup] = useState(false);
   const [inspectioncall, setInspectioncall] = useState([]);
   const { id } = useParams();
@@ -77,7 +77,7 @@ const InspectionCall = () => {
         <div className="page d-flex flex-row flex-column-fluid">
           <SideBar />
           <div className="wrapper d-flex flex-column flex-row-fluid">
-            <Header title={"Inspection Call Letter"} id={id} />
+            <Header title={"Inspection Release Note"} id={id} />
             <div className="content d-flex flex-column flex-column-fluid">
               <div className="post d-flex flex-column-fluid">
                 <div className="container">
@@ -273,4 +273,4 @@ const InspectionCall = () => {
   );
 };
 
-export default InspectionCall;
+export default Inspectionreleasenote;
