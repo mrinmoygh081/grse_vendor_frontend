@@ -331,7 +331,7 @@ const QAPSub = () => {
                                 <tr className="border-0">
                                   <th>DateTime </th>
                                   <th>Action Type </th>
-                                  <th>QAP File</th>
+                                  <th>File Info</th>
                                   <th>Updated By</th>
                                   <th className="min-w-150px">Remarks</th>
                                   <th>Status</th>
@@ -405,6 +405,7 @@ const QAPSub = () => {
                           action_type: e.target.value,
                         });
                       }}
+                      value={formData?.action_type}
                     >
                       <option value="">Choose Action Type</option>
                       <option value="UPLOAD QAP File">UPLOAD QAP File</option>

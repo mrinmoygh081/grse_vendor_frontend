@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Footer from "../components/Footer";
 import SideBar from "../components/SideBar";
 import Header from "../components/Header";
@@ -21,12 +21,10 @@ const SDBGSub = () => {
   const [sdbgEntry, setSdbgEntry] = useState([]);
   const [selectedActionType, setSelectedActionType] = useState("");
   const [formData, setFormData] = useState({
-    bankName: "",
-    transactionId: "",
     sdbgFile: null,
     remarks: "",
   });
-  console.log(allsdbg, "allsdbg");
+
   const [formDatainput, setFormDatainput] = useState({
     purchasing_doc_no: "",
     reference_no: "",
@@ -47,7 +45,7 @@ const SDBGSub = () => {
     claim_priod: "",
     check_list_reference: "",
     check_list_date: new Date(),
-    bg_type: "",
+    bg_type: "SDBG",
     vendor_name: "",
     vendor_address1: "",
     vendor_address2: "",
@@ -70,6 +68,7 @@ const SDBGSub = () => {
     remarks: "",
     assigned_to: "",
   });
+  const inputFileRef = useRef(null);
   const { id } = useParams();
   const { user, token, userType } = useSelector((state) => state.auth);
   const { isDO } = useSelector((state) => state.selectedPO);
@@ -151,6 +150,10 @@ const SDBGSub = () => {
   }, [id]);
 
   const updateSDBG = async (flag) => {
+    const { sdbgFile, remarks } = formData;
+    if (selectedActionType === "" || !sdbgFile || remarks === "") {
+      toast.warn("Please provide all required fields");
+    }
     try {
       const form = new FormData();
       form.append("purchasing_doc_no", id);
@@ -171,9 +174,9 @@ const SDBGSub = () => {
         setFormData({
           sdbgFile: null,
           remarks: "",
-          bankName: "",
-          transactionId: "",
         });
+        inputFileRef.current.value = null;
+        setSelectedActionType("");
         getSDBG();
       } else {
         toast.error("Please try again!");
@@ -211,7 +214,6 @@ const SDBGSub = () => {
       vendor_address1,
       vendor_city,
       vendor_pin_code,
-      confirmation,
       extension_date1,
       extension_date2,
       extension_date3,
@@ -223,34 +225,33 @@ const SDBGSub = () => {
       entension_letter_date,
     } = formDatainput;
 
-    // if (
-    //   (purchasing_doc_no === "",
-    //   reference_no === "",
-    //   bank_name === "",
-    //   branch_name === "",
-    //   bank_addr1 === "",
-    //   bank_city === "",
-    //   bank_pin_code === "",
-    //   bg_no === "",
-    //   bg_date === "",
-    //   bg_ammount === "",
-    //   department === "",
-    //   po_date === "",
-    //   yard_no === "",
-    //   validity_date === "",
-    //   claim_priod === "",
-    //   check_list_reference === "",
-    //   check_list_date === "",
-    //   bg_type === "",
-    //   vendor_name === "",
-    //   vendor_address1 === "",
-    //   vendor_city === "",
-    //   vendor_pin_code === "",
-    //   confirmation === "")
-    // ) {
-    //   toast.warn("Please enter the required fields!");
-    //   return;
-    // }
+    if (
+      (purchasing_doc_no === "",
+      reference_no === "",
+      bank_name === "",
+      branch_name === "",
+      bank_addr1 === "",
+      bank_city === "",
+      bank_pin_code === "",
+      bg_no === "",
+      bg_date === "",
+      bg_ammount === "",
+      department === "",
+      po_date === "",
+      yard_no === "",
+      validity_date === "",
+      claim_priod === "",
+      check_list_reference === "",
+      check_list_date === "",
+      bg_type === "SDBG",
+      vendor_name === "",
+      vendor_address1 === "",
+      vendor_city === "",
+      vendor_pin_code === "")
+    ) {
+      toast.warn("Please enter the required fields!");
+      return;
+    }
 
     let form = {
       ...formDatainput,
@@ -268,6 +269,9 @@ const SDBGSub = () => {
       extension_date5: convertToEpoch(extension_date5),
       extension_date6: convertToEpoch(extension_date6),
       claim_priod: convertToEpoch(claim_priod),
+      reference_no: reference_no,
+      status: "FORWARD_TO_FINANCE",
+      remarks: "Forwarded to Finance Department",
     };
     const d = await postAPI("/po/sdbg/sdbgSubmitByDealingOfficer", form, token);
     if (d?.status) {
@@ -293,7 +297,68 @@ const SDBGSub = () => {
         claim_priod: "",
         check_list_reference: "",
         check_list_date: "",
-        bg_type: "",
+        bg_type: "SDBG",
+        vendor_name: "",
+        vendor_address1: "",
+        vendor_address2: "",
+        vendor_address3: "",
+        vendor_city: "",
+        vendor_pin_code: "",
+        confirmation: "",
+        extension_date1: "",
+        extension_date2: "",
+        extension_date3: "",
+        extension_date4: "",
+        extension_date5: "",
+        extension_date6: "",
+        release_date: "",
+        demand_notice_date: "",
+        entension_letter_date: "",
+        status: "",
+        created_at: "",
+        created_by: "",
+        remarks: "",
+        assigned_to: "",
+      });
+      getSDBG();
+      getSDBGEntry();
+    } else {
+      toast.error(d?.message);
+    }
+  };
+
+  const rejectSDBG = async (flag = "REJECTED") => {
+    let form = {
+      purchasing_doc_no: id,
+      reference_no: formData?.reference_no,
+      status: flag,
+      remarks: "SDBG REJECTED by Dealing Officer",
+    };
+    const d = await postAPI("/po/sdbg/sdbgSubmitByDealingOfficer", form, token);
+    if (d?.status) {
+      toast.success(d?.message);
+      setIsPopup(false);
+      setIsEntryPopup(false);
+      setFormDatainput({
+        purchasing_doc_no: "",
+        bank_name: "",
+        branch_name: "",
+        bank_addr1: "",
+        bank_addr2: "",
+        bank_addr3: "",
+        bank_city: "",
+        bank_pin_code: "",
+        bg_no: "",
+        bg_date: "",
+        bg_ammount: "",
+        department: "",
+        po_date: "",
+        yard_no: "",
+        validity_date: "",
+        claim_priod: "",
+        check_list_reference: "",
+        check_list_date: "",
+        bg_type: "SDBG",
         vendor_name: "",
         vendor_address1: "",
         vendor_address2: "",
@@ -344,9 +409,9 @@ const SDBGSub = () => {
   const financeEntry = async (flag) => {
     let remarks;
 
-    if (flag === "ACCEPTED") {
-      remarks = "Accepted by Finance Officer";
-    } else if (flag === "ReturnToDO") {
+    if (flag === "APPROVED") {
+      remarks = "APPROVED by Finance Officer";
+    } else if (flag === "RETURN_TO_DO") {
       remarks = "SDBG Entry returned to dealing officer for correction";
     } else if (flag === "REJECTED") {
       remarks = "Rejected by Finance Officer";
@@ -356,6 +421,7 @@ const SDBGSub = () => {
       purchasing_doc_no: id,
       status: flag,
       remarks,
+      reference_no: sdbgEntry?.reference_no,
     };
 
     const data = await apiCallBack(
@@ -370,7 +436,7 @@ const SDBGSub = () => {
       getSDBG();
       if (flag === "ACCEPTED") {
         toast.success(remarks);
-      } else if (flag === "ReturnToDO") {
+      } else if (flag === "RETURN_TO_DO") {
         toast.warn(remarks);
       } else if (flag === "REJECTED") {
         toast.error(remarks);
@@ -462,11 +528,13 @@ const SDBGSub = () => {
                                 <tr className="border-0">
                                   <th className="min-w-150px">Ref No </th>
                                   <th className="min-w-150px">DateTime </th>
-                                  <th className="min-w-150px">SDBG File</th>
+                                  <th className="min-w-150px">File</th>
                                   <th className="min-w-150px">Updated By</th>
                                   <th className="min-w-150px">Remarks</th>
                                   <th className="min-w-150px">Status</th>
-                                  <th className="min-w-150px">Action</th>
+                                  {isDO && (
+                                    <th className="min-w-150px">Action</th>
+                                  )}
                                 </tr>
                               </thead>
                               <tbody style={{ maxHeight: "100%" }}>
@@ -481,8 +549,6 @@ const SDBGSub = () => {
                                             item?.created_at
                                           ).toLocaleString()}
                                       </td>
-                                      {/* <td>{item.bank_name}</td>
-                                      <td>{item.transaction_id}</td> */}
                                       <td>
                                         <a
                                           href={`${process.env.REACT_APP_PDF_URL}/submitSDBG/${item.file_name}`}
@@ -497,21 +563,35 @@ const SDBGSub = () => {
                                         {item?.created_by_id})
                                       </td>
                                       <td>{item?.remarks}</td>
-                                      <td>{item?.status}</td>
-                                      <td>
-                                        {isDO && (
-                                          <>
+                                      <td
+                                        className={
+                                          item?.status === "REJECTED"
+                                            ? "red"
+                                            : item?.status === "SUBMITED"
+                                            ? "blue"
+                                            : "black"
+                                        }
+                                      >
+                                        {item?.status}
+                                      </td>
+                                      {isDO &&
+                                        item?.updated_by === "VENDOR" && (
+                                          <td>
                                             <button
-                                              onClick={() =>
-                                                setIsEntryPopup(true)
-                                              }
+                                              onClick={() => {
+                                                setIsEntryPopup(true);
+                                                setFormDatainput({
+                                                  ...formDatainput,
+                                                  reference_no:
+                                                    item?.reference_no,
+                                                });
+                                              }}
                                               className="btn fw-bold btn-primary me-3"
                                             >
                                               SDBG Entry
                                             </button>
-                                          </>
+                                          </td>
                                         )}
-                                      </td>
                                     </tr>
                                   ))}
                               </tbody>
@@ -555,6 +635,7 @@ const SDBGSub = () => {
                     onChange={(e) => {
                       setSelectedActionType(e.target.value);
                     }}
+                    value={selectedActionType}
                   >
                     <option value="">Choose Action Type</option>
                     <option value="SDBG SUBMISSION">SDBG SUBMISSION</option>
@@ -581,6 +662,7 @@ const SDBGSub = () => {
                   <span className="mandatorystart">*</span>
                   <input
                     type="file"
+                    ref={inputFileRef}
                     className="form-control"
                     onChange={(e) =>
                       setFormData({ ...formData, sdbgFile: e.target.files[0] })
@@ -590,12 +672,14 @@ const SDBGSub = () => {
               </div>
               <div className="col-12">
                 <div className="mb-3">
-                  <label className="form-label">Remarks</label>
+                  <label className="form-label">Remarks</label>&nbsp;&nbsp;
+                  <span className="mandatorystart">*</span>
                   <textarea
                     name=""
                     id=""
                     rows="4"
                     className="form-control"
+                    value={formData?.remarks}
                     onChange={(e) =>
                       setFormData({ ...formData, remarks: e.target.value })
                     }
@@ -642,7 +726,7 @@ const SDBGSub = () => {
                 Close
               </button>
             </div>
-
+            {console.log(formDatainput)}
             <div className="row">
               <div className="col-md-6 col-12">
                 <div className="mb-3">
@@ -651,7 +735,7 @@ const SDBGSub = () => {
                     type="text"
                     className="form-control"
                     name="vendor_pin_code"
-                    value={allsdbg?.[0]?.reference_no || ""}
+                    value={formDatainput?.reference_no || ""}
                     disabled
                   />
                 </div>
@@ -697,8 +781,6 @@ const SDBGSub = () => {
               <div className="col-md-6 col-12">
                 <div className="mb-3">
                   <label className="form-label">Bankers Address2</label>
-                  &nbsp;&nbsp;
-                  <span className="mandatorystart">*</span>
                   <input
                     type="text"
                     className="form-control"
@@ -710,8 +792,6 @@ const SDBGSub = () => {
               <div className="col-md-6 col-12">
                 <div className="mb-3">
                   <label className="form-label">Bankers Address3</label>
-                  &nbsp;&nbsp;
-                  <span className="mandatorystart">*</span>
                   <input
                     type="text"
                     className="form-control"
@@ -906,10 +986,18 @@ const SDBGSub = () => {
                 <div className="mb-3">
                   <label className="form-label">BG Type</label>&nbsp;&nbsp;
                   <span className="mandatorystart">*</span>
-                  <select className="form-select" name="" id="">
-                    <option value="sdbg">SDBG</option>
-                    <option value="pbg">PBG</option>
-                    <option value="pbg">Advance BG</option>
+                  <select
+                    className="form-select"
+                    name=""
+                    id=""
+                    value={formData?.bg_type}
+                    onChange={(e) =>
+                      setFormData({ ...formData, bg_type: e.target.value })
+                    }
+                  >
+                    <option value="SDBG">SDBG</option>
+                    <option value="PBG">PBG</option>
+                    <option value="Advance BG">Advance BG</option>
                   </select>
                   {/* <input
                     type="text"
@@ -947,8 +1035,6 @@ const SDBGSub = () => {
               <div className="col-md-6 col-12">
                 <div className="mb-3">
                   <label className="form-label">Vendor Address2</label>
-                  &nbsp;&nbsp;
-                  <span className="mandatorystart">*</span>
                   <input
                     type="text"
                     className="form-control"
@@ -960,8 +1046,6 @@ const SDBGSub = () => {
               <div className="col-md-6 col-12">
                 <div className="mb-3">
                   <label className="form-label">Vendor Address3</label>
-                  &nbsp;&nbsp;
-                  <span className="mandatorystart">*</span>
                   <input
                     type="text"
                     className="form-control"
@@ -1147,8 +1231,14 @@ const SDBGSub = () => {
                     Forward To Finance
                   </button>
                   <button
-                    onClick={() => uploadSDBGEntry("REJECTED")}
-                    className="btn fw-bold btn-primary"
+                    onClick={() =>
+                      reConfirm(
+                        { file: true },
+                        () => rejectSDBG("REJECTED"),
+                        "You're going to Reject the SDBG. Please confirm!"
+                      )
+                    }
+                    className="btn fw-bold btn-danger"
                     type="submit"
                   >
                     REJECTED
@@ -1179,6 +1269,12 @@ const SDBGSub = () => {
             </div>
 
             <div className="row">
+              <div className="col-md-6 col-12">
+                <div className="mb-3">
+                  <label className="form-label">Reference No</label>
+                  <p>{sdbgEntry?.reference_no}</p>
+                </div>
+              </div>
               <div className="col-md-6 col-12">
                 <div className="mb-3">
                   <label className="form-label">Bankers Name</label>
@@ -1230,7 +1326,11 @@ const SDBGSub = () => {
               <div className="col-md-6 col-12">
                 <div className="mb-3">
                   <label className="form-label">BG Date</label>
-                  <p>{sdbgEntry?.bg_date}</p>
+                  <p>
+                    {sdbgEntry?.bg_date
+                      ? new Date(sdbgEntry?.validity_date).toLocaleDateString()
+                      : ""}
+                  </p>
                 </div>
               </div>
               <div className="col-md-6 col-12">
@@ -1249,7 +1349,11 @@ const SDBGSub = () => {
               <div className="col-md-6 col-12">
                 <div className="mb-3">
                   <label className="form-label">PO Date</label>
-                  <p>{sdbgEntry?.po_date}</p>
+                  <p>
+                    {sdbgEntry?.po_date
+                      ? new Date(sdbgEntry?.po_date).toLocaleDateString()
+                      : ""}
+                  </p>
                 </div>
               </div>
               <div className="col-md-6 col-12">
@@ -1261,13 +1365,21 @@ const SDBGSub = () => {
               <div className="col-md-6 col-12">
                 <div className="mb-3">
                   <label className="form-label">Validity Date</label>
-                  <p>{sdbgEntry?.validity_date}</p>
+                  <p>
+                    {sdbgEntry?.validity_date
+                      ? new Date(sdbgEntry?.validity_date).toLocaleDateString()
+                      : ""}
+                  </p>
                 </div>
               </div>
               <div className="col-md-6 col-12">
                 <div className="mb-3">
                   <label className="form-label">Claim Period</label>
-                  <p>{sdbgEntry?.claim_priod}</p>
+                  <p>
+                    {sdbgEntry?.claim_priod
+                      ? new Date(sdbgEntry?.validity_date).toLocaleDateString()
+                      : ""}
+                  </p>
                 </div>
               </div>
               <div className="col-md-6 col-12">
@@ -1279,7 +1391,11 @@ const SDBGSub = () => {
               <div className="col-md-6 col-12">
                 <div className="mb-3">
                   <label className="form-label">Checklist Date</label>
-                  <p>{sdbgEntry?.check_list_date}</p>
+                  <p>
+                    {sdbgEntry?.check_list_date
+                      ? new Date(sdbgEntry?.validity_date).toLocaleDateString()
+                      : ""}
+                  </p>
                 </div>
               </div>
               <div className="col-md-6 col-12">
@@ -1384,20 +1500,20 @@ const SDBGSub = () => {
                     onClick={() =>
                       reConfirm(
                         { file: true },
-                        () => financeEntry("ACCEPTED"),
+                        () => financeEntry("APPROVED"),
                         "You're going to Accept the SDBG Entry. Please confirm!"
                       )
                     }
                     className="btn fw-bold btn-success me-3"
                     type="button"
                   >
-                    ACCEPT
+                    APPROVED
                   </button>
                   <button
                     onClick={() =>
                       reConfirm(
                         { file: true },
-                        () => financeEntry("ReturnToDO"),
+                        () => financeEntry("RETURN_TO_DO"),
                         "You're going to return the SDBG Entry to Dealing Officer to recheck. Please confirm!"
                       )
                     }

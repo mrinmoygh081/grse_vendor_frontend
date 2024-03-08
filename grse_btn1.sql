@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Feb 27, 2024 at 06:07 AM
+-- Generation Time: Mar 08, 2024 at 07:10 AM
 -- Server version: 10.4.28-MariaDB
 -- PHP Version: 8.1.17
 
@@ -85,7 +85,6 @@ CREATE TABLE `auth` (
 --
 
 INSERT INTO `auth` (`id`, `user_type`, `department_id`, `internal_role_id`, `username`, `password`, `name`, `vendor_code`, `datetime`, `last_login_time`) VALUES
-(1, 5, 12, 3, 'admin', 'admin@213', 'Mrinmoy Ghosh', '600233', '2023-09-12 10:25:51', NULL),
 (2, 1, 1, 1, 'vendor', '1234', 'Vendor1', '50007545', '2023-10-12 15:55:23', NULL),
 (3, 1, 0, 0, 'vendor2', '1234', 'Vendor2', '50000435', '2023-10-12 15:56:56', NULL),
 (4, 3, 3, 2, '600231', '1234', 'grse qap staff', '600231', '2023-10-12 15:57:39', NULL),
@@ -299,7 +298,12 @@ INSERT INTO `department_wise_log` (`id`, `user_id`, `vendor_code`, `depertment`,
 (600250, 50007545, '50007545', '3', 'PENDING', 1, 'Uploading QAP File.', '7800000040', 1708781018387, '50007545'),
 (600251, 600229, '50007545', '3', 'ASSIGNED', 2, 'ASsinged!', '7800000040', 1708781132164, '600229'),
 (600252, 600949, '50007545', '3', 'ACCEPTED', 4, 'this file is almost correct.', '7800000040', 1708781358259, '600949'),
-(600253, 600949, '50007545', '3', 'APPROVED', 5, 'Approved', '7800000040', 1708781481193, '600949');
+(600253, 600949, '50007545', '3', 'APPROVED', 5, 'Approved', '7800000040', 1708781481193, '600949'),
+(600254, 50007545, '50007545', '3', 'PENDING', 6, 'Hello', '7800000047', 1709207306831, '50007545'),
+(600255, 50007545, '50007545', '3', 'PENDING', 7, 'Uploading!', '7800000040', 1709209012646, '50007545'),
+(600256, 600229, '50007545', '3', 'ASSIGNED', 8, 'Ok!', '7800000040', 1709209070696, '600229'),
+(600257, 50007545, '50007545', '3', 'PENDING', 9, 'Hello Testing', '7800000040', 1709525257478, '50007545'),
+(600258, 50007545, '50007545', '3', 'PENDING', 10, 'HEllo', '7800000040', 1709525915112, '50007545');
 
 -- --------------------------------------------------------
 
@@ -343,17 +347,17 @@ INSERT INTO `depertment_master` (`id`, `name`) VALUES
 
 CREATE TABLE `drawing` (
   `id` int(11) NOT NULL,
+  `reference_no` varchar(60) NOT NULL,
   `purchasing_doc_no` varchar(11) NOT NULL,
   `file_name` varchar(500) DEFAULT NULL,
   `vendor_code` varchar(100) NOT NULL,
   `file_path` varchar(500) DEFAULT NULL,
   `remarks` text DEFAULT NULL,
   `status` varchar(20) NOT NULL,
+  `actionType` varchar(100) DEFAULT NULL,
   `updated_by` varchar(30) NOT NULL,
   `created_at` bigint(20) NOT NULL,
-  `created_by_id` varchar(200) NOT NULL,
-  `actionType` varchar(100) DEFAULT NULL,
-  `actionTypeId` int(2) DEFAULT NULL
+  `created_by_id` varchar(200) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='drawing table';
 
 -- --------------------------------------------------------
@@ -652,6 +656,7 @@ INSERT INTO `icgrn` (`id`, `purchasing_doc_no`, `vendor_code`, `document_type`, 
 
 CREATE TABLE `ilms` (
   `id` int(11) NOT NULL,
+  `reference_no` varchar(60) NOT NULL,
   `purchasing_doc_no` varchar(11) NOT NULL,
   `file_name` varchar(500) DEFAULT NULL,
   `file_path` varchar(500) DEFAULT NULL,
@@ -704,7 +709,19 @@ INSERT INTO `inspection_call_letter` (`id`, `purchasing_doc_no`, `file_name`, `f
 (20, '13141411411', '1706694209634-sample.pdf', 1, 'my', '600231', 'uploads\\inspectionCallLetter\\1706694209634-sample.pdf', 'test', 'GRSE', 1706694209635, '600231'),
 (22, '7800000040', '1707461949080-sample.pdf', 2, 'Inspection Call Letter - Stage 2', '600400', 'uploads\\inspectionCallLetter\\1707461949080-sample.pdf', 'fasd', 'GRSE', 1707461949082, '600400'),
 (23, '7800000040', '1707474675255-sample.pdf', 6, 'Dispatch Clearance by CQAE', '50007545', 'uploads\\inspectionCallLetter\\1707474675255-sample.pdf', 'fdsfasd', 'VENDOR', 1707474675260, '50007545'),
-(24, '7800000040', '1708757011264-sample.pdf', 0, 'Inspection Call Letter - Stage 2', '50007545', 'uploads\\inspectionCallLetter\\1708757011264-sample.pdf', 'vc', 'VENDOR', 1708757011266, '50007545');
+(24, '7800000040', '1708757011264-sample.pdf', 0, 'Inspection Call Letter - Stage 2', '50007545', 'uploads\\inspectionCallLetter\\1708757011264-sample.pdf', 'vc', 'VENDOR', 1708757011266, '50007545'),
+(25, '7800000040', '1709813217727-sample.pdf', 0, 'UPLOAD RM INSPECTION CALL LETTER', '50007545', 'uploads\\inspectionCallLetter\\1709813217727-sample.pdf', 'sAMPLE', 'VENDOR', 1709813217731, '50007545'),
+(26, '7800000040', NULL, 0, 'UPLOAD RM INSPECTION CALL LETTER', '50007545', NULL, 'HEllo', 'VENDOR', 1709813618632, '50007545'),
+(27, '7800000040', NULL, 0, '', '50007545', NULL, NULL, 'VENDOR', 1709813836769, '50007545'),
+(28, '7800000040', NULL, 0, '', '50007545', NULL, NULL, 'VENDOR', 1709813876807, '50007545'),
+(29, '7800000040', '1709813944013-sample.pdf', 0, '', '50007545', 'uploads\\inspectionCallLetter\\1709813944013-sample.pdf', NULL, 'VENDOR', 1709813944014, '50007545'),
+(30, '7800000040', '1709814098422-sample.pdf', 0, 'UPLOAD FINAL INSPECTION/FATS CALL LETTER', '50007545', 'uploads\\inspectionCallLetter\\1709814098422-sample.pdf', 'EDEMO', 'VENDOR', 1709814098424, '50007545'),
+(31, '7800000040', '1709814209288-sample.pdf', 0, 'UPLOAD TEST WITNESS INSPECTION CALL LETTER', '50007545', 'uploads\\inspectionCallLetter\\1709814209288-sample.pdf', 'fadsf', 'VENDOR', 1709814209289, '50007545'),
+(32, '7800000040', '1709814237335-sample.pdf', 0, 'UPLOAD RM INSPECTION CALL LETTER', '50007545', 'uploads\\inspectionCallLetter\\1709814237335-sample.pdf', 'checking', 'VENDOR', 1709814237336, '50007545'),
+(33, '7800000040', NULL, 0, 'REMARKS', '600300', NULL, 'Hello', 'GRSE', 1709814403072, '600300'),
+(34, '7800000040', NULL, 0, 'REMARKS', '600300', NULL, 'dsds', 'GRSE', 1709814421257, '600300'),
+(35, '7800000040', NULL, 0, 'REMARKS', '600300', NULL, 'ds', 'GRSE', 1709814470640, '600300'),
+(36, '7800000040', '1709814747189-sample.pdf', 0, 'UPLOAD FINAL INSPECTION/FATS CALL LETTER', '50007545', 'uploads\\inspectionCallLetter\\1709814747189-sample.pdf', 'Demmo', 'VENDOR', 1709814747191, '50007545');
 
 -- --------------------------------------------------------
 
@@ -1371,6 +1388,13 @@ CREATE TABLE `qap_save` (
   `created_at` bigint(20) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Dumping data for table `qap_save`
+--
+
+INSERT INTO `qap_save` (`id`, `purchasing_doc_no`, `file_name`, `file_path`, `remarks`, `created_by_id`, `created_at`) VALUES
+(9, '7800000040', '', '', 'Hello DEMO SAVED', '600229', 1709208203479);
+
 -- --------------------------------------------------------
 
 --
@@ -1379,12 +1403,15 @@ CREATE TABLE `qap_save` (
 
 CREATE TABLE `qap_submission` (
   `id` int(11) NOT NULL,
+  `reference_no` varchar(60) NOT NULL,
   `purchasing_doc_no` varchar(11) NOT NULL,
   `file_name` varchar(500) DEFAULT NULL,
   `vendor_code` varchar(100) NOT NULL,
   `assigned_from` varchar(100) DEFAULT NULL,
   `assigned_to` varchar(100) DEFAULT NULL,
+  `is_assign` int(11) NOT NULL COMMENT '0 => Not Assigned\r\n1 => Assigned',
   `file_path` varchar(500) DEFAULT NULL,
+  `action_type` varchar(100) DEFAULT NULL,
   `remarks` text DEFAULT NULL,
   `status` varchar(20) NOT NULL,
   `updated_by` varchar(30) NOT NULL,
@@ -1401,28 +1428,32 @@ CREATE TABLE `qap_submission` (
 
 CREATE TABLE `sdbg` (
   `id` int(11) NOT NULL,
+  `reference_no` varchar(60) NOT NULL,
   `purchasing_doc_no` varchar(11) NOT NULL,
   `file_name` varchar(500) DEFAULT NULL,
   `file_path` varchar(500) DEFAULT NULL,
   `remarks` text DEFAULT NULL,
   `status` varchar(20) NOT NULL,
+  `action_type` varchar(100) DEFAULT NULL,
   `vendor_code` varchar(100) DEFAULT NULL,
   `assigned_from` varchar(100) DEFAULT NULL,
   `assigned_to` varchar(100) DEFAULT NULL,
+  `last_assigned` int(1) NOT NULL DEFAULT 0,
   `created_at` bigint(20) NOT NULL,
   `created_by_name` varchar(255) DEFAULT NULL,
   `created_by_id` varchar(200) NOT NULL,
-  `updated_by` varchar(255) NOT NULL,
-  `actionTypeId` int(11) DEFAULT NULL,
-  `actionType` varchar(100) DEFAULT NULL
+  `updated_by` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='drawing table';
 
 --
 -- Dumping data for table `sdbg`
 --
 
-INSERT INTO `sdbg` (`id`, `purchasing_doc_no`, `file_name`, `file_path`, `remarks`, `status`, `vendor_code`, `assigned_from`, `assigned_to`, `created_at`, `created_by_name`, `created_by_id`, `updated_by`, `actionTypeId`, `actionType`) VALUES
-(1, '7800000040', '1709010032478-sample.pdf', 'uploads\\submitSDBG\\1709010032478-sample.pdf', 'HEllo', 'PENDING', '50007545', NULL, NULL, 1709010032484, NULL, '50007545', 'VENDOR', NULL, NULL);
+INSERT INTO `sdbg` (`id`, `reference_no`, `purchasing_doc_no`, `file_name`, `file_path`, `remarks`, `status`, `action_type`, `vendor_code`, `assigned_from`, `assigned_to`, `last_assigned`, `created_at`, `created_by_name`, `created_by_id`, `updated_by`) VALUES
+(1, 'BG-1709873470900-7545', '7800000040', '1709873470889-sample.pdf', 'uploads\\submitSDBG\\1709873470889-sample.pdf', 'Deno', 'SUBMITED', 'SDBG SUBMISSION', '50007545', NULL, NULL, 0, 1709873470900, NULL, '50007545', 'VENDOR'),
+(2, 'BG-1709873470900-7545', '7800000040', '1709873470889-sample.pdf', 'uploads\\submitSDBG\\1709873470889-sample.pdf', 'This SDBG is REJECTED', 'REJECTED', 'SDBG SUBMISSION', '50007545', NULL, NULL, 0, 1709874764041, 'Dealing officer', '493834', 'GRSE'),
+(3, 'BG-1709876203228-7545', '7800000040', '1709876203220-sample.pdf', 'uploads\\submitSDBG\\1709876203220-sample.pdf', 'REcheck plz', 'SUBMITED', 'INDEMNITY BOND SUBMISSION', '50007545', NULL, NULL, 0, 1709876203228, NULL, '50007545', 'VENDOR'),
+(4, 'BG-1709876203228-7545', '7800000040', '1709876203220-sample.pdf', 'uploads\\submitSDBG\\1709876203220-sample.pdf', 'SDBG entry forwarded to Finance.', 'FORWARD_TO_FINANCE', 'INDEMNITY BOND SUBMISSION', '50007545', '493834', NULL, 0, 1709876757811, 'Dealing officer', '493834', 'GRSE');
 
 -- --------------------------------------------------------
 
@@ -1501,7 +1532,7 @@ CREATE TABLE `sdbg_entry` (
 --
 
 INSERT INTO `sdbg_entry` (`id`, `purchasing_doc_no`, `bank_name`, `branch_name`, `ifsc_code`, `bank_addr1`, `bank_addr2`, `bank_addr3`, `bank_city`, `bank_pin_code`, `bg_no`, `bg_date`, `bg_ammount`, `department`, `po_date`, `yard_no`, `validity_date`, `claim_priod`, `check_list_reference`, `check_list_date`, `bg_type`, `vendor_name`, `vendor_address1`, `vendor_address2`, `vendor_address3`, `vendor_city`, `vendor_pin_code`, `extension_date1`, `extension_date2`, `extension_date3`, `extension_date4`, `extension_date5`, `extension_date6`, `release_date`, `demand_notice_date`, `entension_letter_date`, `status`, `created_at`, `created_by`) VALUES
-(2, '7800000040', 'SBI', 'MALDA', '', 'PATHAKPARA', 'address2', 'address3', 'MILKI', '732209', '123456', 1708540200, 4555, 'Dept', 1708626600, '30', 1708540200, '2 months', 'ref', 1709145000, 'PAID', 'DCG', 'PATHAKPARA', 'Vendor Address2', 'Vendor adress 3 fds', 'MILKI', '732209', 1708713000, 1709145000, 1709317800, 1711391400, 1709231400, 1709058600, 1709317800, 1707676200, 1708108200, 'FORWARD_TO_FINANCE', 1708778543752, '493834'),
+(2, '7800000040', 'SBI', 'SBIN0012572', '', 'PATHAKPARA', 'address2', 'address3', 'MILKI', '732209', '123456', 1711564200, 4555, 'Dept', 1712255400, '30', 1711564200, '1711737000', 'ref', 1709876236, 'SDBG', 'DCG', 'PATHAKPARA', NULL, NULL, 'MILKI', '732209', 0, NULL, NULL, NULL, NULL, NULL, 0, 0, NULL, 'FORWARD_TO_FINANCE', 1709876757784, '493834'),
 (3, '7800000041', 'SBI', 'SBIN0012572', '', 'PATHAKPARA', 'address2', 'address3', 'MILKI', '732209', '123456', 1708540200, 4555, 'Dept', 1708713000, '30', 1709145000, '2 month', 'refh', 1709231400, 'PAID', 'DCG', 'PATHAKPARA', 'Vendor Address2', 'Vendor adress 3 fds', 'MILKI', '732209', 1708626600, 1708540200, 1708713000, 1708540200, 1708108200, 1708626600, 1709317800, 1708972200, 1708713000, 'FORWARD_TO_FINANCE', 1708672236448, '493834');
 
 -- --------------------------------------------------------
@@ -2352,7 +2383,7 @@ ALTER TABLE `bill_registration`
 -- AUTO_INCREMENT for table `department_wise_log`
 --
 ALTER TABLE `department_wise_log`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=600254;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=600259;
 
 --
 -- AUTO_INCREMENT for table `depertment_master`
@@ -2388,7 +2419,7 @@ ALTER TABLE `ilms`
 -- AUTO_INCREMENT for table `inspection_call_letter`
 --
 ALTER TABLE `inspection_call_letter`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=25;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=37;
 
 --
 -- AUTO_INCREMENT for table `internal_role_master`
@@ -2454,19 +2485,19 @@ ALTER TABLE `privilege`
 -- AUTO_INCREMENT for table `qap_save`
 --
 ALTER TABLE `qap_save`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- AUTO_INCREMENT for table `qap_submission`
 --
 ALTER TABLE `qap_submission`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `sdbg`
 --
 ALTER TABLE `sdbg`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `sdbg_acknowledgement`

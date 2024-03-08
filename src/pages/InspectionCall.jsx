@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Footer from "../components/Footer";
 import SideBar from "../components/SideBar";
 import Header from "../components/Header";
@@ -12,8 +12,9 @@ const InspectionCall = () => {
   const [isPopup, setIsPopup] = useState(false);
   const [inspectioncall, setInspectioncall] = useState([]);
   const { id } = useParams();
+  const inputFileRef = useRef(null);
 
-  const { user, token, userType } = useSelector((state) => state.auth);
+  const { user, token } = useSelector((state) => state.auth);
   const [formData, setFormData] = useState({
     InspectioncallFile: null,
     remarks: "",
@@ -43,12 +44,19 @@ const InspectionCall = () => {
     getData();
   }, [id, token]);
 
-  const updateInspectionCall = async (flag) => {
+  const updateInspectionCall = async () => {
+    const { user_type } = user;
+    const { InspectioncallFile, remarks } = formData;
+    if (user_type === 1) {
+      if (!InspectioncallFile || remarks === "" || selectedFileType === "") {
+        return toast.warn("All fields are required!");
+      }
+    }
     try {
       const formDataToSend = new FormData();
       formDataToSend.append("purchasing_doc_no", id);
-      formDataToSend.append("file", formData.InspectioncallFile);
-      formDataToSend.append("remarks", formData.remarks);
+      formDataToSend.append("file", InspectioncallFile);
+      formDataToSend.append("remarks", remarks);
       formDataToSend.append("file_type_id", selectedFileType);
       formDataToSend.append("file_type_name", selectedFileType);
 
@@ -60,14 +68,20 @@ const InspectionCall = () => {
       );
 
       if (response?.status) {
-        toast.success("Inspection call letter uploaded successfully");
+        toast.success("Data added successfully");
         setIsPopup(false);
+        setSelectedFileType("");
+        setFormData({
+          InspectioncallFile: null,
+          remarks: "",
+        });
+        inputFileRef.current.value = null;
         getData();
       } else {
-        toast.error("Failed to upload inspection call letter");
+        toast.error("Failed to upload data");
       }
     } catch (error) {
-      console.error("Error uploading inspection call letter:", error);
+      console.error("Error uploading data:", error);
     }
   };
 
@@ -104,7 +118,7 @@ const InspectionCall = () => {
                                   <th>DateTime </th>
                                   <th>File Info</th>
                                   <th>Updated By</th>
-                                  <th>File Type</th>
+                                  <th>Action Type</th>
                                   <th className="min-w-150px">Remarks</th>
                                 </tr>
                               </thead>
@@ -112,9 +126,10 @@ const InspectionCall = () => {
                                 {inspectioncall.map((inspection) => (
                                   <tr key={inspection.id}>
                                     <td className="table_center">
-                                      {moment(inspection.created_at)
-                                        .utc()
-                                        .format("DD/MM/YY (HH:mm)")}
+                                      {inspection?.created_at &&
+                                        new Date(
+                                          inspection?.created_at
+                                        ).toLocaleString()}
                                     </td>
                                     <td className="">
                                       <a
@@ -154,27 +169,28 @@ const InspectionCall = () => {
           </div>
         </div>
       </div>
+
       {user?.user_type === 1 && (
-        <div className={isPopup ? "popup active" : "popup"}>
-          <div className="card card-xxl-stretch mb-5 mb-xxl-8">
-            <div className="card-header border-0 pt-5 pb-3">
-              <h3 className="card-title align-items-start flex-column">
-                <span className="card-label fw-bold fs-3 mb-1">
-                  Take Your Action
-                </span>
-              </h3>
-              <button
-                className="btn fw-bold btn-danger"
-                onClick={() => setIsPopup(false)}
-              >
-                Close
-              </button>
-            </div>
-            <form>
-              <div className="row">
-                <div className="col-12">
-                  {/* for vendor or nic */}
-                  {/* <div className="mb-3">
+        <>
+          <div className={isPopup ? "popup active" : "popup"}>
+            <div className="card card-xxl-stretch mb-5 mb-xxl-8">
+              <div className="card-header border-0 pt-5 pb-3">
+                <h3 className="card-title align-items-start flex-column">
+                  <span className="card-label fw-bold fs-3 mb-1">
+                    Take Your Action
+                  </span>
+                </h3>
+                <button
+                  className="btn fw-bold btn-danger"
+                  onClick={() => setIsPopup(false)}
+                >
+                  Close
+                </button>
+              </div>
+              <form>
+                <div className="row">
+                  <div className="col-12">
+                    {/* <div className="mb-3">
                   <select name="" id="" className="form-control">
                     <option value="">Choose File Type</option>
                     <option value="">Inspection call letter stage 1</option>
@@ -186,88 +202,88 @@ const InspectionCall = () => {
                     <option value="">Inspection report</option>
                   </select>
                 </div> */}
-                  {/* for lan or cdo (drawing officer) or qa */}
-                  <div className="mb-3">
-                    <select
-                      name=""
-                      id=""
-                      className="form-select"
-                      onChange={(e) => {
-                        setSelectedFileType(e.target.value);
-                      }}
-                    >
-                      <option value="">Choose Action Type</option>
-                      <option value="UPLOAD RM INSPECTION CALL LETTER">
-                        UPLOAD RM INSPECTION CALL LETTER
-                      </option>
-                      <option value="UPLOAD TEST WITNESS INSPECTION CALL LETTER">
-                        UPLOAD TEST WITNESS INSPECTION CALL LETTER
-                      </option>
-                      <option value="UPLOAD FINAL INSPECTION/FATS CALL LETTER">
-                        UPLOAD FINAL INSPECTION/FATS CALL LETTER
-                      </option>
-                      <option value="REMARKS">REMARKS</option>
+                    <div className="mb-3">
+                      <select
+                        name=""
+                        id=""
+                        className="form-select"
+                        value={selectedFileType}
+                        onChange={(e) => {
+                          setSelectedFileType(e.target.value);
+                        }}
+                      >
+                        <option value="">Choose Action Type</option>
 
-                      <option value="OTHERS">OTHERS</option>
-                    </select>
-                  </div>
+                        <option value="UPLOAD RM INSPECTION CALL LETTER">
+                          UPLOAD RM INSPECTION CALL LETTER
+                        </option>
+                        <option value="UPLOAD TEST WITNESS INSPECTION CALL LETTER">
+                          UPLOAD TEST WITNESS INSPECTION CALL LETTER
+                        </option>
+                        <option value="UPLOAD FINAL INSPECTION/FATS CALL LETTER">
+                          UPLOAD FINAL INSPECTION/FATS CALL LETTER
+                        </option>
+                        <option value="REMARKS">REMARKS</option>
 
-                  <div className="mb-3">
-                    <label className="form-label">Inspection Call File</label>
-                    &nbsp;&nbsp;
-                    <span className="mandatorystart">*</span>
-                    <input
-                      type="file"
-                      className="form-control"
-                      onChange={(e) =>
-                        setFormData({
-                          ...formData,
-                          InspectioncallFile: e.target.files[0],
-                        })
-                      }
-                    />
+                        <option value="OTHERS">OTHERS</option>
+                      </select>
+                    </div>
+
+                    {user?.user_type === 1 && (
+                      <div className="mb-3">
+                        <label className="form-label">
+                          Inspection Call File
+                        </label>
+                        &nbsp;&nbsp;
+                        <span className="mandatorystart">*</span>
+                        <input
+                          type="file"
+                          className="form-control"
+                          onChange={(e) =>
+                            setFormData({
+                              ...formData,
+                              InspectioncallFile: e.target.files[0],
+                            })
+                          }
+                          ref={inputFileRef}
+                        />
+                      </div>
+                    )}
+                  </div>
+                  <div className="col-12">
+                    <div className="mb-3">
+                      <label className="form-label">
+                        Remarks &nbsp;
+                        <span className="mandatorystart">*</span>
+                      </label>
+                      <textarea
+                        name=""
+                        id=""
+                        rows="4"
+                        className="form-control"
+                        value={formData?.remarks}
+                        onChange={(e) =>
+                          setFormData({ ...formData, remarks: e.target.value })
+                        }
+                      ></textarea>
+                    </div>
+                  </div>
+                  <div className="col-12">
+                    <div className="mb-3 d-flex justify-content-between">
+                      <button
+                        onClick={() => updateInspectionCall()}
+                        className="btn fw-bold btn-primary"
+                        type="button"
+                      >
+                        SUBMIT
+                      </button>
+                    </div>
                   </div>
                 </div>
-                <div className="col-12">
-                  <div className="mb-3">
-                    <label className="form-label">Remarks</label>
-                    <textarea
-                      name=""
-                      id=""
-                      rows="4"
-                      className="form-control"
-                      onChange={(e) =>
-                        setFormData({ ...formData, remarks: e.target.value })
-                      }
-                    ></textarea>
-                  </div>
-                </div>
-                <div className="col-12">
-                  <div className="mb-3 d-flex justify-content-between">
-                    <button
-                      onClick={() => updateInspectionCall("PENDING")}
-                      className="btn fw-bold btn-primary"
-                      type="button"
-                    >
-                      SUBMIT
-                    </button>
-                    {/* {userType !== 1 ? (
-                    <button
-                      onClick={() => updateInspectionCall("APPROVED")}
-                      className="btn fw-bold btn-primary"
-                      type="button"
-                    >
-                      Approved
-                    </button>
-                  ) : (
-                    ""
-                  )} */}
-                  </div>
-                </div>
-              </div>
-            </form>
+              </form>
+            </div>
           </div>
-        </div>
+        </>
       )}
     </>
   );

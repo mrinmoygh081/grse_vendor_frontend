@@ -3,13 +3,13 @@ import { useDispatch, useSelector } from "react-redux";
 import { reConfirm } from "../utils/reConfirm";
 import { logoutHandler } from "../redux/slices/loginSlice";
 import { poRemoveHandler } from "../redux/slices/poSlice";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 
 export default function Header({ title, id }) {
   const user = useSelector((state) => state.auth);
 
   const dispatch = useDispatch();
-
+  const location = useLocation();
   const logOutFun = () => {
     dispatch(logoutHandler());
     dispatch(poRemoveHandler());
@@ -74,7 +74,8 @@ export default function Header({ title, id }) {
                           </Link>
                         </div>
                       }
-                      {" / " + title}
+                      &nbsp;
+                      {location.pathname.includes("/po/") ? "" : ` / ${title}`}
                     </span>
                     <span className="menu-arrow d-lg-none"></span>
                   </span>

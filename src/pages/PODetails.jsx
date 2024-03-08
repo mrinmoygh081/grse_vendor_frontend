@@ -106,15 +106,6 @@ const PODetails = () => {
 
   const handleDownloadSAPPO = async () => {
     try {
-      // const response = await axios.get(
-      //   `http://localhost:4001/api/v1/po/download/latestDocFile?poNo=${id}`,
-      //   {
-      //     responseType: "blob",
-      //     headers: {
-      //       Authorization: `Bearer ${token}`,
-      //     },
-      //   }
-      // );
       const response = await apiCallBack(
         "GET",
         `po/download/latestDocFile?poNo=${id}`,
@@ -244,7 +235,6 @@ const PODetails = () => {
                                       </div>
                                     </div>
                                   </div>
-                                  {console.log("hello1", po.timeline)}
                                   {po?.timeline === "" ? (
                                     ""
                                   ) : (
