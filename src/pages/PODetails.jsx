@@ -10,13 +10,15 @@ import moment from "moment";
 import { toast } from "react-toastify";
 import axios from "axios";
 import { clrLegend } from "../utils/clrLegend";
+import { logOutFun } from "../utils/logOutFun";
+import { logoutHandler } from "../redux/slices/loginSlice";
 
 const PODetails = () => {
   const dispatch = useDispatch();
   const [poDetails, setPoDetails] = useState([]);
   const [file, setFile] = useState(null);
   const { id } = useParams();
-  const { token, user } = useSelector((state) => state.auth);
+  const { token } = useSelector((state) => state.auth);
   const [isPopup, setIsPopup] = useState(false);
 
   window.addEventListener("popstate", () => {
@@ -37,6 +39,8 @@ const PODetails = () => {
         if (data?.status) {
           setPoDetails(data?.data);
           dispatch(doHandler(data?.data[0].isDO));
+        } else if (data?.response?.data?.message === "INVALID_EXPIRED_TOKEN") {
+          logOutFun(dispatch, logoutHandler, poRemoveHandler);
         }
       }
     })();

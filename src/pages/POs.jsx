@@ -2,10 +2,12 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { apiCallBack } from "../utils/fetchAPIs";
-import { poHandler } from "../redux/slices/poSlice";
+import { poHandler, poRemoveHandler } from "../redux/slices/poSlice";
 import { FiSearch } from "react-icons/fi";
 import MainHeader from "../components/MainHeader";
 import WBS from "./WBS";
+import { logOutFun } from "../utils/logOutFun";
+import { logoutHandler } from "../redux/slices/loginSlice";
 
 const POs = () => {
   const dispatch = useDispatch();
@@ -21,6 +23,8 @@ const POs = () => {
       const data = await apiCallBack("GET", `po/poList`, null, token);
       if (data?.status) {
         setPolist(data?.data);
+      } else if (data?.response?.data?.message === "INVALID_EXPIRED_TOKEN") {
+        logOutFun(dispatch, logoutHandler, poRemoveHandler);
       }
     })();
   }, [token]); // Include 'token' as a dependency
@@ -32,26 +36,30 @@ const POs = () => {
   }, [po, navigate]);
 
   // Filter the polist based on the searchQuery
-  const filteredPolist = polist.filter(po => {
+  const filteredPolist = polist.filter((po) => {
     const matchesSearchQuery =
-        (po?.poNumber && po?.poNumber.toLowerCase().includes(searchQuery.toLowerCase())) ||
-        (po?.poType && po?.poType.toLowerCase().includes(searchQuery.toLowerCase())) ||
-        (po?.vendor_code && po?.vendor_code.toLowerCase().includes(searchQuery.toLowerCase())) ||
-        (po?.vendor_name && po?.vendor_name.toLowerCase().includes(searchQuery.toLowerCase())) ||
-        (po?.wbs_id && po?.wbs_id.toLowerCase().includes(searchQuery.toLowerCase())) ||
-        (po?.project_code && po?.project_code.toLowerCase().includes(searchQuery.toLowerCase()));
+      (po?.poNumber &&
+        po?.poNumber.toLowerCase().includes(searchQuery.toLowerCase())) ||
+      (po?.poType &&
+        po?.poType.toLowerCase().includes(searchQuery.toLowerCase())) ||
+      (po?.vendor_code &&
+        po?.vendor_code.toLowerCase().includes(searchQuery.toLowerCase())) ||
+      (po?.vendor_name &&
+        po?.vendor_name.toLowerCase().includes(searchQuery.toLowerCase())) ||
+      (po?.wbs_id &&
+        po?.wbs_id.toLowerCase().includes(searchQuery.toLowerCase())) ||
+      (po?.project_code &&
+        po?.project_code.toLowerCase().includes(searchQuery.toLowerCase()));
 
     const matchesSelectedStatus =
-        selectedStatus === "All" ||
-        (po?.currentStage?.current &&
-            po?.currentStage?.current.toLowerCase().includes(selectedStatus.toLowerCase()));
+      selectedStatus === "All" ||
+      (po?.currentStage?.current &&
+        po?.currentStage?.current
+          .toLowerCase()
+          .includes(selectedStatus.toLowerCase()));
 
     return matchesSearchQuery && matchesSelectedStatus;
-});
-
-  console.log("searchQuery--", selectedStatus);
-
-  console.log("filteredPolist--", filteredPolist);
+  });
 
   return (
     <>

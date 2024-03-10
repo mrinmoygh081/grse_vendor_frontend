@@ -3,7 +3,7 @@ import Footer from "../components/Footer";
 import SideBar from "../components/SideBar";
 import Header from "../components/Header";
 import { useParams } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { apiCallBack, postAPI } from "../utils/fetchAPIs";
 import { toast } from "react-toastify";
 import DatePicker from "react-datepicker";
@@ -22,8 +22,12 @@ import {
   ACTION_RM,
   FORWARD_TO_FINANCE,
 } from "../constants/BGconstants";
+import { logOutFun } from "../utils/logOutFun";
+import { logoutHandler } from "../redux/slices/loginSlice";
+import { poRemoveHandler } from "../redux/slices/poSlice";
 
 const SDBGSub = () => {
+  const dispatch = useDispatch();
   const [isPopup, setIsPopup] = useState(false);
   const [isEntryPopup, setIsEntryPopup] = useState(false);
   const [isAssignPopup, setIsAssignPopup] = useState(false);
@@ -60,6 +64,8 @@ const SDBGSub = () => {
     );
     if (data?.status) {
       setAllsdbg(data?.data);
+    } else if (data?.response?.data?.message === "INVALID_EXPIRED_TOKEN") {
+      logOutFun(dispatch, logoutHandler, poRemoveHandler);
     }
   };
 
@@ -432,63 +438,6 @@ const SDBGSub = () => {
                                     </Fragment>
                                   );
                                 })}
-                                {/* {allsdbg &&
-                                  allsdbg.length > 0 &&
-                                  allsdbg.map((item, index) => (
-                                    <Fragment key={index}>
-                                      <tr>
-                                        <b>Lorem ipsum dolor sit amet.</b>
-                                      </tr>
-                                      <tr>
-                                        <td>{item?.reference_no}</td>
-                                        <td className="table_center">
-                                          {item?.created_at &&
-                                            new Date(
-                                              item?.created_at
-                                            ).toLocaleString()}
-                                        </td>
-                                        <td>
-                                          <a
-                                            href={`${process.env.REACT_APP_PDF_URL}/submitSDBG/${item.file_name}`}
-                                            target="_blank"
-                                            rel="noreferrer"
-                                          >
-                                            Check File
-                                          </a>
-                                        </td>
-                                        <td>
-                                          {item?.created_by_name} (
-                                          {item?.created_by_id})
-                                        </td>
-                                        <td>{item?.remarks}</td>
-                                        <td
-                                          className={`${clrLegend(
-                                            item?.status
-                                          )} bold`}
-                                        >
-                                          {item?.status}
-                                        </td>
-                                        {isDO &&
-                                          item?.updated_by === "VENDOR" && (
-                                            <td>
-                                              <button
-                                                onClick={() => {
-                                                  setIsEntryPopup(true);
-                                                  setFormDatainput({
-                                                    ...formDatainput,
-                                                    reference_no:
-                                                      item?.reference_no,
-                                                  });
-                                                }}
-                                                className="btn fw-bold btn-primary me-3"
-                                              >
-                                                ACTION
-                                              </button>
-                                            </td>
-                                          )}
-                                      </tr>
-                                    </Fragment>
-                                  ))} */}
                               </tbody>
                             </table>
                           </div>
