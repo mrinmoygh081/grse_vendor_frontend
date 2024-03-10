@@ -39,11 +39,11 @@ const DrawingSub = () => {
   const { id } = useParams();
   const { user, token, userType } = useSelector((state) => state.auth);
   const { poType } = useSelector((state) => state.selectedPO);
-  const [referenceNo , setreferenceNo] = useState("");
+  const [referenceNo, setreferenceNo] = useState("");
   console.log("useruser", user);
   // console.log(poType, "poType");
   // console.log(userType, "userType");
-  console.log("referenceNo--",referenceNo)
+  console.log("referenceNo--", referenceNo);
 
   const getData = async () => {
     try {
@@ -67,10 +67,23 @@ const DrawingSub = () => {
   }, [id, token]);
 
   const updateDrawing = async (flag) => {
-    const {drawingFile, remarks} = formData;
-    if(selectedActionType === "" || !drawingFile || remarks.trim() === ""){
+    const { drawingFile, remarks } = formData;
+    if (
+      flag === "SUBMITTED" &&
+      (selectedActionType === "" || !drawingFile || remarks.trim() === "")
+    ) {
       return toast.warn("Please fill all the required fields!");
     }
+
+    if (
+      (flag === "APPROVED" || flag === "REJECTED") &&
+      (selectedActionType === "" || remarks.trim() === "")
+    ) {
+      return toast.warn(
+        "Action Type and remarks is mandatory for approval or rejection!"
+      );
+    }
+
     let isApproved = flag;
     let uType;
     let mailSendTo;
@@ -115,8 +128,8 @@ const DrawingSub = () => {
             drawingFile: null,
             remarks: "",
           });
-          setSelectedActionType("")
-          inputFileRef.current.value = null
+          setSelectedActionType("");
+          inputFileRef.current.value = null;
           getData();
         }
       } else {
@@ -165,11 +178,11 @@ const DrawingSub = () => {
                   <div className="row g-5 g-xl-8">
                     <div className="col-12">
                       <div className="screen_header">
-                        {(userType === 1) && (
+                        {userType === 1 && (
                           <button
-                          onClick={() =>{
-                            setIsPopup(true);
-                           }}
+                            onClick={() => {
+                              setIsPopup(true);
+                            }}
                             className="btn fw-bold btn-primary mx-3"
                           >
                             ACTION
@@ -211,17 +224,15 @@ const DrawingSub = () => {
                                           ).toLocaleString()}
                                       </td>
                                       <td className="table_center">
-                                        {
-                                          drawing.file_name &&  <a
-                                          href={`${process.env.REACT_APP_PDF_URL}submitDrawing/${drawing.file_name}`}
-                                          target="_blank"
-                                          rel="noreferrer"
-                                        >
-                                          
-                                          Click Here
-                                        </a>
-                                        }
-                                      
+                                        {drawing.file_name && (
+                                          <a
+                                            href={`${process.env.REACT_APP_PDF_URL}submitDrawing/${drawing.file_name}`}
+                                            target="_blank"
+                                            rel="noreferrer"
+                                          >
+                                            Click Here
+                                          </a>
+                                        )}
                                       </td>
                                       <td className="table_center">
                                         {drawing.created_by_id}
@@ -229,19 +240,23 @@ const DrawingSub = () => {
                                       <td className="align-middle">
                                         {drawing.remarks}
                                       </td>
-                                      <td className={`${clrLegend(
-                                                  drawing?.status
-                                                )} bold`}>
+                                      <td
+                                        className={`${clrLegend(
+                                          drawing?.status
+                                        )} bold`}
+                                      >
                                         {drawing.status}
                                       </td>
                                       {user.department_id === 2 && (
                                         <td>
                                           {drawing.status == "SUBMITTED" && (
                                             <button
-                                              onClick={() =>{
-                                                 setIsPopup(true);
-                                                 setreferenceNo(drawing.reference_no);
-                                                }}
+                                              onClick={() => {
+                                                setIsPopup(true);
+                                                setreferenceNo(
+                                                  drawing.reference_no
+                                                );
+                                              }}
                                               className="btn fw-bold btn-primary mx-3"
                                             >
                                               ACTION
