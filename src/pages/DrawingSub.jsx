@@ -37,9 +37,11 @@ const DrawingSub = () => {
   const { id } = useParams();
   const { user, token, userType } = useSelector((state) => state.auth);
   const { poType } = useSelector((state) => state.selectedPO);
-  console.log(user, "useruser");
+  const [referenceNo , setreferenceNo] = useState("");
+  console.log("useruser", user);
   // console.log(poType, "poType");
   // console.log(userType, "userType");
+  console.log("referenceNo--",referenceNo)
 
   const getData = async () => {
     try {
@@ -86,6 +88,7 @@ const DrawingSub = () => {
       formDataToSend.append("action_by_name", user.name);
       formDataToSend.append("action_by_id", user.email);
       formDataToSend.append("actionType", selectedActionType);
+      formDataToSend.append("reference_no", referenceNo);
       // formDataToSend.append("file_type_id", selectedFileTypeId);
       // formDataToSend.append("file_type_name", selectedFileTypeName);
 
@@ -115,6 +118,9 @@ const DrawingSub = () => {
       toast.error("Error uploading drawing:", error);
     }
   };
+
+  console.log("alldrawing---->>", alldrawing);
+  console.log("formData---->>", formData);
 
   // const reConfirmcheckHandleUploadChange = () => {
   //   if (formData?.drawingFile) {
@@ -154,9 +160,11 @@ const DrawingSub = () => {
                   <div className="row g-5 g-xl-8">
                     <div className="col-12">
                       <div className="screen_header">
-                        {(userType === 1 || user?.department_id === 2) && (
+                        {(userType === 1) && (
                           <button
-                            onClick={() => setIsPopup(true)}
+                          onClick={() =>{
+                            setIsPopup(true);
+                           }}
                             className="btn fw-bold btn-primary mx-3"
                           >
                             ACTION
@@ -171,11 +179,17 @@ const DrawingSub = () => {
                             <table className="table table-striped table-bordered table_height">
                               <thead>
                                 <tr className="border-0">
+                                  <th>Reference No. </th>
                                   <th>DateTime </th>
                                   <th>Drawing File</th>
                                   <th>Updated By</th>
                                   <th className="min-w-150px">Remarks</th>
                                   <th>Status</th>
+                                  {user.department_id === 2 ? (
+                                    <th>Action</th>
+                                  ) : (
+                                    ""
+                                  )}
                                 </tr>
                               </thead>
                               <tbody style={{ maxHeight: "100%" }}>
@@ -183,12 +197,15 @@ const DrawingSub = () => {
                                   alldrawing.map((drawing, index) => (
                                     <tr key={index}>
                                       <td className="table_center">
+                                        {drawing.reference_no}
+                                      </td>
+                                      <td className="table_center">
                                         {drawing?.created_at &&
                                           new Date(
                                             drawing?.created_at
                                           ).toLocaleString()}
                                       </td>
-                                      <td>
+                                      <td className="table_center">
                                         <a
                                           href={`${process.env.REACT_APP_PDF_URL}submitDrawing/${drawing.file_name}`}
                                           target="_blank"
@@ -197,9 +214,43 @@ const DrawingSub = () => {
                                           {drawing.file_name}
                                         </a>
                                       </td>
-                                      <td>{drawing.created_by_id}</td>
-                                      <td>{drawing.remarks}</td>
-                                      <td>{drawing.status}</td>
+                                      <td className="table_center">
+                                        {drawing.created_by_id}
+                                      </td>
+                                      <td className="align-middle">
+                                        {drawing.remarks}
+                                      </td>
+                                      <td className="table_center">
+                                        {drawing.status}
+                                      </td>
+                                      {user.department_id === 2 ? (
+                                        <td>
+                                          {drawing.status == "SUBMITTED" ? (
+                                            <button
+                                              onClick={() =>{
+                                                 setIsPopup(true);
+                                                 setreferenceNo(drawing.reference_no);
+                                                }}
+                                              className="btn fw-bold btn-primary mx-3"
+                                            >
+                                              ACTION
+                                            </button>
+                                          ) : (
+                                            ""
+                                          )}
+                                        </td>
+                                      ) : (
+                                        ""
+                                      )}
+                                      {/* <td>
+                                        {" "}
+                                        <button
+                                          onClick={() => setIsPopup(true)}
+                                          className="btn fw-bold btn-primary mx-3"
+                                        >
+                                          ACTION
+                                        </button>
+                                      </td> */}
                                     </tr>
                                   ))}
                               </tbody>
@@ -290,30 +341,50 @@ const DrawingSub = () => {
                 <div className="col-12">
                   <div className="mb-3 d-flex justify-content-between">
                     <button
-                      onClick={() => updateDrawing("PENDING")}
+                      onClick={() => updateDrawing("SUBMITTED")}
                       className="btn fw-bold btn-primary"
                       type="button"
                     >
                       SUBMIT
                     </button>
 
-                    {userType === 2 &&
-                      user?.department_id === 2 &&
-                      user?.internal_role_id === 1 && (
-                        <button
-                          onClick={() =>
-                            reConfirm(
-                              { file: true },
-                              () => updateDrawing("APPROVED"),
-                              "Please confirm your approving the drawing."
-                            )
-                          }
-                          className="btn fw-bold btn-success"
-                          type="button"
-                        >
-                          APPROVE
-                        </button>
-                      )}
+                    <div className="d-flex gap-3">
+                      {userType === 2 &&
+                        user?.department_id === 2 &&
+                        user?.internal_role_id === 1 && (
+                          <button
+                            onClick={() =>
+                              reConfirm(
+                                { file: true },
+                                () => updateDrawing("APPROVED"),
+                                "Please confirm your approving the drawing."
+                              )
+                            }
+                            className="btn fw-bold btn-success"
+                            type="button"
+                          >
+                            APPROVE
+                          </button>
+                        )}
+
+                      {userType === 2 &&
+                        user?.department_id === 2 &&
+                        user?.internal_role_id === 1 && (
+                          <button
+                            onClick={() =>
+                              reConfirm(
+                                { file: true },
+                                () => updateDrawing("REJECTED"),
+                                "Drawing file rejected!!"
+                              )
+                            }
+                            className="btn fw-bold btn-danger"
+                            type="button"
+                          >
+                            REJECT
+                          </button>
+                        )}
+                    </div>
                   </div>
                 </div>
               </div>

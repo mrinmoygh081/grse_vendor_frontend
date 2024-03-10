@@ -12,6 +12,7 @@ import { reConfirm } from "../utils/reConfirm";
 const IlmsSub = () => {
   const [isPopup, setIsPopup] = useState(false);
   const [allData, setAllData] = useState([]);
+  const [referenceNo, setreferenceNo] = useState("");
   const [formData, setFormData] = useState({
     drawingFile: null,
     remarks: "",
@@ -66,6 +67,7 @@ const IlmsSub = () => {
         formDataToSend.append("remarks", formData.remarks);
         formDataToSend.append("status", flag);
         formDataToSend.append("type", selectedActionTypeName);
+        formDataToSend.append("reference_no", referenceNo);
 
         const response = await apiCallBack(
           "POST",
@@ -110,7 +112,7 @@ const IlmsSub = () => {
                   <div className="row g-5 g-xl-8">
                     <div className="col-12">
                       <div className="screen_header">
-                        {(userType === 1 || user?.department_id === 2) && (
+                        {userType === 1 && (
                           <button
                             onClick={() => setIsPopup(true)}
                             className="btn fw-bold btn-primary mx-3"
@@ -127,18 +129,25 @@ const IlmsSub = () => {
                             <table className="table table-striped table-bordered table_height">
                               <thead>
                                 <tr className="border-0">
+                                  <th>Reference No</th>
                                   <th>DateTime </th>
                                   <th>ILMS File</th>
                                   <th>Updated By</th>
                                   <th className="min-w-150px">Remarks</th>
                                   <th>Status</th>
+                                  {user.department_id === 2 ? (
+                                    <th>Action</th>
+                                  ) : (
+                                    ""
+                                  )}
                                 </tr>
                               </thead>
                               <tbody style={{ maxHeight: "100%" }}>
                                 {allData &&
                                   allData.map((item, index) => (
                                     <tr key={index}>
-                                      <td className="table_center">
+                                      <td>{item.reference_no}</td>
+                                      <td>
                                         {item?.created_at &&
                                           new Date(
                                             item?.created_at
@@ -150,7 +159,7 @@ const IlmsSub = () => {
                                           target="_blank"
                                           rel="noreferrer"
                                         >
-                                          {item?.file_name}
+                                          Click Here
                                         </a>
                                       </td>
                                       <td className="">
@@ -158,6 +167,27 @@ const IlmsSub = () => {
                                       </td>
                                       <td className="">{item?.remarks}</td>
                                       <td className="">{item?.status}</td>
+                                      {user.department_id === 2 ? (
+                                        <td>
+                                          {item.status == "SUBMITTED" ? (
+                                            <button
+                                              onClick={() => {
+                                                setIsPopup(true);
+                                                setreferenceNo(
+                                                  item.reference_no
+                                                );
+                                              }}
+                                              className="btn fw-bold btn-primary mx-3"
+                                            >
+                                              ACTION
+                                            </button>
+                                          ) : (
+                                            ""
+                                          )}
+                                        </td>
+                                      ) : (
+                                        ""
+                                      )}
                                     </tr>
                                   ))}
                               </tbody>
@@ -242,28 +272,46 @@ const IlmsSub = () => {
                 <div className="col-12">
                   <div className="mb-3 d-flex justify-content-between">
                     <button
-                      onClick={() => submitHandler("PENDING")}
+                      onClick={() => submitHandler("SUBMITTED")}
                       className="btn fw-bold btn-primary"
                       type="button"
                     >
                       SUBMIT
                     </button>
 
-                    {userType !== 1 && (
-                      <button
-                        onClick={() =>
-                          reConfirm(
-                            { file: true },
-                            () => submitHandler("ACKNOWLEDGED"),
-                            "You're approving the ILMS. Please confirm!"
-                          )
-                        }
-                        className="btn fw-bold btn-success"
-                        type="button"
-                      >
-                        ACKNOWLEDGE
-                      </button>
-                    )}
+                    <div className="d-flex gap-3">
+                      {userType !== 1 && (
+                        <button
+                          onClick={() =>
+                            reConfirm(
+                              { file: true },
+                              () => submitHandler("APPROVED"),
+                              "You're approving the ILMS. Please confirm!"
+                            )
+                          }
+                          className="btn fw-bold btn-success"
+                          type="button"
+                        >
+                          APPROVE
+                        </button>
+                      )}
+
+                      {userType !== 1 && (
+                        <button
+                          onClick={() =>
+                            reConfirm(
+                              { file: true },
+                              () => submitHandler("REJECTED"),
+                              "The ILMS file is rejected"
+                            )
+                          }
+                          className="btn fw-bold btn-danger"
+                          type="button"
+                        >
+                          REJECT
+                        </button>
+                      )}
+                    </div>
                   </div>
                 </div>
               </div>
