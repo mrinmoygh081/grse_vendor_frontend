@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-// import "./Table4.css"
+// import "../../assets/paymentAdvice.css";
 import logo from "../../images/logo.png";
 
 function Payment_Advice() {
@@ -7,12 +7,12 @@ function Payment_Advice() {
     window.print();
   };
 
-  // useEffect(() => {
-  //   const handlePrint = () => {
-  //     window.print();
-  //   };
-  //   handlePrint();
-  // }, []);
+  useEffect(() => {
+    const handlePrint = () => {
+      window.print();
+    };
+    handlePrint();
+  }, []);
 
   return (
     <section id="image-gallery" className="py-5">
@@ -21,7 +21,7 @@ function Payment_Advice() {
           <img src={logo} alt="logo" className="table_logo" />
         </div>
         <div className="gallary_content col-11 d-flex ">
-          <div style={{width:'85%'}}>
+          <div style={{ width: "85%" }}>
             <h2>GARDEN REACH SHIPBUILDERS & ENGINEERS LTD</h2>
 
             <h4>(A Govt. of India Undertaking )</h4>

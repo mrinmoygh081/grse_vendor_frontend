@@ -4,7 +4,7 @@ export const clrLegend = (flag) => {
     clr = "red";
   } else if (flag === "ACCEPTED" || flag === "APPROVED") {
     clr = "green";
-  } else if (flag === "SUBMITED") {
+  } else if (flag === "SUBMITTED") {
     clr = "orange";
   } else if (flag === "ASSIGNED") {
     clr = "blue";

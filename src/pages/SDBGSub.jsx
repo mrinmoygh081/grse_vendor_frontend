@@ -21,6 +21,7 @@ import {
   ACTION_SDBG,
   ACTION_RM,
   FORWARD_TO_FINANCE,
+  SUBMITTED,
 } from "../constants/BGconstants";
 import { logOutFun } from "../utils/logOutFun";
 import { logoutHandler } from "../redux/slices/loginSlice";
@@ -172,11 +173,10 @@ const SDBGSub = () => {
       getSDBGEntry();
     }
   };
-
   const rejectSDBG = async (flag = "REJECTED") => {
     let form = {
       purchasing_doc_no: id,
-      reference_no: formData?.reference_no,
+      reference_no: formDatainput?.reference_no,
       status: flag,
       remarks: "SDBG REJECTED by Dealing Officer",
     };
@@ -390,8 +390,7 @@ const SDBGSub = () => {
                                                 {item?.status}
                                               </td>
                                               {isDO &&
-                                                item?.status !==
-                                                  FORWARD_TO_FINANCE && (
+                                                item?.status === SUBMITTED && (
                                                   <td>
                                                     <button
                                                       onClick={() => {
@@ -420,6 +419,11 @@ const SDBGSub = () => {
                                                             setIsCheckEntryPopup(
                                                               true
                                                             );
+                                                            setFormDatainput({
+                                                              ...formDatainput,
+                                                              reference_no:
+                                                                item?.reference_no,
+                                                            });
                                                           }}
                                                           className="btn fw-bold btn-primary me-3"
                                                         >
@@ -526,7 +530,7 @@ const SDBGSub = () => {
               <div className="col-12">
                 <div className="mb-3 d-flex justify-content-between">
                   <button
-                    onClick={() => updateSDBG("SUBMITED")}
+                    onClick={() => updateSDBG("SUBMITTED")}
                     className="btn fw-bold btn-primary"
                     type="submit"
                   >

@@ -176,17 +176,19 @@ input[type="number"] {
   text-align: left;
 }
 
-
 /* Biru  */
 
-.table_logo{
+.table_logo {
   height: 70px;
   width: 80px;
 }
-.table_container_1,.table_container_1 thead tr th,.table_container_1 tbody tr td , .table_container_1 tfoot tr td{
+.table_container_1,
+.table_container_1 thead tr th,
+.table_container_1 tbody tr td,
+.table_container_1 tfoot tr td {
   border: 1px solid black;
 }
-.top_info_table table tbody tr td{
+.top_info_table table tbody tr td {
   border: none !important;
 }
 
@@ -196,20 +198,20 @@ input[type="number"] {
 .table_container_1 tbody tr td {
   font-size: 11px;
 }
-.print_btn{
+.print_btn {
   height: 33px;
   width: 90px;
   border: none;
   outline: none;
   font-size: 18px;
   font-weight: 500;
-  background-color: #1B75D0;
+  background-color: #1b75d0;
   color: white;
   border-radius: 5px;
   letter-spacing: 1px;
-  transition: all .08s linear;
+  transition: all 0.08s linear;
 }
-.print_btn:hover{
+.print_btn:hover {
   background-color: #1b76d0b3;
 }
 @media print {
@@ -217,88 +219,3 @@ input[type="number"] {
     display: none !important;
   }
 }
-
-/* Upasana  */
-.gallery_top {
-  width: 1200px;
-  margin: auto;
-  display: flex;
-  justify-content: space-between;
-}
-
-.gallary_content {
-  text-align: center;
-}
-
-.gallary_logo img {
-  width: 200px;
-}
-.gallary_certi {
-  width: 700px;
-  /* margin: 0px 0px 22px 18px; */
-}
-.gallary_certi h5 {
-  margin-bottom: 30px;
-}
-.gallary_c1 {
-  width: 700px;
-  /* margin: 0px 0px 22px 18px; */
-}
-.gallary_c2 {
-  width: 400px;
-  display: flex;
-  justify-content: space-between;
-}
-
-.label {
-  width: 600px;
-  display: flex;
-  justify-content: space-between;
-}
-.fcont {
-  word-wrap: break-word;
-  width: 300px;
-}
-.scont {
-  width: 300px;
-  display: flex;
-  justify-content: flex-start;
-}
-.label2 {
-  display: flex;
-  justify-content: flex-end;
-  width: 300px;
-}
-
-.details1 {
-  display: flex;
-  justify-content: space-between;
-}
-.details {
-  display: flex;
-  justify-content: space-between;
-}
-.fc {
-  word-wrap: break-word;
-  width: 100px;
-}
-
-.sc {
-  width: 100px;
-  display: flex;
-  justify-content: flex-start;
-}
-
-/* content */
-
-.contentdetails {
-  display: flex;
-  justify-content: space-between;
-}
-.lastpara {
-  margin-top: 30px;
-  font-size: 22px;
-}
-
-
-

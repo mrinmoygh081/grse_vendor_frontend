@@ -19,7 +19,7 @@ export const bgInputs = {
   yard_no: "",
   validity_date: "",
   claim_priod: "",
-  // check_list_reference: "",
+  reference_no: "",
   // check_list_date: "",
   bg_type: "SDBG",
   // vendor_name: "",
@@ -60,25 +60,25 @@ export const BGEntry = async (formDatainput, token) => {
     yard_no,
     validity_date,
     claim_priod,
-    check_list_date,
     bg_type,
   } = formDatainput;
+  console.log(formDatainput);
 
   if (
-    (purchasing_doc_no === "",
-    reference_no === "",
-    bank_name === "",
-    branch_name === "",
-    bank_addr1 === "",
-    bank_city === "",
-    bank_pin_code === "",
-    bg_no === "",
-    bg_date === "",
-    bg_ammount === "",
-    yard_no === "",
-    validity_date === "",
-    claim_priod === "",
-    bg_type === "")
+    purchasing_doc_no === "" ||
+    reference_no === "" ||
+    bank_name === "" ||
+    branch_name === "" ||
+    bank_addr1 === "" ||
+    bank_city === "" ||
+    bank_pin_code === "" ||
+    bg_no === "" ||
+    bg_date === "" ||
+    bg_ammount === "" ||
+    yard_no === "" ||
+    validity_date === "" ||
+    claim_priod === "" ||
+    bg_type === ""
   ) {
     toast.warn("Please enter the required fields!");
     return false;
@@ -90,7 +90,7 @@ export const BGEntry = async (formDatainput, token) => {
     // entension_letter_date: convertToEpoch(entension_letter_date),
     // demand_notice_date: convertToEpoch(demand_notice_date),
     // release_date: convertToEpoch(release_date),
-    check_list_date: convertToEpoch(check_list_date),
+    // check_list_date: convertToEpoch(check_list_date),
     validity_date: convertToEpoch(validity_date),
     // po_date: convertToEpoch(po_date),
     // extension_date1: convertToEpoch(extension_date1),
