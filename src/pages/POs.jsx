@@ -1,14 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { logoutHandler } from "../redux/slices/loginSlice";
 import { apiCallBack } from "../utils/fetchAPIs";
-import { poHandler, poRemoveHandler } from "../redux/slices/poSlice";
+import { poHandler } from "../redux/slices/poSlice";
 import { FiSearch } from "react-icons/fi";
-import moment from "moment";
 import MainHeader from "../components/MainHeader";
 import WBS from "./WBS";
-import { reConfirm } from "../utils/reConfirm";
 
 const POs = () => {
   const dispatch = useDispatch();
@@ -18,7 +15,6 @@ const POs = () => {
   const { po } = useSelector((state) => state.selectedPO);
   const navigate = useNavigate();
   const [selectedStatus, setSelectedStatus] = useState("All");
-  console.log(selectedStatus, "selectedStatus");
 
   useEffect(() => {
     (async () => {
@@ -70,7 +66,7 @@ const POs = () => {
                     <div className="card_headline">
                       <div>
                         <div className="search_top">
-                          <label htmlFor="">Search by PO</label>
+                          <label htmlFor="">Search</label>
                         </div>
                         <div className="input_search">
                           <input
@@ -96,7 +92,6 @@ const POs = () => {
                             className="form-select"
                             value={selectedStatus}
                             onChange={(e) => {
-                              console.log(e.target.value);
                               setSelectedStatus(e.target.value);
                             }}
                           >
@@ -141,6 +136,7 @@ const POs = () => {
                           <th>SDBG</th>
                           <th>Drawings</th>
                           <th>QAP</th>
+                          <th>ILMS</th>
                           <th>Current Status</th>
                         </tr>
                       </thead>
@@ -157,91 +153,79 @@ const POs = () => {
                                   className="btn_simple"
                                   onClick={() => dispatch(poHandler(po))}
                                 >
-                                  <u>{po.poNumber}</u> || {po.poType}
+                                  <u>{po?.poNumber}</u> | {po?.poType}{" "}
                                   {user && user?.user_type !== 1 && (
                                     <>
                                       {" "}
-                                      || {po.project_code} || {po.wbs_id}
+                                      | {po?.project_code} |{" "}
+                                      {po?.DO?.CNAME && po?.DO?.CNAME}{" "}
+                                      {po?.DO?.ERNAM && `(${po?.DO?.ERNAM})`}{" "}
                                     </>
                                   )}
-                                  <br />
                                   <span>
-                                    {po.vendor_code} ({po.vendor_name})
+                                    | {po?.vendor_code} ({po.vendor_name})
                                   </span>
                                 </button>
                               </td>
                               <td>
-                                {/* SDBG Date:{" "} */}
-                                {po?.SDVG ? (
-                                  <>
-                                    Contractual:{" "}
-                                    {po?.SDVG?.contractual_submission_date
-                                      ? new Date(
-                                          po.SDVG.contractual_submission_date
-                                        ).toLocaleDateString()
-                                      : ""}
-                                    <br />
-                                    Actual:{" "}
-                                    {po?.SDVG?.actual_submission_date
-                                      ? new Date(
-                                          po.SDVG.actual_submission_date
-                                        ).toLocaleDateString()
-                                      : ""}
-                                    <br />
-                                    Status: {po.SDVG.status || ""}
-                                  </>
-                                ) : (
-                                  ""
-                                )}
+                                {/* SD Date:{" "} */}
+                                {po?.SD?.SdContractualSubmissionDate &&
+                                  new Date(
+                                    po.SD.SdContractualSubmissionDate
+                                  ).toLocaleDateString()}{" "}
+                                |{" "}
+                                {po?.SD?.SdActualSubmissionDate
+                                  ? new Date(
+                                      po.SD.SdActualSubmissionDate
+                                    ).toLocaleDateString()
+                                  : ""}{" "}
+                                | {po?.SD?.SdLastStatus}
                               </td>
                               <td>
                                 {/* Drawing Date:{" "} */}
-                                {po.Drawing ? (
-                                  <>
-                                    Contractual:
-                                    {po?.Drawing?.contractual_submission_date
-                                      ? new Date(
-                                          po.Drawing.contractual_submission_date
-                                        ).toLocaleDateString()
-                                      : ""}
-                                    <br />
-                                    Actual:
-                                    {po?.Drawing?.actual_submission_date
-                                      ? new Date(
-                                          po.Drawing.actual_submission_date
-                                        ).toLocaleDateString()
-                                      : ""}
-                                    <br />
-                                    Status: {po.Drawing.status || ""}
-                                  </>
-                                ) : (
-                                  ""
-                                )}
+                                {po?.Drawing?.DrawingContractualSubmissionDate
+                                  ? new Date(
+                                      po.Drawing.DrawingContractualSubmissionDate
+                                    ).toLocaleDateString()
+                                  : ""}{" "}
+                                |
+                                {po?.Drawing?.DrawingActualSubmissionDate
+                                  ? new Date(
+                                      po.Drawing.DrawingActualSubmissionDate
+                                    ).toLocaleDateString()
+                                  : ""}{" "}
+                                | {po?.Drawing?.DrawingLastStatus}
                               </td>
                               <td>
                                 {/* QAP Date:{" "} */}
-                                {po.qapSubmission ? (
-                                  <>
-                                    Contractual:
-                                    {po?.qapSubmission
-                                      ?.contractual_submission_date
-                                      ? new Date(
-                                          po.qapSubmission.contractual_submission_date
-                                        ).toLocaleDateString()
-                                      : ""}
-                                    <br />
-                                    Actual:
-                                    {po?.qapSubmission?.actual_submission_date
-                                      ? new Date(
-                                          po.qapSubmission.actual_submission_date
-                                        ).toLocaleDateString()
-                                      : ""}
-                                    <br />
-                                    Status: {po.qapSubmission.status || ""}
-                                  </>
-                                ) : (
-                                  ""
-                                )}
+                                {po?.QAP?.qapContractualSubmissionDate
+                                  ? new Date(
+                                      po.QAP.qapContractualSubmissionDate
+                                    ).toLocaleDateString()
+                                  : ""}{" "}
+                                |{" "}
+                                {po?.QAP?.qapActualSubmissionDate
+                                  ? new Date(
+                                      po.QAP.qapActualSubmissionDate
+                                    ).toLocaleDateString()
+                                  : ""}{" "}
+                                | {po?.QAP?.qapLastStatus}
+                              </td>
+
+                              <td>
+                                {/* ILMS Date:{" "} */}
+                                {po?.ILMS?.ilmsContractualSubmissionDate
+                                  ? new Date(
+                                      po.ILMS.ilmsContractualSubmissionDate
+                                    ).toLocaleDateString()
+                                  : ""}{" "}
+                                |{" "}
+                                {po?.ILMS?.ilmsActualSubmissionDate
+                                  ? new Date(
+                                      po.ILMS.ilmsActualSubmissionDate
+                                    ).toLocaleDateString()
+                                  : ""}{" "}
+                                | {po?.ILMS?.ilmsLastStatus}
                               </td>
 
                               <td>{po?.currentStage?.current}</td>

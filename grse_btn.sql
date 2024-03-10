@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Mar 08, 2024 at 07:10 AM
+-- Generation Time: Mar 10, 2024 at 09:27 AM
 -- Server version: 10.4.28-MariaDB
 -- PHP Version: 8.1.17
 
@@ -493,26 +493,16 @@ CREATE TABLE `ekpo` (
 --
 
 INSERT INTO `ekpo` (`EBELN`, `EBELP`, `LOEKZ`, `STATU`, `AEDAT`, `TXZ01`, `MATNR`, `BUKRS`, `WERKS`, `LGORT`, `MATKL`, `KTMNG`, `MENGE`, `MEINS`, `NETPR`, `NETWR`, `MWSKZ`) VALUES
-('2100010812', 10, '', '', '07.03.2014', 'IncomeTax Rectification in SAP Payroll', '', 'GRSE', '100', '', 'SE57', 1, 0, 'AU', '0', '0', ''),
 ('2100010812', 20, '', '', '07.03.2014', 'Modification of ZINC prog in SAP Payroll', '', 'GRSE', '100', '', 'SE57', 1, 0, 'AU', '0', '0', ''),
-('4700013227', 10, '', '', '04.08.2015', 'Impl. of Asset Mgmt as per Co Act 13', '', 'GRSE', '100', '', 'SE74', 0, 1, 'AU', '1,200,000.0', '1,200,000.00', 'SG'),
-('4700013553', 10, '', '', '22.03.2016', '1. Project Systems & Production Planning', 'SER08205', 'GRSE', '100', '', 'SE74', 0, 1, 'AU', '1,813,063.0', '1,813,063.00', 'SU'),
-('4700013553', 15, '', '', '12.01.2017', '1. Project Systems & Production Planning', 'SER08205', 'GRSE', '100', '', 'SE74', 0, 1, 'AU', '1,557,165.0', '1,557,165.00', 'TV'),
+('7800000040', 15, '', '', '12.01.2017', '1. Project Systems & Production Planning', 'SER08205', 'GRSE', '100', '', 'SE74', 20, 1, 'AU', '1,557,165.0', '1,557,165.00', 'TV'),
 ('4700013553', 20, '', '', '22.03.2016', '2. Workflows', 'SER08205', 'GRSE', '100', '', 'SE74', 0, 1, 'AU', '204,218.00', '204,218.00', 'SU'),
 ('4700013553', 30, '', '', '22.03.2016', '3. ABAP Reports', 'SER08205', 'GRSE', '100', '', 'SE74', 0, 1, 'AU', '81,690.00', '81,690.00', '4S'),
-('4700013553', 40, '', '', '12.01.2017', '4. Testing', 'SER08205', 'GRSE', '100', '', 'SE74', 0, 1, 'AU', '163,376.00', '163,376.00', 'TV'),
-('4700013553', 50, '', '', '12.01.2017', '5. Commissioning the system', 'SER08205', 'GRSE', '100', '', 'SE74', 0, 1, 'AU', '81,688.00', '81,688.00', 'TV'),
+('7800000040', 40, '', '', '12.01.2017', '4. Testing', 'SER08205', 'GRSE', '100', '', 'SE74', 20, 1, 'AU', '163,376.00', '163,376.00', 'TV'),
+('7800000040', 50, '', '', '12.01.2017', '5. Commissioning the system', 'SER08205', 'GRSE', '100', '', 'SE74', 20, 1, 'AU', '81,688.00', '81,688.00', 'TV'),
 ('4700013553', 60, '', '', '20.06.2019', '6. Warranty Support', 'SER08205', 'GRSE', '100', '', 'SE74', 0, 1, 'AU', '490,076.00', '490,076.00', 'TV'),
-('4700013553', 70, '', '', '12.01.2017', '7. Training', 'SER08205', 'GRSE', '100', '', 'SE74', 0, 1, 'AU', '81,687.00', '81,687.00', 'TV'),
-('4700013553', 80, '', '', '12.01.2017', '8. Documentation', 'SER08205', 'GRSE', '100', '', 'SE74', 0, 1, 'LS', '147,037.00', '147,037.00', 'TV'),
-('4700016027', 10, '', '', '26.07.2019', 'Inclusion of QA functions in Projects', '', 'GRSE', '100', '', 'SE74', 0, 1, 'AU', '1,440,000.0', '1,440,000.00', '12'),
-('4800001795', 10, '', '', '30.11.2012', 'SAP SYSTEM AUDIT & RELATED ACTIVITIES', '', 'GRSE', '100', '', 'SE57', 0, 1, 'AU', '4,004,984.0', '4,004,984.00', 'SG'),
-('4800003580', 10, '', '', '18.03.2014', 'IncomeTax Rectification in SAP Payroll', '', 'GRSE', '100', '', 'SE57', 0, 1, 'AU', '302,100.00', '302,100.00', 'SG'),
-('4800003580', 20, '', '', '18.03.2014', 'Modification of ZINC prog in SAP Payroll', '', 'GRSE', '100', '', 'SE57', 0, 1, 'AU', '127,200.00', '127,200.00', 'SG'),
-('4800004078', 10, '', '', '25.06.2014', 'Implementing revised Perks inSAP-Payroll', '', 'GRSE', '100', '', 'SE57', 0, 1, 'AU', '2,190,000.0', '2,190,000.00', 'SG'),
-('4800005422', 10, '', '', '19.03.2015', 'Impl. of Wage Revision in SAP Payroll', '', 'GRSE', '100', '', 'SE57', 0, 1, 'AU', '2,265,000.0', '2,265,000.00', 'SG'),
-('4800007095', 10, '', '', '06.03.2018', 'Reporting for Senior Management of GRSE', '', 'GRSE', '100', '', 'SE57', 0, 1, 'AU', '3,333,000.0', '3,333,000.00', 'SU'),
-('4800008195', 10, '', '', '11.01.2018', 'Sales through Stock transfer etc.', '', 'GRSE', '100', '', 'SE57', 0, 1, 'AU', '863,016.00', '863,016.00', 'TV'),
+('7800000040', 70, '', '', '12.01.2017', '7. Training', 'SER08205', 'GRSE', '100', '', 'SE74', 20, 1, 'AU', '81,687.00', '81,687.00', 'TV'),
+('7800000040', 80, '', '', '12.01.2017', '8. Documentation', 'SER08205', 'GRSE', '100', '', 'SE74', 20, 1, 'LS', '147,037.00', '147,037.00', 'TV'),
+('7800000040', 20, '', '', '18.03.2014', 'Modification of ZINC prog in SAP Payroll', '', 'GRSE', '100', '', 'SE57', 20, 1, 'AU', '127,200.00', '127,200.00', 'SG'),
 ('4800008195', 20, '', '', '11.01.2018', 'Reverse Charge Service tax process', '', 'GRSE', '100', '', 'SE57', 0, 1, 'AU', '154,361.00', '154,361.00', 'TV'),
 ('4800008195', 30, '', '', '11.01.2018', 'TDS reconciliation', '', 'GRSE', '100', '', 'SE57', 0, 1, 'AU', '210,492.00', '210,492.00', 'TV'),
 ('4800008195', 40, '', '', '11.01.2018', 'Improvement of sales of B & D Spare', '', 'GRSE', '100', '', 'SE57', 0, 1, 'AU', '526,229.00', '526,229.00', '12'),
@@ -524,17 +514,7 @@ INSERT INTO `ekpo` (`EBELN`, `EBELP`, `LOEKZ`, `STATU`, `AEDAT`, `TXZ01`, `MATNR
 ('4800008195', 100, '', '', '10.02.2018', 'Documentation', '', 'GRSE', '100', '', 'SE57', 0, 1, 'AU', '70,164.00', '70,164.00', '12'),
 ('4800008195', 110, '', '', '10.02.2018', 'Training', '', 'GRSE', '100', '', 'SE57', 0, 1, 'AU', '70,164.00', '70,164.00', '12'),
 ('4800008195', 120, '', '', '10.02.2018', 'Impl of BB Prod facilities at DEP Ranchi', '', 'GRSE', '100', '', 'SE57', 0, 1, 'AU', '1,430,000.0', '1,430,000.00', '12'),
-('4800011669', 10, '', '', '29.03.2018', 'Implementation of Tax INN for GRSE', '', 'GRSE', '100', '', 'SE57', 0, 1, 'AU', '2,409,420.0', '2,409,420.00', '12'),
 ('4800011669', 20, '', '', '29.03.2018', 'Implementation of GST for GRSE', '', 'GRSE', '100', '', 'SE57', 0, 1, 'AU', '1,938,406.0', '1,938,406.00', '12'),
-('4800011727', 10, '', '', '19.02.2018', 'Amendments in PF Trust Rules in SAP', '', 'GRSE', '100', '', 'SE57', 0, 1, 'AU', '800,000.00', '800,000.00', '12'),
-('4800011728', 10, '', '', '02.11.2018', 'Resolutions to HCM Audit Gaps', '', 'GRSE', '100', '', 'SE57', 0, 1, 'AU', '2,950,000.0', '2,950,000.00', 'TV'),
-('4800011745', 10, '', '', '04.10.2017', 'Emp Attendance Reporting in Dashboard', '', 'GRSE', '100', '', 'SE57', 0, 1, 'AU', '291,000.00', '291,000.00', '12'),
-('4800013770', 10, '', '', '04.12.2017', 'AMC of BI/BO Dashboard/Reports', '', 'GRSE', '100', '', 'SE57', 0, 1, 'AU', '1,100,000.0', '1,100,000.00', '12'),
-('4800019411', 10, '', '', '12.06.2020', 'Devl & Impl of Proc Accelerator System', '', 'GRSE', '100', '', 'SE57', 0, 1, 'AU', '9,000,000.0', '9,000,000.00', '12'),
-('4800022399', 10, '', '', '23.04.2022', 'REGULARISATION OF SUPPLEMENTARY PO', '', 'GRSE', '100', '', 'SE57', 0, 1, 'AU', '350,000.00', '350,000.00', '12'),
-('4800022835', 10, '', '', '14.09.2022', 'PROJECT WIP PROCESS', '', 'GRSE', '100', '', 'SE57', 0, 1, 'AU', '211,864.40', '211,864.40', '12'),
-('7800000040', 10, '', '', '18.11.2022', 'Technical Service for ERP Q1', 'M433', 'GRSE', '100', '', 'SE57', 10, 1, 'AU', '1,436,475.0', '1,436,475.00', '12'),
-('7800000047', 10, '', '', '29.06.2022', 'Implementation of Wage revision in SAP', 'SER08205', 'GRSE', '100', '', 'SE74', 0, 1, 'AU', '1,800,000.0', '1,800,000.00', '12'),
 ('7800000047', 20, '', '', '02.01.2023', 'WageRevision forOA(non-ranchi)&RanchiEmp', 'SER08205', 'GRSE', '100', '', 'SE57', 0, 1, 'AU', '1,000,000.0', '1,000,000.00', '12'),
 ('1234512354', 10023, 'W', '1', '07.03.2014', 'IncomeTax Rectification in SAP Payroll', NULL, 'GRSE', '100', NULL, 'SE57', 1244, 232131, 'AU', '0', '0', 'TV'),
 ('1234512354', 88, 'W', '1', '20.06.2019', '6. Warranty Support', NULL, 'GRSE', '100', NULL, 'SE74', 0, 1, 'AU', '9000,3222', '124,456,900', 'SG'),
@@ -756,7 +736,47 @@ CREATE TABLE `lfa1` (
   `NAME1` varchar(35) DEFAULT NULL COMMENT 'Name 1',
   `ORT01` varchar(35) DEFAULT NULL COMMENT 'City',
   `ORT02` varchar(35) DEFAULT NULL COMMENT 'District',
+  `PSTLZ` varchar(6) NOT NULL COMMENT 'Postal Code',
+  `STRAS` varchar(50) NOT NULL COMMENT 'House Number and Street',
   `PFACH` varchar(10) DEFAULT NULL COMMENT 'PO Box',
+  `REGIO` varchar(3) DEFAULT NULL COMMENT 'Region (State, Province, County)',
+  `KTOKK` varchar(4) DEFAULT NULL COMMENT '	Vendor account group',
+  `LOEVM_X` varchar(1) DEFAULT NULL COMMENT '	Central Deletion Flag for Master Record',
+  `SPRAS` varchar(10) DEFAULT NULL COMMENT 'Language Key',
+  `STCD1` varchar(16) DEFAULT NULL COMMENT 'Tax Number 1',
+  `TELFX` varchar(31) DEFAULT NULL COMMENT 'Fax Number',
+  `STCD3` varchar(18) DEFAULT NULL COMMENT 'Tax Number 3',
+  `ZZVENVALDT` date NOT NULL,
+  `EMAIL` varchar(241) DEFAULT NULL,
+  `PHONE` varchar(13) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+
+--
+-- Dumping data for table `lfa1`
+--
+
+INSERT INTO `lfa1` (`LIFNR`, `LAND1`, `NAME1`, `ORT01`, `ORT02`, `PSTLZ`, `STRAS`, `PFACH`, `REGIO`, `KTOKK`, `LOEVM_X`, `SPRAS`, `STCD1`, `TELFX`, `STCD3`, `ZZVENVALDT`, `EMAIL`, `PHONE`) VALUES
+('50000437', 'IN', 'TATA STEEL LTD', 'KOLKATA', NULL, '', '', NULL, '25', 'DOMV', NULL, 'EN', 'AAAFA1890Q', '033 2282 1687', '24AAAFA1890Q1Z9', '0000-00-00', NULL, NULL),
+('50005041', 'IN', 'PriceWaterhouseCoopers Pvt Ltd', 'KOLKATA', NULL, '', '', NULL, '25', 'DOMV', NULL, 'EN', 'AABCP9181H', NULL, '19AABCP9181H1Z1', '0000-00-00', NULL, NULL),
+('50007545', 'IN', 'DCG DATA -CORE SYSTEMS (INDIA) PRIV', 'KOLKATA', NULL, '700091', 'BG Block', NULL, '25', 'DOMV', NULL, 'EN', 'AAFCD4828F', NULL, '19AAFCD4828F1ZL', '0000-00-00', NULL, NULL),
+('50007560', '900', 'dcg', 'ddd', 'jjdjd', '', '', 'kkkk', 'jjj', 'jeje', 'X', 'uuuu', '876545678', '9876789876', '6677882', '2024-02-24', NULL, NULL),
+('50007561', '900', 'dcg', 'ddd', 'jjdjd', '', '', 'kkkk', 'jjj', 'jeje', 'y', 'AAAAA', '876545678', '9876789876', '6677882', '2024-02-24', NULL, NULL),
+('50007562', '900', 'dcg', 'ddd', 'jjdjd', '', '', 'kkkk', 'jjj', 'jeje', 'y', 'uuuu', '876545678', '9876789876', '6677882', '2024-02-24', NULL, NULL),
+('600229', 'IN', 'naskar sir', 'KOLKATA', NULL, '', '', NULL, '25', 'DOMV', NULL, 'EN', 'AAFCD4828F', NULL, '19AAFCD4828F1ZL', '0000-00-00', NULL, NULL);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `lfa1_old`
+--
+
+CREATE TABLE `lfa1_old` (
+  `LIFNR` varchar(10) NOT NULL COMMENT 'Account Number of Vendor or Creditor',
+  `LAND1` varchar(3) DEFAULT NULL COMMENT 'Country Key',
+  `NAME1` varchar(35) DEFAULT NULL COMMENT 'Name 1',
+  `ORT01` varchar(35) DEFAULT NULL COMMENT 'City',
+  `ORT02` varchar(35) DEFAULT NULL COMMENT 'District',
+  `PFACH` varchar(50) DEFAULT NULL COMMENT 'PO Box',
   `REGIO` varchar(3) DEFAULT NULL COMMENT 'Region (State, Province, County)',
   `KTOKK` varchar(4) DEFAULT NULL COMMENT '	Vendor account group',
   `LOEVM_X` varchar(1) DEFAULT NULL COMMENT '	Central Deletion Flag for Master Record',
@@ -768,13 +788,13 @@ CREATE TABLE `lfa1` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
 --
--- Dumping data for table `lfa1`
+-- Dumping data for table `lfa1_old`
 --
 
-INSERT INTO `lfa1` (`LIFNR`, `LAND1`, `NAME1`, `ORT01`, `ORT02`, `PFACH`, `REGIO`, `KTOKK`, `LOEVM_X`, `SPRAS`, `STCD1`, `TELFX`, `STCD3`, `ZZVENVALDT`) VALUES
+INSERT INTO `lfa1_old` (`LIFNR`, `LAND1`, `NAME1`, `ORT01`, `ORT02`, `PFACH`, `REGIO`, `KTOKK`, `LOEVM_X`, `SPRAS`, `STCD1`, `TELFX`, `STCD3`, `ZZVENVALDT`) VALUES
 ('50000437', 'IN', 'GRSE', 'KOLKATA', NULL, NULL, '25', 'DOMV', NULL, 'EN', 'AAAFA1890Q', '033 2282 1687', '24AAAFA1890Q1Z9', '0000-00-00'),
 ('50005041', 'IN', 'PriceWaterhouseCoopers Pvt Ltd', 'KOLKATA', NULL, NULL, '25', 'DOMV', NULL, 'EN', 'AABCP9181H', NULL, '19AABCP9181H1Z1', '0000-00-00'),
-('50007545', 'IN', 'XYZ Pvt. Ltd', 'KOLKATA', NULL, NULL, '25', 'DOMV', NULL, 'EN', 'AAFCD4828F', NULL, '19AAFCD4828F1ZL', '0000-00-00'),
+('50007545', 'IN', 'XYZ Pvt. Ltd', 'KOLKATA', 'KOLKATA', 'ENGLISH BAZAR', 'WB', 'DOMV', NULL, 'EN', 'AAFCD4828F', NULL, '19AAFCD4828F1ZL', '0000-00-00'),
 ('50007546', 'IN', 'ABC Pvt Ltd', 'KOLKATA', NULL, NULL, '25', 'DOMV', NULL, 'EN', 'AABCP9181H', NULL, '19AABCP9181H1Z1', '0000-00-00'),
 ('600229', 'IN', 'GRSE', 'KOLKATA', NULL, NULL, '25', 'DOMV', NULL, 'EN', 'AAFCD4828F', NULL, '19AAFCD4828F1ZL', '0000-00-00');
 
@@ -1450,10 +1470,14 @@ CREATE TABLE `sdbg` (
 --
 
 INSERT INTO `sdbg` (`id`, `reference_no`, `purchasing_doc_no`, `file_name`, `file_path`, `remarks`, `status`, `action_type`, `vendor_code`, `assigned_from`, `assigned_to`, `last_assigned`, `created_at`, `created_by_name`, `created_by_id`, `updated_by`) VALUES
-(1, 'BG-1709873470900-7545', '7800000040', '1709873470889-sample.pdf', 'uploads\\submitSDBG\\1709873470889-sample.pdf', 'Deno', 'SUBMITED', 'SDBG SUBMISSION', '50007545', NULL, NULL, 0, 1709873470900, NULL, '50007545', 'VENDOR'),
-(2, 'BG-1709873470900-7545', '7800000040', '1709873470889-sample.pdf', 'uploads\\submitSDBG\\1709873470889-sample.pdf', 'This SDBG is REJECTED', 'REJECTED', 'SDBG SUBMISSION', '50007545', NULL, NULL, 0, 1709874764041, 'Dealing officer', '493834', 'GRSE'),
-(3, 'BG-1709876203228-7545', '7800000040', '1709876203220-sample.pdf', 'uploads\\submitSDBG\\1709876203220-sample.pdf', 'REcheck plz', 'SUBMITED', 'INDEMNITY BOND SUBMISSION', '50007545', NULL, NULL, 0, 1709876203228, NULL, '50007545', 'VENDOR'),
-(4, 'BG-1709876203228-7545', '7800000040', '1709876203220-sample.pdf', 'uploads\\submitSDBG\\1709876203220-sample.pdf', 'SDBG entry forwarded to Finance.', 'FORWARD_TO_FINANCE', 'INDEMNITY BOND SUBMISSION', '50007545', '493834', NULL, 0, 1709876757811, 'Dealing officer', '493834', 'GRSE');
+(16, 'SD-1710054373029-7545', '7800000040', '1710054372611-WelcomeDocument.pdf', 'uploads\\submitSDBG\\1710054372611-WelcomeDocument.pdf', 'mainak', 'SUBMITED', 'SDBG SUBMISSION', '50007545', NULL, NULL, 0, 1710054373029, NULL, '50007545', 'VENDOR'),
+(17, 'SD-1710054446106-7545', '7800000040', '1710054445846-WelcomeDocument.pdf', 'uploads\\submitSDBG\\1710054445846-WelcomeDocument.pdf', 'hjghj', 'SUBMITED', 'DEMAND DRAFT SUBMISSION', '50007545', NULL, NULL, 0, 1710054446106, NULL, '50007545', 'VENDOR'),
+(18, 'SD-1710054468520-7545', '7800000040', '1710054468102-Approved WDC- AS-IS submission.pdf', 'uploads\\submitSDBG\\1710054468102-Approved WDC- AS-IS submission.pdf', NULL, 'SUBMITED', 'ADVANCED BG SUBMISISON', '50007545', NULL, NULL, 0, 1710054468520, NULL, '50007545', 'VENDOR'),
+(19, 'SD-1710054610653-7545', '7800000040', '1710054610420-WelcomeDocument.pdf', 'uploads\\submitSDBG\\1710054610420-WelcomeDocument.pdf', NULL, 'SUBMITED', 'ADVANCED BG SUBMISISON', '50007545', NULL, NULL, 0, 1710054610653, NULL, '50007545', 'VENDOR'),
+(20, 'SD-1710054656575-7545', '7800000040', '1710054656347-WelcomeDocument.pdf', 'uploads\\submitSDBG\\1710054656347-WelcomeDocument.pdf', ' ', 'SUBMITED', 'PBG SUBMISISON', '50007545', NULL, NULL, 0, 1710054656575, NULL, '50007545', 'VENDOR'),
+(21, 'SD-1710054703054-7545', '7800000040', '1710054702459-WelcomeDocument.pdf', 'uploads\\submitSDBG\\1710054702459-WelcomeDocument.pdf', ' retrtfghghuj', 'SUBMITED', 'DEMAND DRAFT SUBMISSION', '50007545', NULL, NULL, 0, 1710054703054, NULL, '50007545', 'VENDOR'),
+(22, 'SD-1710054757735-7545', '7800000040', '1710054757474-CollectionReceipt.pdf', 'uploads\\submitSDBG\\1710054757474-CollectionReceipt.pdf', '    hlkjhkjhk', 'SUBMITED', 'ADVANCED BG SUBMISISON', '50007545', NULL, NULL, 0, 1710054757736, NULL, '50007545', 'VENDOR'),
+(23, 'SD-1710054373029-7545', '7800000040', '1710054372611-WelcomeDocument.pdf', 'uploads\\submitSDBG\\1710054372611-WelcomeDocument.pdf', 'SDBG entry forwarded to Finance.', 'FORWARD_TO_FINANCE', 'SDBG SUBMISSION', '50007545', '493834', NULL, 0, 1710055906188, 'Dealing officer', '493834', 'GRSE');
 
 -- --------------------------------------------------------
 
@@ -1499,8 +1523,7 @@ CREATE TABLE `sdbg_entry` (
   `bg_no` varchar(255) NOT NULL,
   `bg_date` bigint(20) NOT NULL,
   `bg_ammount` float NOT NULL,
-  `department` varchar(255) NOT NULL,
-  `po_date` bigint(20) NOT NULL,
+  `po_date` bigint(20) DEFAULT NULL,
   `yard_no` varchar(255) NOT NULL,
   `validity_date` bigint(20) NOT NULL,
   `claim_priod` varchar(150) NOT NULL,
@@ -1531,9 +1554,8 @@ CREATE TABLE `sdbg_entry` (
 -- Dumping data for table `sdbg_entry`
 --
 
-INSERT INTO `sdbg_entry` (`id`, `purchasing_doc_no`, `bank_name`, `branch_name`, `ifsc_code`, `bank_addr1`, `bank_addr2`, `bank_addr3`, `bank_city`, `bank_pin_code`, `bg_no`, `bg_date`, `bg_ammount`, `department`, `po_date`, `yard_no`, `validity_date`, `claim_priod`, `check_list_reference`, `check_list_date`, `bg_type`, `vendor_name`, `vendor_address1`, `vendor_address2`, `vendor_address3`, `vendor_city`, `vendor_pin_code`, `extension_date1`, `extension_date2`, `extension_date3`, `extension_date4`, `extension_date5`, `extension_date6`, `release_date`, `demand_notice_date`, `entension_letter_date`, `status`, `created_at`, `created_by`) VALUES
-(2, '7800000040', 'SBI', 'SBIN0012572', '', 'PATHAKPARA', 'address2', 'address3', 'MILKI', '732209', '123456', 1711564200, 4555, 'Dept', 1712255400, '30', 1711564200, '1711737000', 'ref', 1709876236, 'SDBG', 'DCG', 'PATHAKPARA', NULL, NULL, 'MILKI', '732209', 0, NULL, NULL, NULL, NULL, NULL, 0, 0, NULL, 'FORWARD_TO_FINANCE', 1709876757784, '493834'),
-(3, '7800000041', 'SBI', 'SBIN0012572', '', 'PATHAKPARA', 'address2', 'address3', 'MILKI', '732209', '123456', 1708540200, 4555, 'Dept', 1708713000, '30', 1709145000, '2 month', 'refh', 1709231400, 'PAID', 'DCG', 'PATHAKPARA', 'Vendor Address2', 'Vendor adress 3 fds', 'MILKI', '732209', 1708626600, 1708540200, 1708713000, 1708540200, 1708108200, 1708626600, 1709317800, 1708972200, 1708713000, 'FORWARD_TO_FINANCE', 1708672236448, '493834');
+INSERT INTO `sdbg_entry` (`id`, `purchasing_doc_no`, `bank_name`, `branch_name`, `ifsc_code`, `bank_addr1`, `bank_addr2`, `bank_addr3`, `bank_city`, `bank_pin_code`, `bg_no`, `bg_date`, `bg_ammount`, `po_date`, `yard_no`, `validity_date`, `claim_priod`, `check_list_reference`, `check_list_date`, `bg_type`, `vendor_name`, `vendor_address1`, `vendor_address2`, `vendor_address3`, `vendor_city`, `vendor_pin_code`, `extension_date1`, `extension_date2`, `extension_date3`, `extension_date4`, `extension_date5`, `extension_date6`, `release_date`, `demand_notice_date`, `entension_letter_date`, `status`, `created_at`, `created_by`) VALUES
+(4, '7800000040', 'sTATE Bank', 'SBIN0012572', '', 'PATHAKPARA', 'address2', 'address3', 'MILKI', '732209', '123456', 1712169000, 4555, NULL, '30', 1712255400, '1712082600', '', 10, 'SDBG', NULL, NULL, NULL, NULL, NULL, NULL, 0, NULL, NULL, NULL, NULL, NULL, 0, 0, NULL, 'FORWARD_TO_FINANCE', 1710055906163, '493834');
 
 -- --------------------------------------------------------
 
@@ -2171,6 +2193,12 @@ ALTER TABLE `lfa1`
   ADD PRIMARY KEY (`LIFNR`);
 
 --
+-- Indexes for table `lfa1_old`
+--
+ALTER TABLE `lfa1_old`
+  ADD PRIMARY KEY (`LIFNR`);
+
+--
 -- Indexes for table `makt`
 --
 ALTER TABLE `makt`
@@ -2497,7 +2525,7 @@ ALTER TABLE `qap_submission`
 -- AUTO_INCREMENT for table `sdbg`
 --
 ALTER TABLE `sdbg`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=24;
 
 --
 -- AUTO_INCREMENT for table `sdbg_acknowledgement`
@@ -2509,7 +2537,7 @@ ALTER TABLE `sdbg_acknowledgement`
 -- AUTO_INCREMENT for table `sdbg_entry`
 --
 ALTER TABLE `sdbg_entry`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `sdbg_return_submisson`

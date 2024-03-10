@@ -1,6 +1,19 @@
 u {
   cursor: pointer;
 }
+/* hide arrows
+ Chrome, Safari, Edge, Opera */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none !important;
+  margin: 0 !important;
+}
+
+/* Firefox */
+input[type="number"] {
+  -moz-appearance: textfield !important;
+}
+
 .form-label span.star {
   color: red;
 }
@@ -9,6 +22,19 @@ u {
 }
 .blue {
   color: blue;
+}
+.green {
+  color: green;
+}
+.orange {
+  color: orange;
+}
+.bold {
+  font-weight: 700;
+}
+.label_data,
+.label {
+  font-size: 14px;
 }
 .w_30 {
   width: 30%;
@@ -20,9 +46,14 @@ u {
   width: 50px;
 }
 .inputField {
-  width: 100%; /* or specify the desired width */
+  width: 100%;
 }
-
+.min-w-170px {
+  width: 170px;
+}
+.min-w-90px {
+  width: 90px;
+}
 /* .navbar {
   margin-bottom: 90px;
 }
@@ -33,6 +64,7 @@ u {
 
 .card_pos {
   margin-top: 100px;
+  width: 99%;
 }
 .report-box {
   border: 1px solid #ccc;

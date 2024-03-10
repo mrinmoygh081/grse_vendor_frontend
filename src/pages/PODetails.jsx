@@ -9,6 +9,7 @@ import { doHandler, poRemoveHandler } from "../redux/slices/poSlice";
 import moment from "moment";
 import { toast } from "react-toastify";
 import axios from "axios";
+import { clrLegend } from "../utils/clrLegend";
 
 const PODetails = () => {
   const dispatch = useDispatch();
@@ -224,7 +225,8 @@ const PODetails = () => {
                                             Dealing Officer:
                                           </span>
                                           <span className="label_data">
-                                            {user.name}
+                                            {po?.doInfo?.CNAME} (
+                                            {po?.doInfo?.ERNAM})
                                           </span>
                                         </div>
                                         <div className="card_header_data">
@@ -262,20 +264,10 @@ const PODetails = () => {
                                                 {item?.MTEXT &&
                                                   item?.PLAN_DATE && (
                                                     <div className="card_header_data">
-                                                      <span
-                                                        className="label"
-                                                        style={{
-                                                          fontSize: "small",
-                                                        }}
-                                                      >
+                                                      <span className="label">
                                                         {item?.MTEXT} :
                                                       </span>
-                                                      <span
-                                                        className="label_data"
-                                                        style={{
-                                                          fontSize: "small",
-                                                        }}
-                                                      >
+                                                      <span className="label_data">
                                                         {item?.PLAN_DATE
                                                           ? new Date(
                                                               item?.PLAN_DATE
@@ -283,23 +275,9 @@ const PODetails = () => {
                                                           : "Not Updated"}{" "}
                                                         (
                                                         <span
-                                                          style={{
-                                                            fontWeight: "bold",
-                                                            color:
-                                                              item?.status ===
-                                                              "ASSIGNED"
-                                                                ? "#a7a700"
-                                                                : item?.status ===
-                                                                  "APPROVED"
-                                                                ? "green"
-                                                                : item?.status ===
-                                                                  "REJECTED"
-                                                                ? "red"
-                                                                : item?.status ===
-                                                                  "ACCEPTED"
-                                                                ? "#04bd92"
-                                                                : "orange",
-                                                          }}
+                                                          className={`${clrLegend(
+                                                            item?.status
+                                                          )} bold`}
                                                         >
                                                           {item?.status ||
                                                             "Not Uploaded"}
@@ -312,20 +290,10 @@ const PODetails = () => {
                                                 {item?.milestoneText &&
                                                   item?.actualSubmissionDate && (
                                                     <div className="card_header_data">
-                                                      <span
-                                                        className="label"
-                                                        style={{
-                                                          fontSize: "small",
-                                                        }}
-                                                      >
+                                                      <span className="label">
                                                         {item?.milestoneText} :
                                                       </span>
-                                                      <span
-                                                        className="label_data"
-                                                        style={{
-                                                          fontSize: "small",
-                                                        }}
-                                                      >
+                                                      <span className="label_data">
                                                         {item?.actualSubmissionDate
                                                           ? new Date(
                                                               item?.actualSubmissionDate

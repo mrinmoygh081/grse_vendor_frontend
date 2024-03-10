@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { Fragment, useEffect, useRef, useState } from "react";
 import Footer from "../components/Footer";
 import SideBar from "../components/SideBar";
 import Header from "../components/Header";
@@ -7,10 +7,21 @@ import { useSelector } from "react-redux";
 import { apiCallBack, postAPI } from "../utils/fetchAPIs";
 import { toast } from "react-toastify";
 import DatePicker from "react-datepicker";
-import { convertToEpoch } from "../utils/getDateTimeNow";
 import Select from "react-select";
 import { reConfirm } from "../utils/reConfirm";
 import { inputOnWheelPrevent } from "../utils/inputOnWheelPrevent";
+import { clrLegend } from "../utils/clrLegend";
+import { BGEntry, bgInputs } from "../Helpers/BG";
+import {
+  ACTION_ABG,
+  ACTION_DD,
+  ACTION_IB,
+  ACTION_O,
+  ACTION_PBG,
+  ACTION_SDBG,
+  ACTION_RM,
+  FORWARD_TO_FINANCE,
+} from "../constants/BGconstants";
 
 const SDBGSub = () => {
   const [isPopup, setIsPopup] = useState(false);
@@ -18,6 +29,7 @@ const SDBGSub = () => {
   const [isAssignPopup, setIsAssignPopup] = useState(false);
   const [isCheckEntryPopup, setIsCheckEntryPopup] = useState(false);
   const [allsdbg, setAllsdbg] = useState([]);
+  const [groupedBG, setGroupedBG] = useState([]);
   const [sdbgEntry, setSdbgEntry] = useState([]);
   const [selectedActionType, setSelectedActionType] = useState("");
   const [formData, setFormData] = useState({
@@ -25,49 +37,7 @@ const SDBGSub = () => {
     remarks: "",
   });
 
-  const [formDatainput, setFormDatainput] = useState({
-    purchasing_doc_no: "",
-    reference_no: "",
-    bank_name: "",
-    branch_name: "",
-    bank_addr1: "",
-    bank_addr2: "",
-    bank_addr3: "",
-    bank_city: "",
-    bank_pin_code: "",
-    bg_no: "",
-    bg_date: "",
-    bg_ammount: "",
-    department: "",
-    po_date: "",
-    yard_no: "",
-    validity_date: "",
-    claim_priod: "",
-    check_list_reference: "",
-    check_list_date: new Date(),
-    bg_type: "SDBG",
-    vendor_name: "",
-    vendor_address1: "",
-    vendor_address2: "",
-    vendor_address3: "",
-    vendor_city: "",
-    vendor_pin_code: "",
-    confirmation: "",
-    extension_date1: "",
-    extension_date2: "",
-    extension_date3: "",
-    extension_date4: "",
-    extension_date5: "",
-    extension_date6: "",
-    release_date: "",
-    demand_notice_date: "",
-    entension_letter_date: "",
-    status: "",
-    created_at: "",
-    created_by: "",
-    remarks: "",
-    assigned_to: "",
-  });
+  const [formDatainput, setFormDatainput] = useState(bgInputs);
   const inputFileRef = useRef(null);
   const { id } = useParams();
   const { user, token, userType } = useSelector((state) => state.auth);
@@ -120,13 +90,6 @@ const SDBGSub = () => {
     }
   };
 
-  // const handleInputChange = (e) => {
-  //   const { name, value } = e.target;
-  //   setFormData((prevData) => ({
-  //     ...prevData,
-  //     [name]: value,
-  //   }));
-  // };
   const handleInputChange2 = (e) => {
     const { name, value } = e.target;
     setFormDatainput((prevData) => ({
@@ -137,8 +100,10 @@ const SDBGSub = () => {
 
   useEffect(() => {
     getSDBG();
-    getSDBGEntry();
-    getEmpList();
+    if (user?.user_type !== 1) {
+      getSDBGEntry();
+      getEmpList();
+    }
   }, []);
 
   useEffect(() => {
@@ -151,8 +116,12 @@ const SDBGSub = () => {
 
   const updateSDBG = async (flag) => {
     const { sdbgFile, remarks } = formData;
-    if (selectedActionType === "" || !sdbgFile || remarks === "") {
-      toast.warn("Please provide all required fields");
+    if (
+      selectedActionType.trim() === "" ||
+      !sdbgFile ||
+      remarks.trim() === ""
+    ) {
+      return toast.warn("Please provide all required fields");
     }
     try {
       const form = new FormData();
@@ -183,147 +152,18 @@ const SDBGSub = () => {
       }
     } catch (error) {
       console.error("Error:", error);
-      toast.error("Form submission failed", {
-        position: "top-right",
-        autoClose: 3000,
-      });
+      toast.error("Form submission failed");
     }
   };
 
   const uploadSDBGEntry = async () => {
-    const {
-      purchasing_doc_no,
-      reference_no,
-      bank_name,
-      branch_name,
-      bank_addr1,
-      bank_city,
-      bank_pin_code,
-      bg_no,
-      bg_date,
-      bg_ammount,
-      department,
-      po_date,
-      yard_no,
-      validity_date,
-      claim_priod,
-      check_list_reference,
-      check_list_date,
-      bg_type,
-      vendor_name,
-      vendor_address1,
-      vendor_city,
-      vendor_pin_code,
-      extension_date1,
-      extension_date2,
-      extension_date3,
-      extension_date4,
-      extension_date5,
-      extension_date6,
-      release_date,
-      demand_notice_date,
-      entension_letter_date,
-    } = formDatainput;
-
-    if (
-      (purchasing_doc_no === "",
-      reference_no === "",
-      bank_name === "",
-      branch_name === "",
-      bank_addr1 === "",
-      bank_city === "",
-      bank_pin_code === "",
-      bg_no === "",
-      bg_date === "",
-      bg_ammount === "",
-      department === "",
-      po_date === "",
-      yard_no === "",
-      validity_date === "",
-      claim_priod === "",
-      check_list_reference === "",
-      check_list_date === "",
-      bg_type === "SDBG",
-      vendor_name === "",
-      vendor_address1 === "",
-      vendor_city === "",
-      vendor_pin_code === "")
-    ) {
-      toast.warn("Please enter the required fields!");
-      return;
-    }
-
-    let form = {
-      ...formDatainput,
-      bg_date: convertToEpoch(bg_date),
-      entension_letter_date: convertToEpoch(entension_letter_date),
-      demand_notice_date: convertToEpoch(demand_notice_date),
-      release_date: convertToEpoch(release_date),
-      check_list_date: convertToEpoch(check_list_date),
-      validity_date: convertToEpoch(validity_date),
-      po_date: convertToEpoch(po_date),
-      extension_date1: convertToEpoch(extension_date1),
-      extension_date2: convertToEpoch(extension_date2),
-      extension_date3: convertToEpoch(extension_date3),
-      extension_date4: convertToEpoch(extension_date4),
-      extension_date5: convertToEpoch(extension_date5),
-      extension_date6: convertToEpoch(extension_date6),
-      claim_priod: convertToEpoch(claim_priod),
-      reference_no: reference_no,
-      status: "FORWARD_TO_FINANCE",
-      remarks: "Forwarded to Finance Department",
-    };
-    const d = await postAPI("/po/sdbg/sdbgSubmitByDealingOfficer", form, token);
-    if (d?.status) {
-      toast.success(d?.message);
+    let status = await BGEntry(formDatainput, token);
+    if (status) {
       setIsPopup(false);
       setIsEntryPopup(false);
-      setFormDatainput({
-        purchasing_doc_no: "",
-        bank_name: "",
-        branch_name: "",
-        bank_addr1: "",
-        bank_addr2: "",
-        bank_addr3: "",
-        bank_city: "",
-        bank_pin_code: "",
-        bg_no: "",
-        bg_date: "",
-        bg_ammount: "",
-        department: "",
-        po_date: "",
-        yard_no: "",
-        validity_date: "",
-        claim_priod: "",
-        check_list_reference: "",
-        check_list_date: "",
-        bg_type: "SDBG",
-        vendor_name: "",
-        vendor_address1: "",
-        vendor_address2: "",
-        vendor_address3: "",
-        vendor_city: "",
-        vendor_pin_code: "",
-        confirmation: "",
-        extension_date1: "",
-        extension_date2: "",
-        extension_date3: "",
-        extension_date4: "",
-        extension_date5: "",
-        extension_date6: "",
-        release_date: "",
-        demand_notice_date: "",
-        entension_letter_date: "",
-        status: "",
-        created_at: "",
-        created_by: "",
-        remarks: "",
-        assigned_to: "",
-      });
+      setFormDatainput(bgInputs);
       getSDBG();
       getSDBGEntry();
-    } else {
-      toast.error(d?.message);
     }
   };
 
@@ -339,48 +179,7 @@ const SDBGSub = () => {
       toast.success(d?.message);
       setIsPopup(false);
       setIsEntryPopup(false);
-      setFormDatainput({
-        purchasing_doc_no: "",
-        bank_name: "",
-        branch_name: "",
-        bank_addr1: "",
-        bank_addr2: "",
-        bank_addr3: "",
-        bank_city: "",
-        bank_pin_code: "",
-        bg_no: "",
-        bg_date: "",
-        bg_ammount: "",
-        department: "",
-        po_date: "",
-        yard_no: "",
-        validity_date: "",
-        claim_priod: "",
-        check_list_reference: "",
-        check_list_date: "",
-        bg_type: "SDBG",
-        vendor_name: "",
-        vendor_address1: "",
-        vendor_address2: "",
-        vendor_address3: "",
-        vendor_city: "",
-        vendor_pin_code: "",
-        confirmation: "",
-        extension_date1: "",
-        extension_date2: "",
-        extension_date3: "",
-        extension_date4: "",
-        extension_date5: "",
-        extension_date6: "",
-        release_date: "",
-        demand_notice_date: "",
-        entension_letter_date: "",
-        status: "",
-        created_at: "",
-        created_by: "",
-        remarks: "",
-        assigned_to: "",
-      });
+      setFormDatainput(bgInputs);
       getSDBG();
       getSDBGEntry();
     } else {
@@ -446,13 +245,27 @@ const SDBGSub = () => {
     }
   };
 
+  useEffect(() => {
+    if (allsdbg && allsdbg.length > 0) {
+      const gData = allsdbg.reduce((result, item) => {
+        const actionType = item.action_type;
+        if (!result[actionType]) {
+          result[actionType] = [];
+        }
+        result[actionType].push(item);
+        return result;
+      }, {});
+      setGroupedBG(gData);
+    }
+  }, [allsdbg]);
+
   return (
     <>
       <div className="d-flex flex-column flex-root">
         <div className="page d-flex flex-row flex-column-fluid">
           <SideBar />
           <div className="wrapper d-flex flex-column flex-row-fluid">
-            <Header title={"SDBG Submission"} id={id} />
+            <Header title={"Security Deposits Status"} id={id} />
             <div className="content d-flex flex-column flex-column-fluid">
               <div className="post d-flex flex-column-fluid">
                 <div className="container">
@@ -493,17 +306,6 @@ const SDBGSub = () => {
                                 </button>
                               </>
                             )} */}
-                            {/* for finance officer  */}
-                            {user?.department_id === 15 && (
-                              <>
-                                <button
-                                  onClick={() => setIsCheckEntryPopup(true)}
-                                  className="btn fw-bold btn-primary me-3"
-                                >
-                                  Check SDBG Entry
-                                </button>
-                              </>
-                            )}
                           </>
                         )}
                         {/* Vendor  */}
@@ -526,74 +328,167 @@ const SDBGSub = () => {
                             <table className="table table-striped table-bordered table_height">
                               <thead>
                                 <tr className="border-0">
-                                  <th className="min-w-150px">Ref No </th>
+                                  <th className="min-w-170px">Ref No </th>
                                   <th className="min-w-150px">DateTime </th>
-                                  <th className="min-w-150px">File</th>
+                                  <th className="min-w-90px">File</th>
                                   <th className="min-w-150px">Updated By</th>
                                   <th className="min-w-150px">Remarks</th>
-                                  <th className="min-w-150px">Status</th>
-                                  {isDO && (
+                                  <th>Status</th>
+                                  {(isDO || user?.department_id === 15) && (
                                     <th className="min-w-150px">Action</th>
                                   )}
                                 </tr>
                               </thead>
                               <tbody style={{ maxHeight: "100%" }}>
-                                {allsdbg &&
+                                {Object.keys(groupedBG).map((it, index) => {
+                                  let items = groupedBG[it];
+                                  return (
+                                    <Fragment key={index}>
+                                      <tr>
+                                        <td colSpan={10}>
+                                          <b>{it}</b>
+                                        </td>
+                                      </tr>
+                                      {items &&
+                                        items.map((item, index) => {
+                                          return (
+                                            <tr key={index}>
+                                              <td className="table_center">
+                                                {item?.reference_no}
+                                              </td>
+                                              <td className="table_center">
+                                                {item?.created_at &&
+                                                  new Date(
+                                                    item?.created_at
+                                                  ).toLocaleString()}
+                                              </td>
+                                              <td>
+                                                <a
+                                                  href={`${process.env.REACT_APP_PDF_URL}/submitSDBG/${item.file_name}`}
+                                                  target="_blank"
+                                                  rel="noreferrer"
+                                                >
+                                                  Check File
+                                                </a>
+                                              </td>
+                                              <td>
+                                                {item?.created_by_name} (
+                                                {item?.created_by_id})
+                                              </td>
+                                              <td>{item?.remarks}</td>
+                                              <td
+                                                className={`${clrLegend(
+                                                  item?.status
+                                                )} bold`}
+                                              >
+                                                {item?.status}
+                                              </td>
+                                              {isDO &&
+                                                item?.status !==
+                                                  FORWARD_TO_FINANCE && (
+                                                  <td>
+                                                    <button
+                                                      onClick={() => {
+                                                        setIsEntryPopup(true);
+                                                        setFormDatainput({
+                                                          ...formDatainput,
+                                                          reference_no:
+                                                            item?.reference_no,
+                                                        });
+                                                      }}
+                                                      className="btn fw-bold btn-primary me-3"
+                                                    >
+                                                      ACTION
+                                                    </button>
+                                                  </td>
+                                                )}
+                                              {item?.status ===
+                                                FORWARD_TO_FINANCE && (
+                                                <>
+                                                  {user?.department_id ===
+                                                    15 && (
+                                                    <td>
+                                                      {sdbgEntry?.reference_no ? (
+                                                        <button
+                                                          onClick={() => {
+                                                            setIsCheckEntryPopup(
+                                                              true
+                                                            );
+                                                          }}
+                                                          className="btn fw-bold btn-primary me-3"
+                                                        >
+                                                          ACTION
+                                                        </button>
+                                                      ) : (
+                                                        "Waiting for BG Entry by Dealing Officer"
+                                                      )}
+                                                    </td>
+                                                  )}
+                                                </>
+                                              )}
+                                            </tr>
+                                          );
+                                        })}
+                                    </Fragment>
+                                  );
+                                })}
+                                {/* {allsdbg &&
                                   allsdbg.length > 0 &&
                                   allsdbg.map((item, index) => (
-                                    <tr key={index}>
-                                      <td>{item?.reference_no}</td>
-                                      <td className="table_center">
-                                        {item?.created_at &&
-                                          new Date(
-                                            item?.created_at
-                                          ).toLocaleString()}
-                                      </td>
-                                      <td>
-                                        <a
-                                          href={`${process.env.REACT_APP_PDF_URL}/submitSDBG/${item.file_name}`}
-                                          target="_blank"
-                                          rel="noreferrer"
+                                    <Fragment key={index}>
+                                      <tr>
+                                        <b>Lorem ipsum dolor sit amet.</b>
+                                      </tr>
+                                      <tr>
+                                        <td>{item?.reference_no}</td>
+                                        <td className="table_center">
+                                          {item?.created_at &&
+                                            new Date(
+                                              item?.created_at
+                                            ).toLocaleString()}
+                                        </td>
+                                        <td>
+                                          <a
+                                            href={`${process.env.REACT_APP_PDF_URL}/submitSDBG/${item.file_name}`}
+                                            target="_blank"
+                                            rel="noreferrer"
+                                          >
+                                            Check File
+                                          </a>
+                                        </td>
+                                        <td>
+                                          {item?.created_by_name} (
+                                          {item?.created_by_id})
+                                        </td>
+                                        <td>{item?.remarks}</td>
+                                        <td
+                                          className={`${clrLegend(
+                                            item?.status
+                                          )} bold`}
                                         >
-                                          Check File
-                                        </a>
-                                      </td>
-                                      <td>
-                                        {item?.created_by_name} (
-                                        {item?.created_by_id})
-                                      </td>
-                                      <td>{item?.remarks}</td>
-                                      <td
-                                        className={
-                                          item?.status === "REJECTED"
-                                            ? "red"
-                                            : item?.status === "SUBMITED"
-                                            ? "blue"
-                                            : "black"
-                                        }
-                                      >
-                                        {item?.status}
-                                      </td>
-                                      {isDO &&
-                                        item?.updated_by === "VENDOR" && (
-                                          <td>
-                                            <button
-                                              onClick={() => {
-                                                setIsEntryPopup(true);
-                                                setFormDatainput({
-                                                  ...formDatainput,
-                                                  reference_no:
-                                                    item?.reference_no,
-                                                });
-                                              }}
-                                              className="btn fw-bold btn-primary me-3"
-                                            >
-                                              SDBG Entry
-                                            </button>
-                                          </td>
-                                        )}
-                                    </tr>
-                                  ))}
+                                          {item?.status}
+                                        </td>
+                                        {isDO &&
+                                          item?.updated_by === "VENDOR" && (
+                                            <td>
+                                              <button
+                                                onClick={() => {
+                                                  setIsEntryPopup(true);
+                                                  setFormDatainput({
+                                                    ...formDatainput,
+                                                    reference_no:
+                                                      item?.reference_no,
+                                                  });
+                                                }}
+                                                className="btn fw-bold btn-primary me-3"
+                                              >
+                                                ACTION
+                                              </button>
+                                            </td>
+                                          )}
+                                      </tr>
+                                    </Fragment>
+                                  ))} */}
                               </tbody>
                             </table>
                           </div>
@@ -638,20 +533,13 @@ const SDBGSub = () => {
                     value={selectedActionType}
                   >
                     <option value="">Choose Action Type</option>
-                    <option value="SDBG SUBMISSION">SDBG SUBMISSION</option>
-
-                    <option value="INDEMNITY BOND SUBMISSION">
-                      INDEMNITY BOND SUBMISSION
-                    </option>
-                    <option value="DEMAND DRAFT SUBMISSION">
-                      DEMAND DRAFT SUBMISSION
-                    </option>
-                    <option value="PBG SUBMISISON">PBG SUBMISISON</option>
-                    <option value="ABG SUBMISISON">
-                      Advanced BG SUBMISISON
-                    </option>
-                    <option value="REMARKS">REMARKS</option>
-                    <option value="OTHERS">OTHERS</option>
+                    <option value={ACTION_SDBG}>{ACTION_SDBG}</option>
+                    <option value={ACTION_IB}>{ACTION_IB}</option>
+                    <option value={ACTION_DD}>{ACTION_DD}</option>
+                    <option value={ACTION_PBG}>{ACTION_PBG}</option>
+                    <option value={ACTION_ABG}>{ACTION_ABG}</option>
+                    <option value={ACTION_RM}>{ACTION_RM}</option>
+                    <option value={ACTION_O}>{ACTION_O}</option>
                   </select>
                 </div>
               </div>
@@ -717,7 +605,7 @@ const SDBGSub = () => {
           <div className="card card-xxl-stretch mb-5 mb-xxl-8">
             <div className="card-header border-0 pt-5">
               <h3 className="card-title align-items-start flex-column">
-                <span className="card-label fw-bold fs-3 mb-1">SDBG Entry</span>
+                <span className="card-label fw-bold fs-3 mb-1">BG Entry</span>
               </h3>
               <button
                 className="btn fw-bold btn-danger"
@@ -726,7 +614,6 @@ const SDBGSub = () => {
                 Close
               </button>
             </div>
-            {console.log(formDatainput)}
             <div className="row">
               <div className="col-md-6 col-12">
                 <div className="mb-3">
@@ -817,10 +704,11 @@ const SDBGSub = () => {
                   <label className="form-label">Bank Pincode</label>&nbsp;&nbsp;
                   <span className="mandatorystart">*</span>
                   <input
-                    type="text"
+                    type="number"
                     className="form-control"
                     name="bank_pin_code"
                     onChange={handleInputChange2}
+                    onWheel={(e) => inputOnWheelPrevent(e)}
                   />
                 </div>
               </div>
@@ -861,46 +749,6 @@ const SDBGSub = () => {
                     name="bg_ammount"
                     onChange={handleInputChange2}
                     onWheel={(e) => inputOnWheelPrevent(e)}
-                  />
-                </div>
-              </div>
-
-              <div className="col-md-6 col-12">
-                <div className="mb-3">
-                  <label className="form-label">Department</label>&nbsp;&nbsp;
-                  <span className="mandatorystart">*</span>
-                  <input
-                    type="text"
-                    className="form-control"
-                    name="department"
-                    onChange={handleInputChange2}
-                  />
-                </div>
-              </div>
-              <div className="col-md-6 col-12">
-                <div className="mb-3">
-                  <label className="form-label">PO Date</label>&nbsp;&nbsp;
-                  <span className="mandatorystart">*</span>
-                  <DatePicker
-                    selected={formDatainput?.po_date}
-                    onChange={(date) =>
-                      setFormDatainput({ ...formDatainput, po_date: date })
-                    }
-                    dateFormat="dd/MM/yyyy"
-                    className="form-control"
-                  />
-                </div>
-              </div>
-              <div className="col-md-6 col-12">
-                <div className="mb-3">
-                  <label className="form-label">PO No</label>
-                  <input
-                    type="text"
-                    className="form-control"
-                    name="department"
-                    value={id}
-                    disabled
-                    // onChange={handleInputChange2}
                   />
                 </div>
               </div>
@@ -953,37 +801,6 @@ const SDBGSub = () => {
               </div>
               <div className="col-md-6 col-12">
                 <div className="mb-3">
-                  <label className="form-label">Checklist Reference</label>
-                  &nbsp;&nbsp;
-                  <span className="mandatorystart">*</span>
-                  <input
-                    type="text"
-                    className="form-control"
-                    name="check_list_reference"
-                    onChange={handleInputChange2}
-                  />
-                </div>
-              </div>
-              <div className="col-md-6 col-12">
-                <div className="mb-3">
-                  <label className="form-label">Checklist Date</label>
-                  &nbsp;&nbsp;
-                  <span className="mandatorystart">*</span>
-                  <DatePicker
-                    selected={formDatainput?.check_list_date}
-                    onChange={(date) =>
-                      setFormDatainput({
-                        ...formDatainput,
-                        check_list_date: date,
-                      })
-                    }
-                    dateFormat="dd/MM/yyyy"
-                    className="form-control"
-                  />
-                </div>
-              </div>
-              <div className="col-md-6 col-12">
-                <div className="mb-3">
                   <label className="form-label">BG Type</label>&nbsp;&nbsp;
                   <span className="mandatorystart">*</span>
                   <select
@@ -997,227 +814,8 @@ const SDBGSub = () => {
                   >
                     <option value="SDBG">SDBG</option>
                     <option value="PBG">PBG</option>
-                    <option value="Advance BG">Advance BG</option>
+                    <option value="ADVANCED BG">ADVANCED BG</option>
                   </select>
-                  {/* <input
-                    type="text"
-                    className="form-control"
-                    name="bg_type"
-                    onChange={handleInputChange2}
-                  /> */}
-                </div>
-              </div>
-              <div className="col-md-6 col-12">
-                <div className="mb-3">
-                  <label className="form-label">Vendor Name</label>&nbsp;&nbsp;
-                  <span className="mandatorystart">*</span>
-                  <input
-                    type="text"
-                    className="form-control"
-                    name="vendor_name"
-                    onChange={handleInputChange2}
-                  />
-                </div>
-              </div>
-              <div className="col-md-6 col-12">
-                <div className="mb-3">
-                  <label className="form-label">Vendor Address1</label>
-                  &nbsp;&nbsp;
-                  <span className="mandatorystart">*</span>
-                  <input
-                    type="text"
-                    className="form-control"
-                    name="vendor_address1"
-                    onChange={handleInputChange2}
-                  />
-                </div>
-              </div>
-              <div className="col-md-6 col-12">
-                <div className="mb-3">
-                  <label className="form-label">Vendor Address2</label>
-                  <input
-                    type="text"
-                    className="form-control"
-                    name="vendor_address2"
-                    onChange={handleInputChange2}
-                  />
-                </div>
-              </div>
-              <div className="col-md-6 col-12">
-                <div className="mb-3">
-                  <label className="form-label">Vendor Address3</label>
-                  <input
-                    type="text"
-                    className="form-control"
-                    name="vendor_address3"
-                    onChange={handleInputChange2}
-                  />
-                </div>
-              </div>
-              <div className="col-md-6 col-12">
-                <div className="mb-3">
-                  <label className="form-label">Vendor City</label>&nbsp;&nbsp;
-                  <span className="mandatorystart">*</span>
-                  <input
-                    type="text"
-                    className="form-control"
-                    name="vendor_city"
-                    onChange={handleInputChange2}
-                  />
-                </div>
-              </div>
-              <div className="col-md-6 col-12">
-                <div className="mb-3">
-                  <label className="form-label">Vendor Pincode</label>
-                  &nbsp;&nbsp;
-                  <span className="mandatorystart">*</span>
-                  <input
-                    type="text"
-                    className="form-control"
-                    name="vendor_pin_code"
-                    onChange={handleInputChange2}
-                  />
-                </div>
-              </div>
-              <div className="col-md-6 col-12">
-                <div className="mb-3">
-                  <label className="form-label">Extension Date1</label>
-                  <DatePicker
-                    selected={formDatainput?.extension_date1}
-                    onChange={(date) =>
-                      setFormDatainput({
-                        ...formDatainput,
-                        extension_date1: date,
-                      })
-                    }
-                    dateFormat="dd/MM/yyyy"
-                    className="form-control"
-                  />
-                </div>
-              </div>
-              <div className="col-md-6 col-12">
-                <div className="mb-3">
-                  <label className="form-label">Extension Date2</label>
-                  <DatePicker
-                    selected={formDatainput?.extension_date2}
-                    onChange={(date) =>
-                      setFormDatainput({
-                        ...formDatainput,
-                        extension_date2: date,
-                      })
-                    }
-                    dateFormat="dd/MM/yyyy"
-                    className="form-control"
-                  />
-                </div>
-              </div>
-              <div className="col-md-6 col-12">
-                <div className="mb-3">
-                  <label className="form-label">Extension Date3</label>
-                  <DatePicker
-                    selected={formDatainput?.extension_date3}
-                    onChange={(date) =>
-                      setFormDatainput({
-                        ...formDatainput,
-                        extension_date3: date,
-                      })
-                    }
-                    dateFormat="dd/MM/yyyy"
-                    className="form-control"
-                  />
-                </div>
-              </div>
-              <div className="col-md-6 col-12">
-                <div className="mb-3">
-                  <label className="form-label">Extension Date4</label>
-                  <DatePicker
-                    selected={formDatainput?.extension_date4}
-                    onChange={(date) =>
-                      setFormDatainput({
-                        ...formDatainput,
-                        extension_date4: date,
-                      })
-                    }
-                    dateFormat="dd/MM/yyyy"
-                    className="form-control"
-                  />
-                </div>
-              </div>
-              <div className="col-md-6 col-12">
-                <div className="mb-3">
-                  <label className="form-label">Extension Date5</label>
-                  <DatePicker
-                    selected={formDatainput?.extension_date5}
-                    onChange={(date) =>
-                      setFormDatainput({
-                        ...formDatainput,
-                        extension_date5: date,
-                      })
-                    }
-                    dateFormat="dd/MM/yyyy"
-                    className="form-control"
-                  />
-                </div>
-              </div>
-              <div className="col-md-6 col-12">
-                <div className="mb-3">
-                  <label className="form-label">Extension Date6</label>
-                  <DatePicker
-                    selected={formDatainput?.extension_date6}
-                    onChange={(date) =>
-                      setFormDatainput({
-                        ...formDatainput,
-                        extension_date6: date,
-                      })
-                    }
-                    dateFormat="dd/MM/yyyy"
-                    className="form-control"
-                  />
-                </div>
-              </div>
-              <div className="col-md-6 col-12">
-                <div className="mb-3">
-                  <label className="form-label">Release Date</label>
-                  <DatePicker
-                    selected={formDatainput?.release_date}
-                    onChange={(date) =>
-                      setFormDatainput({ ...formDatainput, release_date: date })
-                    }
-                    dateFormat="dd/MM/yyyy"
-                    className="form-control"
-                  />
-                </div>
-              </div>
-              <div className="col-md-6 col-12">
-                <div className="mb-3">
-                  <label className="form-label">Demand Notice Date</label>
-                  <DatePicker
-                    selected={formDatainput?.demand_notice_date}
-                    onChange={(date) =>
-                      setFormDatainput({
-                        ...formDatainput,
-                        demand_notice_date: date,
-                      })
-                    }
-                    dateFormat="dd/MM/yyyy"
-                    className="form-control"
-                  />
-                </div>
-              </div>
-              <div className="col-md-6 col-12">
-                <div className="mb-3">
-                  <label className="form-label">Entension Letter Date</label>
-                  <DatePicker
-                    selected={formDatainput?.entension_letter_date}
-                    onChange={(date) =>
-                      setFormDatainput({
-                        ...formDatainput,
-                        entension_letter_date: date,
-                      })
-                    }
-                    dateFormat="dd/MM/yyyy"
-                    className="form-control"
-                  />
                 </div>
               </div>
 
@@ -1228,7 +826,7 @@ const SDBGSub = () => {
                     className="btn fw-bold btn-primary"
                     type="submit"
                   >
-                    Forward To Finance
+                    FORWARD TO FINANCE
                   </button>
                   <button
                     onClick={() =>
@@ -1340,12 +938,12 @@ const SDBGSub = () => {
                 </div>
               </div>
 
-              <div className="col-md-6 col-12">
+              {/* <div className="col-md-6 col-12">
                 <div className="mb-3">
                   <label className="form-label">Department</label>
                   <p>{sdbgEntry?.department}</p>
                 </div>
-              </div>
+              </div> */}
               <div className="col-md-6 col-12">
                 <div className="mb-3">
                   <label className="form-label">PO Date</label>
@@ -1382,7 +980,7 @@ const SDBGSub = () => {
                   </p>
                 </div>
               </div>
-              <div className="col-md-6 col-12">
+              {/* <div className="col-md-6 col-12">
                 <div className="mb-3">
                   <label className="form-label">Checklist Reference</label>
                   <p>{sdbgEntry?.check_list_reference}</p>
@@ -1397,14 +995,14 @@ const SDBGSub = () => {
                       : ""}
                   </p>
                 </div>
-              </div>
+              </div> */}
               <div className="col-md-6 col-12">
                 <div className="mb-3">
                   <label className="form-label">BG Type</label>
                   <p>{sdbgEntry?.bg_type}</p>
                 </div>
               </div>
-              <div className="col-md-6 col-12">
+              {/* <div className="col-md-6 col-12">
                 <div className="mb-3">
                   <label className="form-label">Vendor Name</label>
                   <p>{sdbgEntry?.vendor_name}</p>
@@ -1439,8 +1037,8 @@ const SDBGSub = () => {
                   <label className="form-label">Vendor Pincode</label>
                   <p>{sdbgEntry?.vendor_pin_code}</p>
                 </div>
-              </div>
-              <div className="col-md-6 col-12">
+              </div> */}
+              {/* <div className="col-md-6 col-12">
                 <div className="mb-3">
                   <label className="form-label">Extension Date1</label>
                   <p>{sdbgEntry?.extension_date1}</p>
@@ -1493,7 +1091,7 @@ const SDBGSub = () => {
                   <label className="form-label">Entension Letter Date</label>
                   <p>{sdbgEntry?.entension_letter_date}</p>
                 </div>
-              </div>
+              </div> */}
               <div className="col-12">
                 <div className="mb-3 d-flex justify-content-between">
                   <button
