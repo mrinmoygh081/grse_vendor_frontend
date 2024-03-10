@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Mar 10, 2024 at 09:27 AM
+-- Generation Time: Mar 10, 2024 at 11:27 PM
 -- Server version: 10.4.28-MariaDB
 -- PHP Version: 8.1.17
 
@@ -36,6 +36,14 @@ CREATE TABLE `actualsubmissiondate` (
   `created_at` bigint(20) NOT NULL,
   `created_by_id` varchar(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `actualsubmissiondate`
+--
+
+INSERT INTO `actualsubmissiondate` (`id`, `purchasing_doc_no`, `milestoneId`, `milestoneText`, `actualSubmissionDate`, `created_at`, `created_by_id`) VALUES
+(4, '7800000040', 2, 'ACTUAL DRAWING SUBMISSION DATE', 1710099931723, 1710100675663, '600400'),
+(5, '7800000040', 3, 'ACTUAL QAP SUBMISSION DATE', 1710104406401, 1710104438658, '600951');
 
 -- --------------------------------------------------------
 
@@ -106,7 +114,8 @@ INSERT INTO `auth` (`id`, `user_type`, `department_id`, `internal_role_id`, `use
 (21, 0, 17, 1, 'Po dealing officer', '1234', 'Po dealing officer', '493834', '2024-01-23 16:44:53', NULL),
 (22, 2, 2, 1, 'CDO(drawing officer)', '1234', 'CDO(drawing officer)', '600400', '2024-01-23 16:44:53', NULL),
 (23, 0, 15, 2, 'grse_FINANCE_STAFF', '1234', 'grse_FINANCE_STAFF', '600202', '2024-01-23 16:44:53', NULL),
-(24, 0, 15, 2, 'grse_FINANCE_STAFF', '1234', 'grse_FINANCE_STAFF', '600203', '2024-01-23 16:44:53', NULL);
+(24, 0, 15, 2, 'grse_FINANCE_STAFF', '1234', 'grse_FINANCE_STAFF', '600203', '2024-01-23 16:44:53', NULL),
+(25, 12, 12, 1, 'grse_HR', '1234', 'grse_HR', '600247', '2024-01-23 16:44:53', NULL);
 
 -- --------------------------------------------------------
 
@@ -359,6 +368,18 @@ CREATE TABLE `drawing` (
   `created_at` bigint(20) NOT NULL,
   `created_by_id` varchar(200) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='drawing table';
+
+--
+-- Dumping data for table `drawing`
+--
+
+INSERT INTO `drawing` (`id`, `reference_no`, `purchasing_doc_no`, `file_name`, `vendor_code`, `file_path`, `remarks`, `status`, `actionType`, `updated_by`, `created_at`, `created_by_id`) VALUES
+(14, 'DW-1710098781784-7545', '7800000040', '1710098781757-sample.pdf', '50007545', 'uploads\\submitDrawing\\1710098781757-sample.pdf', 'HEllo', 'SUBMITTED', 'Upload Drawing ail Chain', 'VENDOR', 1710098781762, '50007545'),
+(15, 'DW-1710098781784-7545', '7800000040', NULL, '50007545', NULL, 'rej', 'REJECTED', 'Acknowledgement/Remarks', 'GRSE', 1710099486122, '600400'),
+(16, 'DW-1710099679836-7545', '7800000040', '1710099679814-sample.pdf', '50007545', 'uploads\\submitDrawing\\1710099679814-sample.pdf', 'DONE', 'SUBMITTED', 'Upload Drawing ail Chain', 'VENDOR', 1710099679818, '50007545'),
+(17, 'DW-1710099679836-7545', '7800000040', NULL, '50007545', NULL, 'fgd', 'REJECTED', 'Acknowledgement/Remarks', 'GRSE', 1710099725348, '600400'),
+(18, 'DW-1710099931737-7545', '7800000040', '1710099931720-sample.pdf', '50007545', 'uploads\\submitDrawing\\1710099931720-sample.pdf', 'klmlm', 'SUBMITTED', 'Upload Drawing ail Chain', 'VENDOR', 1710099931723, '50007545'),
+(20, 'DW-1710099931737-7545', '7800000040', NULL, '50007545', NULL, 'Apprving', 'APPROVED', 'Acknowledgement/Remarks', 'GRSE', 1710100675663, '600400');
 
 -- --------------------------------------------------------
 
@@ -649,6 +670,21 @@ CREATE TABLE `ilms` (
   `updated_by` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='drawing table';
 
+--
+-- Dumping data for table `ilms`
+--
+
+INSERT INTO `ilms` (`id`, `reference_no`, `purchasing_doc_no`, `file_name`, `file_path`, `remarks`, `status`, `vendor_code`, `type`, `created_at`, `created_by_id`, `updated_by`) VALUES
+(1, 'ILMS-1710078107489-7545', '7800000040', '1710078107407-VANtage Systech recruitment drive - B.Tech (Any Stream), BCA, MCA & M.Tech __ 2023 pass out batch (1).pdf', 'uploads\\submitILMS\\1710078107407-VANtage Systech recruitment drive - B.Tech (Any Stream), BCA, MCA & M.Tech __ 2023 pass out batch (1).pdf', 'mainakkkk', 'PENDING', '50007545', 'Upload ILMS', 1710078107488, '50007545', 'VENDOR'),
+(2, 'ILMS-1710078380095-7545', '7800000040', NULL, NULL, '', 'SUBMITTED', '50007545', 'Upload ILMS', 1710078380095, '50007545', 'VENDOR'),
+(3, 'ILMS-1710078380095-7545', '7800000040', NULL, NULL, 'hiii mainak', 'ACKNOWLEDGED', '50007545', 'Upload ILMS', 1710079102216, '600400', 'GRSE'),
+(4, 'ILMS-1710079298435-7545', '7800000040', '1710079298412-VANtage Systech recruitment drive - B.Tech (Any Stream), BCA, MCA & M.Tech __ 2023 pass out batch.pdf', 'uploads\\submitILMS\\1710079298412-VANtage Systech recruitment drive - B.Tech (Any Stream), BCA, MCA & M.Tech __ 2023 pass out batch.pdf', 'mddd', 'SUBMITTED', '50007545', 'Upload ILMS', 1710079298435, '50007545', 'VENDOR'),
+(5, 'ILMS-1710079298435-7545', '7800000040', '1710079298412-VANtage Systech recruitment drive - B.Tech (Any Stream), BCA, MCA & M.Tech __ 2023 pass out batch.pdf', 'uploads\\submitILMS\\1710079298412-VANtage Systech recruitment drive - B.Tech (Any Stream), BCA, MCA & M.Tech __ 2023 pass out batch.pdf', 'rejected', 'ACKNOWLEDGED', '50007545', 'Others', 1710079357051, '600400', 'GRSE'),
+(6, 'ILMS-1710079517868-7545', '7800000040', NULL, NULL, 'rejected d', 'SUBMITTED', '50007545', 'Others', 1710079517868, '50007545', 'VENDOR'),
+(7, 'ILMS-1710079517868-7545', '7800000040', NULL, NULL, 'rejected qq', 'REJECTED', '50007545', 'Others', 1710079635029, '600400', 'GRSE'),
+(8, 'ILMS-1710079517868-7545', '7800000040', NULL, NULL, '', 'REJECTED', '50007545', 'Others', 1710079655875, '600400', 'GRSE'),
+(9, 'ILMS-1710079517868-7545', '7800000040', NULL, NULL, 'apprived', 'APPROVED', '50007545', 'Remarks', 1710079681087, '600400', 'GRSE');
+
 -- --------------------------------------------------------
 
 --
@@ -701,7 +737,8 @@ INSERT INTO `inspection_call_letter` (`id`, `purchasing_doc_no`, `file_name`, `f
 (33, '7800000040', NULL, 0, 'REMARKS', '600300', NULL, 'Hello', 'GRSE', 1709814403072, '600300'),
 (34, '7800000040', NULL, 0, 'REMARKS', '600300', NULL, 'dsds', 'GRSE', 1709814421257, '600300'),
 (35, '7800000040', NULL, 0, 'REMARKS', '600300', NULL, 'ds', 'GRSE', 1709814470640, '600300'),
-(36, '7800000040', '1709814747189-sample.pdf', 0, 'UPLOAD FINAL INSPECTION/FATS CALL LETTER', '50007545', 'uploads\\inspectionCallLetter\\1709814747189-sample.pdf', 'Demmo', 'VENDOR', 1709814747191, '50007545');
+(36, '7800000040', '1709814747189-sample.pdf', 0, 'UPLOAD FINAL INSPECTION/FATS CALL LETTER', '50007545', 'uploads\\inspectionCallLetter\\1709814747189-sample.pdf', 'Demmo', 'VENDOR', 1709814747191, '50007545'),
+(37, '7800000040', '1710080960008-Birupaksha_Resume_All.pdf', 0, 'UPLOAD RM INSPECTION CALL LETTER', '50007545', 'uploads\\inspectionCallLetter\\1710080960008-Birupaksha_Resume_All.pdf', 'update mainak', 'VENDOR', 1710080960109, '50007545');
 
 -- --------------------------------------------------------
 
@@ -759,6 +796,7 @@ INSERT INTO `lfa1` (`LIFNR`, `LAND1`, `NAME1`, `ORT01`, `ORT02`, `PSTLZ`, `STRAS
 ('50000437', 'IN', 'TATA STEEL LTD', 'KOLKATA', NULL, '', '', NULL, '25', 'DOMV', NULL, 'EN', 'AAAFA1890Q', '033 2282 1687', '24AAAFA1890Q1Z9', '0000-00-00', NULL, NULL),
 ('50005041', 'IN', 'PriceWaterhouseCoopers Pvt Ltd', 'KOLKATA', NULL, '', '', NULL, '25', 'DOMV', NULL, 'EN', 'AABCP9181H', NULL, '19AABCP9181H1Z1', '0000-00-00', NULL, NULL),
 ('50007545', 'IN', 'DCG DATA -CORE SYSTEMS (INDIA) PRIV', 'KOLKATA', NULL, '700091', 'BG Block', NULL, '25', 'DOMV', NULL, 'EN', 'AAFCD4828F', NULL, '19AAFCD4828F1ZL', '0000-00-00', NULL, NULL),
+('50007546', 'IN', 'XYZ (INDIA) PRIV', 'KOLKATA', NULL, '700091', 'BG Block', NULL, '25', 'DOMV', NULL, 'EN', 'AAFCD4828F', NULL, '19AAFCD4828F1ZL', '0000-00-00', NULL, NULL),
 ('50007560', '900', 'dcg', 'ddd', 'jjdjd', '', '', 'kkkk', 'jjj', 'jeje', 'X', 'uuuu', '876545678', '9876789876', '6677882', '2024-02-24', NULL, NULL),
 ('50007561', '900', 'dcg', 'ddd', 'jjdjd', '', '', 'kkkk', 'jjj', 'jeje', 'y', 'AAAAA', '876545678', '9876789876', '6677882', '2024-02-24', NULL, NULL),
 ('50007562', '900', 'dcg', 'ddd', 'jjdjd', '', '', 'kkkk', 'jjj', 'jeje', 'y', 'uuuu', '876545678', '9876789876', '6677882', '2024-02-24', NULL, NULL),
@@ -1408,13 +1446,6 @@ CREATE TABLE `qap_save` (
   `created_at` bigint(20) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
---
--- Dumping data for table `qap_save`
---
-
-INSERT INTO `qap_save` (`id`, `purchasing_doc_no`, `file_name`, `file_path`, `remarks`, `created_by_id`, `created_at`) VALUES
-(9, '7800000040', '', '', 'Hello DEMO SAVED', '600229', 1709208203479);
-
 -- --------------------------------------------------------
 
 --
@@ -1440,6 +1471,24 @@ CREATE TABLE `qap_submission` (
   `created_by_id` varchar(200) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='drawing table';
 
+--
+-- Dumping data for table `qap_submission`
+--
+
+INSERT INTO `qap_submission` (`id`, `reference_no`, `purchasing_doc_no`, `file_name`, `vendor_code`, `assigned_from`, `assigned_to`, `is_assign`, `file_path`, `action_type`, `remarks`, `status`, `updated_by`, `created_at`, `created_by_name`, `created_by_id`) VALUES
+(1, 'QAP-1710088718638-7545', '7800000040', '1710088718636-sample.pdf', '50007545', NULL, NULL, 0, 'uploads\\qap\\1710088718636-sample.pdf', 'UPLOAD QAP File', 'GHGG', 'SUBMITTED', 'VENDOR', 1710088718638, 'DCG DATA -CORE SYSTEMS (INDIA) PRIV', '50007545'),
+(4, 'QAP-1710088718638-7545', '7800000040', NULL, '50007545', '600229', '600233', 0, NULL, 'ASSIGNED to QA Staff', 'ghfhfgh', 'ASSIGNED', 'GRSE', 1710102105877, NULL, '600229'),
+(5, 'QAP-1710088718638-7545', '7800000040', NULL, '50007545', '600229', '600951', 1, NULL, 'ASSIGNED to QA Staff', 'again', 'ASSIGNED', 'GRSE', 1710102145252, NULL, '600229'),
+(6, 'QAP-1710088718638-7545', '7800000040', NULL, '50007545', '600229', '600233', 0, NULL, 'undefined', 'working', 'UPDATED', 'GRSE', 1710103212331, 'ABHINIT RAJ', '600951'),
+(7, 'QAP-1710088718638-7545', '7800000040', NULL, '50007545', '600229', '600233', 0, NULL, 'undefined', 'gg', 'UPDATED', 'GRSE', 1710103247372, 'ABHINIT RAJ', '600951'),
+(8, 'QAP-1710088718638-7545', '7800000040', '1710103937923-POLICY_DOCUMENT.pdf', '600951', NULL, NULL, 0, 'uploads\\qap\\1710103937923-POLICY_DOCUMENT.pdf', 'UPLOAD QAP File', 'fffff', 'SUBMITTED', 'GRSE', 1710103938095, 'ABHINIT RAJ', '600951'),
+(9, 'QAP-1710104406401-7545', '7800000040', '1710104406399-sample.pdf', '50007545', NULL, NULL, 0, 'uploads\\qap\\1710104406399-sample.pdf', 'UPLOAD QAP File', 'DO ', 'SUBMITTED', 'VENDOR', 1710104406401, 'DCG DATA -CORE SYSTEMS (INDIA) PRIV', '50007545'),
+(10, 'QAP-1710104406401-7545', '7800000040', NULL, '50007545', '600229', '600233', 0, NULL, 'UPLOAD QAP File', 'hjgfhg', 'ACCEPTED', 'GRSE', 1710104438658, 'ABHINIT RAJ', '600951'),
+(11, 'QAP-1710104406401-7545', '7800000040', NULL, '50007545', '600229', '600233', 0, NULL, NULL, 'jkjnn', 'REJECTED', 'GRSE', 1710104456922, 'ABHINIT RAJ', '600951'),
+(12, 'QAP-1710106440131-7545', '7800000040', '1710106440125-sample.pdf', '50007545', NULL, NULL, 0, 'uploads\\qap\\1710106440125-sample.pdf', 'UPLOAD QAP File', 'dsaf', 'SUBMITTED', 'VENDOR', 1710106440131, 'DCG DATA -CORE SYSTEMS (INDIA) PRIV', '50007545'),
+(13, 'QAP-1710106440131-7545', '7800000040', NULL, '50007545', '600229', '600233', 0, NULL, NULL, 'fasdf', 'ACCEPTED', 'GRSE', 1710106491041, 'ABHINIT RAJ', '600951'),
+(14, 'QAP-1710106440131-7545', '7800000040', NULL, '50007545', '600229', '600233', 0, NULL, NULL, 'nvnv', 'APPROVED', 'GRSE', 1710106500096, 'ABHINIT RAJ', '600951');
+
 -- --------------------------------------------------------
 
 --
@@ -1448,7 +1497,7 @@ CREATE TABLE `qap_submission` (
 
 CREATE TABLE `sdbg` (
   `id` int(11) NOT NULL,
-  `reference_no` varchar(60) NOT NULL,
+  `reference_no` varchar(60) DEFAULT NULL,
   `purchasing_doc_no` varchar(11) NOT NULL,
   `file_name` varchar(500) DEFAULT NULL,
   `file_path` varchar(500) DEFAULT NULL,
@@ -1470,14 +1519,16 @@ CREATE TABLE `sdbg` (
 --
 
 INSERT INTO `sdbg` (`id`, `reference_no`, `purchasing_doc_no`, `file_name`, `file_path`, `remarks`, `status`, `action_type`, `vendor_code`, `assigned_from`, `assigned_to`, `last_assigned`, `created_at`, `created_by_name`, `created_by_id`, `updated_by`) VALUES
-(16, 'SD-1710054373029-7545', '7800000040', '1710054372611-WelcomeDocument.pdf', 'uploads\\submitSDBG\\1710054372611-WelcomeDocument.pdf', 'mainak', 'SUBMITED', 'SDBG SUBMISSION', '50007545', NULL, NULL, 0, 1710054373029, NULL, '50007545', 'VENDOR'),
-(17, 'SD-1710054446106-7545', '7800000040', '1710054445846-WelcomeDocument.pdf', 'uploads\\submitSDBG\\1710054445846-WelcomeDocument.pdf', 'hjghj', 'SUBMITED', 'DEMAND DRAFT SUBMISSION', '50007545', NULL, NULL, 0, 1710054446106, NULL, '50007545', 'VENDOR'),
-(18, 'SD-1710054468520-7545', '7800000040', '1710054468102-Approved WDC- AS-IS submission.pdf', 'uploads\\submitSDBG\\1710054468102-Approved WDC- AS-IS submission.pdf', NULL, 'SUBMITED', 'ADVANCED BG SUBMISISON', '50007545', NULL, NULL, 0, 1710054468520, NULL, '50007545', 'VENDOR'),
-(19, 'SD-1710054610653-7545', '7800000040', '1710054610420-WelcomeDocument.pdf', 'uploads\\submitSDBG\\1710054610420-WelcomeDocument.pdf', NULL, 'SUBMITED', 'ADVANCED BG SUBMISISON', '50007545', NULL, NULL, 0, 1710054610653, NULL, '50007545', 'VENDOR'),
-(20, 'SD-1710054656575-7545', '7800000040', '1710054656347-WelcomeDocument.pdf', 'uploads\\submitSDBG\\1710054656347-WelcomeDocument.pdf', ' ', 'SUBMITED', 'PBG SUBMISISON', '50007545', NULL, NULL, 0, 1710054656575, NULL, '50007545', 'VENDOR'),
-(21, 'SD-1710054703054-7545', '7800000040', '1710054702459-WelcomeDocument.pdf', 'uploads\\submitSDBG\\1710054702459-WelcomeDocument.pdf', ' retrtfghghuj', 'SUBMITED', 'DEMAND DRAFT SUBMISSION', '50007545', NULL, NULL, 0, 1710054703054, NULL, '50007545', 'VENDOR'),
-(22, 'SD-1710054757735-7545', '7800000040', '1710054757474-CollectionReceipt.pdf', 'uploads\\submitSDBG\\1710054757474-CollectionReceipt.pdf', '    hlkjhkjhk', 'SUBMITED', 'ADVANCED BG SUBMISISON', '50007545', NULL, NULL, 0, 1710054757736, NULL, '50007545', 'VENDOR'),
-(23, 'SD-1710054373029-7545', '7800000040', '1710054372611-WelcomeDocument.pdf', 'uploads\\submitSDBG\\1710054372611-WelcomeDocument.pdf', 'SDBG entry forwarded to Finance.', 'FORWARD_TO_FINANCE', 'SDBG SUBMISSION', '50007545', '493834', NULL, 0, 1710055906188, 'Dealing officer', '493834', 'GRSE');
+(26, 'SD-1710079295202-7545', '7800000040', '1710079295187-sample.pdf', 'uploads\\submitSDBG\\1710079295187-sample.pdf', 'DEMO', 'SUBMITTED', 'SDBG SUBMISSION', '50007545', NULL, NULL, 0, 1710079295203, NULL, '50007545', 'VENDOR'),
+(27, 'SD-1710079295202-7545', '7800000040', '1710079295187-sample.pdf', 'uploads\\submitSDBG\\1710079295187-sample.pdf', 'SDBG entry forwarded to Finance.', 'FORWARD_TO_FINANCE', 'SDBG SUBMISSION', '50007545', '493834', NULL, 0, 1710079555509, 'Dealing officer', '493834', 'GRSE'),
+(28, 'SD-1710079598945-7545', '7800000040', '1710079598935-sample.pdf', 'uploads\\submitSDBG\\1710079598935-sample.pdf', 'Demo', 'SUBMITTED', 'SDBG SUBMISSION', '50007545', NULL, NULL, 0, 1710079598945, NULL, '50007545', 'VENDOR'),
+(29, 'SD-1710079629271-7545', '7800000040', '1710079629261-sample.pdf', 'uploads\\submitSDBG\\1710079629261-sample.pdf', 'DEMO', 'SUBMITTED', 'DEMAND DRAFT SUBMISSION', '50007545', NULL, NULL, 0, 1710079629272, NULL, '50007545', 'VENDOR'),
+(30, 'SD-1710079648296-7545', '7800000040', '1710079648285-sample.pdf', 'uploads\\submitSDBG\\1710079648285-sample.pdf', 'HELLO', 'SUBMITTED', 'ADVANCED BG SUBMISISON', '50007545', NULL, NULL, 0, 1710079648296, NULL, '50007545', 'VENDOR'),
+(31, 'SD-1710079629271-7545', '7800000040', '1710079629261-sample.pdf', 'uploads\\submitSDBG\\1710079629261-sample.pdf', 'SDBG entry forwarded to Finance.', 'FORWARD_TO_FINANCE', 'DEMAND DRAFT SUBMISSION', '50007545', '493834', NULL, 0, 1710079816517, 'Dealing officer', '493834', 'GRSE'),
+(32, 'SD-1710079648296-7545', '7800000040', '1710079648285-sample.pdf', 'uploads\\submitSDBG\\1710079648285-sample.pdf', 'This SDBG is REJECTED', 'REJECTED', 'ADVANCED BG SUBMISISON', '50007545', NULL, NULL, 0, 1710079825362, 'Dealing officer', '493834', 'GRSE'),
+(33, 'SD-1710079295202-7545', '7800000040', '1710079295187-sample.pdf', 'uploads\\submitSDBG\\1710079295187-sample.pdf', 'Rejected by Finance Officer', 'REJECTED', 'SDBG SUBMISSION', '50007545', '600200', NULL, 1, 1710083885126, 'finance dept', '600200', 'GRSE'),
+(34, 'SD-1710085832092-7545', '7800000040', '1710085831805-Website.pdf', 'uploads\\submitSDBG\\1710085831805-Website.pdf', 'md1', 'SUBMITTED', 'SDBG SUBMISSION', '50007545', NULL, NULL, 0, 1710085832092, NULL, '50007545', 'VENDOR'),
+(35, 'SD-1710085832092-7545', '7800000040', '1710085831805-Website.pdf', 'uploads\\submitSDBG\\1710085831805-Website.pdf', 'BG entry forwarded to Finance.', 'FORWARD_TO_FINANCE', 'SDBG SUBMISSION', '50007545', '493834', NULL, 0, 1710086490587, 'Dealing officer', '493834', 'GRSE');
 
 -- --------------------------------------------------------
 
@@ -1555,7 +1606,9 @@ CREATE TABLE `sdbg_entry` (
 --
 
 INSERT INTO `sdbg_entry` (`id`, `purchasing_doc_no`, `bank_name`, `branch_name`, `ifsc_code`, `bank_addr1`, `bank_addr2`, `bank_addr3`, `bank_city`, `bank_pin_code`, `bg_no`, `bg_date`, `bg_ammount`, `po_date`, `yard_no`, `validity_date`, `claim_priod`, `check_list_reference`, `check_list_date`, `bg_type`, `vendor_name`, `vendor_address1`, `vendor_address2`, `vendor_address3`, `vendor_city`, `vendor_pin_code`, `extension_date1`, `extension_date2`, `extension_date3`, `extension_date4`, `extension_date5`, `extension_date6`, `release_date`, `demand_notice_date`, `entension_letter_date`, `status`, `created_at`, `created_by`) VALUES
-(4, '7800000040', 'sTATE Bank', 'SBIN0012572', '', 'PATHAKPARA', 'address2', 'address3', 'MILKI', '732209', '123456', 1712169000, 4555, NULL, '30', 1712255400, '1712082600', '', 10, 'SDBG', NULL, NULL, NULL, NULL, NULL, NULL, 0, NULL, NULL, NULL, NULL, NULL, 0, 0, NULL, 'FORWARD_TO_FINANCE', 1710055906163, '493834');
+(6, '7800000040', 'SBI', 'Salt Lake', '', 'PATHAKPARA', NULL, NULL, 'MILKI', '732209', '123456', 1712255400, 90000, 20230910000000, '10', 1711391400, '1711650600', 'SD-1710079295202-7545', 1710079555478, 'SDBG', 'DCG DATA -CORE SYSTEMS (INDIA) PRIV', 'BG Block', NULL, NULL, 'KOLKATA', '700091', 0, NULL, NULL, NULL, NULL, NULL, 0, 0, NULL, 'FORWARD_TO_FINANCE', 1710079555478, '493834'),
+(7, '7800000040', 'sTATE Bank', 'SBIN0012572', '', 'PATHAKPARA', 'address2', 'address3', 'MILKI', '732209', '123456', 1712169000, 6000, 20230910000000, '20', 1712255400, '1712255400', 'SD-1710079629271-7545', 1710079816489, 'SDBG', 'DCG DATA -CORE SYSTEMS (INDIA) PRIV', 'BG Block', NULL, NULL, 'KOLKATA', '700091', 0, NULL, NULL, NULL, NULL, NULL, 0, 0, NULL, 'FORWARD_TO_FINANCE', 1710079816489, '493834'),
+(8, '7800000040', 'dgfdg', 'fgfhgf', '', 'new town, kolkata, India', 'gfhbf', 'ghjhg', 'kolkata', '157', 'rrtyt', 1710268200, 12, 20230910000000, '23', 1709749800, '1710268200', 'SD-1710085832092-7545', 1710086490565, 'SDBG', 'DCG DATA -CORE SYSTEMS (INDIA) PRIV', 'BG Block', NULL, NULL, 'KOLKATA', '700091', 0, NULL, NULL, NULL, NULL, NULL, 0, 0, NULL, 'FORWARD_TO_FINANCE', 1710086490565, '493834');
 
 -- --------------------------------------------------------
 
@@ -1599,15 +1652,8 @@ CREATE TABLE `shipping_documents` (
 --
 
 INSERT INTO `shipping_documents` (`id`, `purchasing_doc_no`, `file_name`, `file_type_id`, `file_type_name`, `vendor_code`, `file_path`, `remarks`, `updated_by`, `created_at`, `created_by_id`) VALUES
-(1, '4700013227', 'a.pdf', 1, '', '500012', 'uploads/shippingDocs', 'new', 'VENDOR', 1697106743, '622009'),
-(2, '13141411411', '1706525062753-setup ftp server in Linux server.pdf', 1, '', '600232', 'uploads\\inspectionCallLetter\\1706525062753-setup ftp server in Linux server.pdf', 'new', 'GRSE', 1706525062760, '600232'),
-(3, '13141411411', '1706525565309-setup ftp server in Linux server.pdf', 1, '', '600232', 'uploads\\inspectionCallLetter\\1706525565309-setup ftp server in Linux server.pdf', 'new', 'GRSE', 1706525565315, '600232'),
-(4, '13141411411', '1706525619079-setup ftp server in Linux server.pdf', 1, '', '600232', 'uploads\\shippingDocuments\\1706525619079-setup ftp server in Linux server.pdf', 'new', 'GRSE', 1706525619086, '600232'),
-(5, '13141411411', '1706525623733-setup ftp server in Linux server.pdf', 1, '', '600232', 'uploads\\shippingDocuments\\1706525623733-setup ftp server in Linux server.pdf', 'new', 'GRSE', 1706525623735, '600232'),
-(6, '13141411411', '1706594631522-setup ftp server in Linux server.pdf', 1, 'my', '600232', 'uploads\\shippingDocuments\\1706594631522-setup ftp server in Linux server.pdf', 'new', 'GRSE', 1706594631525, '600232'),
-(7, '7800000040', '1706693561805-sample.pdf', 1, 'WDC', '493834', 'uploads\\shippingDocuments\\1706693561805-sample.pdf', 'TEST', 'GRSE', 1706693561811, '493834'),
-(8, '7800000040', '1707475728724-sample.pdf', 2, 'Final Dispatch Clearance', '50007545', 'uploads\\shippingDocuments\\1707475728724-sample.pdf', 'fasdf', 'VENDOR', 1707475728726, '50007545'),
-(9, '7800000040', NULL, 0, '', '493834', NULL, 'fdsfdas', 'GRSE', 1707475982609, '493834');
+(19, '7800000040', NULL, 0, '', '50007545', NULL, NULL, 'VENDOR', 1710108583519, '50007545'),
+(20, '7800000040', '1710108755791-WelcomeDocument.pdf', 0, 'Manufacturers test certificates', '50007545', 'uploads\\shippingDocuments\\1710108755791-WelcomeDocument.pdf', 'fsd', 'VENDOR', 1710108756068, '50007545');
 
 -- --------------------------------------------------------
 
@@ -2393,13 +2439,13 @@ ALTER TABLE `zpo_milestone`
 -- AUTO_INCREMENT for table `actualsubmissiondate`
 --
 ALTER TABLE `actualsubmissiondate`
-  MODIFY `id` int(5) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int(5) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT for table `auth`
 --
 ALTER TABLE `auth`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=25;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=26;
 
 --
 -- AUTO_INCREMENT for table `bill_registration`
@@ -2423,7 +2469,7 @@ ALTER TABLE `depertment_master`
 -- AUTO_INCREMENT for table `drawing`
 --
 ALTER TABLE `drawing`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
 
 --
 -- AUTO_INCREMENT for table `emp_department_list`
@@ -2441,13 +2487,13 @@ ALTER TABLE `icgrn`
 -- AUTO_INCREMENT for table `ilms`
 --
 ALTER TABLE `ilms`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- AUTO_INCREMENT for table `inspection_call_letter`
 --
 ALTER TABLE `inspection_call_letter`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=37;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=38;
 
 --
 -- AUTO_INCREMENT for table `internal_role_master`
@@ -2513,19 +2559,19 @@ ALTER TABLE `privilege`
 -- AUTO_INCREMENT for table `qap_save`
 --
 ALTER TABLE `qap_save`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
 
 --
 -- AUTO_INCREMENT for table `qap_submission`
 --
 ALTER TABLE `qap_submission`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
 
 --
 -- AUTO_INCREMENT for table `sdbg`
 --
 ALTER TABLE `sdbg`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=24;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=36;
 
 --
 -- AUTO_INCREMENT for table `sdbg_acknowledgement`
@@ -2537,7 +2583,7 @@ ALTER TABLE `sdbg_acknowledgement`
 -- AUTO_INCREMENT for table `sdbg_entry`
 --
 ALTER TABLE `sdbg_entry`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT for table `sdbg_return_submisson`
@@ -2549,7 +2595,7 @@ ALTER TABLE `sdbg_return_submisson`
 -- AUTO_INCREMENT for table `shipping_documents`
 --
 ALTER TABLE `shipping_documents`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
 
 --
 -- AUTO_INCREMENT for table `sub_dept`
