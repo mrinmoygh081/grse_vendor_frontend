@@ -236,18 +236,13 @@ const SDBGSub = () => {
       token
     );
 
+    console.log(data);
     if (data?.status) {
       setIsCheckEntryPopup(false);
       getSDBG();
-      if (flag === "ACCEPTED") {
-        toast.success(remarks);
-      } else if (flag === "RETURN_TO_DO") {
-        toast.warn(remarks);
-      } else if (flag === "REJECTED") {
-        toast.error(remarks);
-      } else {
-        toast.warn("Something went wrong!");
-      }
+      toast.success(data?.message);
+    } else {
+      toast.warn(data?.message);
     }
   };
 
@@ -467,7 +462,14 @@ const SDBGSub = () => {
               </h3>
               <button
                 className="btn fw-bold btn-danger"
-                onClick={() => setIsPopup(false)}
+                onClick={() => {
+                  setIsPopup(false);
+                  setSelectedActionType("");
+                  setFormData({
+                    sdbgFile: null,
+                    remarks: "",
+                  });
+                }}
               >
                 Close
               </button>
@@ -562,7 +564,10 @@ const SDBGSub = () => {
               </h3>
               <button
                 className="btn fw-bold btn-danger"
-                onClick={() => setIsEntryPopup(false)}
+                onClick={() => {
+                  setIsEntryPopup(false);
+                  setFormDatainput(bgInputs);
+                }}
               >
                 Close
               </button>
@@ -818,7 +823,7 @@ const SDBGSub = () => {
             <div className="card-header border-0 pt-5">
               <h3 className="card-title align-items-start flex-column">
                 <span className="card-label fw-bold fs-3 mb-1">
-                  Check SDBG Entry
+                  Check BG Entry
                 </span>
               </h3>
               <button
@@ -854,18 +859,26 @@ const SDBGSub = () => {
                   <p>{sdbgEntry?.bank_addr1}</p>
                 </div>
               </div>
-              <div className="col-md-6 col-12">
-                <div className="mb-3">
-                  <label className="form-label">Bankers Address2</label>
-                  <p>{sdbgEntry?.bank_addr2}</p>
-                </div>
-              </div>
-              <div className="col-md-6 col-12">
-                <div className="mb-3">
-                  <label className="form-label">Bankers Address3</label>
-                  <p>{sdbgEntry?.bank_addr3}</p>
-                </div>
-              </div>
+              {sdbgEntry?.bank_addr2 && (
+                <>
+                  <div className="col-md-6 col-12">
+                    <div className="mb-3">
+                      <label className="form-label">Bankers Address2</label>
+                      <p>{sdbgEntry?.bank_addr2}</p>
+                    </div>
+                  </div>
+                </>
+              )}
+              {sdbgEntry?.bank_addr3 && (
+                <>
+                  <div className="col-md-6 col-12">
+                    <div className="mb-3">
+                      <label className="form-label">Bankers Address3</label>
+                      <p>{sdbgEntry?.bank_addr3}</p>
+                    </div>
+                  </div>
+                </>
+              )}
               <div className="col-md-6 col-12">
                 <div className="mb-3">
                   <label className="form-label">Bankers City</label>
@@ -900,6 +913,12 @@ const SDBGSub = () => {
                   <p>{sdbgEntry?.bg_ammount}</p>
                 </div>
               </div>
+              <div className="col-md-6 col-12">
+                <div className="mb-3">
+                  <label className="form-label">BG Type</label>
+                  <p>{sdbgEntry?.bg_type}</p>
+                </div>
+              </div>
 
               {/* <div className="col-md-6 col-12">
                 <div className="mb-3">
@@ -909,11 +928,16 @@ const SDBGSub = () => {
               </div> */}
               <div className="col-md-6 col-12">
                 <div className="mb-3">
+                  <label className="form-label">PO Number</label>
+                  <p>{sdbgEntry?.purchasing_doc_no}</p>
+                </div>
+              </div>
+              <div className="col-md-6 col-12">
+                <div className="mb-3">
                   <label className="form-label">PO Date</label>
                   <p>
-                    {sdbgEntry?.po_date
-                      ? new Date(sdbgEntry?.po_date).toLocaleDateString()
-                      : ""}
+                    {sdbgEntry?.po_date &&
+                      new Date(sdbgEntry?.po_date).toLocaleDateString()}
                   </p>
                 </div>
               </div>
@@ -943,6 +967,51 @@ const SDBGSub = () => {
                   </p>
                 </div>
               </div>
+
+              <div className="col-md-6 col-12">
+                <div className="mb-3">
+                  <label className="form-label">Vendor Name</label>
+                  <p>{sdbgEntry?.vendor_name}</p>
+                </div>
+              </div>
+              <div className="col-md-6 col-12">
+                <div className="mb-3">
+                  <label className="form-label">Vendor Address1</label>
+                  <p>{sdbgEntry?.vendor_address1}</p>
+                </div>
+              </div>
+              {sdbgEntry?.vendor_address2 && (
+                <>
+                  <div className="col-md-6 col-12">
+                    <div className="mb-3">
+                      <label className="form-label">Vendor Address2</label>
+                      <p>{sdbgEntry?.vendor_address2}</p>
+                    </div>
+                  </div>
+                </>
+              )}
+              {sdbgEntry?.vendor_address3 && (
+                <>
+                  <div className="col-md-6 col-12">
+                    <div className="mb-3">
+                      <label className="form-label">Vendor Address3</label>
+                      <p>{sdbgEntry?.vendor_address3}</p>
+                    </div>
+                  </div>
+                </>
+              )}
+              <div className="col-md-6 col-12">
+                <div className="mb-3">
+                  <label className="form-label">Vendor City</label>
+                  <p>{sdbgEntry?.vendor_city}</p>
+                </div>
+              </div>
+              <div className="col-md-6 col-12">
+                <div className="mb-3">
+                  <label className="form-label">Vendor Pincode</label>
+                  <p>{sdbgEntry?.vendor_pin_code}</p>
+                </div>
+              </div>
               {/* <div className="col-md-6 col-12">
                 <div className="mb-3">
                   <label className="form-label">Checklist Reference</label>
@@ -959,12 +1028,6 @@ const SDBGSub = () => {
                   </p>
                 </div>
               </div> */}
-              <div className="col-md-6 col-12">
-                <div className="mb-3">
-                  <label className="form-label">BG Type</label>
-                  <p>{sdbgEntry?.bg_type}</p>
-                </div>
-              </div>
               {/* <div className="col-md-6 col-12">
                 <div className="mb-3">
                   <label className="form-label">Vendor Name</label>
