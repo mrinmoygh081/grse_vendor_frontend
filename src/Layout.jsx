@@ -44,6 +44,14 @@ import DisplayStoreActions from "./pages/DisplayStoreActions";
 import ManageVendorActivities from "./pages/ManageVendorActivities";
 import InvoiceAndPaymentProcess from "./pages/InvoiceAndPaymentProcess";
 
+
+import Goods_issue_slip from "./pages/pdfs/Goods_issue_slip";
+import Inspection_report from "./pages/pdfs/Inspection_report";
+import Purchase_document from "./pages/pdfs/Purchase_document";
+import Payment_Advice from "./pages/pdfs/Payment_Advice";
+
+
+
 function Layout() {
   const { token, isLoggedIn, userType } = useSelector((state) => state.auth);
 
@@ -173,6 +181,12 @@ function Layout() {
             <Route exact path="/mrs/:id" element={<MRSSub />} />
             <Route exact path="/mir/:id" element={<MaterialIssueReqSub />} />
             <Route exact path="/wmc/:id" element={<WMCSub />} />
+
+            <Route exact path="/display-store-actions/goods-receipt" element={<Goods_issue_slip/>} />  
+            <Route exact path="/display-store-actions/icgn-report" element={<Inspection_report/>} />  
+            <Route exact path="/display-store-actions/gate-in-entry" element={<Purchase_document/>} />  
+            <Route exact path="/display-store-actions/payment-advice" element={<Payment_Advice/>} />  
+
           </Routes>
         )}
       </BrowserRouter>

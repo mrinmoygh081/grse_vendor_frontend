@@ -32,26 +32,26 @@ const POs = () => {
   }, [po, navigate]);
 
   // Filter the polist based on the searchQuery
-  const filteredPolist = polist.filter(
-    (po) =>
-      (po?.poNumber &&
-        po?.poNumber.toLowerCase().includes(searchQuery.toLowerCase())) ||
-      (po?.poType &&
-        po?.poType.toLowerCase().includes(searchQuery.toLowerCase())) ||
-      (po?.vendor_code &&
-        po?.vendor_code.toLowerCase().includes(searchQuery.toLowerCase())) ||
-      (po?.vendor_name &&
-        po?.vendor_name.toLowerCase().includes(searchQuery.toLowerCase())) ||
-      (po?.wbs_id &&
-        po?.wbs_id.toLowerCase().includes(searchQuery.toLowerCase())) ||
-      (po?.project_code &&
-        po?.project_code.toLowerCase().includes(searchQuery.toLowerCase())) ||
-      (selectedStatus === "All" &&
-        po?.currentStage?.current &&
-        po?.currentStage?.current
-          .toLowerCase()
-          .includes(selectedStatus.toLowerCase()))
-  );
+  const filteredPolist = polist.filter(po => {
+    const matchesSearchQuery =
+        (po?.poNumber && po?.poNumber.toLowerCase().includes(searchQuery.toLowerCase())) ||
+        (po?.poType && po?.poType.toLowerCase().includes(searchQuery.toLowerCase())) ||
+        (po?.vendor_code && po?.vendor_code.toLowerCase().includes(searchQuery.toLowerCase())) ||
+        (po?.vendor_name && po?.vendor_name.toLowerCase().includes(searchQuery.toLowerCase())) ||
+        (po?.wbs_id && po?.wbs_id.toLowerCase().includes(searchQuery.toLowerCase())) ||
+        (po?.project_code && po?.project_code.toLowerCase().includes(searchQuery.toLowerCase()));
+
+    const matchesSelectedStatus =
+        selectedStatus === "All" ||
+        (po?.currentStage?.current &&
+            po?.currentStage?.current.toLowerCase().includes(selectedStatus.toLowerCase()));
+
+    return matchesSearchQuery && matchesSelectedStatus;
+});
+
+  console.log("searchQuery--", selectedStatus);
+
+  console.log("filteredPolist--", filteredPolist);
 
   return (
     <>

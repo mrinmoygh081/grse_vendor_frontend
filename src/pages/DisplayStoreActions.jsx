@@ -62,7 +62,7 @@ const DisplayStoreActions = () => {
                                   <td className="table_center">03-01-2024</td>
                                   <td>
                                     <a
-                                      href={"#"}
+                                      href={"/display-store-actions/gate-in-entry"}
                                       target="_blank"
                                       rel="noreferrer"
                                     >
@@ -76,7 +76,7 @@ const DisplayStoreActions = () => {
                                   <td className="table_center">08-01-2024</td>
                                   <td>
                                     <a
-                                      href={"#"}
+                                      href={"/display-store-actions/goods-receipt"}
                                       target="_blank"
                                       rel="noreferrer"
                                     >
@@ -90,7 +90,7 @@ const DisplayStoreActions = () => {
                                   <td className="table_center">10-01-2024</td>
                                   <td>
                                     <a
-                                      href={"#"}
+                                      href={"/display-store-actions/icgn-report"}
                                       target="_blank"
                                       rel="noreferrer"
                                     >
@@ -98,6 +98,20 @@ const DisplayStoreActions = () => {
                                     </a>
                                   </td>
                                   <td>ICGRN Report</td>
+                                  <td>Mrinmoy Ghosh(65432)</td>
+                                </tr>
+                                <tr>
+                                  <td className="table_center">12-01-2024</td>
+                                  <td>
+                                    <a
+                                      href={"/display-store-actions/payment-advice"}
+                                      target="_blank"
+                                      rel="noreferrer"
+                                    >
+                                      Check File
+                                    </a>
+                                  </td>
+                                  <td>Payment Advice</td>
                                   <td>Mrinmoy Ghosh(65432)</td>
                                 </tr>
                                 {/* {icgrnData.map((icgrnItem, index) => (
