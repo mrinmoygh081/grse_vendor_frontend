@@ -38,12 +38,12 @@ const DrawingSub = () => {
   const [selectedActionType, setSelectedActionType] = useState("");
   const { id } = useParams();
   const { user, token, userType } = useSelector((state) => state.auth);
-  const { poType } = useSelector((state) => state.selectedPO);
+  // const { poType } = useSelector((state) => state.selectedPO);
   const [referenceNo, setreferenceNo] = useState("");
-  console.log("useruser", user);
+  // console.log("useruser", user);
   // console.log(poType, "poType");
   // console.log(userType, "userType");
-  console.log("referenceNo--", referenceNo);
+  // console.log("referenceNo--", referenceNo);
 
   const getData = async () => {
     try {
@@ -240,24 +240,17 @@ const DrawingSub = () => {
                                       <td className="align-middle">
                                         {drawing.remarks}
                                       </td>
-<<<<<<< HEAD
-                                      
-                                      <td className={`${clrLegend(
-                                                  drawing?.status
-                                                )} bold`}>
-=======
                                       <td
                                         className={`${clrLegend(
                                           drawing?.status
                                         )} bold`}
                                       >
->>>>>>> 6487743885f81e887c3b206c7715473a62927974
                                         {drawing.status}
                                       </td>
 
                                       {user.department_id === 2 && (
                                         <td>
-                                          {drawing.status == "SUBMITTED" && (
+                                          {drawing.status === "SUBMITTED" && (
                                             <button
                                               onClick={() => {
                                                 setIsPopup(true);
@@ -295,7 +288,7 @@ const DrawingSub = () => {
             <div className="card-header border-0 pt-5">
               <h3 className="card-title align-items-start flex-column">
                 <span className="card-label fw-bold fs-3 mb-1">
-                  Take Your Action
+                  Take Action {referenceNo && `for ${referenceNo}`}
                 </span>
               </h3>
               <button
@@ -332,7 +325,7 @@ const DrawingSub = () => {
                   <div className="mb-3">
                     <label className="form-label">Drawing File</label>
                     &nbsp;&nbsp;
-                    <span className="mandatorystart">*</span>
+                    {!referenceNo && <span className="mandatorystart">*</span>}
                     <input
                       type="file"
                       className="form-control"

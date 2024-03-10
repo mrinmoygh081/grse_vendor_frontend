@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Footer from "../components/Footer";
 import SideBar from "../components/SideBar";
 import Header from "../components/Header";
@@ -7,20 +7,21 @@ import { apiCallBack } from "../utils/fetchAPIs";
 import { useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import moment from "moment";
+import { REQUESTED, SUBMITTED } from "../constants/BGconstants";
 
 const Shippingdocuments = () => {
+  const inputFileRef = useRef(null);
   const [isPopup, setIsPopup] = useState(false);
   const [isPopupstore, setIsPopupstore] = useState(false);
   const [shippingdocumentss, setShippingdocumentss] = useState([]);
   const { id } = useParams();
 
-  const { user, token, userType } = useSelector((state) => state.auth);
+  const { user, token } = useSelector((state) => state.auth);
   const [formData, setFormData] = useState({
     shippingdocumentssFile: null,
     remarks: "",
   });
-  const [selectedFileTypeId, setSelectedFileTypeId] = useState("");
-  const [selectedFileTypeName, setSelectedFileTypeName] = useState("");
+  const [selectedFileType, setSelectedFileType] = useState("");
 
   const optionss = [
     {
@@ -75,15 +76,24 @@ const Shippingdocuments = () => {
     getData();
   }, [id, token]);
 
-  const shippingdocumentsBtn = async (status) => {
+  const shippingdocumentsBtn = async (flag) => {
+    const { shippingdocumentssFile, remarks } = formData;
+    if (
+      flag === SUBMITTED &&
+      (!shippingdocumentssFile || selectedFileType.trim() === "")
+    ) {
+      return toast.warn("Please fill all the required fields!");
+    }
     try {
       const formDataToSend = new FormData();
       formDataToSend.append("purchasing_doc_no", id);
-      formDataToSend.append("file", formData.shippingdocumentssFile);
-      formDataToSend.append("remarks", formData.remarks);
-      formDataToSend.append("file_type_id", selectedFileTypeName);
-      formDataToSend.append("file_type_name", selectedFileTypeName);
-      // formDataToSend.append("status", isApproved);
+      formDataToSend.append("file", shippingdocumentssFile);
+      formDataToSend.append("remarks", remarks);
+      if (flag === REQUESTED) {
+        formDataToSend.append("file_type_name", "REQUESTED to VENDOR");
+      } else {
+        formDataToSend.append("file_type_name", selectedFileType);
+      }
       // formDataToSend.append("updated_by", uType);
       // formDataToSend.append("vendor_code", user.vendor_code);
       // formDataToSend.append("action_by_name", user.name);
@@ -99,7 +109,14 @@ const Shippingdocuments = () => {
       if (response?.status) {
         toast.success("Shipping Document Uploaded Successfully");
         setIsPopup(false);
-        getData(); // Refresh the data after successful upload
+        setFormData({
+          shippingdocumentssFile: null,
+          remarks: "",
+        });
+        setSelectedFileType("");
+        setIsPopupstore(false);
+        inputFileRef.current.value = null;
+        getData();
       } else {
         // Handle failure, log error details
         console.error("Failed to upload Shipping Document:", response?.error);
@@ -177,97 +194,29 @@ const Shippingdocuments = () => {
                               </thead>
                               <tbody style={{ maxHeight: "100%" }}>
                                 {shippingdocumentss &&
-                                  shippingdocumentss.map((document) => (
-                                    <tr key={document.id}>
+                                  shippingdocumentss.map((item, index) => (
+                                    <tr key={index}>
                                       <td className="table_center">
-                                        {moment(document.created_at)
+                                        {moment(item.created_at)
                                           .utc()
                                           .format("YYYY-MM-DD")}
                                       </td>
                                       <td>
-                                        {
-                                          document.file_name &&   <a
-                                          href={`${process.env.REACT_APP_BACKEND_API}${document.file_path}`}
-                                          target="_blank"
-                                          rel="noreferrer"
-                                        >
-                                          Click Here
-                                        </a> 
-                                        }
-                                      
+                                        {item.file_name && (
+                                          <a
+                                            href={`${process.env.REACT_APP_PDF_URL}shippingDocuments/${item.file_name}`}
+                                            target="_blank"
+                                            rel="noreferrer"
+                                          >
+                                            Click Here
+                                          </a>
+                                        )}
                                       </td>
-                                      <td>{document.file_type_name}</td>
-                                      <td>{document.updated_by}</td>
-                                      <td>{document.remarks}</td>
+                                      <td>{item.file_type_name}</td>
+                                      <td>{item.updated_by}</td>
+                                      <td>{item.remarks}</td>
                                     </tr>
                                   ))}
-
-                                {/* <tr>
-                                  <td className="table_center">24-12-2022</td>
-                                  <td>
-                                    <a
-                                      href={`${process.env.REACT_APP_BACKEND_API}po/download?id=${document.file_path}&type=qap`}
-                                      target="_blank"
-                                      rel="noreferrer"
-                                    >
-                                      Check File
-                                    </a>
-                                  </td>
-                                  <td>MTC</td>
-                                  <td>Mrinmoy Ghosh(65432)</td>
-                                  <td>Shipping Documents Uploaded</td>
-                                  <td className="">
-                                    {document.status === "APPROVED"
-                                      ? "APPROVED"
-                                      : "PENDING"}
-                                  </td>
-                                </tr>
-                                <tr>
-                                  <td className="table_center">24-12-2022</td>
-                                  <td>
-                                    <a
-                                      href={`${process.env.REACT_APP_BACKEND_API}po/download?id=${document.file_path}&type=qap`}
-                                      target="_blank"
-                                      rel="noreferrer"
-                                    >
-                                      Check File
-                                    </a>
-                                  </td>
-                                  <td>GC</td>
-                                  <td>Mrinmoy Ghosh(65432)</td>
-                                  <td>Shipping Documents Uploaded</td>
-                                  <td className="">
-                                    {document.status === "APPROVED"
-                                      ? "APPROVED"
-                                      : "PENDING"}
-                                  </td>
-                                </tr> */}
-                                {/* {shippingdocumentss.map((document, index) => (
-                                  <tr key={index}>
-                                    <td className="table_center">
-                                      {moment(document.created_at)
-                                        .utc()
-                                        .format("YYYY-MM-DD")}
-                                    </td>
-                                    <td>
-                                      <a
-                                        href={`${process.env.REACT_APP_BACKEND_API}po/download?id=${document.file_path}&type=qap`}
-                                        target="_blank"
-                                        rel="noreferrer"
-                                      >
-                                        Check File
-                                      </a>
-                                    </td>
-                                    <td>{document.documentType}</td>
-                                    <td>{document.created_by_name}</td>
-                                    <td>{document.remarks}</td>
-                                    <td className="">
-                                      {document.status === "APPROVED"
-                                        ? "APPROVED"
-                                        : "PENDING"}
-                                    </td>
-                                  </tr>
-                                ))} */}
                               </tbody>
                             </table>
                           </div>
@@ -306,11 +255,9 @@ const Shippingdocuments = () => {
                     id=""
                     className="form-select"
                     onChange={(e) => {
-                      setSelectedFileTypeId(e.target.value);
-                      setSelectedFileTypeName(
-                        e.target.options[e.target.selectedIndex].text
-                      );
+                      setSelectedFileType(e.target.value);
                     }}
+                    value={selectedFileType}
                   >
                     <option value="">Select...</option>
 
@@ -328,6 +275,7 @@ const Shippingdocuments = () => {
                   <input
                     type="file"
                     className="form-control"
+                    ref={inputFileRef}
                     onChange={(e) =>
                       setFormData({
                         ...formData,
@@ -345,6 +293,7 @@ const Shippingdocuments = () => {
                     id=""
                     rows="4"
                     className="form-control"
+                    value={formData?.remarks}
                     onChange={(e) =>
                       setFormData({ ...formData, remarks: e.target.value })
                     }
@@ -354,23 +303,12 @@ const Shippingdocuments = () => {
               <div className="col-12">
                 <div className="mb-3 d-flex justify-content-between">
                   <button
-                    onClick={() => shippingdocumentsBtn("PENDING")}
+                    onClick={() => shippingdocumentsBtn("SUBMITTED")}
                     className="btn fw-bold btn-primary"
                     type="button"
                   >
                     SUBMIT
                   </button>
-                  {/* {userType !== 1 ? (
-                    <button
-                      onClick={() => shippingdocumentsBtn("APPROVED")}
-                      className="btn fw-bold btn-primary"
-                      type="button"
-                    >
-                      Approved
-                    </button>
-                  ) : (
-                    ""
-                  )} */}
                 </div>
               </div>
             </div>
@@ -385,7 +323,7 @@ const Shippingdocuments = () => {
           <div className="card-header border-0 pt-5 pb-3">
             <h3 className="card-title align-items-start flex-column">
               <span className="card-label fw-bold fs-3 mb-1">
-                Upload Shipping Documents
+                Request For Required Shipping Documents
               </span>
             </h3>
             <button
@@ -407,32 +345,22 @@ const Shippingdocuments = () => {
                     id=""
                     rows="4"
                     className="form-control"
-                    // onChange={(e) =>
-                    //   setFormData({ ...formData, remarks: e.target.value })
-                    // }
+                    value={formData?.remarks}
+                    onChange={(e) =>
+                      setFormData({ ...formData, remarks: e.target.value })
+                    }
                   ></textarea>
                 </div>
               </div>
               <div className="col-12">
                 <div className="mb-3 d-flex justify-content-between">
                   <button
-                    onClick={() => shippingdocumentsBtn("PENDING")}
+                    onClick={() => shippingdocumentsBtn("REQUESTED")}
                     className="btn fw-bold btn-primary"
                     type="button"
                   >
                     SUBMIT
                   </button>
-                  {/* {userType !== 1 ? (
-                    <button
-                      onClick={() => shippingdocumentsBtn("APPROVED")}
-                      className="btn fw-bold btn-primary"
-                      type="button"
-                    >
-                      Approved
-                    </button>
-                  ) : (
-                    ""
-                  )} */}
                 </div>
               </div>
             </div>

@@ -7,3 +7,4 @@ export const ACTION_RM = "REMARKS";
 export const ACTION_O = "OTHERS";
 export const FORWARD_TO_FINANCE = "FORWARD_TO_FINANCE";
 export const SUBMITTED = "SUBMITTED";
+export const REQUESTED = "REQUESTED";

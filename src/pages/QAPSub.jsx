@@ -9,6 +9,7 @@ import { toast } from "react-toastify";
 import Select from "react-select";
 import { reConfirm } from "../utils/reConfirm";
 import { clrLegend } from "../utils/clrLegend";
+import { SUBMITTED } from "../constants/BGconstants";
 
 const QAPSub = () => {
   const inputRef = useRef(null);
@@ -21,6 +22,7 @@ const QAPSub = () => {
     action_type: "",
     QapFile: null,
     remarks: "",
+    reference_no: null,
   });
 
   const [assign, setAssign] = useState({
@@ -110,7 +112,7 @@ const QAPSub = () => {
       if (status && data) {
         const { remarks } = data[0];
         let f = {
-          QapFile: null,
+          ...formData,
           remarks: remarks,
         };
         setFormData(f);
@@ -146,55 +148,62 @@ const QAPSub = () => {
   }, [id, token]);
 
   const updateQAP = async (flag) => {
-    if (formData?.action_type !== "") {
-      try {
-        await deleteSavedQAP();
-        let uType;
-        let mailSendTo;
-        if (userType === 1) {
-          uType = "VENDOR";
-          mailSendTo = "mrinmoygh081@gmail.com";
-        } else {
-          uType = "GRSE";
-          mailSendTo = "aabhinit96@gmail.com";
-        }
-        const formDataToSend = new FormData();
-        formDataToSend.append("purchasing_doc_no", id);
-        formDataToSend.append("file", formData.QapFile);
-        formDataToSend.append("remarks", formData.remarks);
-        formDataToSend.append("status", flag);
-        formDataToSend.append("updated_by", uType);
-        formDataToSend.append("vendor_code", user.vendor_code);
-        formDataToSend.append("mailSendTo", mailSendTo);
-        formDataToSend.append("action_by_name", user.name);
-        formDataToSend.append("action_by_id", user.email);
-        formDataToSend.append("action_type", formData?.action_type);
-
-        const response = await apiCallBack(
-          "POST",
-          "po/qap",
-          formDataToSend,
-          token
-        );
-
-        if (response?.status) {
-          toast.success("QAP uploaded successfully");
-          setIsPopup(false);
-          setFormData({
-            action_type: "",
-            QapFile: null,
-            remarks: "",
-          });
-          inputRef.current.value = null;
-          getData();
-        } else {
-          toast.warn(response?.message);
-        }
-      } catch (error) {
-        toast.error("Error uploading QAP:", error);
+    const { action_type, QapFile, remarks } = formData;
+    if (
+      flag === SUBMITTED &&
+      (action_type.trim() === "" || !QapFile || remarks.trim() === "")
+    ) {
+      return toast.warn("Action type, file and remarks are mandatory fields!");
+    }
+    if (remarks.trim() === "") {
+      return toast.warn("Remarks are mandatory fields!");
+    }
+    try {
+      await deleteSavedQAP();
+      let uType;
+      let mailSendTo;
+      if (userType === 1) {
+        uType = "VENDOR";
+        mailSendTo = "mrinmoygh081@gmail.com";
+      } else {
+        uType = "GRSE";
+        mailSendTo = "aabhinit96@gmail.com";
       }
-    } else {
-      toast.warn("Please choose action type!");
+      const formDataToSend = new FormData();
+      formDataToSend.append("purchasing_doc_no", id);
+      formDataToSend.append("reference_no", formData?.reference_no);
+      formDataToSend.append("file", formData.QapFile);
+      formDataToSend.append("remarks", formData.remarks);
+      formDataToSend.append("status", flag);
+      formDataToSend.append("updated_by", uType);
+      formDataToSend.append("vendor_code", user.vendor_code);
+      formDataToSend.append("mailSendTo", mailSendTo);
+      formDataToSend.append("action_by_name", user.name);
+      formDataToSend.append("action_by_id", user.email);
+      formDataToSend.append("action_type", formData?.action_type);
+
+      const response = await apiCallBack(
+        "POST",
+        "po/qap",
+        formDataToSend,
+        token
+      );
+
+      if (response?.status) {
+        toast.success("QAP uploaded successfully");
+        setIsPopup(false);
+        setFormData({
+          action_type: "",
+          QapFile: null,
+          remarks: "",
+        });
+        inputRef.current.value = null;
+        getData();
+      } else {
+        toast.warn(response?.message);
+      }
+    } catch (error) {
+      toast.error("Error uploading QAP:", error);
     }
   };
 
@@ -313,7 +322,7 @@ const QAPSub = () => {
                               </button>
                             </>
                           )}
-                        {(userType === 1 || user.department_id === 3) && (
+                        {userType === 1 && (
                           <button
                             onClick={() => setIsPopup(true)}
                             className="btn fw-bold btn-primary"
@@ -330,18 +339,25 @@ const QAPSub = () => {
                             <table className="table table-striped table-bordered table_height">
                               <thead>
                                 <tr className="border-0">
+                                  <th>Reference No. </th>
                                   <th>DateTime </th>
                                   <th>Action Type </th>
                                   <th>File Info</th>
                                   <th>Updated By</th>
                                   <th className="min-w-150px">Remarks</th>
                                   <th>Status</th>
+                                  {user?.department_id === 3 && (
+                                    <th className="min-w-150px">Action</th>
+                                  )}
                                 </tr>
                               </thead>
                               <tbody style={{ maxHeight: "100%" }}>
                                 {allqap &&
                                   allqap.map((qap, index) => (
                                     <tr key={index}>
+                                      <td className="table_centerr">
+                                        {qap.reference_no}
+                                      </td>
                                       <td className="table_center">
                                         {qap?.created_at &&
                                           new Date(
@@ -350,24 +366,44 @@ const QAPSub = () => {
                                       </td>
                                       <td>{qap.action_type}</td>
                                       <td>
-                                        {
-                                          qap.file_name &&  <a
-                                          href={`${process.env.REACT_APP_PDF_URL}qap/${qap.file_name}`}
-                                          target="_blank"
-                                          rel="noreferrer"
-                                        >
-                                          click Here
-                                        </a> 
-                                        }
-                                      
+                                        {qap.file_name && (
+                                          <a
+                                            href={`${process.env.REACT_APP_PDF_URL}qap/${qap.file_name}`}
+                                            target="_blank"
+                                            rel="noreferrer"
+                                          >
+                                            click Here
+                                          </a>
+                                        )}
                                       </td>
                                       <td>{qap.created_by_id}</td>
                                       <td>{qap.remarks}</td>
-                                      <td className={`${clrLegend(
-                                                  qap?.status
-                                                )} bold`}>
+                                      <td
+                                        className={`${clrLegend(
+                                          qap?.status
+                                        )} bold`}
+                                      >
                                         {qap.status}
                                       </td>
+                                      {user?.department_id === 3 && (
+                                        <td>
+                                          {qap?.status === SUBMITTED && (
+                                            <button
+                                              onClick={() => {
+                                                setIsPopup(true);
+                                                setFormData({
+                                                  ...formData,
+                                                  reference_no:
+                                                    qap?.reference_no,
+                                                });
+                                              }}
+                                              className="btn fw-bold btn-primary me-3"
+                                            >
+                                              ACTION
+                                            </button>
+                                          )}
+                                        </td>
+                                      )}
                                     </tr>
                                   ))}
                               </tbody>
@@ -390,7 +426,10 @@ const QAPSub = () => {
           <div className="card card-xxl-stretch mb-5 mb-xxl-8">
             <div className="card-header border-0 pt-5">
               <h3 className="card-title align-items-start flex-column">
-                <span className="card-label fw-bold fs-3 mb-1">QAP Status</span>
+                <span className="card-label fw-bold fs-3 mb-1">
+                  QAP Status{" "}
+                  {formData?.reference_no && `for ${formData?.reference_no}`}
+                </span>
               </h3>
               <button
                 className="btn fw-bold btn-danger"
@@ -422,7 +461,7 @@ const QAPSub = () => {
                     </select>
                   </div>
                   <div className="mb-3">
-                    <label className="form-label">Qap File</label>
+                    <label className="form-label">File Info</label>
                     &nbsp;&nbsp;
                     <span className="mandatorystart">*</span>
                     <input
@@ -471,7 +510,7 @@ const QAPSub = () => {
                             onClick={() =>
                               reConfirm(
                                 { file: true },
-                                () => updateQAP("UPDATED"),
+                                () => updateQAP("SUBMITTED"),
                                 "Please confirm your sending info to Vendor."
                               )
                             }
@@ -560,6 +599,8 @@ const QAPSub = () => {
                   <div className="col-12">
                     <div className="mb-3">
                       <label htmlFor="empCategory">Employee Category</label>
+                      &nbsp;&nbsp;
+                      <span className="mandatorystart">*</span>
                       <Select
                         className="basic-single"
                         classNamePrefix="select"
@@ -574,7 +615,8 @@ const QAPSub = () => {
                   </div>
                   <div className="col-12">
                     <div className="mb-3">
-                      <label htmlFor="empName">Employee Name</label>
+                      <label htmlFor="empName">Employee Name</label>&nbsp;&nbsp;
+                      <span className="mandatorystart">*</span>
                       <Select
                         className="basic-single"
                         classNamePrefix="select"
@@ -591,7 +633,8 @@ const QAPSub = () => {
                   </div>
                   <div className="col-12">
                     <div className="mb-3">
-                      <label className="form-label">Remarks</label>
+                      <label className="form-label">Remarks</label>&nbsp;&nbsp;
+                      <span className="mandatorystart">*</span>
                       <textarea
                         name=""
                         id=""
