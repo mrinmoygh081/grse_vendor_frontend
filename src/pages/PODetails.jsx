@@ -2,11 +2,10 @@ import React, { Fragment, useEffect, useState } from "react";
 import SideBar from "../components/SideBar";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { apiCallBack } from "../utils/fetchAPIs";
 import { useDispatch, useSelector } from "react-redux";
 import { doHandler, poRemoveHandler } from "../redux/slices/poSlice";
-import moment from "moment";
 import { toast } from "react-toastify";
 import axios from "axios";
 import { clrLegend } from "../utils/clrLegend";
@@ -201,9 +200,12 @@ const PODetails = () => {
                                             PO Date:
                                           </span>
                                           <span className="label_data">
-                                            {moment(po.AEDAT)
-                                              .utc()
-                                              .format("DD/MM/YY HH:mm")}
+                                            {po.AEDAT
+                                              ? new Date(
+                                                  po.AEDAT
+                                                ).toLocaleDateString()
+                                              : "Not Updated"}
+
                                             {/* {po.AEDAT} */}
                                           </span>
                                         </div>
