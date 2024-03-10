@@ -574,7 +574,7 @@ const SDBGSub = () => {
                   <input
                     type="text"
                     className="form-control"
-                    name="vendor_pin_code"
+                    name="reference_no"
                     value={formDatainput?.reference_no || ""}
                     disabled
                   />
@@ -588,6 +588,7 @@ const SDBGSub = () => {
                     type="text"
                     className="form-control"
                     name="bank_name"
+                    value={formDatainput?.bank_name || ""}
                     onChange={handleInputChange2}
                   />
                 </div>
@@ -601,6 +602,7 @@ const SDBGSub = () => {
                     type="text"
                     className="form-control"
                     name="branch_name"
+                    value={formDatainput?.branch_name || ""}
                     onChange={handleInputChange2}
                   />
                 </div>
@@ -614,6 +616,7 @@ const SDBGSub = () => {
                     type="text"
                     className="form-control"
                     name="bank_addr1"
+                    value={formDatainput?.bank_addr1 || ""}
                     onChange={handleInputChange2}
                   />
                 </div>
@@ -625,6 +628,7 @@ const SDBGSub = () => {
                     type="text"
                     className="form-control"
                     name="bank_addr2"
+                    value={formDatainput?.bank_addr2 || ""}
                     onChange={handleInputChange2}
                   />
                 </div>
@@ -636,6 +640,7 @@ const SDBGSub = () => {
                     type="text"
                     className="form-control"
                     name="bank_addr3"
+                    value={formDatainput?.bank_addr3 || ""}
                     onChange={handleInputChange2}
                   />
                 </div>
@@ -648,6 +653,7 @@ const SDBGSub = () => {
                     type="text"
                     className="form-control"
                     name="bank_city"
+                    value={formDatainput?.bank_city || ""}
                     onChange={handleInputChange2}
                   />
                 </div>
@@ -660,6 +666,7 @@ const SDBGSub = () => {
                     type="number"
                     className="form-control"
                     name="bank_pin_code"
+                    value={formDatainput?.bank_pin_code || ""}
                     onChange={handleInputChange2}
                     onWheel={(e) => inputOnWheelPrevent(e)}
                   />
@@ -674,6 +681,7 @@ const SDBGSub = () => {
                     type="text"
                     className="form-control"
                     name="bg_no"
+                    value={formDatainput?.bg_no || ""}
                     onChange={handleInputChange2}
                   />
                 </div>
@@ -700,6 +708,7 @@ const SDBGSub = () => {
                     type="number"
                     className="form-control"
                     name="bg_ammount"
+                    value={formDatainput?.bg_ammount || ""}
                     onChange={handleInputChange2}
                     onWheel={(e) => inputOnWheelPrevent(e)}
                   />
@@ -713,6 +722,7 @@ const SDBGSub = () => {
                     type="text"
                     className="form-control"
                     name="yard_no"
+                    value={formDatainput?.yard_no || ""}
                     onChange={handleInputChange2}
                   />
                 </div>
@@ -740,7 +750,7 @@ const SDBGSub = () => {
                   <label className="form-label">Claim Period</label>&nbsp;&nbsp;
                   <span className="mandatorystart">*</span>
                   <DatePicker
-                    selected={formDatainput?.claim_priod}
+                    selected={formDatainput?.claim_priod || ""}
                     onChange={(date) =>
                       setFormDatainput({
                         ...formDatainput,
