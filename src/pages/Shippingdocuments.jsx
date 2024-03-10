@@ -185,13 +185,16 @@ const Shippingdocuments = () => {
                                           .format("YYYY-MM-DD")}
                                       </td>
                                       <td>
-                                        <a
+                                        {
+                                          document.file_name &&   <a
                                           href={`${process.env.REACT_APP_BACKEND_API}${document.file_path}`}
                                           target="_blank"
                                           rel="noreferrer"
                                         >
-                                          {document.file_name}
-                                        </a>
+                                          Click Here
+                                        </a> 
+                                        }
+                                      
                                       </td>
                                       <td>{document.file_type_name}</td>
                                       <td>{document.updated_by}</td>

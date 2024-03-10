@@ -154,13 +154,15 @@ const IlmsSub = () => {
                                           ).toLocaleString()}
                                       </td>
                                       <td className="">
-                                        <a
-                                          href={`${process.env.REACT_APP_PDF_URL}submitDrawing/${item.file_name}`}
+                                        {
+                                          item.file_name &&  <a
+                                          href={`${process.env.REACT_APP_PDF_URL}submitILMS/${item.file_name}`}
                                           target="_blank"
                                           rel="noreferrer"
                                         >
                                           Click Here
                                         </a>
+                                        }
                                       </td>
                                       <td className="">
                                         {item?.created_by_id}

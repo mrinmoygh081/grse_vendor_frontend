@@ -244,13 +244,15 @@ const WDCSub = () => {
                                           ).toLocaleDateString()}
                                       </td>
                                       <td>
-                                        <a
-                                          href={`${process.env.REACT_APP_PDF_URL}wdc/${item.file_name}`}
-                                          target="_blank"
-                                          rel="noreferrer"
-                                        >
-                                          {item.file_name}
-                                        </a>
+                                        {item.file_name && (
+                                          <a
+                                            href={`${process.env.REACT_APP_PDF_URL}submitWdc/${item.file_name}`}
+                                            target="_blank"
+                                            rel="noreferrer"
+                                          >
+                                            Click Here
+                                          </a>
+                                        )}
                                       </td>
                                       <td>{item.updated_by}</td>
                                       <td>{item.wdc_ref_no}</td>

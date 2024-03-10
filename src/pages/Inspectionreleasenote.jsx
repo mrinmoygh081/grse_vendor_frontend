@@ -109,37 +109,46 @@ const Inspectionreleasenote = () => {
                                 </tr>
                               </thead>
                               <tbody style={{ maxHeight: "100%" }}>
-                                {inspectioncall.map((inspection) => (
-                                  <tr key={inspection.id}>
-                                    <td className="table_center">
-                                      {moment(inspection.created_at)
-                                        .utc()
-                                        .format("DD/MM/YY (HH:mm)")}
-                                    </td>
-                                    <td className="">
-                                      <a
-                                        href={`${process.env.REACT_APP_BACKEND_API}po/download?id=${inspection.drawing_id}&type=qap`}
-                                        target="_blank"
-                                        rel="noreferrer"
-                                      >
-                                        {inspection.file_name}
-                                      </a>
-                                    </td>
-                                    <td className="">
-                                      {inspection.updated_by} (
-                                      {inspection.created_by_id})
-                                    </td>
-                                    <td className="">
-                                      {inspection.file_type_name}
-                                    </td>
-                                    <td className="">{inspection.remarks}</td>
-                                    {/* <td className="">
-                                      {inspection.status === "APPROVED"
-                                        ? "APPROVED"
-                                        : "PENDING"}
-                                    </td> */}
-                                  </tr>
-                                ))}
+                                {inspectioncall.map((inspection) => {
+                                  console.log(
+                                    "iddd pdf--",
+                                    inspection.file_name
+                                  );
+
+                                  return (
+                                    <tr key={inspection.id}>
+                                      <td className="table_center">
+                                        {moment(inspection.created_at)
+                                          .utc()
+                                          .format("DD/MM/YY (HH:mm)")}
+                                      </td>
+                                      <td className="">
+                                        {inspection.file_name && (
+                                          <a
+                                            href={`${process.env.REACT_APP_PDF_URL}shippingDocuments/${inspection.file_name}`}
+                                            target="_blank"
+                                            rel="noreferrer"
+                                          >
+                                            Click Here
+                                          </a>
+                                        )}
+                                      </td>
+                                      <td className="">
+                                        {inspection.updated_by} (
+                                        {inspection.created_by_id})
+                                      </td>
+                                      <td className="">
+                                        {inspection.file_type_name}
+                                      </td>
+                                      <td className="">{inspection.remarks}</td>
+                                      {/* <td className="">
+                                        {inspection.status === "APPROVED"
+                                          ? "APPROVED"
+                                          : "PENDING"}
+                                      </td> */}
+                                    </tr>
+                                  );
+                                })}
                               </tbody>
                             </table>
                           </div>

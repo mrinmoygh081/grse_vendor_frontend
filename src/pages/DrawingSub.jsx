@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Footer from "../components/Footer";
 import SideBar from "../components/SideBar";
 import Header from "../components/Header";
@@ -10,6 +10,7 @@ import { toast } from "react-toastify";
 // import Select from "react-select";
 import swal from "sweetalert";
 import { reConfirm } from "../utils/reConfirm";
+import { clrLegend } from "../utils/clrLegend";
 
 // const options = [
 //   { value: "Hull", label: "Hull" },
@@ -27,6 +28,7 @@ import { reConfirm } from "../utils/reConfirm";
 
 const DrawingSub = () => {
   const [isPopup, setIsPopup] = useState(false);
+  const inputFileRef = useRef(null);
   // const [isPopupAssign, setIsPopupAssign] = useState(false);
   const [alldrawing, setAlldrawing] = useState([]);
   const [formData, setFormData] = useState({
@@ -65,6 +67,10 @@ const DrawingSub = () => {
   }, [id, token]);
 
   const updateDrawing = async (flag) => {
+    const {drawingFile, remarks} = formData;
+    if(selectedActionType === "" || !drawingFile || remarks.trim() === ""){
+      return toast.warn("Please fill all the required fields!");
+    }
     let isApproved = flag;
     let uType;
     let mailSendTo;
@@ -109,18 +115,17 @@ const DrawingSub = () => {
             drawingFile: null,
             remarks: "",
           });
+          setSelectedActionType("")
+          inputFileRef.current.value = null
           getData();
         }
       } else {
-        toast.error("Failed to upload drawing");
+        toast.error(response?.message);
       }
     } catch (error) {
       toast.error("Error uploading drawing:", error);
     }
   };
-
-  console.log("alldrawing---->>", alldrawing);
-  console.log("formData---->>", formData);
 
   // const reConfirmcheckHandleUploadChange = () => {
   //   if (formData?.drawingFile) {
@@ -206,13 +211,17 @@ const DrawingSub = () => {
                                           ).toLocaleString()}
                                       </td>
                                       <td className="table_center">
-                                        <a
+                                        {
+                                          drawing.file_name &&  <a
                                           href={`${process.env.REACT_APP_PDF_URL}submitDrawing/${drawing.file_name}`}
                                           target="_blank"
                                           rel="noreferrer"
                                         >
-                                          {drawing.file_name}
+                                          
+                                          Click Here
                                         </a>
+                                        }
+                                      
                                       </td>
                                       <td className="table_center">
                                         {drawing.created_by_id}
@@ -220,12 +229,14 @@ const DrawingSub = () => {
                                       <td className="align-middle">
                                         {drawing.remarks}
                                       </td>
-                                      <td className="table_center">
+                                      <td className={`${clrLegend(
+                                                  drawing?.status
+                                                )} bold`}>
                                         {drawing.status}
                                       </td>
-                                      {user.department_id === 2 ? (
+                                      {user.department_id === 2 && (
                                         <td>
-                                          {drawing.status == "SUBMITTED" ? (
+                                          {drawing.status == "SUBMITTED" && (
                                             <button
                                               onClick={() =>{
                                                  setIsPopup(true);
@@ -235,22 +246,9 @@ const DrawingSub = () => {
                                             >
                                               ACTION
                                             </button>
-                                          ) : (
-                                            ""
                                           )}
                                         </td>
-                                      ) : (
-                                        ""
                                       )}
-                                      {/* <td>
-                                        {" "}
-                                        <button
-                                          onClick={() => setIsPopup(true)}
-                                          className="btn fw-bold btn-primary mx-3"
-                                        >
-                                          ACTION
-                                        </button>
-                                      </td> */}
                                     </tr>
                                   ))}
                               </tbody>
@@ -292,6 +290,7 @@ const DrawingSub = () => {
                       name=""
                       id=""
                       className="form-select"
+                      value={selectedActionType}
                       onChange={(e) => {
                         setSelectedActionType(e.target.value);
                       }}
@@ -314,6 +313,7 @@ const DrawingSub = () => {
                     <input
                       type="file"
                       className="form-control"
+                      ref={inputFileRef}
                       onChange={(e) =>
                         setFormData({
                           ...formData,
@@ -326,6 +326,8 @@ const DrawingSub = () => {
                 <div className="col-12">
                   <div className="mb-3">
                     <label className="form-label">Remarks</label>
+                    &nbsp;&nbsp;
+                    <span className="mandatorystart">*</span>
                     <textarea
                       name=""
                       id=""

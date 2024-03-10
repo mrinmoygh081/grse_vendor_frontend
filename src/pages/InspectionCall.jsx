@@ -132,13 +132,15 @@ const InspectionCall = () => {
                                         ).toLocaleString()}
                                     </td>
                                     <td className="">
-                                      <a
-                                        href={`${process.env.REACT_APP_BACKEND_API}po/download?id=${inspection.drawing_id}&type=qap`}
-                                        target="_blank"
-                                        rel="noreferrer"
-                                      >
-                                        {inspection.file_name}
-                                      </a>
+                                      {inspection.file_name && (
+                                        <a
+                                          href={`${process.env.REACT_APP_BACKEND_API}inspectionCallLetter/${inspection.file_name}`}
+                                          target="_blank"
+                                          rel="noreferrer"
+                                        >
+                                          Click Here
+                                        </a>
+                                      )}
                                     </td>
                                     <td className="">
                                       {inspection.updated_by} (

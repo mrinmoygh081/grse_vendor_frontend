@@ -349,13 +349,16 @@ const QAPSub = () => {
                                       </td>
                                       <td>{qap.action_type}</td>
                                       <td>
-                                        <a
+                                        {
+                                          qap.file_name &&  <a
                                           href={`${process.env.REACT_APP_PDF_URL}qap/${qap.file_name}`}
                                           target="_blank"
                                           rel="noreferrer"
                                         >
-                                          {qap.file_name}
-                                        </a>
+                                          click Here
+                                        </a> 
+                                        }
+                                      
                                       </td>
                                       <td>{qap.created_by_id}</td>
                                       <td>{qap.remarks}</td>
