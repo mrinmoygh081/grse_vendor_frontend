@@ -8,6 +8,7 @@ import { apiCallBack } from "../utils/fetchAPIs";
 import moment from "moment";
 import { toast } from "react-toastify";
 import { reConfirm } from "../utils/reConfirm";
+import { clrLegend } from "../utils/clrLegend";
 
 const IlmsSub = () => {
   const [isPopup, setIsPopup] = useState(false);
@@ -168,7 +169,12 @@ const IlmsSub = () => {
                                         {item?.created_by_id}
                                       </td>
                                       <td className="">{item?.remarks}</td>
-                                      <td className="">{item?.status}</td>
+                                      <td className={`${clrLegend(
+                                                  item?.status
+                                                )} bold`}>
+                                        {item.status}
+                                      </td>
+
                                       {user.department_id === 2 ? (
                                         <td>
                                           {item.status == "SUBMITTED" ? (

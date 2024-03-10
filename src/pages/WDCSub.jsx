@@ -9,6 +9,7 @@ import { toast } from "react-toastify";
 import { reConfirm } from "../utils/reConfirm";
 import ReactDatePicker from "react-datepicker";
 import { convertToEpoch } from "../utils/getDateTimeNow";
+import { clrLegend } from "../utils/clrLegend";
 
 const WDCSub = () => {
   const [isPopup, setIsPopup] = useState(false);
@@ -284,7 +285,12 @@ const WDCSub = () => {
                                       <td>{item.stage_datiels}</td>
                                       <td>{item.actual_payable_amount}</td>
                                       <td>{item.remarks}</td>
-                                      <td>{item.status}</td>
+                                      <td className={`${clrLegend(
+                                                  item?.status
+                                                )} bold`}>
+                                        {item.status}
+                                      </td>
+
                                     </tr>
                                   ))}
                               </tbody>

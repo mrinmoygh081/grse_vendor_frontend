@@ -229,11 +229,13 @@ const DrawingSub = () => {
                                       <td className="align-middle">
                                         {drawing.remarks}
                                       </td>
+                                      
                                       <td className={`${clrLegend(
                                                   drawing?.status
                                                 )} bold`}>
                                         {drawing.status}
                                       </td>
+
                                       {user.department_id === 2 && (
                                         <td>
                                           {drawing.status == "SUBMITTED" && (

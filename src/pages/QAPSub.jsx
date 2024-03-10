@@ -8,6 +8,7 @@ import { apiCallBack } from "../utils/fetchAPIs";
 import { toast } from "react-toastify";
 import Select from "react-select";
 import { reConfirm } from "../utils/reConfirm";
+import { clrLegend } from "../utils/clrLegend";
 
 const QAPSub = () => {
   const inputRef = useRef(null);
@@ -362,7 +363,11 @@ const QAPSub = () => {
                                       </td>
                                       <td>{qap.created_by_id}</td>
                                       <td>{qap.remarks}</td>
-                                      <td>{qap.status}</td>
+                                      <td className={`${clrLegend(
+                                                  qap?.status
+                                                )} bold`}>
+                                        {qap.status}
+                                      </td>
                                     </tr>
                                   ))}
                               </tbody>
