@@ -46,14 +46,14 @@ export default function Login() {
             </h3>
             <div className="w-lg-500px bg-body rounded shadow-sm p-10 p-lg-15 mx-auto border">
               <form onSubmit={loginSubmit} className="form w-100">
-                <div className="text-center mb-5">
+                <div className="text-center mb-3">
                   <img
                     src={require("../images/logo.png")}
                     alt=""
-                    className="img-fluid"
+                    className="img-fluid mb-2"
                     style={{ width: "120px" }}
                   />
-                  <h3 className="text-dark">Login to Portal</h3>
+                  <h3 className="text-dark">Login to OBPS Portal</h3>
                 </div>
                 <div className="fv-row mb-3">
                   <label className="form-label fs-6 fw-bolder text-dark">
