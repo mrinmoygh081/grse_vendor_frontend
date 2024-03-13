@@ -47,7 +47,7 @@ import InvoiceAndPaymentProcess from "./pages/InvoiceAndPaymentProcess";
 
 import Goods_issue_slip from "./pages/pdfs/Goods_issue_slip";
 import Inspection_report from "./pages/pdfs/Inspection_report";
-import Purchase_document from "./pages/pdfs/Purchase_document";
+import Reservation_report from "./pages/pdfs/Reservation_report";
 import Payment_Advice from "./pages/pdfs/Payment_Advice";
 
 
@@ -184,7 +184,7 @@ function Layout() {
 
             <Route exact path="/display-store-actions/goods-receipt" element={<Goods_issue_slip/>} />  
             <Route exact path="/display-store-actions/icgn-report" element={<Inspection_report/>} />  
-            <Route exact path="/display-store-actions/gate-in-entry" element={<Purchase_document/>} />  
+            <Route exact path="/display-store-actions/gate-in-entry" element={<Reservation_report/>} />  
             <Route exact path="/display-store-actions/payment-advice" element={<Payment_Advice/>} />  
 
           </Routes>
