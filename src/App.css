@@ -90,6 +90,9 @@ input[type="number"] {
   align-items: center;
   justify-content: space-between;
 }
+.custom-navbar .container h2 {
+  font-size: 20px;
+}
 
 .custom-text {
   color: #000; /* Black text color */

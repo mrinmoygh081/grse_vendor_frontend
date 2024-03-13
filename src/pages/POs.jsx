@@ -105,29 +105,19 @@ const POs = () => {
                           >
                             <option value="All">All</option>
                             <option value="SDBG has been submitted">
-                              SDBG has been submitted
+                              SDBG
                             </option>
-                            <option value="Drawing has been submitted">
-                              Drawing has been submitted
+                            <option value="Drawing">Drawing</option>
+                            <option value=" QAP">QAP</option>
+                            <option value=" ILMS">ILMS</option>
+                            <option value="Inspection call letter">
+                              Inspection call letter
                             </option>
-                            <option value=" QAP has been submitted">
-                              QAP has been submitted
+                            <option value=" Shipping documents">
+                              Shipping documents
                             </option>
-                            <option value=" ILMS has been submitted">
-                              ILMS has been submitted
-                            </option>
-                            <option value="Inspection call letter has been submitted">
-                              Inspection call letter has been submitted
-                            </option>
-                            <option value=" Shipping documents has been submitted">
-                              Shipping documents has been submitted
-                            </option>
-                            <option value="ICGRN has been submitted">
-                              ICGRN has been submitted
-                            </option>
-                            <option value=" WDC has been submitted">
-                              WDC has been submitted
-                            </option>
+                            <option value="ICGRN">ICGRN</option>
+                            <option value=" WDC">WDC</option>
                           </select>
                           {/* <button className="search_btn">
                             <FiSearch />
@@ -161,7 +151,12 @@ const POs = () => {
                                   className="btn_simple"
                                   onClick={() => dispatch(poHandler(po))}
                                 >
-                                  <u>{po?.poNumber}</u> | {po?.poType}{" "}
+                                  <u>{po?.poNumber}</u> |{" "}
+                                  {po?.poType === "material"
+                                    ? "Hybrid"
+                                    : po?.poType === "service"
+                                    ? "Service"
+                                    : ""}{" "}
                                   {user && user?.user_type !== 1 && (
                                     <>
                                       {" "}
@@ -177,17 +172,18 @@ const POs = () => {
                               </td>
                               <td>
                                 {/* SD Date:{" "} */}
-                                {po?.SD?.SdContractualSubmissionDate &&
-                                  new Date(
-                                    po.SD.SdContractualSubmissionDate
-                                  ).toLocaleDateString()}{" "}
+                                {po?.SD?.SdContractualSubmissionDate
+                                  ? new Date(
+                                      po.SD.SdContractualSubmissionDate
+                                    ).toLocaleDateString()
+                                  : "N/A"}{" "}
                                 |{" "}
                                 {po?.SD?.SdActualSubmissionDate
                                   ? new Date(
                                       po.SD.SdActualSubmissionDate
                                     ).toLocaleDateString()
-                                  : ""}{" "}
-                                | {po?.SD?.SdLastStatus}
+                                  : "N/A"}{" "}
+                                | {po?.SD?.SdLastStatus || "N/A"}
                               </td>
                               <td>
                                 {/* Drawing Date:{" "} */}
@@ -195,13 +191,13 @@ const POs = () => {
                                   ? new Date(
                                       po.Drawing.DrawingContractualSubmissionDate
                                     ).toLocaleDateString()
-                                  : ""}{" "}
-                                |
+                                  : "N/A"}{" "}
+                                |{" "}
                                 {po?.Drawing?.DrawingActualSubmissionDate
                                   ? new Date(
                                       po.Drawing.DrawingActualSubmissionDate
                                     ).toLocaleDateString()
-                                  : ""}{" "}
+                                  : "N/A"}{" "}
                                 | {po?.Drawing?.DrawingLastStatus}
                               </td>
                               <td>
@@ -210,14 +206,14 @@ const POs = () => {
                                   ? new Date(
                                       po.QAP.qapContractualSubmissionDate
                                     ).toLocaleDateString()
-                                  : ""}{" "}
+                                  : "N/A"}{" "}
                                 |{" "}
                                 {po?.QAP?.qapActualSubmissionDate
                                   ? new Date(
                                       po.QAP.qapActualSubmissionDate
                                     ).toLocaleDateString()
-                                  : ""}{" "}
-                                | {po?.QAP?.qapLastStatus}
+                                  : "N/A"}{" "}
+                                | {po?.QAP?.qapLastStatus || "N/A"}
                               </td>
 
                               <td>
@@ -226,14 +222,14 @@ const POs = () => {
                                   ? new Date(
                                       po.ILMS.ilmsContractualSubmissionDate
                                     ).toLocaleDateString()
-                                  : ""}{" "}
+                                  : "N/A"}{" "}
                                 |{" "}
                                 {po?.ILMS?.ilmsActualSubmissionDate
                                   ? new Date(
                                       po.ILMS.ilmsActualSubmissionDate
                                     ).toLocaleDateString()
-                                  : ""}{" "}
-                                | {po?.ILMS?.ilmsLastStatus}
+                                  : "N/A"}{" "}
+                                | {po?.ILMS?.ilmsLastStatus || "N/A"}
                               </td>
 
                               <td>{po?.currentStage?.current}</td>

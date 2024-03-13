@@ -210,11 +210,10 @@ const PODetails = () => {
                                           </span>
                                         </div>
                                         <div className="card_header_data">
-                                          <span className="label">
-                                            Vendor Name:
-                                          </span>
+                                          <span className="label">Vendor:</span>
                                           <span className="label_data">
-                                            {po.LIFNR} (<span>{po.NAME1}</span>)
+                                            {po?.NAME1} (
+                                            <span>{po?.LIFNR}</span>)
                                           </span>
                                         </div>
                                         {/* <div className="card_header_data">

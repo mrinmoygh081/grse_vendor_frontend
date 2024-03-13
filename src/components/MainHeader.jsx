@@ -9,7 +9,6 @@ import { poRemoveHandler } from "../redux/slices/poSlice";
 const MainHeader = ({ title }) => {
   const dispatch = useDispatch();
   const { user } = useSelector((state) => state.auth);
-  console.log(user);
 
   const logOutFun = () => {
     dispatch(logoutHandler());
@@ -47,7 +46,7 @@ const MainHeader = ({ title }) => {
                 </li>
               </>
             )}
-            <li className="nav-item">
+            {/* <li className="nav-item">
               <Link className="nav-link text-black" to="/bg-extension">
                 BG Extension
               </Link>
@@ -56,7 +55,7 @@ const MainHeader = ({ title }) => {
               <Link className="nav-link text-black" to="/checklist">
                 Checklists
               </Link>
-            </li>
+            </li> */}
             <li>
               <div className="ps-4 log_in">
                 Logged In: <br />

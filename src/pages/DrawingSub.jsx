@@ -1,36 +1,21 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { Fragment, useEffect, useRef, useState } from "react";
 import Footer from "../components/Footer";
 import SideBar from "../components/SideBar";
 import Header from "../components/Header";
 import { useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { apiCallBack } from "../utils/fetchAPIs";
-// import moment from "moment";
 import { toast } from "react-toastify";
-// import Select from "react-select";
-import swal from "sweetalert";
 import { reConfirm } from "../utils/reConfirm";
 import { clrLegend } from "../utils/clrLegend";
-
-// const options = [
-//   { value: "Hull", label: "Hull" },
-//   { value: "Electrical", label: "Electrical" },
-//   { value: "Machinery", label: "Machinery" },
-//   { value: "Plumbing", label: "Plumbing" },
-// ];
-
-// const empOptions = [
-//   { value: "Mr. X Ghosh", label: "Mr. X Ghosh" },
-//   { value: "Mr. Y Chowdhury", label: "Mr. Y Chowdhury" },
-//   { value: "Mrs. M Ghosh", label: "Mrs. M Ghosh" },
-//   { value: "Mrs. D Das", label: "Mrs. D Das" },
-// ];
+import { groupedByRefNo } from "../utils/groupedByReq";
 
 const DrawingSub = () => {
   const [isPopup, setIsPopup] = useState(false);
   const inputFileRef = useRef(null);
   // const [isPopupAssign, setIsPopupAssign] = useState(false);
   const [alldrawing, setAlldrawing] = useState([]);
+  const [groupedData, setGroupedData] = useState([]);
   const [formData, setFormData] = useState({
     drawingFile: null,
     remarks: "",
@@ -140,30 +125,12 @@ const DrawingSub = () => {
     }
   };
 
-  // const reConfirmcheckHandleUploadChange = () => {
-  //   if (formData?.drawingFile) {
-  //     swal({
-  //       title: "Are you sure?",
-  //       text: "You're confirming that this drawing has been approved!",
-  //       icon: "warning",
-  //       buttons: true,
-  //       dangerMode: true,
-  //     }).then((willDelete) => {
-  //       if (willDelete) {
-  //         updateDrawing("APPROVED");
-  //       }
-  //     });
-  //   } else {
-  //     swal({
-  //       title: "Warning",
-  //       text: "You forget to add a file!",
-  //       icon: "warning",
-  //       button: true,
-  //     });
-  //   }
-  // };
-
-  // const assignDrawing = async () => {};
+  useEffect(() => {
+    if (alldrawing && alldrawing.length > 0) {
+      const gData = groupedByRefNo(alldrawing);
+      setGroupedData(gData);
+    }
+  }, [alldrawing]);
 
   return (
     <>
@@ -203,70 +170,80 @@ const DrawingSub = () => {
                                   <th>Updated By</th>
                                   <th className="min-w-150px">Remarks</th>
                                   <th>Status</th>
-                                  {user.department_id === 2 ? (
-                                    <th>Action</th>
-                                  ) : (
-                                    ""
-                                  )}
+                                  {user.department_id === 2 && <th>Action</th>}
                                 </tr>
                               </thead>
                               <tbody style={{ maxHeight: "100%" }}>
-                                {alldrawing &&
-                                  alldrawing.map((drawing, index) => (
-                                    <tr key={index}>
-                                      <td className="table_center">
-                                        {drawing.reference_no}
-                                      </td>
-                                      <td className="table_center">
-                                        {drawing?.created_at &&
-                                          new Date(
-                                            drawing?.created_at
-                                          ).toLocaleString()}
-                                      </td>
-                                      <td className="table_center">
-                                        {drawing.file_name && (
-                                          <a
-                                            href={`${process.env.REACT_APP_PDF_URL}submitDrawing/${drawing.file_name}`}
-                                            target="_blank"
-                                            rel="noreferrer"
-                                          >
-                                            Click Here
-                                          </a>
-                                        )}
-                                      </td>
-                                      <td className="table_center">
-                                        {drawing.created_by_id}
-                                      </td>
-                                      <td className="align-middle">
-                                        {drawing.remarks}
-                                      </td>
-                                      <td
-                                        className={`${clrLegend(
-                                          drawing?.status
-                                        )} bold`}
-                                      >
-                                        {drawing.status}
-                                      </td>
-
-                                      {user.department_id === 2 && (
-                                        <td>
-                                          {drawing.status === "SUBMITTED" && (
-                                            <button
-                                              onClick={() => {
-                                                setIsPopup(true);
-                                                setreferenceNo(
-                                                  drawing.reference_no
-                                                );
-                                              }}
-                                              className="btn fw-bold btn-primary mx-3"
-                                            >
-                                              ACTION
-                                            </button>
-                                          )}
+                                {Object.keys(groupedData).map((it, index) => {
+                                  let items = groupedData[it];
+                                  console.log("it", it);
+                                  return (
+                                    <Fragment key={index}>
+                                      <tr>
+                                        <td colSpan={10}>
+                                          <b>{it}</b>
                                         </td>
-                                      )}
-                                    </tr>
-                                  ))}
+                                      </tr>
+                                      {items &&
+                                        items.map((item, i) => (
+                                          <tr key={i}>
+                                            <td className="table_center">
+                                              {item.reference_no}
+                                            </td>
+                                            <td className="table_center">
+                                              {item?.created_at &&
+                                                new Date(
+                                                  item?.created_at
+                                                ).toLocaleString()}
+                                            </td>
+                                            <td className="table_center">
+                                              {item.file_name && (
+                                                <a
+                                                  href={`${process.env.REACT_APP_PDF_URL}submitDrawing/${item.file_name}`}
+                                                  target="_blank"
+                                                  rel="noreferrer"
+                                                >
+                                                  Click Here
+                                                </a>
+                                              )}
+                                            </td>
+                                            <td className="table_center">
+                                              {item.created_by_id}
+                                            </td>
+                                            <td className="align-middle">
+                                              {item.remarks}
+                                            </td>
+                                            <td
+                                              className={`${clrLegend(
+                                                item?.status
+                                              )} bold`}
+                                            >
+                                              {item.status}
+                                            </td>
+
+                                            {user.department_id === 2 && (
+                                              <td>
+                                                {items.status ===
+                                                  "SUBMITTED" && (
+                                                  <button
+                                                    onClick={() => {
+                                                      setIsPopup(true);
+                                                      setreferenceNo(
+                                                        items.reference_no
+                                                      );
+                                                    }}
+                                                    className="btn fw-bold btn-primary mx-3"
+                                                  >
+                                                    ACTION
+                                                  </button>
+                                                )}
+                                              </td>
+                                            )}
+                                          </tr>
+                                        ))}
+                                    </Fragment>
+                                  );
+                                })}
                               </tbody>
                             </table>
                           </div>

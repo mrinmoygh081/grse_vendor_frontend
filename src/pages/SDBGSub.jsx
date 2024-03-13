@@ -26,9 +26,12 @@ import {
 import { logOutFun } from "../utils/logOutFun";
 import { logoutHandler } from "../redux/slices/loginSlice";
 import { poRemoveHandler } from "../redux/slices/poSlice";
+import { groupedByActionType } from "../utils/groupedByReq";
 
 const SDBGSub = () => {
   const dispatch = useDispatch();
+  const inputFileRef = useRef(null);
+  const { id } = useParams();
   const [isPopup, setIsPopup] = useState(false);
   const [isEntryPopup, setIsEntryPopup] = useState(false);
   const [isAssignPopup, setIsAssignPopup] = useState(false);
@@ -42,9 +45,8 @@ const SDBGSub = () => {
     remarks: "",
   });
 
-  const [formDatainput, setFormDatainput] = useState(bgInputs);
-  const inputFileRef = useRef(null);
-  const { id } = useParams();
+  let bg = { ...bgInputs, purchasing_doc_no: id };
+  const [formDatainput, setFormDatainput] = useState(bg);
   const { user, token, userType } = useSelector((state) => state.auth);
   const { isDO } = useSelector((state) => state.selectedPO);
   const [empOption, setEmpOption] = useState([]);
@@ -155,7 +157,7 @@ const SDBGSub = () => {
         setSelectedActionType("");
         getSDBG();
       } else {
-        toast.error("Please try again!");
+        toast.error(response?.message);
       }
     } catch (error) {
       console.error("Error:", error);
@@ -168,7 +170,8 @@ const SDBGSub = () => {
     if (status) {
       setIsPopup(false);
       setIsEntryPopup(false);
-      setFormDatainput(bgInputs);
+      let bg = { ...bgInputs, purchasing_doc_no: id };
+      setFormDatainput(bg);
       getSDBG();
       getSDBGEntry();
     }
@@ -185,7 +188,8 @@ const SDBGSub = () => {
       toast.success(d?.message);
       setIsPopup(false);
       setIsEntryPopup(false);
-      setFormDatainput(bgInputs);
+      let bg = { ...bgInputs, purchasing_doc_no: id };
+      setFormDatainput(bg);
       getSDBG();
       getSDBGEntry();
     } else {
@@ -248,14 +252,7 @@ const SDBGSub = () => {
 
   useEffect(() => {
     if (allsdbg && allsdbg.length > 0) {
-      const gData = allsdbg.reduce((result, item) => {
-        const actionType = item.action_type;
-        if (!result[actionType]) {
-          result[actionType] = [];
-        }
-        result[actionType].push(item);
-        return result;
-      }, {});
+      const gData = groupedByActionType(allsdbg);
       setGroupedBG(gData);
     }
   }, [allsdbg]);
@@ -566,7 +563,8 @@ const SDBGSub = () => {
                 className="btn fw-bold btn-danger"
                 onClick={() => {
                   setIsEntryPopup(false);
-                  setFormDatainput(bgInputs);
+                  let bg = { ...bgInputs, purchasing_doc_no: id };
+                  setFormDatainput(bg);
                 }}
               >
                 Close
