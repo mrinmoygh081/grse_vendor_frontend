@@ -11,33 +11,65 @@ function Payment_Advice() {
     const handlePrint = () => {
       window.print();
     };
-    handlePrint();
+    // handlePrint();
   }, []);
 
   return (
     <section id="image-gallery" className="py-5">
-      <div className="gallery_top">
-        <div className=" col-1">
-          <img src={logo} alt="logo" className="table_logo" />
-        </div>
-        <div className="gallary_content col-11 d-flex ">
-          <div style={{ width: "85%" }}>
-            <h2>GARDEN REACH SHIPBUILDERS & ENGINEERS LTD</h2>
-
-            <h4>(A Govt. of India Undertaking )</h4>
-
-            <h5>
-              <u>Regd Office : 43/46 GARDEN REACH ROAD, KOLKATA -700024</u>
-            </h5>
-            <h5>
-              CIN: U35111WB1934GOI007891 &nbsp;&nbsp;&nbsp;&ensp;&nbsp; PHONE
-              NO.-(033)2469-8100 TO 8113{" "}
-            </h5>
-            <h5>
-              FAX NO.-(033)2469-8150 &nbsp;&nbsp;&nbsp;&ensp;&nbsp;Website:{" "}
-              <a href="">www.grse.in</a>{" "}
-            </h5>
+      {/* <div className="gallery_top ">
+        <div className="row w-75">
+          <div className="col-1">
+            <img src={logo} alt="logo" className="table_logo" />
           </div>
+          <div className="gallary_content col-11 d-flex ">
+            <div style={{ width: "85%" }}>
+              <h2>GARDEN REACH SHIPBUILDERS & ENGINEERS LTD</h2>
+
+              <h4>(A Govt. of India Undertaking )</h4>
+
+              <h5>
+                <u>Regd Office : 43/46 GARDEN REACH ROAD, KOLKATA -700024</u>
+              </h5>
+              <h5>
+                CIN: U35111WB1934GOI007891 &nbsp;&nbsp;&nbsp;&ensp;&nbsp; PHONE
+                NO.-(033)2469-8100 TO 8113{" "}
+              </h5>
+              <h5>
+                FAX NO.-(033)2469-8150 &nbsp;&nbsp;&nbsp;&ensp;&nbsp;Website:{" "}
+                <a href="">www.grse.in</a>{" "}
+              </h5>
+            </div>
+          </div>
+        </div>
+      </div> */}
+      <div className="row table_heading_container m-0 p-0 mb-2 ">
+        <div className="col-2">
+          <img src={logo} alt="" className="table_logo" />
+        </div>
+        <div className="col-10">
+          <h3 className="m-0 text-center" style={{ width: "90%" }}>
+            Garden Reach Shipbuilders & Engineers Ltd.
+          </h3>
+          <p
+            className="m-0 text-center"
+            style={{ fontSize: "18px", width: "90%" }}
+          >
+            (A govt. of india undertaking)
+          </p>
+          <p
+            className="m-0 text-center"
+            style={{ fontSize: "18px", width: "90%" }}
+          >
+            Regd Office : 43/46, (Garden Reach Road / Kolkata)
+          </p>
+          <h5 className="text-center pe-5 mt-2">
+            CIN: U35111WB1934GOI007891 &nbsp;&nbsp;&nbsp;&ensp;&nbsp; PHONE
+            NO.-(033)2469-8100 TO 8113{" "}
+          </h5>
+          <h5 className="text-center">
+            FAX NO.-(033)2469-8150 &nbsp;&nbsp;&nbsp;&ensp;&nbsp;Website:{" "}
+            <a href="">www.grse.in</a>{" "}
+          </h5>
         </div>
       </div>
       <hr />
@@ -45,7 +77,7 @@ function Payment_Advice() {
         <h5>The E-payment against your Invoice no 2510033212 has been made.</h5>
       </div>
       <div className="gallary_c1 ">
-        <div className="details col-4">
+        <div className="details col-4 d-flex gap-5 fw-bold">
           <p className="fc">BTN</p> <span>:</span>
           <div className="sc">20210913026</div>
         </div>

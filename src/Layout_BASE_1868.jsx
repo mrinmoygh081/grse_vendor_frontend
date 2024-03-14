@@ -44,10 +44,13 @@ import DisplayStoreActions from "./pages/DisplayStoreActions";
 import ManageVendorActivities from "./pages/ManageVendorActivities";
 import InvoiceAndPaymentProcess from "./pages/InvoiceAndPaymentProcess";
 
+
 import Goods_issue_slip from "./pages/pdfs/Goods_issue_slip";
 import Inspection_report from "./pages/pdfs/Inspection_report";
-import Reservation_report from "./pages/pdfs/Reservation_report";
+import Purchase_document from "./pages/pdfs/Purchase_document";
 import Payment_Advice from "./pages/pdfs/Payment_Advice";
+
+
 
 function Layout() {
   const { token, isLoggedIn, userType } = useSelector((state) => state.auth);
@@ -75,11 +78,6 @@ function Layout() {
             <Route exact path="/inspection/:id" element={<InspectionCall />} />
             <Route
               exact
-              path="/inspection-release-note/:id"
-              element={<Inspectionreleasenote />}
-            />
-            <Route
-              exact
               path="/demand-management/:id"
               element={<DemandManagement />}
             />
@@ -97,6 +95,11 @@ function Layout() {
               exact
               path="/invoice-and-payment-process/:id"
               element={<InvoiceAndPaymentProcess />}
+            />
+            <Route
+              exact
+              path="/inspection-release-note/:id"
+              element={<Inspectionreleasenote />}
             />
             <Route exact path="/hr-compliance/:id" element={<HrCompliance />} />
             <Route
@@ -179,34 +182,11 @@ function Layout() {
             <Route exact path="/mir/:id" element={<MaterialIssueReqSub />} />
             <Route exact path="/wmc/:id" element={<WMCSub />} />
 
-<<<<<<< HEAD
-            <Route
-              exact
-              path="/display-store-actions/goods-receipt"
-              element={<Goods_issue_slip />}
-            />
-            <Route
-              exact
-              path="/display-store-actions/icgn-report"
-              element={<Inspection_report />}
-            />
-            <Route
-              exact
-              path="/display-store-actions/gate-in-entry"
-              element={<Purchase_document />}
-            />
-            <Route
-              exact
-              path="/display-store-actions/payment-advice"
-              element={<Payment_Advice />}
-            />
-=======
             <Route exact path="/display-store-actions/goods-receipt" element={<Goods_issue_slip/>} />  
             <Route exact path="/display-store-actions/icgn-report" element={<Inspection_report/>} />  
-            <Route exact path="/display-store-actions/gate-in-entry" element={<Reservation_report/>} />  
+            <Route exact path="/display-store-actions/gate-in-entry" element={<Purchase_document/>} />  
             <Route exact path="/display-store-actions/payment-advice" element={<Payment_Advice/>} />  
 
->>>>>>> ebc4c9bcce0274bd5a501b93db8b6598a31c2c6a
           </Routes>
         )}
       </BrowserRouter>

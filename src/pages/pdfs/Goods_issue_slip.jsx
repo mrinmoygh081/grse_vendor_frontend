@@ -1,25 +1,46 @@
-import React, { useEffect } from "react";
-
-import logo from "../../images/logo.png"
-// import { useNavigate } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import logo from "../../images/logo.png";
+import { useSelector } from "react-redux";
 
 
 function Goods_issue_slip() {
+  const [apiData, setApiData] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
 
-  // const navigate = useNavigate();
-
+  const { token } = useSelector((state) => state.auth);
 
   const handlePrint = () => {
     window.print();
-    
   };
 
-  useEffect(()=>{
-    const handlePrint = () => {
-      window.print();
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const dataInfo = {};
+        const path = `${process.env.REACT_APP_BACKEND_API}po/material/issue/list`;
+        const config = {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(dataInfo),
+        };
+        setIsLoading(true);
+        const response = await fetch(path, config);
+        const data = await response.json();
+        setApiData(data);
+        setIsLoading(false);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+        setIsLoading(false);
+      }
     };
-    handlePrint();
-  },[])
+
+    fetchData();
+  }, [token]);
+
+  console.log("apidata---", apiData);
 
   return (
     <div className="container-fluid pt-4">
@@ -87,97 +108,72 @@ function Goods_issue_slip() {
       <div className="row">
         <h4 className="text-center">GOODS ISSUE SLIP</h4>
         <div className="col-12">
-          <table className="table table_container_1">
-            <thead>
-              <tr>
-                <th>SR.N0/SIR Item</th>
-                <th>Material Code</th>
-                <th>Material Description</th>
-                <th>UOM</th>
-                <th>Batch No.</th>
-                <th>Required Qty</th>
-                <th>Issued Qty</th>
-                <th>Cost Center</th>
-                <th>WBS Element</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>1 / 0001</td>
-                <td>P9101EF050000</td>
-                <td>CENTRAL STEEL DECK(LONG) BTEB EF 5/1(OG)</td>
-                <td>EA</td>
-                <td></td>
-                <td>1</td>
-                <td>1</td>
-                <td></td>
-                <td></td>
-              </tr>
-              <tr>
-                <td>1 / 0001</td>
-                <td>P9101EF050000</td>
-                <td>CENTRAL STEEL DECK(LONG) BTEB EF 5/1(OG)</td>
-                <td>EA</td>
-                <td></td>
-                <td>1</td>
-                <td>1</td>
-                <td></td>
-                <td></td>
-              </tr>
-              <tr>
-                <td>1 / 0001</td>
-                <td>P9101EF050000</td>
-                <td>CENTRAL STEEL DECK(LONG) BTEB EF 5/1(OG)</td>
-                <td>EA</td>
-                <td></td>
-                <td>1</td>
-                <td>1</td>
-                <td></td>
-                <td></td>
-              </tr>
-              <tr>
-                <td>1 / 0001</td>
-                <td>P9101EF050000</td>
-                <td>CENTRAL STEEL DECK(LONG) BTEB EF 5/1(OG)</td>
-                <td>EA</td>
-                <td></td>
-                <td>1</td>
-                <td>1</td>
-                <td></td>
-                <td></td>
-              </tr>
-              <tr>
-                <td colSpan={9}></td>
-              </tr>
-            </tbody>
-            <tfoot>
-              <tr>
-                <td colSpan={2}>
-                  <h6 className="text-center pb-3">Issued To</h6>
-                  <h6 className="text-center">DCG1</h6>
-                </td>
-                <td colSpan={1}>
-                  <h6 className="text-center pb-3">Issued By</h6>
-                  <h6 className="text-center">DCG1</h6>
-                </td>
-                <td colSpan={3}>
-                  <h6 className="text-center pb-3">Authorized By</h6>
-                  <h6 className="text-center"></h6>
-                </td>
-                <td colSpan={3}>
-                  <h6 className="text-center pb-3">Received By</h6>
-                  <h6 className="text-center"></h6>
-                </td>
-              </tr>
-            </tfoot>
-          </table>
+          {isLoading ? (
+            <h4 className="text-center mt-5 text-secondary" >Loading....</h4>
+          ) : (
+            <table className="table table_container_1">
+              <thead>
+                <tr>
+                  <th>SR.N0/SIR Item</th>
+                  <th>Material Code</th>
+                  <th>Material Description</th>
+                  <th>UOM</th>
+                  <th>Batch No.</th>
+                  <th>Required Qty</th>
+                  <th>Issued Qty</th>
+                  <th>Cost Center</th>
+                  <th>WBS Element</th>
+                </tr>
+              </thead>
+              <tbody>
+                {apiData?.data?.lineItem?.map((item, index) => (
+                  <tr key={index}>
+                    <td>{index + 1} / 0001</td>
+                    <td>{item.materialNumber}</td>
+                    <td>{item.materialDescription}</td>
+                    <td>{item.unit}</td>
+                    <td>{item.batchNo}</td>
+                    <td>{item.requiredQty}</td>
+                    <td>{item.issueQty}</td>
+                    <td>{item.costCenter}</td>
+                    <td>{}</td>
+                  </tr>
+                ))}
+
+                <tr>
+                  <td colSpan={9}></td>
+                </tr>
+              </tbody>
+              <tfoot>
+                <tr>
+                  <td colSpan={2}>
+                    <h6 className="text-center pb-3">Issued To</h6>
+                    <h6 className="text-center">DCG1</h6>
+                  </td>
+                  <td colSpan={1}>
+                    <h6 className="text-center pb-3">Issued By</h6>
+                    <h6 className="text-center">DCG1</h6>
+                  </td>
+                  <td colSpan={3}>
+                    <h6 className="text-center pb-3">Authorized By</h6>
+                    <h6 className="text-center"></h6>
+                  </td>
+                  <td colSpan={3}>
+                    <h6 className="text-center pb-3">Received By</h6>
+                    <h6 className="text-center"></h6>
+                  </td>
+                </tr>
+              </tfoot>
+            </table>
+          )}
         </div>
       </div>
 
       <div className="row diflex justify-content-center mt-5">
-        <button className="print_btn" 
-        style={{ position: "absolute", top: "30px", right: "50px" }}
-        onClick={handlePrint}
+        <button
+          className="print_btn"
+          style={{ position: "absolute", top: "30px", right: "50px" }}
+          onClick={handlePrint}
         >
           Print
         </button>
