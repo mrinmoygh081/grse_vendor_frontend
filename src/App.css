@@ -225,3 +225,7 @@ input[type="number"] {
     display: none !important;
   }
 }
+.payment_advice_table thead tr th,
+.payment_advice_table tbody tr td {
+  border: none;
+}
