@@ -192,18 +192,6 @@ const InspectionCall = () => {
               <form>
                 <div className="row">
                   <div className="col-12">
-                    {/* <div className="mb-3">
-                  <select name="" id="" className="form-control">
-                    <option value="">Choose File Type</option>
-                    <option value="">Inspection call letter stage 1</option>
-                    <option value="">Inspection call letter stage 2</option>
-                    <option value="">Inspection call letter stage 3</option>
-                    <option value="">Inspection release note</option>
-                    <option value="">Form-4</option>
-                    <option value="">Dispatch clearance</option>
-                    <option value="">Inspection report</option>
-                  </select>
-                </div> */}
                     <div className="mb-3">
                       <select
                         name=""
@@ -215,27 +203,23 @@ const InspectionCall = () => {
                         }}
                       >
                         <option value="">Choose Action Type</option>
-
-                        <option value="UPLOAD RM INSPECTION CALL LETTER">
-                          UPLOAD RM INSPECTION CALL LETTER
+                        <option value="RM INSPECTION CALL LETTER">
+                          RM INSPECTION CALL LETTER
                         </option>
-                        <option value="UPLOAD TEST WITNESS INSPECTION CALL LETTER">
-                          UPLOAD TEST WITNESS INSPECTION CALL LETTER
+                        <option value="TEST WITNESS INSPECTION CALL LETTER">
+                          TEST WITNESS INSPECTION CALL LETTER
                         </option>
-                        <option value="UPLOAD FINAL INSPECTION/FATS CALL LETTER">
-                          UPLOAD FINAL INSPECTION/FATS CALL LETTER
+                        <option value="FINAL INSPECTION/FATS CALL LETTER">
+                          FINAL INSPECTION/FATS CALL LETTER
                         </option>
                         <option value="REMARKS">REMARKS</option>
-
                         <option value="OTHERS">OTHERS</option>
                       </select>
                     </div>
 
                     {user?.user_type === 1 && (
                       <div className="mb-3">
-                        <label className="form-label">
-                          Inspection Call File
-                        </label>
+                        <label className="form-label">File Info</label>
                         &nbsp;&nbsp;
                         <span className="mandatorystart">*</span>
                         <input

@@ -24,7 +24,7 @@ export const sidebarData = [
   //   link: "/demand-delivery-lead-time",
   // },
   {
-    title: "Inspection call letter",
+    title: "Inspection Call Letter",
     link: "/inspection",
   },
   {

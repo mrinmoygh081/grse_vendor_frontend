@@ -64,7 +64,7 @@ const POs = () => {
   return (
     <>
       {user.department_name !== "PPC" && (
-        <MainHeader title={"Welcome to OBPS System"} />
+        <MainHeader title={"Welcome to OBPS Portal"} />
       )}
       {user.department_name !== "PPC" ? (
         // <div className="container">

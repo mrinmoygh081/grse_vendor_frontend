@@ -57,20 +57,22 @@ const MainHeader = ({ title }) => {
               </Link>
             </li> */}
             <li>
-              <div className="ps-4 log_in">
-                Logged In: <br />
-                <span className="menu-title">{user?.vendor_code}</span>
-                <span
-                  onClick={() =>
-                    reConfirm(
-                      { file: true },
-                      logOutFun,
-                      "You're going to Logout!"
-                    )
-                  }
-                >
-                  (<u className="red">Logout?</u>)
-                </span>
+              <div className="ps-4 log_in menu-item">
+                <b>
+                  Logged In: <br />
+                  <span className="menu-title">{user?.vendor_code}</span>
+                  <span
+                    onClick={() =>
+                      reConfirm(
+                        { file: true },
+                        logOutFun,
+                        "You're going to Logout!"
+                      )
+                    }
+                  >
+                    (<u className="red">Logout?</u>)
+                  </span>
+                </b>
               </div>
             </li>
           </ul>
