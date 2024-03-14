@@ -8,17 +8,18 @@ import { useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import moment from "moment";
 import { REQUESTED, SUBMITTED } from "../constants/BGconstants";
+import { checkTypeArr } from "../utils/smallFun";
 
 const Shippingdocuments = () => {
   const inputFileRef = useRef(null);
   const [isPopup, setIsPopup] = useState(false);
   const [isPopupstore, setIsPopupstore] = useState(false);
-  const [shippingdocumentss, setShippingdocumentss] = useState([]);
+  const [data, setData] = useState([]);
   const { id } = useParams();
 
   const { user, token } = useSelector((state) => state.auth);
   const [formData, setFormData] = useState({
-    shippingdocumentssFile: null,
+    dataFile: null,
     remarks: "",
   });
   const [selectedFileType, setSelectedFileType] = useState("");
@@ -65,7 +66,7 @@ const Shippingdocuments = () => {
         token
       );
       if (data?.status) {
-        setShippingdocumentss(data?.data);
+        setData(data?.data);
       }
     } catch (error) {
       console.error("Error fetching drawing list:", error);
@@ -77,27 +78,26 @@ const Shippingdocuments = () => {
   }, [id, token]);
 
   const shippingdocumentsBtn = async (flag) => {
-    const { shippingdocumentssFile, remarks } = formData;
+    const { dataFile, remarks } = formData;
     if (
       flag === SUBMITTED &&
-      (!shippingdocumentssFile || selectedFileType.trim() === "")
+      (!dataFile || selectedFileType.trim() === "" || remarks.trim() === "")
     ) {
+      return toast.warn("Please fill all the required fields!");
+    }
+    if (flag === REQUESTED && remarks.trim() === "") {
       return toast.warn("Please fill all the required fields!");
     }
     try {
       const formDataToSend = new FormData();
       formDataToSend.append("purchasing_doc_no", id);
-      formDataToSend.append("file", shippingdocumentssFile);
+      formDataToSend.append("file", dataFile);
       formDataToSend.append("remarks", remarks);
       if (flag === REQUESTED) {
         formDataToSend.append("file_type_name", "REQUESTED to VENDOR");
       } else {
         formDataToSend.append("file_type_name", selectedFileType);
       }
-      // formDataToSend.append("updated_by", uType);
-      // formDataToSend.append("vendor_code", user.vendor_code);
-      // formDataToSend.append("action_by_name", user.name);
-      // formDataToSend.append("action_by_id", user.email);
 
       const response = await apiCallBack(
         "POST",
@@ -110,12 +110,14 @@ const Shippingdocuments = () => {
         toast.success("Shipping Document Uploaded Successfully");
         setIsPopup(false);
         setFormData({
-          shippingdocumentssFile: null,
+          dataFile: null,
           remarks: "",
         });
         setSelectedFileType("");
         setIsPopupstore(false);
-        inputFileRef.current.value = null;
+        if (flag === SUBMITTED) {
+          inputFileRef.current.value = null;
+        }
         getData();
       } else {
         // Handle failure, log error details
@@ -156,17 +158,8 @@ const Shippingdocuments = () => {
                             </button>
                           </>
                         )}
-                        {user?.department_id === 5 && (
-                          <>
-                            <button
-                              onClick={() => setIsPopupstore(true)}
-                              className="btn fw-bold btn-primary me-3"
-                            >
-                              ACTION
-                            </button>
-                          </>
-                        )}
-                        {user?.department_id === 16 && (
+                        {(user?.department_id === 5 ||
+                          user?.department_id === 16) && (
                           <>
                             <button
                               onClick={() => setIsPopupstore(true)}
@@ -187,14 +180,14 @@ const Shippingdocuments = () => {
                                 <tr className="border-0">
                                   <th>DateTime</th>
                                   <th>Shipping Documents</th>
-                                  <th>Document Type</th>
+                                  <th>Action Type</th>
                                   <th>Updated By</th>
                                   <th className="min-w-150px">Remarks</th>
                                 </tr>
                               </thead>
                               <tbody style={{ maxHeight: "100%" }}>
-                                {shippingdocumentss &&
-                                  shippingdocumentss.map((item, index) => (
+                                {checkTypeArr(data) &&
+                                  data.map((item, index) => (
                                     <tr key={index}>
                                       <td className="table_center">
                                         {moment(item.created_at)
@@ -231,142 +224,152 @@ const Shippingdocuments = () => {
           </div>
         </div>
       </div>
-      <div className={isPopup ? "popup active" : "popup"}>
-        <div className="card card-xxl-stretch mb-5 mb-xxl-8">
-          <div className="card-header border-0 pt-5 pb-3">
-            <h3 className="card-title align-items-start flex-column">
-              <span className="card-label fw-bold fs-3 mb-1">
-                Upload Shipping Documents
-              </span>
-            </h3>
-            <button
-              className="btn fw-bold btn-danger"
-              onClick={() => setIsPopup(false)}
-            >
-              Close
-            </button>
-          </div>
-          <form>
-            <div className="row">
-              <div className="col-12">
-                <div className="mb-3">
-                  <select
-                    name=""
-                    id=""
-                    className="form-select"
-                    onChange={(e) => {
-                      setSelectedFileType(e.target.value);
-                    }}
-                    value={selectedFileType}
-                  >
-                    <option value="">Select...</option>
 
-                    {optionss.map((option, i) => (
-                      <option key={i} value={option.selectedFileTypeName}>
-                        {option.file_type_name}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-                <div className="mb-3">
-                  <label className="form-label">Shipping Documents File</label>
-                  &nbsp;&nbsp;
-                  <span className="mandatorystart">*</span>
-                  <input
-                    type="file"
-                    className="form-control"
-                    ref={inputFileRef}
-                    onChange={(e) =>
-                      setFormData({
-                        ...formData,
-                        shippingdocumentssFile: e.target.files[0],
-                      })
-                    }
-                  />
-                </div>
-              </div>
-              <div className="col-12">
-                <div className="mb-3">
-                  <label className="form-label">Remarks</label>
-                  <textarea
-                    name=""
-                    id=""
-                    rows="4"
-                    className="form-control"
-                    value={formData?.remarks}
-                    onChange={(e) =>
-                      setFormData({ ...formData, remarks: e.target.value })
-                    }
-                  ></textarea>
-                </div>
-              </div>
-              <div className="col-12">
-                <div className="mb-3 d-flex justify-content-between">
-                  <button
-                    onClick={() => shippingdocumentsBtn("SUBMITTED")}
-                    className="btn fw-bold btn-primary"
-                    type="button"
-                  >
-                    SUBMIT
-                  </button>
-                </div>
-              </div>
+      {/* vendor */}
+      {user?.user_type === 1 && (
+        <div className={isPopup ? "popup active" : "popup"}>
+          <div className="card card-xxl-stretch mb-5 mb-xxl-8">
+            <div className="card-header border-0 pt-5 pb-3">
+              <h3 className="card-title align-items-start flex-column">
+                <span className="card-label fw-bold fs-3 mb-1">
+                  Upload Shipping Documents
+                </span>
+              </h3>
+              <button
+                className="btn fw-bold btn-danger"
+                onClick={() => setIsPopup(false)}
+              >
+                Close
+              </button>
             </div>
-          </form>
+            <form>
+              <div className="row">
+                <div className="col-12">
+                  <div className="mb-3">
+                    <select
+                      name=""
+                      id=""
+                      className="form-select"
+                      onChange={(e) => {
+                        setSelectedFileType(e.target.value);
+                      }}
+                      value={selectedFileType}
+                    >
+                      <option value="">Select...</option>
+
+                      {optionss.map((option, i) => (
+                        <option key={i} value={option.selectedFileTypeName}>
+                          {option.file_type_name}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                  <div className="mb-3">
+                    <label className="form-label">
+                      Shipping Documents File
+                    </label>
+                    &nbsp;&nbsp;
+                    <span className="mandatorystart">*</span>
+                    <input
+                      type="file"
+                      className="form-control"
+                      ref={inputFileRef}
+                      onChange={(e) =>
+                        setFormData({
+                          ...formData,
+                          dataFile: e.target.files[0],
+                        })
+                      }
+                      accept=".pdf"
+                    />
+                  </div>
+                </div>
+                <div className="col-12">
+                  <div className="mb-3">
+                    <label className="form-label">Remarks</label>
+                    &nbsp;&nbsp;
+                    <span className="mandatorystart">*</span>
+                    <textarea
+                      name=""
+                      id=""
+                      rows="4"
+                      className="form-control"
+                      value={formData?.remarks}
+                      onChange={(e) =>
+                        setFormData({ ...formData, remarks: e.target.value })
+                      }
+                    ></textarea>
+                  </div>
+                </div>
+                <div className="col-12">
+                  <div className="mb-3 d-flex justify-content-between">
+                    <button
+                      onClick={() => shippingdocumentsBtn("SUBMITTED")}
+                      className="btn fw-bold btn-primary"
+                      type="button"
+                    >
+                      SUBMIT
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </form>
+          </div>
         </div>
-      </div>
+      )}
 
       {/* store  ric*/}
-
-      <div className={isPopupstore ? "popup active" : "popup"}>
-        <div className="card card-xxl-stretch mb-5 mb-xxl-8">
-          <div className="card-header border-0 pt-5 pb-3">
-            <h3 className="card-title align-items-start flex-column">
-              <span className="card-label fw-bold fs-3 mb-1">
-                Request For Required Shipping Documents
-              </span>
-            </h3>
-            <button
-              className="btn fw-bold btn-danger"
-              onClick={() => setIsPopupstore(false)}
-            >
-              Close
-            </button>
-          </div>
-          <form>
-            <div className="row">
-              <div className="col-12">
-                <div className="mb-3">
-                  <label className="form-label">Remarks</label>
-                  &nbsp;&nbsp;
-                  <span className="mandatorystart">*</span>
-                  <textarea
-                    name=""
-                    id=""
-                    rows="4"
-                    className="form-control"
-                    value={formData?.remarks}
-                    onChange={(e) =>
-                      setFormData({ ...formData, remarks: e.target.value })
-                    }
-                  ></textarea>
-                </div>
-              </div>
-              <div className="col-12">
-                <div className="mb-3 d-flex justify-content-between">
-                  <button
-                    onClick={() => shippingdocumentsBtn("REQUESTED")}
-                    className="btn fw-bold btn-primary"
-                    type="button"
-                  >
-                    SUBMIT
-                  </button>
-                </div>
-              </div>
+      {(user?.department_id === 5 || user?.department_id === 16) && (
+        <div className={isPopupstore ? "popup active" : "popup"}>
+          <div className="card card-xxl-stretch mb-5 mb-xxl-8">
+            <div className="card-header border-0 pt-5 pb-3">
+              <h3 className="card-title align-items-start flex-column">
+                <span className="card-label fw-bold fs-3 mb-1">
+                  Request For Required Shipping Documents
+                </span>
+              </h3>
+              <button
+                className="btn fw-bold btn-danger"
+                onClick={() => setIsPopupstore(false)}
+              >
+                Close
+              </button>
             </div>
-          </form>
+            <form>
+              <div className="row">
+                <div className="col-12">
+                  <div className="mb-3">
+                    <label className="form-label">Remarks</label>
+                    &nbsp;&nbsp;
+                    <span className="mandatorystart">*</span>
+                    <textarea
+                      name=""
+                      id=""
+                      rows="4"
+                      className="form-control"
+                      value={formData?.remarks}
+                      onChange={(e) =>
+                        setFormData({ ...formData, remarks: e.target.value })
+                      }
+                    ></textarea>
+                  </div>
+                </div>
+                <div className="col-12">
+                  <div className="mb-3 d-flex justify-content-between">
+                    <button
+                      onClick={() => shippingdocumentsBtn("REQUESTED")}
+                      className="btn fw-bold btn-primary"
+                      type="button"
+                    >
+                      SUBMIT
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </form>
+          </div>
         </div>
-      </div>
+      )}
     </>
   );
 };

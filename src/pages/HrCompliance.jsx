@@ -9,19 +9,24 @@ import { toast } from "react-toastify";
 import { reConfirm } from "../utils/reConfirm";
 import { clrLegend } from "../utils/clrLegend";
 import { groupedByRefNo } from "../utils/groupedByReq";
+import {
+  ASSIGNER,
+  USER_GRSE_HR,
+  USER_VENDOR,
+} from "../constants/userConstants";
 
 const HrCompliance = () => {
-  const [isPopup, setIsPopup] = useState(false);
   const inputFileRef = useRef(null);
+  const { id } = useParams();
+  const [isPopup, setIsPopup] = useState(false);
   // const [isPopupAssign, setIsPopupAssign] = useState(false);
-  const [alldrawing, setAlldrawing] = useState([]);
+  const [data, setData] = useState([]);
   const [groupedData, setGroupedData] = useState([]);
   const [formData, setFormData] = useState({
-    drawingFile: null,
+    fileData: null,
     remarks: "",
+    actionType: "",
   });
-  const [selectedActionType, setSelectedActionType] = useState("");
-  const { id } = useParams();
   const { user, token, userType } = useSelector((state) => state.auth);
   // const { poType } = useSelector((state) => state.selectedPO);
   const [referenceNo, setreferenceNo] = useState("");
@@ -34,13 +39,13 @@ const HrCompliance = () => {
     try {
       const data = await apiCallBack(
         "GET",
-        `po/drawing/drawingList?poNo=${id}`,
+        `po/hr/complianceUploadedList?poNo=${id}`,
         null,
         token
       );
       // console.log(data);
       if (data?.status) {
-        setAlldrawing(data?.data);
+        setData(data?.data);
       }
     } catch (error) {
       console.error("Error fetching drawing list:", error);
@@ -52,51 +57,50 @@ const HrCompliance = () => {
   }, [id, token]);
 
   const actionHandler = async (flag) => {
-    const { drawingFile, remarks } = formData;
+    const { fileData, remarks, actionType } = formData;
     if (
       flag === "SUBMITTED" &&
-      (selectedActionType === "" || !drawingFile || remarks.trim() === "")
+      (actionType === "" || !fileData || remarks.trim() === "")
     ) {
       return toast.warn("Please fill all the required fields!");
     }
 
     if (
       (flag === "APPROVED" || flag === "REJECTED") &&
-      (selectedActionType === "" || remarks.trim() === "")
+      (actionType === "" || remarks.trim() === "")
     ) {
       return toast.warn(
         "Action Type and remarks is mandatory for approval or rejection!"
       );
     }
 
-    let isApproved = flag;
-    let uType;
-    let mailSendTo;
-    if (userType === 1) {
-      uType = "VENDOR";
-      mailSendTo = "mrinmoygh081@gmail.com";
-    } else {
-      uType = "GRSE";
-      mailSendTo = "aabhinit96@gmail.com";
-    }
+    // let uType;
+    // let mailSendTo;
+    // if (userType === 1) {
+    //   uType = "VENDOR";
+    //   mailSendTo = "mrinmoygh081@gmail.com";
+    // } else {
+    //   uType = "GRSE";
+    //   mailSendTo = "aabhinit96@gmail.com";
+    // }
 
     try {
       const formDataToSend = new FormData();
       formDataToSend.append("purchasing_doc_no", id);
-      formDataToSend.append("file", formData.drawingFile);
-      formDataToSend.append("remarks", formData.remarks);
-      formDataToSend.append("status", isApproved);
-      formDataToSend.append("mailSendTo", mailSendTo);
-      formDataToSend.append("updated_by", uType);
-      formDataToSend.append("vendor_code", user.vendor_code);
-      formDataToSend.append("action_by_name", user.name);
-      formDataToSend.append("action_by_id", user.email);
-      formDataToSend.append("actionType", selectedActionType);
+      formDataToSend.append("action_type", actionType);
+      formDataToSend.append("file", fileData);
+      formDataToSend.append("remarks", remarks);
+      formDataToSend.append("status", flag);
       formDataToSend.append("reference_no", referenceNo);
+      // formDataToSend.append("mailSendTo", mailSendTo);
+      // formDataToSend.append("updated_by", uType);
+      // formDataToSend.append("vendor_code", user.vendor_code);
+      // formDataToSend.append("action_by_name", user.name);
+      // formDataToSend.append("action_by_id", user.email);
 
       const response = await apiCallBack(
         "POST",
-        "po/drawing/submitDrawing",
+        "po/hr/hrComplianceUpload",
         formDataToSend,
         token
       );
@@ -105,10 +109,10 @@ const HrCompliance = () => {
         toast.success("Data sent successfully");
         setIsPopup(false);
         setFormData({
-          drawingFile: null,
+          fileData: null,
           remarks: "",
+          actionType: "",
         });
-        setSelectedActionType("");
         inputFileRef.current.value = null;
         getData();
       }
@@ -118,11 +122,11 @@ const HrCompliance = () => {
   };
 
   useEffect(() => {
-    if (alldrawing && alldrawing.length > 0) {
-      const gData = groupedByRefNo(alldrawing);
+    if (data && data.length > 0) {
+      const gData = groupedByRefNo(data);
       setGroupedData(gData);
     }
-  }, [alldrawing]);
+  }, [data]);
 
   return (
     <>
@@ -137,7 +141,7 @@ const HrCompliance = () => {
                   <div className="row g-5 g-xl-8">
                     <div className="col-12">
                       <div className="screen_header">
-                        {userType === 1 && (
+                        {user?.userType === USER_VENDOR && (
                           <button
                             onClick={() => {
                               setIsPopup(true);
@@ -156,13 +160,15 @@ const HrCompliance = () => {
                             <table className="table table-striped table-bordered table_height">
                               <thead>
                                 <tr className="border-0">
-                                  <th>Reference No. </th>
+                                  {/* <th>Reference No. </th> */}
                                   <th>DateTime </th>
                                   <th>File Info</th>
                                   <th>Updated By</th>
                                   <th className="min-w-150px">Remarks</th>
                                   <th>Status</th>
-                                  {user.department_id === 2 && <th>Action</th>}
+                                  {user?.department_id === USER_GRSE_HR && (
+                                    <th>Action</th>
+                                  )}
                                 </tr>
                               </thead>
                               <tbody style={{ maxHeight: "100%" }}>
@@ -178,9 +184,9 @@ const HrCompliance = () => {
                                       {items &&
                                         items.map((item, i) => (
                                           <tr key={i}>
-                                            <td className="table_center">
+                                            {/* <td className="table_center">
                                               {item.reference_no}
-                                            </td>
+                                            </td> */}
                                             <td className="table_center">
                                               {item?.created_at &&
                                                 new Date(
@@ -212,15 +218,16 @@ const HrCompliance = () => {
                                               {item.status}
                                             </td>
 
-                                            {user.department_id === 2 && (
+                                            {user.department_id ===
+                                              USER_GRSE_HR && (
                                               <td>
-                                                {items.status ===
+                                                {item.status ===
                                                   "SUBMITTED" && (
                                                   <button
                                                     onClick={() => {
                                                       setIsPopup(true);
                                                       setreferenceNo(
-                                                        items.reference_no
+                                                        item.reference_no
                                                       );
                                                     }}
                                                     className="btn fw-bold btn-primary mx-3"
@@ -250,7 +257,8 @@ const HrCompliance = () => {
         </div>
       </div>
 
-      {(userType === 1 || user?.department_id === 2) && (
+      {(user?.userType === USER_VENDOR ||
+        user?.department_id === USER_GRSE_HR) && (
         <div className={isPopup ? "popup active" : "popup"}>
           <div className="card card-xxl-stretch mb-5 mb-xxl-8">
             <div className="card-header border-0 pt-5">
@@ -274,16 +282,18 @@ const HrCompliance = () => {
                       name=""
                       id=""
                       className="form-select"
-                      value={selectedActionType}
+                      value={formData?.actionType}
                       onChange={(e) => {
-                        setSelectedActionType(e.target.value);
+                        setFormData({
+                          ...formData,
+                          actionType: e.target.value,
+                        });
                       }}
                     >
                       <option value="">Choose Action Type</option>
                       <option value="PF">PF</option>
                       <option value="ESI">ESI</option>
                       <option value="Wage">Wage</option>
-
                       <option value="Acknowledgement/Remarks">
                         Acknowledgement / Remarks
                       </option>
@@ -292,8 +302,7 @@ const HrCompliance = () => {
                   </div>
                   <div className="mb-3">
                     <label className="form-label">File Info</label>
-                    &nbsp;&nbsp;
-                    {!referenceNo && <span className="mandatorystart">*</span>}
+                    &nbsp;&nbsp;<span className="mandatorystart">*</span>
                     <input
                       type="file"
                       className="form-control"
@@ -301,9 +310,10 @@ const HrCompliance = () => {
                       onChange={(e) =>
                         setFormData({
                           ...formData,
-                          drawingFile: e.target.files[0],
+                          fileData: e.target.files[0],
                         })
                       }
+                      accept=".pdf"
                     />
                   </div>
                 </div>
@@ -335,9 +345,8 @@ const HrCompliance = () => {
                     </button>
 
                     <div className="d-flex gap-3">
-                      {userType === 2 &&
-                        user?.department_id === 2 &&
-                        user?.internal_role_id === 1 && (
+                      {userType !== USER_VENDOR &&
+                        user?.department_id === USER_GRSE_HR && (
                           <button
                             onClick={() =>
                               reConfirm(
@@ -353,9 +362,9 @@ const HrCompliance = () => {
                           </button>
                         )}
 
-                      {userType === 2 &&
-                        user?.department_id === 2 &&
-                        user?.internal_role_id === 1 && (
+                      {userType !== USER_VENDOR &&
+                        user?.department_id === USER_GRSE_HR &&
+                        user?.internal_role_id === ASSIGNER && (
                           <button
                             onClick={() =>
                               reConfirm(

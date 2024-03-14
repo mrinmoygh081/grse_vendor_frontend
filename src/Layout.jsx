@@ -178,8 +178,26 @@ function Layout() {
             <Route exact path="/mrs/:id" element={<MRSSub />} />
             <Route exact path="/mir/:id" element={<MaterialIssueReqSub />} />
             <Route exact path="/wmc/:id" element={<WMCSub />} />
-
-<<<<<<< HEAD
+            <Route
+              exact
+              path="/display-store-actions/goods-receipt"
+              element={<Goods_issue_slip />}
+            />
+            <Route
+              exact
+              path="/display-store-actions/icgn-report"
+              element={<Inspection_report />}
+            />
+            {/* <Route
+              exact
+              path="/display-store-actions/gate-in-entry"
+              element={<Purchase_document />}
+            /> */}
+            <Route
+              exact
+              path="/display-store-actions/payment-advice"
+              element={<Payment_Advice />}
+            />
             <Route
               exact
               path="/display-store-actions/goods-receipt"
@@ -193,20 +211,13 @@ function Layout() {
             <Route
               exact
               path="/display-store-actions/gate-in-entry"
-              element={<Purchase_document />}
+              element={<Reservation_report />}
             />
             <Route
               exact
               path="/display-store-actions/payment-advice"
               element={<Payment_Advice />}
             />
-=======
-            <Route exact path="/display-store-actions/goods-receipt" element={<Goods_issue_slip/>} />  
-            <Route exact path="/display-store-actions/icgn-report" element={<Inspection_report/>} />  
-            <Route exact path="/display-store-actions/gate-in-entry" element={<Reservation_report/>} />  
-            <Route exact path="/display-store-actions/payment-advice" element={<Payment_Advice/>} />  
-
->>>>>>> ebc4c9bcce0274bd5a501b93db8b6598a31c2c6a
           </Routes>
         )}
       </BrowserRouter>

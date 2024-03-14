@@ -32,24 +32,9 @@ const WDCSub = () => {
     actual_payable_amount: "",
   });
   const { id } = useParams();
-  const { user, token, userType } = useSelector((state) => state.auth);
+  const { user, token } = useSelector((state) => state.auth);
 
   const fileInputRef = useRef(null);
-
-  // useEffect(() => {
-  //   const handlePopState = (event) => {
-  //     if (event.state === null) {
-  //       console.log("Hello World!");
-  //     }
-  //     alert("Hello World!");
-  //   };
-
-  //   window.addEventListener("popstate", handlePopState);
-
-  //   return () => {
-  //     window.removeEventListener("popstate", handlePopState);
-  //   };
-  // }, []);
 
   const getData = async () => {
     try {
@@ -285,12 +270,13 @@ const WDCSub = () => {
                                       <td>{item.stage_datiels}</td>
                                       <td>{item.actual_payable_amount}</td>
                                       <td>{item.remarks}</td>
-                                      <td className={`${clrLegend(
-                                                  item?.status
-                                                )} bold`}>
+                                      <td
+                                        className={`${clrLegend(
+                                          item?.status
+                                        )} bold`}
+                                      >
                                         {item.status}
                                       </td>
-
                                     </tr>
                                   ))}
                               </tbody>
@@ -590,7 +576,7 @@ const WDCSub = () => {
                     SUBMIT
                   </button>
 
-                  {userType !== 1 && (
+                  {user?.userType !== 1 && (
                     <button
                       onClick={() =>
                         reConfirm(

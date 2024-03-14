@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Footer from "../components/Footer";
 import SideBar from "../components/SideBar";
 import Header from "../components/Header";
@@ -7,27 +7,26 @@ import { useSelector } from "react-redux";
 import { apiCallBack } from "../utils/fetchAPIs";
 import { toast } from "react-toastify";
 import moment from "moment";
+import { checkTypeArr } from "../utils/smallFun";
 
 const ManageVendorActivities = () => {
+  const inputFileRef = useRef(null);
   const [isPopup, setIsPopup] = useState(false);
   const [inspectioncall, setInspectioncall] = useState([]);
   const { id } = useParams();
 
-  const { user, token, userType } = useSelector((state) => state.auth);
+  const { user, token } = useSelector((state) => state.auth);
   const [formData, setFormData] = useState({
-    InspectioncallFile: null,
+    dataFile: null,
     remarks: "",
+    actionType: "",
   });
-
-  const [selectedFileType, setSelectedFileType] = useState("");
-
-  console.log(user);
 
   const getData = async () => {
     try {
       const data = await apiCallBack(
         "GET",
-        `po/inspectioncallletter/list?poNo=${id}`,
+        `po/vendor/list?poNo=${id}`,
         null,
         token
       );
@@ -43,31 +42,41 @@ const ManageVendorActivities = () => {
     getData();
   }, [id, token]);
 
-  const updateInspectionCall = async (flag) => {
+  const actionHandler = async (flag) => {
     try {
+      const { dataFile, remarks, actionType } = formData;
+      if (!dataFile || remarks.trim() === "" || actionType.trim() === "") {
+        return toast.warn("All fields are required!");
+      }
       const formDataToSend = new FormData();
       formDataToSend.append("purchasing_doc_no", id);
-      formDataToSend.append("file", formData.InspectioncallFile);
-      formDataToSend.append("remarks", formData.remarks);
-      formDataToSend.append("file_type_id", selectedFileType);
-      formDataToSend.append("file_type_name", selectedFileType);
+      formDataToSend.append("file", dataFile);
+      formDataToSend.append("remarks", remarks);
+      formDataToSend.append("action_type", actionType);
+      formDataToSend.append("status", flag);
 
       const response = await apiCallBack(
         "POST",
-        "po/inspectionCallLetter",
+        "po/vendor/vendorActivities",
         formDataToSend,
         token
       );
 
       if (response?.status) {
-        toast.success("Inspection call letter uploaded successfully");
+        toast.success("Data has been sent successfully!");
         setIsPopup(false);
+        setFormData({
+          dataFile: null,
+          remarks: "",
+          actionType: "",
+        });
+        inputFileRef.current.value = null;
         getData();
       } else {
-        toast.error("Failed to upload inspection call letter");
+        toast.error("Failed to upload data");
       }
     } catch (error) {
-      console.error("Error uploading inspection call letter:", error);
+      console.error("Error uploading data:", error);
     }
   };
 
@@ -104,44 +113,40 @@ const ManageVendorActivities = () => {
                                   <th>DateTime </th>
                                   <th>File Info</th>
                                   <th>Updated By</th>
-                                  <th>File Type</th>
+                                  <th>Action Type</th>
                                   <th className="min-w-150px">Remarks</th>
                                 </tr>
                               </thead>
                               <tbody style={{ maxHeight: "100%" }}>
-                                {inspectioncall.map((inspection) => (
-                                  <tr key={inspection.id}>
-                                    <td className="table_center">
-                                      {moment(inspection.created_at)
-                                        .utc()
-                                        .format("DD/MM/YY (HH:mm)")}
-                                    </td>
-                                    <td className="">
-                                      {inspection.file_name && (
-                                        <a
-                                          href={`${process.env.REACT_APP_PDF_URL}inspectionCallLetter/${inspection.file_name}`}
-                                          target="_blank"
-                                          rel="noreferrer"
-                                        >
-                                          Click Here
-                                        </a>
-                                      )}
-                                    </td>
-                                    <td className="">
-                                      {inspection.updated_by} (
-                                      {inspection.created_by_id})
-                                    </td>
-                                    <td className="">
-                                      {inspection.file_type_name}
-                                    </td>
-                                    <td className="">{inspection.remarks}</td>
-                                    {/* <td className="">
-                                      {inspection.status === "APPROVED"
-                                        ? "APPROVED"
-                                        : "PENDING"}
-                                    </td> */}
-                                  </tr>
-                                ))}
+                                {checkTypeArr(inspectioncall) &&
+                                  inspectioncall.map((inspection) => (
+                                    <tr key={inspection.id}>
+                                      <td className="table_center">
+                                        {moment(inspection.created_at)
+                                          .utc()
+                                          .format("DD/MM/YY (HH:mm)")}
+                                      </td>
+                                      <td className="">
+                                        {inspection.file_name && (
+                                          <a
+                                            href={`${process.env.REACT_APP_PDF_URL}vendorActivities/${inspection.file_name}`}
+                                            target="_blank"
+                                            rel="noreferrer"
+                                          >
+                                            Click Here
+                                          </a>
+                                        )}
+                                      </td>
+                                      <td className="">
+                                        {inspection.updated_by} (
+                                        {inspection.created_by_id})
+                                      </td>
+                                      <td className="">
+                                        {inspection.action_type}
+                                      </td>
+                                      <td className="">{inspection.remarks}</td>
+                                    </tr>
+                                  ))}
                               </tbody>
                             </table>
                           </div>
@@ -175,27 +180,17 @@ const ManageVendorActivities = () => {
             <form>
               <div className="row">
                 <div className="col-12">
-                  {/* for vendor or nic */}
-                  {/* <div className="mb-3">
-                  <select name="" id="" className="form-control">
-                    <option value="">Choose File Type</option>
-                    <option value="">Inspection call letter stage 1</option>
-                    <option value="">Inspection call letter stage 2</option>
-                    <option value="">Inspection call letter stage 3</option>
-                    <option value="">Inspection release note</option>
-                    <option value="">Form-4</option>
-                    <option value="">Dispatch clearance</option>
-                    <option value="">Inspection report</option>
-                  </select>
-                </div> */}
-                  {/* for lan or cdo (drawing officer) or qa */}
                   <div className="mb-3">
                     <select
                       name=""
                       id=""
                       className="form-select"
+                      value={formData?.actionType}
                       onChange={(e) => {
-                        setSelectedFileType(e.target.value);
+                        setFormData({
+                          ...formData,
+                          actionType: e.target.value,
+                        });
                       }}
                     >
                       <option value="">Choose Action Type</option>
@@ -221,13 +216,12 @@ const ManageVendorActivities = () => {
                         UPLOAD MATERIAL RECONCILIATION CERTIFICATE
                       </option>
                       <option value="REMARKS">REMARKS</option>
-
                       <option value="OTHERS">OTHERS</option>
                     </select>
                   </div>
 
                   <div className="mb-3">
-                    <label className="form-label">File</label>
+                    <label className="form-label">File Info</label>
                     &nbsp;&nbsp;
                     <span className="mandatorystart">*</span>
                     <input
@@ -236,20 +230,25 @@ const ManageVendorActivities = () => {
                       onChange={(e) =>
                         setFormData({
                           ...formData,
-                          InspectioncallFile: e.target.files[0],
+                          dataFile: e.target.files[0],
                         })
                       }
+                      ref={inputFileRef}
+                      accept=".pdf"
                     />
                   </div>
                 </div>
                 <div className="col-12">
                   <div className="mb-3">
                     <label className="form-label">Remarks</label>
+                    &nbsp;&nbsp;
+                    <span className="mandatorystart">*</span>
                     <textarea
                       name=""
                       id=""
                       rows="4"
                       className="form-control"
+                      value={formData?.remarks}
                       onChange={(e) =>
                         setFormData({ ...formData, remarks: e.target.value })
                       }
@@ -259,23 +258,12 @@ const ManageVendorActivities = () => {
                 <div className="col-12">
                   <div className="mb-3 d-flex justify-content-between">
                     <button
-                      onClick={() => updateInspectionCall("PENDING")}
+                      onClick={() => actionHandler("SUBMITTED")}
                       className="btn fw-bold btn-primary"
                       type="button"
                     >
                       SUBMIT
                     </button>
-                    {/* {userType !== 1 ? (
-                    <button
-                      onClick={() => updateInspectionCall("APPROVED")}
-                      className="btn fw-bold btn-primary"
-                      type="button"
-                    >
-                      Approved
-                    </button>
-                  ) : (
-                    ""
-                  )} */}
                   </div>
                 </div>
               </div>

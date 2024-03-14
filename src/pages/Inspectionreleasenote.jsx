@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Footer from "../components/Footer";
 import SideBar from "../components/SideBar";
 import Header from "../components/Header";
@@ -10,6 +10,7 @@ import moment from "moment";
 import { checkTypeArr } from "../utils/smallFun";
 
 const Inspectionreleasenote = () => {
+  const inputFileRef = useRef(null);
   const [isPopup, setIsPopup] = useState(false);
   const [data, setData] = useState([]);
   const { id } = useParams();
@@ -51,11 +52,11 @@ const Inspectionreleasenote = () => {
       formDataToSend.append("purchasing_doc_no", id);
       formDataToSend.append("file", dataFile);
       formDataToSend.append("remarks", remarks);
-      formDataToSend.append("type", actionType);
+      formDataToSend.append("action_type", actionType);
 
       const response = await apiCallBack(
         "POST",
-        "po/inspectionReleaseNote",
+        "po/inspectionReleaseNote/submitIRN",
         formDataToSend,
         token
       );
@@ -63,6 +64,12 @@ const Inspectionreleasenote = () => {
       if (response?.status) {
         toast.success("Data sent successfully!");
         setIsPopup(false);
+        setFormData({
+          actionType: "",
+          dataFile: null,
+          remarks: "",
+        });
+        inputFileRef.current.value = null;
         getData();
       } else {
         toast.error("Failed to upload data!");
@@ -105,7 +112,7 @@ const Inspectionreleasenote = () => {
                                   <th>DateTime </th>
                                   <th>File Info</th>
                                   <th>Updated By</th>
-                                  <th>File Type</th>
+                                  <th>Action Type</th>
                                   <th className="min-w-150px">Remarks</th>
                                 </tr>
                               </thead>
@@ -119,10 +126,10 @@ const Inspectionreleasenote = () => {
                                             .utc()
                                             .format("DD/MM/YY (HH:mm)")}
                                         </td>
-                                        <td className="">
+                                        <td>
                                           {item.file_name && (
                                             <a
-                                              href={`${process.env.REACT_APP_PDF_URL}inspectionCallLetter/${item.file_name}`}
+                                              href={`${process.env.REACT_APP_PDF_URL}submitIRN/${item.file_name}`}
                                               target="_blank"
                                               rel="noreferrer"
                                             >
@@ -130,14 +137,12 @@ const Inspectionreleasenote = () => {
                                             </a>
                                           )}
                                         </td>
-                                        <td className="">
+                                        <td>
                                           {item.updated_by} (
                                           {item.created_by_id})
                                         </td>
-                                        <td className="">
-                                          {item.file_type_name}
-                                        </td>
-                                        <td className="">{item.remarks}</td>
+                                        <td>{item.action_type}</td>
+                                        <td>{item.remarks}</td>
                                       </tr>
                                     );
                                   })}
@@ -174,25 +179,12 @@ const Inspectionreleasenote = () => {
             <form>
               <div className="row">
                 <div className="col-12">
-                  {/* for vendor or nic */}
-                  {/* <div className="mb-3">
-                  <select name="" id="" className="form-control">
-                    <option value="">Choose File Type</option>
-                    <option value="">Inspection realease note stage 1</option>
-                    <option value="">Inspection realease note stage 2</option>
-                    <option value="">Inspection realease note stage 3</option>
-                    <option value="">Inspection release note</option>
-                    <option value="">Form-4</option>
-                    <option value="">Dispatch clearance</option>
-                    <option value="">Inspection report</option>
-                  </select>
-                </div> */}
-                  {/* for lan or cdo (drawing officer) or qa */}
                   <div className="mb-3">
                     <select
                       name=""
                       id=""
                       className="form-select"
+                      value={formData?.actionType}
                       onChange={(e) => {
                         setFormData({
                           ...formData,
@@ -215,6 +207,7 @@ const Inspectionreleasenote = () => {
                     &nbsp;&nbsp;
                     <span className="mandatorystart">*</span>
                     <input
+                      ref={inputFileRef}
                       type="file"
                       className="form-control"
                       onChange={(e) =>
@@ -223,17 +216,21 @@ const Inspectionreleasenote = () => {
                           dataFile: e.target.files[0],
                         })
                       }
+                      accept=".pdf"
                     />
                   </div>
                 </div>
                 <div className="col-12">
                   <div className="mb-3">
                     <label className="form-label">Remarks</label>
+                    &nbsp;&nbsp;
+                    <span className="mandatorystart">*</span>
                     <textarea
                       name=""
                       id=""
                       rows="4"
                       className="form-control"
+                      value={formData?.remarks}
                       onChange={(e) =>
                         setFormData({ ...formData, remarks: e.target.value })
                       }

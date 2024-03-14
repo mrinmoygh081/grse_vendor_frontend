@@ -6,7 +6,7 @@ import { useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { apiCallBack } from "../utils/fetchAPIs";
 import { toast } from "react-toastify";
-import moment from "moment";
+import { checkTypeArr } from "../utils/smallFun";
 
 const InspectionCall = () => {
   const [isPopup, setIsPopup] = useState(false);
@@ -16,13 +16,10 @@ const InspectionCall = () => {
 
   const { user, token } = useSelector((state) => state.auth);
   const [formData, setFormData] = useState({
+    actionType: "",
     InspectioncallFile: null,
     remarks: "",
   });
-
-  const [selectedFileType, setSelectedFileType] = useState("");
-
-  console.log(user);
 
   const getData = async () => {
     try {
@@ -46,9 +43,9 @@ const InspectionCall = () => {
 
   const updateInspectionCall = async () => {
     const { user_type } = user;
-    const { InspectioncallFile, remarks } = formData;
+    const { InspectioncallFile, remarks, actionType } = formData;
     if (user_type === 1) {
-      if (!InspectioncallFile || remarks === "" || selectedFileType === "") {
+      if (!InspectioncallFile || remarks === "" || actionType === "") {
         return toast.warn("All fields are required!");
       }
     }
@@ -57,8 +54,7 @@ const InspectionCall = () => {
       formDataToSend.append("purchasing_doc_no", id);
       formDataToSend.append("file", InspectioncallFile);
       formDataToSend.append("remarks", remarks);
-      formDataToSend.append("file_type_id", selectedFileType);
-      formDataToSend.append("file_type_name", selectedFileType);
+      formDataToSend.append("action_type", actionType);
 
       const response = await apiCallBack(
         "POST",
@@ -68,17 +64,17 @@ const InspectionCall = () => {
       );
 
       if (response?.status) {
-        toast.success("Data added successfully");
+        toast.success("Data sent successfully!");
         setIsPopup(false);
-        setSelectedFileType("");
         setFormData({
           InspectioncallFile: null,
           remarks: "",
+          actionType: "",
         });
         inputFileRef.current.value = null;
         getData();
       } else {
-        toast.error("Failed to upload data");
+        toast.error(response?.message);
       }
     } catch (error) {
       console.error("Error uploading data:", error);
@@ -123,40 +119,34 @@ const InspectionCall = () => {
                                 </tr>
                               </thead>
                               <tbody style={{ maxHeight: "100%" }}>
-                                {inspectioncall.map((inspection) => (
-                                  <tr key={inspection.id}>
-                                    <td className="table_center">
-                                      {inspection?.created_at &&
-                                        new Date(
-                                          inspection?.created_at
-                                        ).toLocaleString()}
-                                    </td>
-                                    <td className="">
-                                      {inspection.file_name && (
-                                        <a
-                                          href={`${process.env.REACT_APP_BACKEND_API}inspectionCallLetter/${inspection.file_name}`}
-                                          target="_blank"
-                                          rel="noreferrer"
-                                        >
-                                          Click Here
-                                        </a>
-                                      )}
-                                    </td>
-                                    <td className="">
-                                      {inspection.updated_by} (
-                                      {inspection.created_by_id})
-                                    </td>
-                                    <td className="">
-                                      {inspection.file_type_name}
-                                    </td>
-                                    <td className="">{inspection.remarks}</td>
-                                    {/* <td className="">
-                                      {inspection.status === "APPROVED"
-                                        ? "APPROVED"
-                                        : "PENDING"}
-                                    </td> */}
-                                  </tr>
-                                ))}
+                                {checkTypeArr(inspectioncall) &&
+                                  inspectioncall.map((inspection) => (
+                                    <tr key={inspection.id}>
+                                      <td className="table_center">
+                                        {inspection?.created_at &&
+                                          new Date(
+                                            inspection?.created_at
+                                          ).toLocaleString()}
+                                      </td>
+                                      <td>
+                                        {inspection.file_name && (
+                                          <a
+                                            href={`${process.env.REACT_APP_PDF_URL}inspectionCallLetter/${inspection.file_name}`}
+                                            target="_blank"
+                                            rel="noreferrer"
+                                          >
+                                            Click Here
+                                          </a>
+                                        )}
+                                      </td>
+                                      <td>
+                                        {inspection.updated_by} (
+                                        {inspection.created_by_id})
+                                      </td>
+                                      <td>{inspection.action_type}</td>
+                                      <td>{inspection.remarks}</td>
+                                    </tr>
+                                  ))}
                               </tbody>
                             </table>
                           </div>
@@ -197,9 +187,12 @@ const InspectionCall = () => {
                         name=""
                         id=""
                         className="form-select"
-                        value={selectedFileType}
+                        value={formData?.actionType}
                         onChange={(e) => {
-                          setSelectedFileType(e.target.value);
+                          setFormData({
+                            ...formData,
+                            actionType: e.target.value,
+                          });
                         }}
                       >
                         <option value="">Choose Action Type</option>
@@ -216,25 +209,23 @@ const InspectionCall = () => {
                         <option value="OTHERS">OTHERS</option>
                       </select>
                     </div>
-
-                    {user?.user_type === 1 && (
-                      <div className="mb-3">
-                        <label className="form-label">File Info</label>
-                        &nbsp;&nbsp;
-                        <span className="mandatorystart">*</span>
-                        <input
-                          type="file"
-                          className="form-control"
-                          onChange={(e) =>
-                            setFormData({
-                              ...formData,
-                              InspectioncallFile: e.target.files[0],
-                            })
-                          }
-                          ref={inputFileRef}
-                        />
-                      </div>
-                    )}
+                    <div className="mb-3">
+                      <label className="form-label">File Info</label>
+                      &nbsp;&nbsp;
+                      <span className="mandatorystart">*</span>
+                      <input
+                        type="file"
+                        className="form-control"
+                        onChange={(e) =>
+                          setFormData({
+                            ...formData,
+                            InspectioncallFile: e.target.files[0],
+                          })
+                        }
+                        ref={inputFileRef}
+                        accept=".pdf"
+                      />
+                    </div>
                   </div>
                   <div className="col-12">
                     <div className="mb-3">
