@@ -63,190 +63,190 @@ const POs = () => {
 
   return (
     <>
-      {user.department_name !== "PPC" && (
-        <MainHeader title={"Welcome to OBPS Portal"} />
-      )}
-      {user.department_name !== "PPC" ? (
-        // <div className="container">
+      {/* {user.department_name !== "PPC" && ( */}
+      <MainHeader title={"Welcome to OBPS Portal"} />
+      {/* )} */}
+      {/* {user.department_name !== "PPC" ? ( */}
+      {/* // <div className="container">
         //   <div className="row justify-content-center">
-        //     <div className="col-md-8 col-12">
-        <div className="w-99 m-auto">
-          <div className="card">
-            <div className="searchfun">
-              <div className="card_headline">
-                <div>
-                  <div className="search_top">
-                    <label htmlFor="">Search</label>
-                  </div>
-                  <div className="input_search">
-                    <input
-                      type="text"
-                      className="form-control"
-                      value={searchQuery}
-                      onChange={(e) => setSearchQuery(e.target.value)}
-                      placeholder="Search..."
-                    />
-                    <button className="search_btn">
-                      <FiSearch />
-                    </button>
-                  </div>
+        //     <div className="col-md-8 col-12"> */}
+      <div className="w-99 m-auto">
+        <div className="card">
+          <div className="searchfun">
+            <div className="card_headline">
+              <div>
+                <div className="search_top">
+                  <label htmlFor="">Search</label>
+                </div>
+                <div className="input_search">
+                  <input
+                    type="text"
+                    className="form-control"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    placeholder="Search..."
+                  />
+                  <button className="search_btn">
+                    <FiSearch />
+                  </button>
                 </div>
               </div>
-              <div className="card_headline">
-                <div>
-                  <div className="search_top">
-                    <label htmlFor="">Select Current Status</label>
-                  </div>
-                  <div className="input_search">
-                    <select
-                      className="form-select"
-                      value={selectedStatus}
-                      onChange={(e) => {
-                        setSelectedStatus(e.target.value);
-                      }}
-                    >
-                      <option value="All">All</option>
-                      <option value="SDBG">SDBG</option>
-                      <option value="Drawing">Drawing</option>
-                      <option value="QAP">QAP</option>
-                      <option value="ILMS">ILMS</option>
-                      <option value="Inspection call letter">
-                        Inspection call letter
-                      </option>
-                      <option value="Shipping documents">
-                        Shipping documents
-                      </option>
-                      <option value="ICGRN">ICGRN</option>
-                      <option value="WDC">WDC</option>
-                    </select>
-                    {/* <button className="search_btn">
+            </div>
+            <div className="card_headline">
+              <div>
+                <div className="search_top">
+                  <label htmlFor="">Select Current Status</label>
+                </div>
+                <div className="input_search">
+                  <select
+                    className="form-select"
+                    value={selectedStatus}
+                    onChange={(e) => {
+                      setSelectedStatus(e.target.value);
+                    }}
+                  >
+                    <option value="All">All</option>
+                    <option value="SDBG">SDBG</option>
+                    <option value="Drawing">Drawing</option>
+                    <option value="QAP">QAP</option>
+                    <option value="ILMS">ILMS</option>
+                    <option value="Inspection call letter">
+                      Inspection call letter
+                    </option>
+                    <option value="Shipping documents">
+                      Shipping documents
+                    </option>
+                    <option value="ICGRN">ICGRN</option>
+                    <option value="WDC">WDC</option>
+                  </select>
+                  {/* <button className="search_btn">
                             <FiSearch />
                           </button> */}
-                  </div>
                 </div>
               </div>
             </div>
-            <div className="table-responsive">
-              <table className="table table-bordered table-hover table-striped table_styled">
-                <thead>
+          </div>
+          <div className="table-responsive">
+            <table className="table table-bordered table-hover table-striped table_styled">
+              <thead>
+                <tr>
+                  <th>POs</th>
+                  <th>SDBG</th>
+                  <th>Drawings</th>
+                  <th>QAP</th>
+                  <th>ILMS</th>
+                  <th>Current Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                {filteredPolist && filteredPolist.length === 0 ? (
                   <tr>
-                    <th>POs</th>
-                    <th>SDBG</th>
-                    <th>Drawings</th>
-                    <th>QAP</th>
-                    <th>ILMS</th>
-                    <th>Current Status</th>
+                    <td colSpan="7">No data found</td>
                   </tr>
-                </thead>
-                <tbody>
-                  {filteredPolist && filteredPolist.length === 0 ? (
-                    <tr>
-                      <td colSpan="7">No data found</td>
+                ) : (
+                  filteredPolist.map((po, index) => (
+                    <tr key={index}>
+                      <td>
+                        <button
+                          className="btn_simple"
+                          onClick={() => dispatch(poHandler(po))}
+                        >
+                          <u>{po?.poNumber}</u> |{" "}
+                          {po?.poType === "material"
+                            ? "Hybrid"
+                            : po?.poType === "service"
+                            ? "Service"
+                            : ""}{" "}
+                          {user && user?.user_type !== 1 && (
+                            <>
+                              {" "}
+                              | {po?.project_code} |{" "}
+                              {po?.DO?.CNAME && po?.DO?.CNAME}{" "}
+                              {po?.DO?.ERNAM && `(${po?.DO?.ERNAM})`}{" "}
+                            </>
+                          )}
+                          <span>
+                            | {po?.vendor_code} ({po.vendor_name})
+                          </span>
+                        </button>
+                      </td>
+                      <td>
+                        {/* SD Date:{" "} */}
+                        {po?.SD?.SdContractualSubmissionDate
+                          ? new Date(
+                              po.SD.SdContractualSubmissionDate
+                            ).toLocaleDateString()
+                          : "NA"}{" "}
+                        |{" "}
+                        {po?.SD?.SdActualSubmissionDate
+                          ? new Date(
+                              po.SD.SdActualSubmissionDate
+                            ).toLocaleDateString()
+                          : "NA"}{" "}
+                        | {po?.SD?.SdLastStatus || "NA"}
+                      </td>
+                      <td>
+                        {/* Drawing Date:{" "} */}
+                        {po?.Drawing?.DrawingContractualSubmissionDate
+                          ? new Date(
+                              po.Drawing.DrawingContractualSubmissionDate
+                            ).toLocaleDateString()
+                          : "NA"}{" "}
+                        |{" "}
+                        {po?.Drawing?.DrawingActualSubmissionDate
+                          ? new Date(
+                              po.Drawing.DrawingActualSubmissionDate
+                            ).toLocaleDateString()
+                          : "NA"}{" "}
+                        | {po?.Drawing?.DrawingLastStatus}
+                      </td>
+                      <td>
+                        {/* QAP Date:{" "} */}
+                        {po?.QAP?.qapContractualSubmissionDate
+                          ? new Date(
+                              po.QAP.qapContractualSubmissionDate
+                            ).toLocaleDateString()
+                          : "NA"}{" "}
+                        |{" "}
+                        {po?.QAP?.qapActualSubmissionDate
+                          ? new Date(
+                              po.QAP.qapActualSubmissionDate
+                            ).toLocaleDateString()
+                          : "NA"}{" "}
+                        | {po?.QAP?.qapLastStatus || "NA"}
+                      </td>
+
+                      <td>
+                        {/* ILMS Date:{" "} */}
+                        {po?.ILMS?.ilmsContractualSubmissionDate
+                          ? new Date(
+                              po.ILMS.ilmsContractualSubmissionDate
+                            ).toLocaleDateString()
+                          : "NA"}{" "}
+                        |{" "}
+                        {po?.ILMS?.ilmsActualSubmissionDate
+                          ? new Date(
+                              po.ILMS.ilmsActualSubmissionDate
+                            ).toLocaleDateString()
+                          : "NA"}{" "}
+                        | {po?.ILMS?.ilmsLastStatus || "NA"}
+                      </td>
+
+                      <td>{po?.currentStage?.current}</td>
                     </tr>
-                  ) : (
-                    filteredPolist.map((po, index) => (
-                      <tr key={index}>
-                        <td>
-                          <button
-                            className="btn_simple"
-                            onClick={() => dispatch(poHandler(po))}
-                          >
-                            <u>{po?.poNumber}</u> |{" "}
-                            {po?.poType === "material"
-                              ? "Hybrid"
-                              : po?.poType === "service"
-                              ? "Service"
-                              : ""}{" "}
-                            {user && user?.user_type !== 1 && (
-                              <>
-                                {" "}
-                                | {po?.project_code} |{" "}
-                                {po?.DO?.CNAME && po?.DO?.CNAME}{" "}
-                                {po?.DO?.ERNAM && `(${po?.DO?.ERNAM})`}{" "}
-                              </>
-                            )}
-                            <span>
-                              | {po?.vendor_code} ({po.vendor_name})
-                            </span>
-                          </button>
-                        </td>
-                        <td>
-                          {/* SD Date:{" "} */}
-                          {po?.SD?.SdContractualSubmissionDate
-                            ? new Date(
-                                po.SD.SdContractualSubmissionDate
-                              ).toLocaleDateString()
-                            : "NA"}{" "}
-                          |{" "}
-                          {po?.SD?.SdActualSubmissionDate
-                            ? new Date(
-                                po.SD.SdActualSubmissionDate
-                              ).toLocaleDateString()
-                            : "NA"}{" "}
-                          | {po?.SD?.SdLastStatus || "NA"}
-                        </td>
-                        <td>
-                          {/* Drawing Date:{" "} */}
-                          {po?.Drawing?.DrawingContractualSubmissionDate
-                            ? new Date(
-                                po.Drawing.DrawingContractualSubmissionDate
-                              ).toLocaleDateString()
-                            : "NA"}{" "}
-                          |{" "}
-                          {po?.Drawing?.DrawingActualSubmissionDate
-                            ? new Date(
-                                po.Drawing.DrawingActualSubmissionDate
-                              ).toLocaleDateString()
-                            : "NA"}{" "}
-                          | {po?.Drawing?.DrawingLastStatus}
-                        </td>
-                        <td>
-                          {/* QAP Date:{" "} */}
-                          {po?.QAP?.qapContractualSubmissionDate
-                            ? new Date(
-                                po.QAP.qapContractualSubmissionDate
-                              ).toLocaleDateString()
-                            : "NA"}{" "}
-                          |{" "}
-                          {po?.QAP?.qapActualSubmissionDate
-                            ? new Date(
-                                po.QAP.qapActualSubmissionDate
-                              ).toLocaleDateString()
-                            : "NA"}{" "}
-                          | {po?.QAP?.qapLastStatus || "NA"}
-                        </td>
-
-                        <td>
-                          {/* ILMS Date:{" "} */}
-                          {po?.ILMS?.ilmsContractualSubmissionDate
-                            ? new Date(
-                                po.ILMS.ilmsContractualSubmissionDate
-                              ).toLocaleDateString()
-                            : "NA"}{" "}
-                          |{" "}
-                          {po?.ILMS?.ilmsActualSubmissionDate
-                            ? new Date(
-                                po.ILMS.ilmsActualSubmissionDate
-                              ).toLocaleDateString()
-                            : "NA"}{" "}
-                          | {po?.ILMS?.ilmsLastStatus || "NA"}
-                        </td>
-
-                        <td>{po?.currentStage?.current}</td>
-                      </tr>
-                    ))
-                  )}
-                </tbody>
-              </table>
-            </div>
+                  ))
+                )}
+              </tbody>
+            </table>
           </div>
         </div>
-      ) : (
-        //     </div>
+      </div>
+      {/* ) : ( */}
+      {/* //     </div>
         //   </div>
         // </div>
         <WBS />
-      )}
+      )} */}
     </>
   );
 };

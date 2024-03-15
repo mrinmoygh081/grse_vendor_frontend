@@ -10,15 +10,18 @@ import { reConfirm } from "../utils/reConfirm";
 import ReactDatePicker from "react-datepicker";
 import { convertToEpoch } from "../utils/getDateTimeNow";
 import { clrLegend } from "../utils/clrLegend";
+import { checkTypeArr } from "../utils/smallFun";
+import { USER_PPNC_DEPARTMENT, USER_VENDOR } from "../constants/userConstants";
+import { APPROVED, REJECTED, SUBMITTED } from "../constants/BGconstants";
 
 const WDCSub = () => {
   const [isPopup, setIsPopup] = useState(false);
   const [allData, setAllData] = useState([]);
+  const [lineItemData, setLineItemData] = useState([]);
+  const [referenceNo, setreferenceNo] = useState("");
   const [formData, setFormData] = useState({
     file: null,
     remarks: "",
-    wdc_ref_no: "",
-    wdc_date: "",
     po_line_iten_no: "",
     job_location: "",
     yard_no: "",
@@ -52,8 +55,21 @@ const WDCSub = () => {
     }
   };
 
+  const getPOLineItemData = async () => {
+    try {
+      const data = await apiCallBack("GET", `po/details?id=${id}`, null, token);
+      if (data?.status) {
+        let lineItem = data?.data[0]?.materialResult;
+        setLineItemData(lineItem);
+      }
+    } catch (error) {
+      console.error("Error fetching WDC list:", error);
+    }
+  };
+
   useEffect(() => {
     getData();
+    getPOLineItemData();
   }, [id, token]);
 
   const submitHandler = async (flag) => {
@@ -61,8 +77,6 @@ const WDCSub = () => {
       const {
         file,
         remarks,
-        wdc_ref_no,
-        wdc_date,
         po_line_iten_no,
         job_location,
         yard_no,
@@ -76,44 +90,51 @@ const WDCSub = () => {
         actual_payable_amount,
       } = formData;
       if (
-        file &&
-        id !== "" &&
-        remarks !== "" &&
-        wdc_ref_no !== "" &&
-        wdc_date !== "" &&
-        po_line_iten_no !== "" &&
-        job_location !== "" &&
-        yard_no !== "" &&
-        actual_start_date !== "" &&
-        actual_completion_date !== "" &&
-        unit !== "" &&
-        messurment !== "" &&
-        quantity !== "" &&
-        entry_by_production !== "" &&
-        stage_datiels !== "" &&
-        actual_payable_amount !== ""
+        flag === APPROVED ||
+        flag === REJECTED ||
+        (file &&
+          id !== "" &&
+          remarks !== "" &&
+          po_line_iten_no !== "" &&
+          job_location !== "" &&
+          yard_no !== "" &&
+          actual_start_date !== "" &&
+          actual_completion_date !== "" &&
+          unit !== "" &&
+          messurment !== "" &&
+          quantity !== "" &&
+          entry_by_production !== "" &&
+          stage_datiels !== "" &&
+          actual_payable_amount !== "")
       ) {
         const fdToSend = new FormData();
-        fdToSend.append("purchasing_doc_no", id);
-        fdToSend.append("file", file);
-        fdToSend.append("remarks", remarks);
-        fdToSend.append("wdc_ref_no", wdc_ref_no);
-        fdToSend.append("wdc_date", convertToEpoch(wdc_date));
-        fdToSend.append("po_line_iten_no", po_line_iten_no);
-        fdToSend.append("job_location", job_location);
-        fdToSend.append("yard_no", yard_no);
-        fdToSend.append("actual_start_date", convertToEpoch(actual_start_date));
-        fdToSend.append(
-          "actual_completion_date",
-          convertToEpoch(actual_completion_date)
-        );
-        fdToSend.append("unit", unit);
-        fdToSend.append("messurment", messurment);
-        fdToSend.append("quantity", quantity);
-        fdToSend.append("entry_by_production", entry_by_production);
-        fdToSend.append("stage_datiels", stage_datiels);
-        fdToSend.append("actual_payable_amount", actual_payable_amount);
+        if (flag === SUBMITTED) {
+          fdToSend.append("file", file);
+          fdToSend.append("wdc_date", convertToEpoch(new Date()));
+          fdToSend.append("po_line_iten_no", po_line_iten_no);
+          fdToSend.append("job_location", job_location);
+          fdToSend.append("yard_no", yard_no);
+          fdToSend.append(
+            "actual_start_date",
+            convertToEpoch(actual_start_date)
+          );
+          fdToSend.append(
+            "actual_completion_date",
+            convertToEpoch(actual_completion_date)
+          );
+          fdToSend.append("unit", unit);
+          fdToSend.append("messurment", messurment);
+          fdToSend.append("quantity", quantity);
+          fdToSend.append("entry_by_production", entry_by_production);
+          fdToSend.append("stage_datiels", stage_datiels);
+          fdToSend.append("actual_payable_amount", actual_payable_amount);
+        }
         fdToSend.append("status", flag);
+        fdToSend.append("remarks", remarks);
+        fdToSend.append("purchasing_doc_no", id);
+        if (flag === APPROVED || flag === REJECTED) {
+          fdToSend.append("reference_no", referenceNo);
+        }
 
         const response = await apiCallBack(
           "POST",
@@ -128,7 +149,6 @@ const WDCSub = () => {
           setFormData({
             file: null,
             remarks: "",
-            wdc_ref_no: "",
             wdc_date: "",
             po_line_iten_no: "",
             job_location: "",
@@ -145,7 +165,7 @@ const WDCSub = () => {
           fileInputRef.current.value = null;
           getData();
         } else {
-          toast.error("Failed to upload WDC");
+          toast.warn(response?.message);
         }
       } else {
         toast.warn("All fields are required!");
@@ -169,12 +189,14 @@ const WDCSub = () => {
                   <div className="row g-5 g-xl-8">
                     <div className="col-12">
                       <div className="screen_header">
-                        <button
-                          onClick={() => setIsPopup(true)}
-                          className="btn fw-bold btn-primary mx-3"
-                        >
-                          ACTION
-                        </button>
+                        {user?.user_type === USER_VENDOR && (
+                          <button
+                            onClick={() => setIsPopup(true)}
+                            className="btn fw-bold btn-primary mx-3"
+                          >
+                            ACTION
+                          </button>
+                        )}
                       </div>
                     </div>
                     <div className="col-12">
@@ -184,14 +206,12 @@ const WDCSub = () => {
                             <table className="table table-striped table-bordered table_height">
                               <thead>
                                 <tr className="border-0">
+                                  <th className="min-w-150px">Reference No</th>
                                   <th className="min-w-150px">DateTime </th>
                                   <th className="min-w-150px">WDC File</th>
                                   <th className="min-w-150px">Updated By</th>
-                                  <th className="min-w-150px">Wdc Ref NO</th>
-                                  <th className="min-w-150px">Wdc Date</th>
-                                  <th className="min-w-150px">
-                                    Po Line Iten No
-                                  </th>
+                                  <th className="min-w-150px">WDC Date</th>
+                                  <th className="min-w-150px">PO Line Item</th>
                                   <th className="min-w-150px">Job Location</th>
                                   <th className="min-w-150px">Yard No</th>
                                   <th className="min-w-150px">
@@ -201,29 +221,29 @@ const WDCSub = () => {
                                     Actual Completion Date
                                   </th>
                                   <th className="min-w-150px">Unit</th>
-                                  <th className="min-w-150px">Messurment</th>
+                                  <th className="min-w-150px">Measurment</th>
                                   <th className="min-w-150px">Quantity</th>
                                   <th className="min-w-150px">
                                     Entry By Production
                                   </th>
-                                  <th className="min-w-150px">Stage Datiels</th>
+                                  <th className="min-w-150px">Stage Datails</th>
                                   <th className="min-w-150px">
                                     Actual Payable Amount
                                   </th>
-
                                   <th className="min-w-150px">Remarks</th>
                                   <th className="min-w-150px">Status</th>
+                                  {user?.department_id ===
+                                    USER_PPNC_DEPARTMENT && (
+                                    <th className="min-w-150px">Action</th>
+                                  )}
                                 </tr>
                               </thead>
                               <tbody style={{ maxHeight: "100%" }}>
                                 {allData &&
                                   allData.map((item, index) => (
                                     <tr key={index}>
-                                      <td className="table_center">
-                                        {/* {moment(item.created_at)
-                                          .utc()
-                                          .format("DD/MM/YY (HH:mm)")} */}
-
+                                      <td>{item.reference_no}</td>
+                                      <td>
                                         {item?.created_at &&
                                           new Date(
                                             item.created_at
@@ -240,8 +260,7 @@ const WDCSub = () => {
                                           </a>
                                         )}
                                       </td>
-                                      <td>{item.updated_by}</td>
-                                      <td>{item.wdc_ref_no}</td>
+                                      <td>{item.created_by_id}</td>
                                       <td>
                                         {item?.wdc_date &&
                                           new Date(
@@ -277,6 +296,24 @@ const WDCSub = () => {
                                       >
                                         {item.status}
                                       </td>
+                                      {user?.department_id ===
+                                        USER_PPNC_DEPARTMENT && (
+                                        <td className="min-w-150px">
+                                          {item.status === "SUBMITTED" && (
+                                            <button
+                                              onClick={() => {
+                                                setIsPopup(true);
+                                                setreferenceNo(
+                                                  item.reference_no
+                                                );
+                                              }}
+                                              className="btn fw-bold btn-primary mx-3"
+                                            >
+                                              ACTION
+                                            </button>
+                                          )}
+                                        </td>
+                                      )}
                                     </tr>
                                   ))}
                               </tbody>
@@ -294,55 +331,45 @@ const WDCSub = () => {
         </div>
       </div>
 
-      <div className={isPopup ? "popup active" : "popup"}>
-        <div className="card card-xxl-stretch mb-5 mb-xxl-8">
-          <div className="card-header border-0 pt-5 pb-3">
-            <h3 className="card-title align-items-start flex-column">
-              <span className="card-label fw-bold fs-3 mb-1">UPLOAD WDC</span>
-            </h3>
-            <button
-              className="btn fw-bold btn-danger"
-              onClick={() => setIsPopup(false)}
-            >
-              Close
-            </button>
-          </div>
-          <form>
-            <div className="row">
-              <div className="col-12 col-md-6">
-                <div className="mb-3">
-                  <label className="form-label">
-                    WDC File <span className="red">*</span>{" "}
-                  </label>
-                  <input
-                    type="file"
-                    className="form-control"
-                    onChange={(e) =>
-                      setFormData({
-                        ...formData,
-                        file: e.target.files[0],
-                      })
-                    }
-                    ref={fileInputRef}
-                  />
+      {(user?.user_type === USER_VENDOR ||
+        user.department_id === USER_PPNC_DEPARTMENT) && (
+        <div className={isPopup ? "popup active" : "popup"}>
+          <div className="card card-xxl-stretch mb-5 mb-xxl-8">
+            <div className="card-header border-0 pt-5 pb-3">
+              <h3 className="card-title align-items-start flex-column">
+                <span className="card-label fw-bold fs-3 mb-1">
+                  UPLOAD WDC {referenceNo && `for ${referenceNo}`}
+                </span>
+              </h3>
+              <button
+                className="btn fw-bold btn-danger"
+                onClick={() => setIsPopup(false)}
+              >
+                Close
+              </button>
+            </div>
+            <form>
+              <div className="row">
+                <div className="col-12 col-md-6">
+                  <div className="mb-3">
+                    <label className="form-label">
+                      WDC File <span className="red">*</span>{" "}
+                    </label>
+                    <input
+                      type="file"
+                      className="form-control"
+                      onChange={(e) =>
+                        setFormData({
+                          ...formData,
+                          file: e.target.files[0],
+                        })
+                      }
+                      ref={fileInputRef}
+                      accept=".pdf"
+                    />
+                  </div>
                 </div>
-              </div>
-              <div className="col-12 col-md-6">
-                <div className="mb-3">
-                  <label className="form-label">
-                    WDC Ref No <span className="red">*</span>{" "}
-                  </label>
-                  <input
-                    type="text"
-                    className="form-control"
-                    value={formData?.wdc_ref_no}
-                    onChange={(e) =>
-                      setFormData({ ...formData, wdc_ref_no: e.target.value })
-                    }
-                  />
-                </div>
-              </div>
-              <div className="col-12 col-md-6">
+                {/* <div className="col-12 col-md-6">
                 <div className="mb-3">
                   <label className="form-label">
                     WDC Ref Date <span className="red">*</span>{" "}
@@ -361,13 +388,35 @@ const WDCSub = () => {
                     placeholderText="DD/MM/YYYY"
                   />
                 </div>
-              </div>
-              <div className="col-12 col-md-6">
-                <div className="mb-3">
-                  <label className="form-label">
-                    PO Line Item No <span className="red">*</span>{" "}
-                  </label>
-                  <input
+              </div> */}
+                <div className="col-12 col-md-6">
+                  <div className="mb-3">
+                    <label className="form-label">
+                      PO Line Item No <span className="red">*</span>{" "}
+                    </label>
+                    <select
+                      name=""
+                      id=""
+                      className="form-select"
+                      value={formData?.po_line_iten_no}
+                      onChange={(e) =>
+                        setFormData({
+                          ...formData,
+                          po_line_iten_no: e.target.value,
+                        })
+                      }
+                    >
+                      <option value="">Choose PO Line Item</option>
+                      {checkTypeArr(lineItemData) &&
+                        lineItemData.map((item, i) => {
+                          return (
+                            <option value={item?.material_item_number} key={i}>
+                              {item?.material_item_number}
+                            </option>
+                          );
+                        })}
+                    </select>
+                    {/* <input
                     type="text"
                     className="form-control"
                     value={formData?.po_line_iten_no}
@@ -377,226 +426,245 @@ const WDCSub = () => {
                         po_line_iten_no: e.target.value,
                       })
                     }
-                  />
+                  /> */}
+                  </div>
                 </div>
-              </div>
-              <div className="col-12 col-md-6">
-                <div className="mb-3">
-                  <label className="form-label">
-                    JOB Location <span className="red">*</span>{" "}
-                  </label>
-                  <input
-                    type="text"
-                    className="form-control"
-                    value={formData?.job_location}
-                    onChange={(e) =>
-                      setFormData({ ...formData, job_location: e.target.value })
-                    }
-                  />
-                </div>
-              </div>
-              <div className="col-12 col-md-6">
-                <div className="mb-3">
-                  <label className="form-label">
-                    Yard No <span className="red">*</span>{" "}
-                  </label>
-                  <input
-                    type="text"
-                    className="form-control"
-                    value={formData?.yard_no}
-                    onChange={(e) =>
-                      setFormData({ ...formData, yard_no: e.target.value })
-                    }
-                  />
-                </div>
-              </div>
-              <div className="col-12 col-md-6">
-                <div className="mb-3">
-                  <label className="form-label">
-                    Actual Start Date <span className="red">*</span>{" "}
-                  </label>
-                  <ReactDatePicker
-                    selected={formData?.actual_start_date}
-                    value={formData?.actual_start_date}
-                    onChange={(date) =>
-                      setFormData({
-                        ...formData,
-                        actual_start_date: date,
-                      })
-                    }
-                    dateFormat="dd/MM/yyyy"
-                    className="form-control"
-                    placeholderText="DD/MM/YYYY"
-                  />
-                </div>
-              </div>
-              <div className="col-12 col-md-6">
-                <div className="mb-3">
-                  <label className="form-label">
-                    Actual Completion Date <span className="red">*</span>{" "}
-                  </label>
-                  <ReactDatePicker
-                    selected={formData?.actual_completion_date}
-                    value={formData?.actual_completion_date}
-                    onChange={(date) =>
-                      setFormData({
-                        ...formData,
-                        actual_completion_date: date,
-                      })
-                    }
-                    dateFormat="dd/MM/yyyy"
-                    className="form-control"
-                    placeholderText="DD/MM/YYYY"
-                  />
-                </div>
-              </div>
-              <div className="col-12 col-md-6">
-                <div className="mb-3">
-                  <label className="form-label">
-                    Unit <span className="red">*</span>{" "}
-                  </label>
-                  <input
-                    type="text"
-                    className="form-control"
-                    value={formData?.unit}
-                    onChange={(e) =>
-                      setFormData({ ...formData, unit: e.target.value })
-                    }
-                  />
-                </div>
-              </div>
-              <div className="col-12 col-md-6">
-                <div className="mb-3">
-                  <label className="form-label">
-                    Measurement <span className="red">*</span>{" "}
-                  </label>
-                  <input
-                    type="text"
-                    className="form-control"
-                    value={formData?.messurment}
-                    onChange={(e) =>
-                      setFormData({ ...formData, messurment: e.target.value })
-                    }
-                  />
-                </div>
-              </div>
-              <div className="col-12 col-md-6">
-                <div className="mb-3">
-                  <label className="form-label">
-                    Quantity <span className="red">*</span>{" "}
-                  </label>
-                  <input
-                    type="text"
-                    className="form-control"
-                    value={formData?.quantity}
-                    onChange={(e) =>
-                      setFormData({ ...formData, quantity: e.target.value })
-                    }
-                  />
-                </div>
-              </div>
-              <div className="col-12 col-md-6">
-                <div className="mb-3">
-                  <label className="form-label">
-                    Entry By Production <span className="red">*</span>{" "}
-                  </label>
-                  <input
-                    type="text"
-                    className="form-control"
-                    value={formData?.entry_by_production}
-                    onChange={(e) =>
-                      setFormData({
-                        ...formData,
-                        entry_by_production: e.target.value,
-                      })
-                    }
-                  />
-                </div>
-              </div>
-              <div className="col-12 col-md-6">
-                <div className="mb-3">
-                  <label className="form-label">
-                    Stage Details <span className="red">*</span>{" "}
-                  </label>
-                  <input
-                    type="text"
-                    className="form-control"
-                    value={formData?.stage_datiels}
-                    onChange={(e) =>
-                      setFormData({
-                        ...formData,
-                        stage_datiels: e.target.value,
-                      })
-                    }
-                  />
-                </div>
-              </div>
-              <div className="col-12 col-md-6">
-                <div className="mb-3">
-                  <label className="form-label">
-                    Actual Payable Amount <span className="red">*</span>{" "}
-                  </label>
-                  <input
-                    type="text"
-                    className="form-control"
-                    value={formData?.actual_payable_amount}
-                    onChange={(e) =>
-                      setFormData({
-                        ...formData,
-                        actual_payable_amount: e.target.value,
-                      })
-                    }
-                  />
-                </div>
-              </div>
-              <div className="col-12">
-                <div className="mb-3">
-                  <label className="form-label">
-                    Remarks <span className="red">*</span>{" "}
-                  </label>
-                  <textarea
-                    name=""
-                    id=""
-                    rows="4"
-                    className="form-control"
-                    value={formData?.remarks}
-                    onChange={(e) =>
-                      setFormData({ ...formData, remarks: e.target.value })
-                    }
-                  ></textarea>
-                </div>
-              </div>
-              <div className="col-12">
-                <div className="mb-3 d-flex justify-content-between">
-                  <button
-                    onClick={() => submitHandler("PENDING")}
-                    className="btn fw-bold btn-primary"
-                    type="button"
-                  >
-                    SUBMIT
-                  </button>
-
-                  {user?.userType !== 1 && (
-                    <button
-                      onClick={() =>
-                        reConfirm(
-                          { file: true },
-                          () => submitHandler("ACKNOWLEDGED"),
-                          "You're approving the WDC. Please confirm!"
-                        )
+                <div className="col-12 col-md-6">
+                  <div className="mb-3">
+                    <label className="form-label">
+                      JOB Location <span className="red">*</span>{" "}
+                    </label>
+                    <input
+                      type="text"
+                      className="form-control"
+                      value={formData?.job_location}
+                      onChange={(e) =>
+                        setFormData({
+                          ...formData,
+                          job_location: e.target.value,
+                        })
                       }
-                      className="btn fw-bold btn-success"
+                    />
+                  </div>
+                </div>
+                <div className="col-12 col-md-6">
+                  <div className="mb-3">
+                    <label className="form-label">
+                      Yard No <span className="red">*</span>{" "}
+                    </label>
+                    <input
+                      type="text"
+                      className="form-control"
+                      value={formData?.yard_no}
+                      onChange={(e) =>
+                        setFormData({ ...formData, yard_no: e.target.value })
+                      }
+                    />
+                  </div>
+                </div>
+                <div className="col-12 col-md-6">
+                  <div className="mb-3">
+                    <label className="form-label">
+                      Actual Start Date <span className="red">*</span>{" "}
+                    </label>
+                    <ReactDatePicker
+                      selected={formData?.actual_start_date}
+                      value={formData?.actual_start_date}
+                      onChange={(date) =>
+                        setFormData({
+                          ...formData,
+                          actual_start_date: date,
+                        })
+                      }
+                      dateFormat="dd/MM/yyyy"
+                      className="form-control"
+                      placeholderText="DD/MM/YYYY"
+                    />
+                  </div>
+                </div>
+                <div className="col-12 col-md-6">
+                  <div className="mb-3">
+                    <label className="form-label">
+                      Actual Completion Date <span className="red">*</span>{" "}
+                    </label>
+                    <ReactDatePicker
+                      selected={formData?.actual_completion_date}
+                      value={formData?.actual_completion_date}
+                      onChange={(date) =>
+                        setFormData({
+                          ...formData,
+                          actual_completion_date: date,
+                        })
+                      }
+                      dateFormat="dd/MM/yyyy"
+                      className="form-control"
+                      placeholderText="DD/MM/YYYY"
+                    />
+                  </div>
+                </div>
+                <div className="col-12 col-md-6">
+                  <div className="mb-3">
+                    <label className="form-label">
+                      Unit <span className="red">*</span>{" "}
+                    </label>
+                    <input
+                      type="text"
+                      className="form-control"
+                      value={formData?.unit}
+                      onChange={(e) =>
+                        setFormData({ ...formData, unit: e.target.value })
+                      }
+                    />
+                  </div>
+                </div>
+                <div className="col-12 col-md-6">
+                  <div className="mb-3">
+                    <label className="form-label">
+                      Measurement <span className="red">*</span>{" "}
+                    </label>
+                    <input
+                      type="text"
+                      className="form-control"
+                      value={formData?.messurment}
+                      onChange={(e) =>
+                        setFormData({ ...formData, messurment: e.target.value })
+                      }
+                    />
+                  </div>
+                </div>
+                <div className="col-12 col-md-6">
+                  <div className="mb-3">
+                    <label className="form-label">
+                      Quantity <span className="red">*</span>{" "}
+                    </label>
+                    <input
+                      type="text"
+                      className="form-control"
+                      value={formData?.quantity}
+                      onChange={(e) =>
+                        setFormData({ ...formData, quantity: e.target.value })
+                      }
+                    />
+                  </div>
+                </div>
+                <div className="col-12 col-md-6">
+                  <div className="mb-3">
+                    <label className="form-label">
+                      Entry By Production <span className="red">*</span>{" "}
+                    </label>
+                    <input
+                      type="text"
+                      className="form-control"
+                      value={formData?.entry_by_production}
+                      onChange={(e) =>
+                        setFormData({
+                          ...formData,
+                          entry_by_production: e.target.value,
+                        })
+                      }
+                    />
+                  </div>
+                </div>
+                <div className="col-12 col-md-6">
+                  <div className="mb-3">
+                    <label className="form-label">
+                      Stage Details <span className="red">*</span>{" "}
+                    </label>
+                    <input
+                      type="text"
+                      className="form-control"
+                      value={formData?.stage_datiels}
+                      onChange={(e) =>
+                        setFormData({
+                          ...formData,
+                          stage_datiels: e.target.value,
+                        })
+                      }
+                    />
+                  </div>
+                </div>
+                <div className="col-12 col-md-6">
+                  <div className="mb-3">
+                    <label className="form-label">
+                      Actual Payable Amount <span className="red">*</span>{" "}
+                    </label>
+                    <input
+                      type="text"
+                      className="form-control"
+                      value={formData?.actual_payable_amount}
+                      onChange={(e) =>
+                        setFormData({
+                          ...formData,
+                          actual_payable_amount: e.target.value,
+                        })
+                      }
+                    />
+                  </div>
+                </div>
+                <div className="col-12">
+                  <div className="mb-3">
+                    <label className="form-label">
+                      Remarks <span className="red">*</span>{" "}
+                    </label>
+                    <textarea
+                      name=""
+                      id=""
+                      rows="4"
+                      className="form-control"
+                      value={formData?.remarks}
+                      onChange={(e) =>
+                        setFormData({ ...formData, remarks: e.target.value })
+                      }
+                    ></textarea>
+                  </div>
+                </div>
+                <div className="col-12">
+                  <div className="mb-3 d-flex justify-content-between">
+                    <button
+                      onClick={() => submitHandler("SUBMITTED")}
+                      className="btn fw-bold btn-primary"
                       type="button"
                     >
-                      ACKNOWLEDGE
+                      SUBMIT
                     </button>
-                  )}
+
+                    {user?.department_id === USER_PPNC_DEPARTMENT && (
+                      <div>
+                        <button
+                          onClick={() =>
+                            reConfirm(
+                              { file: true },
+                              () => submitHandler("REJECTED"),
+                              "You're rejecting the WDC. Please confirm!"
+                            )
+                          }
+                          className="btn fw-bold btn-danger me-2"
+                          type="button"
+                        >
+                          REJECTED
+                        </button>
+                        <button
+                          onClick={() =>
+                            reConfirm(
+                              { file: true },
+                              () => submitHandler("APPROVED"),
+                              "You're approving the WDC. Please confirm!"
+                            )
+                          }
+                          className="btn fw-bold btn-success"
+                          type="button"
+                        >
+                          APPROVED
+                        </button>
+                      </div>
+                    )}
+                  </div>
                 </div>
               </div>
-            </div>
-          </form>
+            </form>
+          </div>
         </div>
-      </div>
+      )}
     </>
   );
 };

@@ -293,17 +293,6 @@ const SDBGSub = () => {
                                   </button>
                                 </>
                               )}
-                            {/* For DO */}
-                            {/* {isDO && (
-                              <>
-                                <button
-                                  onClick={() => setIsEntryPopup(true)}
-                                  className="btn fw-bold btn-primary me-3"
-                                >
-                                  SDBG Entry
-                                </button>
-                              </>
-                            )} */}
                           </>
                         )}
                         {/* Vendor  */}

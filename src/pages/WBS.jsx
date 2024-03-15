@@ -24,24 +24,8 @@ export default function WBS() {
       toast.warn("Please fill all fields!");
       return;
     }
-    navigate(`/pos`);
-    // if (!loginData.vendor_code) {
-    //   toast.error("Please provide a valid username to login");
-    //   return;
-    // }
-    // if (loginData.password === "" || loginData.password === null) {
-    //   toast.error("Please provide a valid password to login");
-    //   return;
-    // }
-    // setIsLoading(true);
-    // let res = await postAPI("auth2/login", loginData, null);
-    // console.log(res, "kkkkkkkkkkk");
-    // if (res?.status) {
-    //   dispatch(loginHandler(res));
-    //   toast.success("Successfully logged in");
-    // } else {
-    //   toast.error("Please provide correct username and password");
-    // }
+    // navigate(`/pos`);
+
     setIsLoading(false);
   };
 

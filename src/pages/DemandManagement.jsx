@@ -6,22 +6,21 @@ import { useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { apiCallBack } from "../utils/fetchAPIs";
 import { toast } from "react-toastify";
-import moment from "moment";
+import { USER_PPNC_DEPARTMENT } from "../constants/userConstants";
+import { checkTypeArr } from "../utils/smallFun";
 
 const DemandManagement = () => {
   const [isPopup, setIsPopup] = useState(false);
-  const [inspectioncall, setInspectioncall] = useState([]);
+  const [data, setData] = useState([]);
+  const [lineItemData, setLineItemData] = useState([]);
   const { id } = useParams();
 
-  const { user, token, userType } = useSelector((state) => state.auth);
+  const { user, token } = useSelector((state) => state.auth);
   const [formData, setFormData] = useState({
-    InspectioncallFile: null,
     remarks: "",
+    po_line_iten_no: "",
+    raised_quantity: "",
   });
-
-  const [selectedFileType, setSelectedFileType] = useState("");
-
-  console.log(user);
 
   const getData = async () => {
     try {
@@ -32,25 +31,35 @@ const DemandManagement = () => {
         token
       );
       if (data?.status) {
-        setInspectioncall(data?.data);
+        setData(data?.data);
       }
     } catch (error) {
       console.error("Error fetching drawing list:", error);
     }
   };
 
+  const getPOLineItemData = async () => {
+    try {
+      const data = await apiCallBack("GET", `po/details?id=${id}`, null, token);
+      if (data?.status) {
+        let lineItem = data?.data[0]?.materialResult;
+        setLineItemData(lineItem);
+      }
+    } catch (error) {
+      console.error("Error fetching WDC list:", error);
+    }
+  };
+
   useEffect(() => {
     getData();
+    getPOLineItemData();
   }, [id, token]);
 
-  const updateInspectionCall = async (flag) => {
+  const actionHandler = async (flag) => {
     try {
       const formDataToSend = new FormData();
       formDataToSend.append("purchasing_doc_no", id);
-      formDataToSend.append("file", formData.InspectioncallFile);
       formDataToSend.append("remarks", formData.remarks);
-      formDataToSend.append("file_type_id", selectedFileType);
-      formDataToSend.append("file_type_name", selectedFileType);
 
       const response = await apiCallBack(
         "POST",
@@ -84,7 +93,7 @@ const DemandManagement = () => {
                   <div className="row g-5 g-xl-8">
                     <div className="col-12">
                       <div className="screen_header">
-                        {user?.user_type === 1 && (
+                        {user?.department_id === USER_PPNC_DEPARTMENT && (
                           <button
                             onClick={() => setIsPopup(true)}
                             className="btn fw-bold btn-primary"
@@ -102,46 +111,32 @@ const DemandManagement = () => {
                               <thead>
                                 <tr className="border-0">
                                   <th>DateTime </th>
-                                  <th>File Info</th>
+                                  <th>PO Line Item </th>
                                   <th>Updated By</th>
-                                  <th>File Type</th>
+                                  <th>Raised Quantity</th>
                                   <th className="min-w-150px">Remarks</th>
                                 </tr>
                               </thead>
                               <tbody style={{ maxHeight: "100%" }}>
-                                {inspectioncall.map((inspection) => (
-                                  <tr key={inspection.id}>
-                                    <td className="table_center">
-                                      {moment(inspection.created_at)
-                                        .utc()
-                                        .format("DD/MM/YY (HH:mm)")}
-                                    </td>
-                                    <td className="">
-                                      {inspection.file_name && (
-                                        <a
-                                          href={`${process.env.REACT_APP_PDF_URL}inspectionCallLetter/${inspection.file_name}`}
-                                          target="_blank"
-                                          rel="noreferrer"
-                                        >
-                                          Click Here
-                                        </a>
-                                      )}
-                                    </td>
-                                    <td className="">
-                                      {inspection.updated_by} (
-                                      {inspection.created_by_id})
-                                    </td>
-                                    <td className="">
-                                      {inspection.file_type_name}
-                                    </td>
-                                    <td className="">{inspection.remarks}</td>
-                                    {/* <td className="">
-                                      {inspection.status === "APPROVED"
-                                        ? "APPROVED"
-                                        : "PENDING"}
-                                    </td> */}
-                                  </tr>
-                                ))}
+                                {checkTypeArr(data) &&
+                                  data.map((item, index) => (
+                                    <tr key={index}>
+                                      <td className="table_center">
+                                        {item?.created_at &&
+                                          new Date(
+                                            item?.created_at
+                                          ).toLocaleString()}
+                                      </td>
+                                      <td className="">10</td>
+                                      <td className="">
+                                        {item.updated_by} ({item.created_by_id})
+                                      </td>
+                                      <td className="">
+                                        {item.file_type_name}
+                                      </td>
+                                      <td className="">{item.remarks}</td>
+                                    </tr>
+                                  ))}
                               </tbody>
                             </table>
                           </div>
@@ -156,7 +151,7 @@ const DemandManagement = () => {
           </div>
         </div>
       </div>
-      {user?.user_type === 1 && (
+      {user?.department_id === USER_PPNC_DEPARTMENT && (
         <div className={isPopup ? "popup active" : "popup"}>
           <div className="card card-xxl-stretch mb-5 mb-xxl-8">
             <div className="card-header border-0 pt-5 pb-3">
@@ -175,67 +170,63 @@ const DemandManagement = () => {
             <form>
               <div className="row">
                 <div className="col-12">
-                  {/* for vendor or nic */}
-                  {/* <div className="mb-3">
-                  <select name="" id="" className="form-control">
-                    <option value="">Choose File Type</option>
-                    <option value="">Inspection call letter stage 1</option>
-                    <option value="">Inspection call letter stage 2</option>
-                    <option value="">Inspection call letter stage 3</option>
-                    <option value="">Inspection release note</option>
-                    <option value="">Form-4</option>
-                    <option value="">Dispatch clearance</option>
-                    <option value="">Inspection report</option>
-                  </select>
-                </div> */}
-                  {/* for lan or cdo (drawing officer) or qa */}
                   <div className="mb-3">
+                    <label className="form-label">
+                      PO Line Item <span className="red">*</span>{" "}
+                    </label>
                     <select
                       name=""
                       id=""
                       className="form-select"
-                      onChange={(e) => {
-                        setSelectedFileType(e.target.value);
-                      }}
-                    >
-                      <option value="">Choose Action Type</option>
-                      <option value="UPLOAD MATERIAL DEMAND">
-                        UPLOAD MATERIAL DEMAND
-                      </option>
-                      <option value="UPLOAD SERVICE ENGG DEMAND">
-                        UPLOAD SERVICE ENGG DEMAND
-                      </option>
-
-                      <option value="REMARKS">REMARKS</option>
-
-                      <option value="OTHERS">OTHERS</option>
-                    </select>
-                  </div>
-
-                  <div className="mb-3">
-                    <label className="form-label">File</label>
-                    &nbsp;&nbsp;
-                    <span className="mandatorystart">*</span>
-                    <input
-                      type="file"
-                      className="form-control"
+                      value={formData?.po_line_iten_no}
                       onChange={(e) =>
                         setFormData({
                           ...formData,
-                          InspectioncallFile: e.target.files[0],
+                          po_line_iten_no: e.target.value,
                         })
                       }
-                    />
+                    >
+                      <option value="">Choose PO Line Item</option>
+                      {checkTypeArr(lineItemData) &&
+                        lineItemData.map((item, i) => {
+                          return (
+                            <option value={item?.material_item_number} key={i}>
+                              {item?.material_item_number}
+                            </option>
+                          );
+                        })}
+                    </select>
                   </div>
                 </div>
                 <div className="col-12">
                   <div className="mb-3">
-                    <label className="form-label">Remarks</label>
+                    <label className="form-label">
+                      Raised Quantity <span className="red">*</span>{" "}
+                    </label>
+                    <input
+                      type="text"
+                      className="form-control"
+                      value={formData?.raised_quantity}
+                      onChange={(e) =>
+                        setFormData({
+                          ...formData,
+                          raised_quantity: e.target.value,
+                        })
+                      }
+                    />
+                    <p>Available Amount: 500AUM</p>
+                  </div>
+                </div>
+                <div className="col-12">
+                  <div className="mb-3">
+                    <label className="form-label">Remarks</label>&nbsp;&nbsp;
+                    <span className="mandatorystart">*</span>
                     <textarea
                       name=""
                       id=""
                       rows="4"
                       className="form-control"
+                      value={formData?.remarks}
                       onChange={(e) =>
                         setFormData({ ...formData, remarks: e.target.value })
                       }
@@ -245,23 +236,12 @@ const DemandManagement = () => {
                 <div className="col-12">
                   <div className="mb-3 d-flex justify-content-between">
                     <button
-                      onClick={() => updateInspectionCall("PENDING")}
+                      onClick={() => actionHandler("SUBMITTED")}
                       className="btn fw-bold btn-primary"
                       type="button"
                     >
                       SUBMIT
                     </button>
-                    {/* {userType !== 1 ? (
-                    <button
-                      onClick={() => updateInspectionCall("APPROVED")}
-                      className="btn fw-bold btn-primary"
-                      type="button"
-                    >
-                      Approved
-                    </button>
-                  ) : (
-                    ""
-                  )} */}
                   </div>
                 </div>
               </div>

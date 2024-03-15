@@ -14,22 +14,22 @@ import {
   USER_GRSE_HR,
   USER_VENDOR,
 } from "../constants/userConstants";
+import { checkTypeArr } from "../utils/smallFun";
 
 const HrCompliance = () => {
   const inputFileRef = useRef(null);
   const { id } = useParams();
   const [isPopup, setIsPopup] = useState(false);
-  // const [isPopupAssign, setIsPopupAssign] = useState(false);
   const [data, setData] = useState([]);
-  const [groupedData, setGroupedData] = useState([]);
+  // const [groupedData, setGroupedData] = useState([]);
   const [formData, setFormData] = useState({
     fileData: null,
     remarks: "",
     actionType: "",
   });
-  const { user, token, userType } = useSelector((state) => state.auth);
+  const { user, token } = useSelector((state) => state.auth);
   // const { poType } = useSelector((state) => state.selectedPO);
-  const [referenceNo, setreferenceNo] = useState("");
+  // const [referenceNo, setreferenceNo] = useState("");
   // console.log("useruser", user);
   // console.log(poType, "poType");
   // console.log(userType, "userType");
@@ -91,7 +91,7 @@ const HrCompliance = () => {
       formDataToSend.append("file", fileData);
       formDataToSend.append("remarks", remarks);
       formDataToSend.append("status", flag);
-      formDataToSend.append("reference_no", referenceNo);
+      // formDataToSend.append("reference_no", referenceNo);
       // formDataToSend.append("mailSendTo", mailSendTo);
       // formDataToSend.append("updated_by", uType);
       // formDataToSend.append("vendor_code", user.vendor_code);
@@ -121,12 +121,12 @@ const HrCompliance = () => {
     }
   };
 
-  useEffect(() => {
-    if (data && data.length > 0) {
-      const gData = groupedByRefNo(data);
-      setGroupedData(gData);
-    }
-  }, [data]);
+  // useEffect(() => {
+  //   if (data && data.length > 0) {
+  //     const gData = groupedByRefNo(data);
+  //     setGroupedData(gData);
+  //   }
+  // }, [data]);
 
   return (
     <>
@@ -141,7 +141,7 @@ const HrCompliance = () => {
                   <div className="row g-5 g-xl-8">
                     <div className="col-12">
                       <div className="screen_header">
-                        {user?.userType === USER_VENDOR && (
+                        {user?.department_id === USER_GRSE_HR && (
                           <button
                             onClick={() => {
                               setIsPopup(true);
@@ -163,62 +163,54 @@ const HrCompliance = () => {
                                   {/* <th>Reference No. </th> */}
                                   <th>DateTime </th>
                                   <th>File Info</th>
+                                  <th>Action Type</th>
                                   <th>Updated By</th>
                                   <th className="min-w-150px">Remarks</th>
-                                  <th>Status</th>
-                                  {user?.department_id === USER_GRSE_HR && (
+                                  {/* <th>Status</th> */}
+                                  {/* {user?.department_id === USER_GRSE_HR && (
                                     <th>Action</th>
-                                  )}
+                                  )} */}
                                 </tr>
                               </thead>
                               <tbody style={{ maxHeight: "100%" }}>
-                                {Object.keys(groupedData).map((it, index) => {
-                                  let items = groupedData[it];
-                                  return (
-                                    <Fragment key={index}>
-                                      <tr>
-                                        <td colSpan={10}>
-                                          <b>{it}</b>
-                                        </td>
-                                      </tr>
-                                      {items &&
-                                        items.map((item, i) => (
-                                          <tr key={i}>
-                                            {/* <td className="table_center">
-                                              {item.reference_no}
-                                            </td> */}
-                                            <td className="table_center">
-                                              {item?.created_at &&
-                                                new Date(
-                                                  item?.created_at
-                                                ).toLocaleString()}
-                                            </td>
-                                            <td className="table_center">
-                                              {item.file_name && (
-                                                <a
-                                                  href={`${process.env.REACT_APP_PDF_URL}hrCompliance/${item.file_name}`}
-                                                  target="_blank"
-                                                  rel="noreferrer"
-                                                >
-                                                  Click Here
-                                                </a>
-                                              )}
-                                            </td>
-                                            <td className="table_center">
-                                              {item.created_by_id}
-                                            </td>
-                                            <td className="align-middle">
-                                              {item.remarks}
-                                            </td>
-                                            <td
-                                              className={`${clrLegend(
-                                                item?.status
-                                              )} bold`}
-                                            >
-                                              {item.status}
-                                            </td>
+                                {checkTypeArr(data) &&
+                                  data.map((item, index) => {
+                                    return (
+                                      <Fragment key={index}>
+                                        <tr>
+                                          <td className="table_center">
+                                            {item?.created_at &&
+                                              new Date(
+                                                item?.created_at
+                                              ).toLocaleString()}
+                                          </td>
+                                          <td className="table_center">
+                                            {item.file_name && (
+                                              <a
+                                                href={`${process.env.REACT_APP_PDF_URL}hrComplianceUpload/${item.file_name}`}
+                                                target="_blank"
+                                                rel="noreferrer"
+                                              >
+                                                Click Here
+                                              </a>
+                                            )}
+                                          </td>
+                                          <td>{item?.action_type}</td>
+                                          <td className="table_center">
+                                            {item.created_by_id}
+                                          </td>
+                                          <td className="align-middle">
+                                            {item.remarks}
+                                          </td>
+                                          {/* <td
+                                          className={`${clrLegend(
+                                            item?.status
+                                          )} bold`}
+                                        >
+                                          {item.status}
+                                        </td> */}
 
-                                            {user.department_id ===
+                                          {/* {user.department_id ===
                                               USER_GRSE_HR && (
                                               <td>
                                                 {item.status ===
@@ -236,12 +228,11 @@ const HrCompliance = () => {
                                                   </button>
                                                 )}
                                               </td>
-                                            )}
-                                          </tr>
-                                        ))}
-                                    </Fragment>
-                                  );
-                                })}
+                                            )} */}
+                                        </tr>
+                                      </Fragment>
+                                    );
+                                  })}
                               </tbody>
                             </table>
                           </div>
@@ -257,14 +248,13 @@ const HrCompliance = () => {
         </div>
       </div>
 
-      {(user?.userType === USER_VENDOR ||
-        user?.department_id === USER_GRSE_HR) && (
+      {user?.department_id === USER_GRSE_HR && (
         <div className={isPopup ? "popup active" : "popup"}>
           <div className="card card-xxl-stretch mb-5 mb-xxl-8">
             <div className="card-header border-0 pt-5">
               <h3 className="card-title align-items-start flex-column">
                 <span className="card-label fw-bold fs-3 mb-1">
-                  Take Action {referenceNo && `for ${referenceNo}`}
+                  Take Action
                 </span>
               </h3>
               <button
@@ -291,12 +281,10 @@ const HrCompliance = () => {
                       }}
                     >
                       <option value="">Choose Action Type</option>
-                      <option value="PF">PF</option>
-                      <option value="ESI">ESI</option>
-                      <option value="Wage">Wage</option>
-                      <option value="Acknowledgement/Remarks">
-                        Acknowledgement / Remarks
-                      </option>
+                      <option value="PF Compliance">PF Compliance</option>
+                      <option value="ESI Compliance">ESI Compliance</option>
+                      <option value="Wage Compliance">Wage Compliance</option>
+                      <option value="Remarks">Remarks</option>
                       <option value="Others">Others</option>
                     </select>
                   </div>
@@ -344,7 +332,7 @@ const HrCompliance = () => {
                       SUBMIT
                     </button>
 
-                    <div className="d-flex gap-3">
+                    {/* <div className="d-flex gap-3">
                       {userType !== USER_VENDOR &&
                         user?.department_id === USER_GRSE_HR && (
                           <button
@@ -379,7 +367,7 @@ const HrCompliance = () => {
                             REJECT
                           </button>
                         )}
-                    </div>
+                    </div> */}
                   </div>
                 </div>
               </div>
