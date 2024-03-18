@@ -3,18 +3,22 @@ import Footer from "../components/Footer";
 // import SideBar from "../components/SideBar";
 // import Header from "../components/Header";
 // import { useParams } from "react-router-dom";
-import MainHeader from "../components/MainHeader";
-import { useNavigate } from "react-router-dom";
+// import MainHeader from "../components/MainHeader";
+import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
+import Header from "../components/Header";
+import SideBar from "../components/SideBar";
 
 const Checklist = () => {
+  const { id } = useParams();
+
   const navigate = useNavigate();
   const [isPopup, setIsPopup] = useState(false);
   const [slug, setSlug] = useState("");
 
   const NewBillHandler = () => {
     if (slug !== "") {
-      let path = `/checklist/${slug}`;
+      let path = `/checklist/${slug}/${id}`;
       navigate(path);
     } else {
       toast.warn("Please choose what type of checklist you want to add.");
@@ -23,11 +27,11 @@ const Checklist = () => {
 
   return (
     <>
-      <div className="d-flex flex-column flex-root">
+      <div className="wrapper d-flex flex-column flex-row-fluid">
         <div className="page d-flex flex-row flex-column-fluid">
-          {/* <SideBar /> */}
+          <SideBar />
           <div className="d-flex flex-column flex-row-fluid">
-            <MainHeader title={"Check List"} />
+            <Header title={"Invoice And Payment Process"} id={id} />
             <div className="content d-flex flex-column flex-column-fluid">
               <div className="post d-flex flex-column-fluid">
                 <div className="container">

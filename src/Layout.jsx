@@ -42,7 +42,6 @@ import HrCompliance from "./pages/HrCompliance";
 import DemandManagement from "./pages/DemandManagement";
 import DisplayStoreActions from "./pages/DisplayStoreActions";
 import ManageVendorActivities from "./pages/ManageVendorActivities";
-import InvoiceAndPaymentProcess from "./pages/InvoiceAndPaymentProcess";
 
 import Goods_issue_slip from "./pages/pdfs/Goods_issue_slip";
 import Inspection_report from "./pages/pdfs/Inspection_report";
@@ -50,7 +49,7 @@ import Reservation_report from "./pages/pdfs/Reservation_report";
 import Payment_Advice from "./pages/pdfs/Payment_Advice";
 
 function Layout() {
-  const { token, isLoggedIn, userType } = useSelector((state) => state.auth);
+  const { token, isLoggedIn } = useSelector((state) => state.auth);
 
   return (
     <>
@@ -96,7 +95,7 @@ function Layout() {
             <Route
               exact
               path="/invoice-and-payment-process/:id"
-              element={<InvoiceAndPaymentProcess />}
+              element={<Checklist />}
             />
             <Route exact path="/hr-compliance/:id" element={<HrCompliance />} />
             <Route
@@ -105,43 +104,43 @@ function Layout() {
               element={<Shippingdocuments />}
             />
             <Route exact path="/gate-in/:id" element={<GateInSub />} />
-            <Route exact path="/checklist" element={<Checklist />} />
+            <Route exact path="/checklist/:id" element={<Checklist />} />
             <Route
               exact
-              path="/checklist/hybrid-bill-material"
+              path="/checklist/hybrid-bill-material/:id"
               element={<BillsMaterialHybrid />}
             />
             <Route
               exact
-              path="/checklist/hybrid-bill-service"
+              path="/checklist/hybrid-bill-service/:id"
               element={<HybridServicePOBills />}
             />
             <Route
               exact
-              path="/checklist/contract-bill-service"
+              path="/checklist/contract-bill-service/:id"
               element={<ServiceContractBills />}
             />
             <Route
               exact
-              path="/checklist/bill-incorrect-deductions"
+              path="/checklist/bill-incorrect-deductions/:id"
               element={<ClaimIncorrectDeductions />}
             />
             <Route
               exact
-              path="/checklist/bill-advance-payment"
+              path="/checklist/bill-advance-payment/:id"
               element={<AdvanceBillHybrid />}
             />
             <Route
               exact
-              path="/checklist/claim-against-pbg"
+              path="/checklist/claim-against-pbg/:id"
               element={<ClaimAgainstPBGSubmission />}
             />
             <Route
               exact
-              path="/checklist/ld-penalty-refund"
+              path="/checklist/ld-penalty-refund/:id"
               element={<LDPenaltyRefund />}
             />
-            <Route exact path="/checklist/:id" element={<ChecklistSub />} />
+            {/* <Route exact path="/checklist/:id" element={<ChecklistSub />} /> */}
             <Route
               exact
               path="/bill-registration-number/:id"
@@ -153,7 +152,11 @@ function Layout() {
               element={<PaymentAdvisesSub />}
             />
             <Route exact path="/pbg-upload/:id" element={<PBGuploadSub />} />
-            <Route exact path="/bg-extension" element={<BGExtensionSub />} />
+            <Route
+              exact
+              path="/bg-extension/:id"
+              element={<BGExtensionSub />}
+            />
             <Route
               exact
               path="/claim-letter/:id"
