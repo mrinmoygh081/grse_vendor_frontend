@@ -7,6 +7,8 @@ function Reservation_report() {
   const [isLoading, setIsLoading] = useState(false);
 
   const { token } = useSelector((state) => state.auth);
+  const currentDate = new Date().toLocaleDateString();
+  const currentTime = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 
   const handlePrint = () => {
     window.print();
@@ -28,7 +30,7 @@ function Reservation_report() {
         setIsLoading(true);
         const response = await fetch(path, config);
         const data = await response.json();
-        setApiData(data);
+        setApiData(data.data);
         setIsLoading(false);
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -91,17 +93,15 @@ function Reservation_report() {
               </tr>
             </thead>
             <tbody>
-              {apiData?.data?.lineItem?.map((item, index) => (
-                <tr>
+              {apiData?.lineItem?.map((item, index) => (
+                <tr key={index}>
                   <td>{item.reservationNumber}</td>
                   <td>{item.itemNumber}</td>
                   <td>P9101EF0500</td>
                   <td>{item.unit}</td>
                   <td>{item.requirementQty}</td>
                   <td>{item.storageLocation}</td>
-                  <td>
-                    {item.wbs}
-                  </td>
+                  <td>{item.wbs}</td>
                   <td>{item.wbsElement}</td>
                   <td></td>
                   <td></td>
@@ -142,6 +142,16 @@ function Reservation_report() {
         >
           Print
         </button>
+      </div>
+
+      {/* Date Time And Page No  */}
+      <div
+        className="date_time_container"
+        style={{ position: "fixed", top: 0, right: 0, fontSize: "10px" }}
+      >
+        <p className="m-0 p-0">Date: {currentDate}</p>
+        <p className="m-0 p-0">Time: {currentTime}</p>
+        {/* <p className="m-0 p-0">page 1/2</p> */}
       </div>
     </div>
   );

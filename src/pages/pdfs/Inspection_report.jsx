@@ -1,91 +1,141 @@
-import React, { useEffect } from "react";
-import logo from "../../images/logo.png"
+import React, { useEffect, useState } from "react";
+import logo from "../../images/logo.png";
+import { useSelector } from "react-redux";
 
 function Inspection_report() {
+  const [apiData, setApiData] = useState();
+  const [isLoading, setIsLoading] = useState(false);
+  const { token } = useSelector((state) => state.auth);
+
+  const currentDate = new Date().toLocaleDateString();
+  const currentTime = new Date().toLocaleTimeString([], {
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+
   const handlePrint = () => {
     window.print();
+    // console.log("--->>",window.print.arguments())
+    
   };
 
-  useEffect(()=>{
-    const handlePrint = () => {
-      window.print();
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const dataInfo = {
+          PRUEFLOS: 1000001009,
+          MBLNR: 5000174040,
+          EBELN: 12345,
+        };
+        const path = `${process.env.REACT_APP_BACKEND_API}sap/qa/icgrn/report`;
+        const config = {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(dataInfo),
+        };
+        setIsLoading(true);
+        const response = await fetch(path, config);
+        const data = await response.json();
+        setApiData(data.data || {});
+        setIsLoading(false);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+        setIsLoading(false);
+      }
     };
-    handlePrint();
-  },[])
+    fetchData();
+  }, [token]);
+
+  console.log("Api data --??..>>", apiData);
 
   return (
     <div className="container-fluid pt-4">
-
       <div className="row table_heading_container m-0 p-0 mb-2 ">
         <div className="col-2">
           <img src={logo} alt="" className="table_logo" />
         </div>
         <div className="col-10">
-          <h3 className="m-0 text-center" style={{width:'90%'}}>
+          <h3 className="m-0 text-center" style={{ width: "90%" }}>
             Garden Reach Shipbuilders & Engineers Ltd.
           </h3>
-          <p className="m-0 text-center" style={{ fontSize: "18px",width:'90%' }}>
+          <p
+            className="m-0 text-center"
+            style={{ fontSize: "18px", width: "90%" }}
+          >
             (A govt. of india undertaking)
           </p>
-          <p className="m-0 text-center" style={{ fontSize: "18px",width:'90%' }}>
+          <p
+            className="m-0 text-center"
+            style={{ fontSize: "18px", width: "90%" }}
+          >
             43/46, (Garden Reach Road / Kolkata)
           </p>
         </div>
       </div>
 
-
       <div className="row  mb-4 mt-3">
         <h5 className=" text-center m-0 pb-3">Inspection Report</h5>
-        <div className="col-6 d-flex justify-content-start top_info_table">
-          <table className="w-75 h-75" style={{ fontSize: "14px" }}>
-            <tbody>
-              <tr>
-                <td width={"60%"}>Doc No</td>
-                <td className="text-start" width={"5%"}>
-                  :
-                </td>
-                <td>5000242450</td>
-              </tr>
-              <tr>
-                <td>Doc Date</td>
-                <td className="text-start">:</td>
-                <td>06.03.2024</td>
-              </tr>
-              <tr>
-                <td>Challan/iInvoice/File No</td>
-                <td className="text-start">:</td>
-                <td></td>
-              </tr>
-              <tr>
-                <td>Purchase Order No</td>
-                <td className="text-center">:</td>
-                <td>4700026700</td>
-              </tr>
-              <tr>
-                <td>Purchase Order Date</td>
-                <td className="text-center">:</td>
-                <td>06.03.2024</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
+        {isLoading ? (
+          <h4>Loading...</h4>
+        ) : (
+          <>
+            <div className="col-6 d-flex justify-content-start top_info_table">
+              <table className="w-75 h-75" style={{ fontSize: "14px" }}>
+                <tbody>
+                  <tr>
+                    <td width={"60%"}>Doc No</td>
+                    <td className="text-start" width={"5%"}>
+                      :
+                    </td>
+                    <td>{apiData?.docNo}</td>
+                  </tr>
+                  <tr>
+                    <td>Doc Date</td>
+                    <td className="text-start">:</td>
+                    <td>{apiData?.docdate}</td>
+                  </tr>
+                  <tr>
+                    <td>Challan/iInvoice/File No</td>
+                    <td className="text-start">:</td>
+                    <td></td>
+                  </tr>
+                  <tr>
+                    <td>Purchase Order No</td>
+                    <td>:</td>
+                    <td>{apiData?.purchasing_doc_no}</td>
+                  </tr>
+                  <tr>
+                    <td>Purchase Order Date</td>
+                    <td>:</td>
+                    <td>{apiData?.purchasing_doc_date}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
 
-        <div className="col-6 d-flex  justify-content-center">
-          <div className="w-75">
-            <h5 className="m-0" style={{ fontSize: "18px" }}>
-              Vendor Address :
-            </h5>
-            <p className="m-0" style={{ fontSize: "14px" }}>
-              DCG DATA -CORE SYSTEMS PRIVATE <br /> DG4, SECTOR - II, SALT LAKE
-              CITY, <br />
-              KOLKATA <br /> 70091 <br />
-              India{" "}
-            </p>
-            <p className="m-0 w-50 p-0 text-end" style={{ fontSize: "14px" }}>
-              West Bengal
-            </p>
-          </div>
-        </div>
+            <div className="col-6 d-flex  justify-content-center">
+              <div className="w-75">
+                <h5 className="m-0" style={{ fontSize: "18px" }}>
+                  Vendor Address :
+                </h5>
+                <p className="m-0" style={{ fontSize: "14px" }}>
+                  {apiData?.suppplier}, {apiData?.vendorName} <br />
+                  {apiData?.vendorCity} <br /> {apiData?.vendorPinCode} <br />
+                  {apiData?.vendorCountry}
+                </p>
+                <p
+                  className="m-0 w-50 p-0 text-end"
+                  style={{ fontSize: "14px" }}
+                >
+                  {apiData?.vendorDistrict}
+                </p>
+              </div>
+            </div>
+          </>
+        )}
       </div>
 
       <div className="row" style={{ minHeight: "300px" }}>
@@ -104,30 +154,25 @@ function Inspection_report() {
                 <th>Insp.Dt</th>
               </tr>
             </thead>
-            <tbody>
-              <tr>
-                <td>1</td>
-                <td>341021000009</td>
-                <td>SIKAFLEX-292, BINDING MATERIAL_200-300gm</td>
-                <td>1.000</td>
-                <td>1.000</td>
-                <td>0.000</td>
-                <td>EA</td>
-                <td>A</td>
-                <td>07.03.2024</td>
-              </tr>
-              <tr>
-                <td>1</td>
-                <td>341021000009</td>
-                <td>SIKAFLEX-292, BINDING MATERIAL_200-300gm</td>
-                <td>1.000</td>
-                <td>1.000</td>
-                <td>0.000</td>
-                <td>EA</td>
-                <td>A</td>
-                <td>07.03.2024</td>
-              </tr>
-            </tbody>
+            {isLoading ? (
+              <h4>Loading....</h4>
+            ) : (
+              <tbody>
+                {apiData?.lineItems.map((item, index) => (
+                  <tr>
+                    <td>{item.purchasing_doc_no_item}</td>
+                    <td>{item.materialNumber}</td>
+                    <td>{item.materialDesc}</td>
+                    <td>{item.supplyQuantity}</td>
+                    <td>{item.acceptedQty}</td>
+                    <td>{item.rejectedQty}</td>
+                    <td>{item.baseUnit}</td>
+                    <td>{item.udCode}</td>
+                    <td> </td>
+                  </tr>
+                ))}
+              </tbody>
+            )}
           </table>
           <div className="col-12">
             <h6 className="m-0">Remarks</h6>
@@ -141,13 +186,12 @@ function Inspection_report() {
         </div>
       </div>
 
-      <div className="row pt-5" style={{marginTop:'270px'}}>
+      <div className="row pt-5" style={{ marginTop: "270px" }}>
         <h6 className="col-6 m-0 text-start">
           SIGNATURE OF INSPECTOR/SUPERVISOR
         </h6>
         <h6 className="col-6 m-0 text-end">SIGNATURE OF OFFICER</h6>
       </div>
-
       <div className="row diflex justify-content-center mt-2 mb-5">
         <button
           className="print_btn"
@@ -156,6 +200,16 @@ function Inspection_report() {
         >
           Print
         </button>
+      </div>
+
+      {/* Date Time And Page No  */}
+      <div
+        className="date_time_container"
+        style={{ position: "fixed", top: 0, right: 0, fontSize: "10px" }}
+      >
+        <p className="m-0 p-0">Date: {currentDate}</p>
+        <p className="m-0 p-0">Time: {currentTime}</p>
+        {/* <p className="m-0 p-0">page 1/2</p> */}
       </div>
     </div>
   );

@@ -220,12 +220,19 @@ input[type="number"] {
 .print_btn:hover {
   background-color: #1b76d0b3;
 }
+.payment_advice_table thead tr th,
+.payment_advice_table tbody tr td {
+  border: none;
+}
+.date_time_container {
+  display: none;
+}
+
 @media print {
   .print_btn {
     display: none !important;
   }
-}
-.payment_advice_table thead tr th,
-.payment_advice_table tbody tr td {
-  border: none;
+  .date_time_container {
+    display: block;
+  }
 }

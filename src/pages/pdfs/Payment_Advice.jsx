@@ -1,4 +1,4 @@
-import React, { useEffect , useState } from "react";
+import React, { useEffect, useState } from "react";
 import logo from "../../images/logo.png";
 import { useSelector } from "react-redux";
 
@@ -7,17 +7,21 @@ function Payment_Advice() {
   const [isLoading, setIsLoading] = useState(false);
   const { token } = useSelector((state) => state.auth);
 
-  // const apiValue 
+  const currentDate = new Date().toLocaleDateString();
+  const currentTime = new Date().toLocaleTimeString([], {
+    hour: "2-digit",
+    minute: "2-digit",
+  });
 
   const handlePrint = () => {
     window.print();
-  };
+  }; 
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         const dataInfo = {
-          "ZREGNUM" : 333
+          ZREGNUM: 333,
         };
         const path = `${process.env.REACT_APP_BACKEND_API}sap/payment/ztfi_bil_deface_report`;
         const config = {
@@ -42,12 +46,11 @@ function Payment_Advice() {
     fetchData();
   }, [token]);
 
-  console.log("apiData-->>",apiData)
-
+  console.log("apiData-->>", apiData);
 
   return (
     <div className="container-fluid">
-      <section className="Table-1" style={{minHeight:'970px'}}>
+      <section className="Table-1" style={{ minHeight: "970px" }}>
         <div className="row table_heading_container m-0 p-0 pt-2 mb-2 ">
           <div className="col-2">
             <img src={logo} alt="" className="table_logo" />
@@ -63,110 +66,144 @@ function Payment_Advice() {
               (A govt. of india undertaking)
             </p>
 
-            <h4 className="text-center mt-3" style={{width:'90%'}}>Payment Advice</h4>
+            <h4 className="text-center mt-3" style={{ width: "90%" }}>
+              Payment Advice
+            </h4>
           </div>
         </div>
-        <div className="row mt-4">
-          <div className="col-6">
-            <p>
-                M/S <br />HYDRODYNE TEIKOKU (INDIA) PVT.LTD. <br />SURVEY NO. 18, H. NO.3,4&5 OF VILLAGE <br />GHODBUNDAR, <br />MIRA BHYANDAR ROAD , MIRA ROAD EAST <br />401107 THANE
-            </p>
-            {/* <p className="m-0">Plant: Palnt Bailey bridge</p>
+        {isLoading ? (
+          <h4 className="text-center">Loading...</h4>
+        ) : (
+          <>
+            <div className="row mt-4">
+              <div className="col-6">
+                <p>
+                  M/S <br />
+                  HYDRODYNE TEIKOKU (INDIA) PVT.LTD. <br />
+                  SURVEY NO. 18, H. NO.3,4&5 OF VILLAGE <br />
+                  GHODBUNDAR, <br />
+                  MIRA BHYANDAR ROAD , MIRA ROAD EAST <br />
+                  401107 THANE
+                </p>
+                {/* <p className="m-0">Plant: Palnt Bailey bridge</p>
             <p className="m-0">
               Address: 61 Garden Reach Road , Kolkata, Pin - 700024
             </p>
             <p className="m-0">State: West Bengal , GSTIN: 19AAACG9371K1J4</p> */}
-          </div>
-          <div className="col-6 d-flex justify-content-end top_info_table">
-            <table className="h-75 w-100" style={{ fontSize: "14px"}}>
-              <tbody>
-                <tr>
-                  <td width={"30%"} className="fw-bold">Pymt Doc. No.</td>
-                  <td className="text-start" width={"5%"}>
-                    :
-                  </td>
-                  <td width={'30%'}>4900757635</td>
-                </tr>
-                <tr>
-                  <td className="fw-bold">Payment Method</td>
-                  <td className="text-start">:</td>
-                  <td>NEFT Payment</td>
-                </tr>
-                <tr>
-                  <td className="fw-bold">Payment Date</td>
-                  <td className="text-start">:</td>
-                  <td>07.03.2024</td>
-                </tr>
-                <tr>
-                  <td className="fw-bold">Bank Name</td>
-                  <td >:</td>
-                  <td>AXIS BANK #KOLKATA</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-        <div className="row">
-          <div className="col-12">
-            <table className="w-100 payment_advice_table" style={{fontSize:'15px'}}>
-              <thead>
-                <tr>
-                  <th >Your Bill Ref.</th>
-                  <th className="text-center">Our Doc Ref.</th>
-                  <th>Gross Amount</th>
-                  <th>Retention</th>
-                  <th>TDS</th>
-                  <th>Net Amount</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td width={'15%'} className="p-1">230/DOM/23/24,DT:21.09.2023,LD@5%</td>
-                  <td className="text-center p-1">1700006657</td>
-                  <td className="p-1">196,600.00-</td>
-                  <td className="p-1">0.00</td>
-                  <td className="p-1">0.00</td>
-                  <td className="p-1">196,600.00</td>
-                </tr>
-                <tr>
-                  <td width={'15%'} className="p-1">230/DOM/23/24,DT:21.09.2023,LD@5%</td>
-                  <td className="text-center p-1">1700006657</td>
-                  <td className="p-1">196,600.00-</td>
-                  <td className="p-1">0.00</td>
-                  <td className="p-1">0.00</td>
-                  <td className="p-1">196,600.00</td>
-                </tr>
-                <tr>
-                  <td width={'15%'} className="p-1">230/DOM/23/24,DT:21.09.2023,LD@5%</td>
-                  <td className="text-center p-1">1700006657</td>
-                  <td className="p-1">196,600.00-</td>
-                  <td className="p-1">0.00</td>
-                  <td className="p-1">0.00</td>
-                  <td className="p-1">196,600.00</td>
-                </tr>
-                <tr>
-                  <td width={'15%'} className="p-1">230/DOM/23/24,DT:21.09.2023,LD@5%</td>
-                  <td className="text-center p-1">1700006657</td>
-                  <td className="p-1">196,600.00-</td>
-                  <td className="p-1">0.00</td>
-                  <td className="p-1">0.00</td>
-                  <td className="p-1">196,600.00</td>
-                </tr>
+              </div>
+              <div className="col-6 d-flex justify-content-end top_info_table">
+                <table className="h-75 w-100" style={{ fontSize: "14px" }}>
+                  <tbody>
+                    <tr>
+                      <td width={"30%"} className="fw-bold">
+                        Pymt Doc. No.
+                      </td>
+                      <td className="text-start" width={"5%"}>
+                        :
+                      </td>
+                      <td width={"30%"}>4900757635</td>
+                    </tr>
+                    <tr>
+                      <td className="fw-bold">Payment Method</td>
+                      <td className="text-start">:</td>
+                      <td>NEFT Payment</td>
+                    </tr>
+                    <tr>
+                      <td className="fw-bold">Payment Date</td>
+                      <td className="text-start">:</td>
+                      <td>07.03.2024</td>
+                    </tr>
+                    <tr>
+                      <td className="fw-bold">Bank Name</td>
+                      <td>:</td>
+                      <td>AXIS BANK #KOLKATA</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+            <div className="row">
+              <div className="col-12">
+                <table
+                  className="w-100 payment_advice_table"
+                  style={{ fontSize: "15px" }}
+                >
+                  <thead>
+                    <tr>
+                      <th>Your Bill Ref.</th>
+                      <th className="text-center">Our Doc Ref.</th>
+                      <th>Gross Amount</th>
+                      <th>Retention</th>
+                      <th>TDS</th>
+                      <th>Net Amount</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td width={"15%"} className="p-1">
+                        230/DOM/23/24,DT:21.09.2023,LD@5%
+                      </td>
+                      <td className="text-center p-1">1700006657</td>
+                      <td className="p-1">196,600.00-</td>
+                      <td className="p-1">0.00</td>
+                      <td className="p-1">0.00</td>
+                      <td className="p-1">196,600.00</td>
+                    </tr>
+                    <tr>
+                      <td width={"15%"} className="p-1">
+                        230/DOM/23/24,DT:21.09.2023,LD@5%
+                      </td>
+                      <td className="text-center p-1">1700006657</td>
+                      <td className="p-1">196,600.00-</td>
+                      <td className="p-1">0.00</td>
+                      <td className="p-1">0.00</td>
+                      <td className="p-1">196,600.00</td>
+                    </tr>
+                    <tr>
+                      <td width={"15%"} className="p-1">
+                        230/DOM/23/24,DT:21.09.2023,LD@5%
+                      </td>
+                      <td className="text-center p-1">1700006657</td>
+                      <td className="p-1">196,600.00-</td>
+                      <td className="p-1">0.00</td>
+                      <td className="p-1">0.00</td>
+                      <td className="p-1">196,600.00</td>
+                    </tr>
+                    <tr>
+                      <td width={"15%"} className="p-1">
+                        230/DOM/23/24,DT:21.09.2023,LD@5%
+                      </td>
+                      <td className="text-center p-1">1700006657</td>
+                      <td className="p-1">196,600.00-</td>
+                      <td className="p-1">0.00</td>
+                      <td className="p-1">0.00</td>
+                      <td className="p-1">196,600.00</td>
+                    </tr>
 
+                    {/* Total Calculation Row  */}
+                    <tr
+                      style={{
+                        borderTop: "1px solid black",
+                        borderStyle: "dotted",
+                      }}
+                    >
+                      <td className="pt-2"></td>
+                      <td className="fw-bold pt-2 text-center">Total : </td>
+                      <td className="pt-2">322,545.40</td>
+                      <td className="pt-2">120,000.00</td>
+                      <td className="pt-2">16,800.00</td>
+                      <td className="pt-2">186,344.00</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </>
+        )}
 
-                {/* Total Calculation Row  */}
-                <tr style={{borderTop:'1px solid black' , borderStyle:'dotted',}}>
-                  <td className="pt-2"></td>
-                  <td className="fw-bold pt-2 text-center">Total : </td>
-                  <td className="pt-2">322,545.40</td>
-                  <td className="pt-2">120,000.00</td>
-                  <td className="pt-2">16,800.00</td>
-                  <td className="pt-2">186,344.00</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
+        <h5 className="m-0 mt-4">
+          This is system generated and doesnot require signature.
+        </h5>
       </section>
       <section className="Table-2">
         <div className="row table_heading_container m-0 p-0 pt-2 mb-2 ">
@@ -199,230 +236,295 @@ function Payment_Advice() {
             </h5>
           </div>
         </div>
-        <div className="row mt-2">
-          <h5 className="mb-3">
-            The E-payment against your Invoice no 2510033212 has been made.
-          </h5>
-          <div className="col-6 d-flex justify-content-e top_info_table mb-3">
-            <table className="w-75" style={{ fontSize: "12px" }}>
-              <tbody>
-                <tr>
-                  <td width={"20%"}>BTN</td>
-                  <td className="text-start" width={"5%"}>
-                    :
-                  </td>
-                  <td>{apiData.btn}</td>
-                </tr>
-                <tr>
-                  <td>BTN Date</td>
-                  <td className="text-start">:</td>
-                  <td>{apiData.btnDate}</td>
-                </tr>
-                <tr>
-                  <td>PO</td>
-                  <td className="text-start">:</td>
-                  <td>{apiData.purchesing_doc_no}</td>
-                </tr>
-                <tr>
-                  <td className="">Vendor</td>
-                  <td>:</td>
-                  <td>{apiData.vendor_code}</td>
-                  <td>LINDE INDIA LIMITED</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-        <div className="row mb-2">
-          <h5>The payment details are following:</h5>
-          <div className="col-10 d-flex top_info_table mb-3">
-            <table className="w-100" style={{ fontSize: "12px" }}>
-              <tbody>
-                <tr>
-                  <td width={"50%"}>Mat/ser Value</td>
-                  <td className="text-start" width={"5%"}>
-                    :
-                  </td>
-                  <td className="text-end">{apiData.matValue}</td>
-                </tr>
-                <tr>
-                  <td>No GR/SR Entry</td>
-                  <td className="text-start">:</td>
-                  <td className="text-end">{apiData.nogrsrValue}</td>
-                </tr>
-                <tr>
-                  <td>Net Value</td>
-                  <td className="text-start">:</td>
-                  <td className="text-end">{apiData.netValue}</td>
-                </tr>
-                <tr>
-                  <td className="">Taxes and Duties <span className="ps-3">{apiData.taxesAndDutiesText}</span></td>
-                  <td>:</td>
-                  <td className="text-end">{apiData.taxesAndDutiesValue}</td>
-                </tr>
+        {isLoading ? (
+          <h4>Loading...</h4>
+        ) : (
+          <>
+            <div className="row mt-2">
+              <h5 className="mb-3">
+                The E-payment against your Invoice no 2510033212 has been made.
+              </h5>
+              <div className="col-6 d-flex justify-content-e top_info_table mb-3">
+                <table className="w-75" style={{ fontSize: "12px" }}>
+                  <tbody>
+                    <tr>
+                      <td width={"20%"}>BTN</td>
+                      <td className="text-start" width={"5%"}>
+                        :
+                      </td>
+                      <td>{apiData?.btn}</td>
+                    </tr>
+                    <tr>
+                      <td>BTN Date</td>
+                      <td className="text-start">:</td>
+                      <td>{apiData?.btnDate}</td>
+                    </tr>
+                    <tr>
+                      <td>PO</td>
+                      <td className="text-start">:</td>
+                      <td>{apiData?.purchesing_doc_no}</td>
+                    </tr>
+                    <tr>
+                      <td className="">Vendor</td>
+                      <td>:</td>
+                      <td>{apiData?.vendor_code}</td>
+                      <td>LINDE INDIA LIMITED</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+            <div className="row mb-2">
+              <h5>The payment details are following:</h5>
+              <div className="col-10 d-flex top_info_table mb-3">
+                <table className="w-100" style={{ fontSize: "12px" }}>
+                  <tbody>
+                    <tr>
+                      <td width={"50%"}>Mat/ser Value</td>
+                      <td className="text-start" width={"5%"}>
+                        :
+                      </td>
+                      <td className="text-end">{apiData.matValue}</td>
+                    </tr>
+                    <tr>
+                      <td>No GR/SR Entry</td>
+                      <td className="text-start">:</td>
+                      <td className="text-end">{apiData.nogrsrValue}</td>
+                    </tr>
+                    <tr>
+                      <td>Net Value</td>
+                      <td className="text-start">:</td>
+                      <td className="text-end">{apiData.netValue}</td>
+                    </tr>
+                    <tr>
+                      <td className="">
+                        Taxes and Duties{" "}
+                        <span className="ps-3">
+                          {apiData.taxesAndDutiesText}
+                        </span>
+                      </td>
+                      <td>:</td>
+                      <td className="text-end">
+                        {apiData.taxesAndDutiesValue}
+                      </td>
+                    </tr>
 
-                <tr>
-                  <td className="">Total value with Taxes & Duties</td>
-                  <td>:</td>
-                  <td className="text-end">{apiData.totalValWithTaxDutiesValue}</td>
-                </tr>
-                <tr>
-                  <td className="">Any other charges payable <span className="ps-5 ms-2">{apiData.anyOtherPaybleText}</span> </td>
-                  <td>:</td>
-                  <td className="text-end">{apiData.anyOtherPaybleValue}</td>
-                </tr>
-                <tr>
-                  <td className="">Gross Value</td>
-                  <td>:</td>
-                  <td className="text-end">{apiData.grossValue}</td>
-                </tr>
-                <tr>
-                  <td className="">Adjustment of Advance</td>
-                  <td>:</td>
-                  <td className="text-end">{apiData.adjustmentOfAdvance}</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
+                    <tr>
+                      <td className="">Total value with Taxes & Duties</td>
+                      <td>:</td>
+                      <td className="text-end">
+                        {apiData.totalValWithTaxDutiesValue}
+                      </td>
+                    </tr>
+                    <tr>
+                      <td className="">
+                        Any other charges payable{" "}
+                        <span className="ps-5 ms-2">
+                          {apiData.anyOtherPaybleText}
+                        </span>{" "}
+                      </td>
+                      <td>:</td>
+                      <td className="text-end">
+                        {apiData.anyOtherPaybleValue}
+                      </td>
+                    </tr>
+                    <tr>
+                      <td className="">Gross Value</td>
+                      <td>:</td>
+                      <td className="text-end">{apiData.grossValue}</td>
+                    </tr>
+                    <tr>
+                      <td className="">Adjustment of Advance</td>
+                      <td>:</td>
+                      <td className="text-end">
+                        {apiData.adjustmentOfAdvance}
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
 
-        <div className="row mb-2">
-          <h5>Retention:</h5>
-          <div className="col-10 d-flex top_info_table mb-3">
-            <table className="w-100" style={{ fontSize: "12px" }}>
-              <tbody>
-                <tr>
-                  <td width={"50%"} className="d-flex gap-5">
-                    <p className="m-0">PBG</p>
-                    <p className="m-0 ps-5">{apiData.pbgValue}</p>
-                  </td>
-                  <td className="text-start" width={"5%"}>
-                    :
-                  </td>
-                  <td className="text-end">{apiData.pbg}</td>
-                </tr>
-                <tr>
-                  <td width={"50%"} className="d-flex gap-5">
-                    <p className="m-0">SD</p>
-                    <p className="m-0 ps-5">{apiData.sdText}</p>
-                  </td>
-                  <td className="text-start" width={"5%"}>
-                    :
-                  </td>
-                  <td className="text-end">{apiData.sdValue}</td>
-                </tr>
-                <tr>
-                  <td width={"50%"}>Others <span className="ps-4">{apiData.otherText}</span> </td>
-                  <td className="text-start" width={"5%"}>
-                    :
-                  </td>
-                  <td className="text-end">{apiData.otherValue}</td>
-                </tr>
-                <tr>
-                  <td width={"50%"}>Total Retentions</td>
-                  <td className="text-start" width={"5%"}>
-                    :
-                  </td>
-                  <td className="text-end">{apiData.totalRetentions}</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
+            <div className="row mb-2">
+              <h5>Retention:</h5>
+              <div className="col-10 d-flex top_info_table mb-3">
+                <table className="w-100" style={{ fontSize: "12px" }}>
+                  <tbody>
+                    <tr>
+                      <td width={"50%"} className="d-flex gap-5">
+                        <p className="m-0">PBG</p>
+                        <p className="m-0 ps-5">{apiData.pbgValue}</p>
+                      </td>
+                      <td className="text-start" width={"5%"}>
+                        :
+                      </td>
+                      <td className="text-end">{apiData.pbg}</td>
+                    </tr>
+                    <tr>
+                      <td width={"50%"} className="d-flex gap-5">
+                        <p className="m-0">SD</p>
+                        <p className="m-0 ps-5">{apiData.sdText}</p>
+                      </td>
+                      <td className="text-start" width={"5%"}>
+                        :
+                      </td>
+                      <td className="text-end">{apiData.sdValue}</td>
+                    </tr>
+                    <tr>
+                      <td width={"50%"}>
+                        Others <span className="ps-4">{apiData.otherText}</span>{" "}
+                      </td>
+                      <td className="text-start" width={"5%"}>
+                        :
+                      </td>
+                      <td className="text-end">{apiData.otherValue}</td>
+                    </tr>
+                    <tr>
+                      <td width={"50%"}>Total Retentions</td>
+                      <td className="text-start" width={"5%"}>
+                        :
+                      </td>
+                      <td className="text-end">{apiData.totalRetentions}</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
 
-        <div className="row mb-2">
-          <h5>Deduction :</h5>
-          <div className="col-10 d-flex top_info_table mb-3">
-            <table className="w-100" style={{ fontSize: "12px" }}>
-              <tbody>
-                <tr>
-                  <td width={"50%"}>Income TAX TDS <span className="ps-5 ms-2">{apiData.incomeTaxTDSText}</span> </td>
-                  <td className="text-start" width={"5%"}>
-                    :
-                  </td>
-                  <td className="text-end">{apiData.incomeTaxTDSValue}</td>
-                </tr>
-                <tr>
-                  <td width={"50%"} className="d-flex gap-5">
-                    <p className="m-0">GST TDS</p>
-                    <p className="m-0 ps-5">{apiData.gstTdsText}</p>
-                  </td>
-                  <td className="text-start" width={"5%"}>
-                    :
-                  </td>
-                  <td className="text-end">{apiData.gstTdsValue}</td>
-                </tr>
-                <tr>
-                  <td width={"50%"}>
-                    Cost of Consumables & Paints{" "}
-                    <span className="ps-5 ms-2">{apiData.costOfConPaintText}</span> 
-                  </td>
-                  <td className="text-start" width={"5%"}>
-                    :
-                  </td>
-                  <td className="text-end">{apiData.costOfConPaintValue}</td>
-                </tr>
-                <tr>
-                  <td width={"50%"}>LD <span className="ps-5 ms-2">{apiData.ldText}</span>  </td>
-                  <td className="text-start" width={"5%"}>
-                    :
-                  </td>
-                  <td className="text-end">{apiData.ldValue}</td>
-                </tr>
-                <tr>
-                  <td width={"50%"}>Penalty  <span className="ps-5 ms-2">{apiData.penaltyText}</span></td>
-                  <td className="text-start" width={"5%"}>
-                    :
-                  </td>
-                  <td className="text-end">{apiData.penaltyValue}</td>
-                </tr>
-                <tr>
-                  <td width={"50%"}>Interest Charges <span className="ps-5 ms-2">{apiData.interestChargeText}</span></td>
-                  <td className="text-start" width={"5%"}>
-                    :
-                  </td>
-                  <td className="text-end">{apiData.interestChargeValue}</td>
-                </tr>
-                <tr>
-                  <td width={"50%"}>Other Deduction  <span className="ps-5 ms-2">{apiData.otherDeductionText}</span></td>
-                  <td className="text-start" width={"5%"}>
-                    :
-                  </td>
-                  <td className="text-end">{apiData.otherDeductionValue}</td>
-                </tr>
-                <tr>
-                  <td width={"50%"}>Total Deduction</td>
-                  <td className="text-start" width={"5%"}>
-                    :
-                  </td>
-                  <td className="text-end">{apiData.totalDeduction}</td>
-                </tr>
-                <tr>
-                  <td width={"50%"}>Net Payment</td>
-                  <td className="text-start" width={"5%"}>
-                    :
-                  </td>
-                  <td className="text-end">{apiData.netPayment}</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-          <h5 className="m-0">
-            This is system generated and doesnot require signature.
-          </h5>
-        </div>
-
-        <div className="row diflex justify-content-center mt-5">
-          <button
-            className="print_btn"
-            style={{ position: "absolute", top: "30px", right: "50px" }}
-            onClick={handlePrint}
-          >
-            Print
-          </button>
-        </div>
+            <div className="row mb-2">
+              <h5>Deduction :</h5>
+              <div className="col-10 d-flex top_info_table mb-3">
+                <table className="w-100" style={{ fontSize: "12px" }}>
+                  <tbody>
+                    <tr>
+                      <td width={"50%"}>
+                        Income TAX TDS{" "}
+                        <span className="ps-5 ms-2">
+                          {apiData.incomeTaxTDSText}
+                        </span>{" "}
+                      </td>
+                      <td className="text-start" width={"5%"}>
+                        :
+                      </td>
+                      <td className="text-end">{apiData.incomeTaxTDSValue}</td>
+                    </tr>
+                    <tr>
+                      <td width={"50%"} className="d-flex gap-5">
+                        <p className="m-0">GST TDS</p>
+                        <p className="m-0 ps-5">{apiData.gstTdsText}</p>
+                      </td>
+                      <td className="text-start" width={"5%"}>
+                        :
+                      </td>
+                      <td className="text-end">{apiData.gstTdsValue}</td>
+                    </tr>
+                    <tr>
+                      <td width={"50%"}>
+                        Cost of Consumables & Paints{" "}
+                        <span className="ps-5 ms-2">
+                          {apiData.costOfConPaintText}
+                        </span>
+                      </td>
+                      <td className="text-start" width={"5%"}>
+                        :
+                      </td>
+                      <td className="text-end">
+                        {apiData.costOfConPaintValue}
+                      </td>
+                    </tr>
+                    <tr>
+                      <td width={"50%"}>
+                        LD <span className="ps-5 ms-2">{apiData.ldText}</span>{" "}
+                      </td>
+                      <td className="text-start" width={"5%"}>
+                        :
+                      </td>
+                      <td className="text-end">{apiData.ldValue}</td>
+                    </tr>
+                    <tr>
+                      <td width={"50%"}>
+                        Penalty{" "}
+                        <span className="ps-5 ms-2">{apiData.penaltyText}</span>
+                      </td>
+                      <td className="text-start" width={"5%"}>
+                        :
+                      </td>
+                      <td className="text-end">{apiData.penaltyValue}</td>
+                    </tr>
+                    <tr>
+                      <td width={"50%"}>
+                        Interest Charges{" "}
+                        <span className="ps-5 ms-2">
+                          {apiData.interestChargeText}
+                        </span>
+                      </td>
+                      <td className="text-start" width={"5%"}>
+                        :
+                      </td>
+                      <td className="text-end">
+                        {apiData.interestChargeValue}
+                      </td>
+                    </tr>
+                    <tr>
+                      <td width={"50%"}>
+                        Other Deduction{" "}
+                        <span className="ps-5 ms-2">
+                          {apiData.otherDeductionText}
+                        </span>
+                      </td>
+                      <td className="text-start" width={"5%"}>
+                        :
+                      </td>
+                      <td className="text-end">
+                        {apiData.otherDeductionValue}
+                      </td>
+                    </tr>
+                    <tr>
+                      <td width={"50%"}>Total Deduction</td>
+                      <td className="text-start" width={"5%"}>
+                        :
+                      </td>
+                      <td className="text-end">{apiData.totalDeduction}</td>
+                    </tr>
+                    <tr>
+                      <td width={"50%"}>Net Payment</td>
+                      <td className="text-start" width={"5%"}>
+                        :
+                      </td>
+                      <td className="text-end">{apiData.netPayment}</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <h5 className="m-0">
+                This is system generated and doesnot require signature.
+              </h5>
+            </div>
+          </>
+        )}
       </section>
-    </div>  
+
+      {/* Print Button  */}
+      <div className="row diflex justify-content-center mt-5">
+        <button
+          className="print_btn"
+          style={{ position: "absolute", top: "30px", right: "50px" }}
+          onClick={handlePrint}
+        >
+          Print
+        </button>
+      </div>
+
+      {/* Date Time And Page No  */}
+      <div
+        className="date_time_container"
+        style={{ position: "fixed", top: 0, right: 0, fontSize: "10px" }}
+      >
+        <p className="m-0 p-0">Date: {currentDate}</p>
+        <p className="m-0 p-0">Time: {currentTime}</p>
+        {/* <p className="m-0 p-0">page 1/2</p> */}
+      </div>
+    </div>
   );
 }
 

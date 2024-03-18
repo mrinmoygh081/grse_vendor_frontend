@@ -12,7 +12,6 @@ const Checklist = () => {
   const [isPopup, setIsPopup] = useState(false);
   const [slug, setSlug] = useState("");
 
-  console.log(slug);
   const NewBillHandler = () => {
     if (slug !== "") {
       let path = `/checklist/${slug}`;

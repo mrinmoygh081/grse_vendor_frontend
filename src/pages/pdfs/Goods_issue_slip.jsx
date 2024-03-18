@@ -2,11 +2,14 @@ import React, { useEffect, useState } from "react";
 import logo from "../../images/logo.png";
 import { useSelector } from "react-redux";
 
-
 function Goods_issue_slip() {
   const [apiData, setApiData] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
-
+  const currentDate = new Date().toLocaleDateString();
+  const currentTime = new Date().toLocaleTimeString([], {
+    hour: "2-digit",
+    minute: "2-digit",
+  });
   const { token } = useSelector((state) => state.auth);
 
   const handlePrint = () => {
@@ -29,7 +32,7 @@ function Goods_issue_slip() {
         setIsLoading(true);
         const response = await fetch(path, config);
         const data = await response.json();
-        setApiData(data);
+        setApiData(data.data);
         setIsLoading(false);
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -44,7 +47,6 @@ function Goods_issue_slip() {
 
   return (
     <div className="container-fluid pt-4">
-      {/* <button onClick={()=>history.goBack()}>hii</button> */}
       <div className="row table_heading_container m-0 p-0 mb-2 ">
         <div className="col-2">
           <img src={logo} alt="" className="table_logo" />
@@ -84,22 +86,22 @@ function Goods_issue_slip() {
                 <td className="text-start" width={"5%"}>
                   :
                 </td>
-                <td>4900757635</td>
+                <td>{apiData.issueNo}</td>
               </tr>
               <tr>
                 <td>Issue Date</td>
                 <td className="text-start">:</td>
-                <td>06.03.2024</td>
+                <td>{apiData.issuDate}</td>
               </tr>
               <tr>
                 <td>Reservation No</td>
                 <td className="text-start">:</td>
-                <td>236608</td>
+                <td>{apiData.reservationNo}</td>
               </tr>
               <tr>
                 <td>Reservation Date</td>
-                <td className="text-center">:</td>
-                <td>06.03.2024</td>
+                <td>:</td>
+                <td> </td>
               </tr>
             </tbody>
           </table>
@@ -109,7 +111,7 @@ function Goods_issue_slip() {
         <h4 className="text-center">GOODS ISSUE SLIP</h4>
         <div className="col-12">
           {isLoading ? (
-            <h4 className="text-center mt-5 text-secondary" >Loading....</h4>
+            <h4 className="text-center mt-5 text-secondary">Loading....</h4>
           ) : (
             <table className="table table_container_1">
               <thead>
@@ -126,7 +128,7 @@ function Goods_issue_slip() {
                 </tr>
               </thead>
               <tbody>
-                {apiData?.data?.lineItem?.map((item, index) => (
+                {apiData?.lineItem?.map((item, index) => (
                   <tr key={index}>
                     <td>{index + 1} / 0001</td>
                     <td>{item.materialNumber}</td>
@@ -177,6 +179,16 @@ function Goods_issue_slip() {
         >
           Print
         </button>
+      </div>
+
+      {/* Date Time And Page No  */}
+      <div
+        className="date_time_container"
+        style={{ position: "fixed", top: 0, right: 0, fontSize: "10px" }}
+      >
+        <p className="m-0 p-0">Date: {currentDate}</p>
+        <p className="m-0 p-0">Time: {currentTime}</p>
+        {/* <p className="m-0 p-0">page 1/2</p> */}
       </div>
     </div>
   );
