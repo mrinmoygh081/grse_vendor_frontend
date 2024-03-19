@@ -249,3 +249,16 @@ input[type="number"] {
 .btn_value select {
   max-width: 200px;
 }
+.pdf_check_file_btn {
+  padding: 3px 20px;
+  background-color: rgb(28, 161, 206);
+  color: white;
+  border: none;
+  outline: none;
+  cursor: pointer;
+  border-radius: 3px;
+  transition: 0.1s linear;
+}
+.pdf_check_file_btn:hover {
+  background-color: rgb(13, 119, 155);
+}
