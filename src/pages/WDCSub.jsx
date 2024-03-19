@@ -19,6 +19,14 @@ const WDCSub = () => {
   const [allData, setAllData] = useState([]);
   const [lineItemData, setLineItemData] = useState([]);
   const [referenceNo, setreferenceNo] = useState("");
+
+  const [pncFormData , setPncFormData] = useState({
+    purchasing_doc_no :"",
+    remarks:"",
+    status:"",
+    reference_no : "",
+  })
+
   const [formData, setFormData] = useState({
     file: null,
     remarks: "",
@@ -176,6 +184,54 @@ const WDCSub = () => {
     }
   };
 
+  const PNCApproveRejectHandler = async(doc_no , isApproved , ref_no)=>{
+    // const { purchasing_doc_no, remarks , status , reference_no} = pncFormData;
+    console.log("doc---", doc_no)
+    console.log("approval_status---", isApproved)
+    console.log("ref_no---", ref_no)
+    let remarks = "";
+    if( isApproved === "APPROVED"){
+      remarks = "WDC APPROVED"
+    }else{
+      remarks = "WDC REJECTED"
+    }
+
+    // console.log("remarks is---", remarks)
+
+    try {
+      const formDataToSend = new FormData();
+      formDataToSend.append("purchasing_doc_no", doc_no);
+      formDataToSend.append("remarks", remarks);
+      formDataToSend.append("status", isApproved);
+      formDataToSend.append("reference_no", ref_no);
+
+      const response = await apiCallBack(
+        "POST",
+        "po/wdc/submitWdc",
+        formDataToSend,
+        token
+      );
+
+      console.log("response is---", response);
+
+      if (response?.status) {
+        // toast.warning(response.message);
+        // getData();
+        if (response.message.includes("This WDC aleready APPROVED")) {
+          toast.warning(response.message);
+        } else {
+          toast.success("WDC updated successfully");
+          getData();
+        }
+      } else {
+        toast.error(response?.message);
+      }
+    } catch (error) {
+      toast.error("Error uploading drawing:", error);
+    }
+    
+  }
+
   return (
     <>
       <div className="d-flex flex-column flex-root">
@@ -300,17 +356,35 @@ const WDCSub = () => {
                                         USER_PPNC_DEPARTMENT && (
                                         <td className="min-w-150px">
                                           {item.status === "SUBMITTED" && (
+                                            <>
                                             <button
                                               onClick={() => {
-                                                setIsPopup(true);
-                                                setreferenceNo(
+                                                // setIsPopup(true);
+                                                PNCApproveRejectHandler(
+                                                  item.purchasing_doc_no,
+                                                  "APPROVED",
                                                   item.reference_no
                                                 );
                                               }}
-                                              className="btn fw-bold btn-primary mx-3"
+                                              className="btn fw-bold btn-primary mx-3 mb-2"
                                             >
-                                              ACTION
+                                              APPROVE
                                             </button>
+                                            <button
+                                              onClick={() => {
+                                                // setIsPopup(true);
+                                                PNCApproveRejectHandler(
+                                                  item.purchasing_doc_no,
+                                                  "REJECTED",
+                                                  item.reference_no
+                                                );
+                                              }}
+                                              
+                                              className="btn fw-bold btn-danger mx-3"
+                                            >
+                                              REJECT
+                                            </button>
+                                            </>
                                           )}
                                         </td>
                                       )}

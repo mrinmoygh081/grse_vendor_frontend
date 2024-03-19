@@ -8,18 +8,22 @@ import { apiCallBack } from "../utils/fetchAPIs";
 import { toast } from "react-toastify";
 import { USER_PPNC_DEPARTMENT } from "../constants/userConstants";
 import { checkTypeArr } from "../utils/smallFun";
+import { convertToEpoch } from "../utils/getDateTimeNow";
+import ReactDatePicker from "react-datepicker";
 
 const DemandManagement = () => {
   const [isPopup, setIsPopup] = useState(false);
   const [data, setData] = useState([]);
   const [lineItemData, setLineItemData] = useState([]);
+  const [availableAmount, setAvailableAmount] = useState(null);
   const { id } = useParams();
 
   const { user, token } = useSelector((state) => state.auth);
   const [formData, setFormData] = useState({
     remarks: "",
-    po_line_iten_no: "",
-    raised_quantity: "",
+    line_item_no: "",
+    request_amount: "",
+    delivery_date: "",
   });
 
   const getData = async () => {
@@ -37,7 +41,6 @@ const DemandManagement = () => {
       console.error("Error fetching drawing list:", error);
     }
   };
-  console.log(data);
 
   const getPOLineItemData = async () => {
     try {
@@ -51,33 +54,77 @@ const DemandManagement = () => {
     }
   };
 
+  const getAvailableAmount = async (item) => {
+    try {
+      const data = await apiCallBack(
+        "GET",
+        `po/demandeManagement/getRestAmount?po_no=${id}&line_item_no=${item}`,
+        null,
+        token
+      );
+      if (data?.status) {
+        setAvailableAmount(data?.data?.rest_amount);
+      }
+    } catch (error) {
+      console.error("Error fetching WDC list:", error);
+    }
+  };
+
   useEffect(() => {
     getData();
     getPOLineItemData();
   }, [id, token]);
 
+  console.log(availableAmount);
+
+  useEffect(() => {
+    if (formData?.line_item_no !== "") {
+      getAvailableAmount(formData?.line_item_no);
+    }
+  }, [formData?.line_item_no]);
+
+  console.log(formData?.delivery_date);
+
   const actionHandler = async (flag) => {
     try {
-      const formDataToSend = new FormData();
-      formDataToSend.append("purchasing_doc_no", id);
-      formDataToSend.append("remarks", formData.remarks);
+      const { remarks, line_item_no, request_amount, delivery_date } = formData;
+      if (
+        remarks.trim() === "" ||
+        line_item_no.trim() === "" ||
+        request_amount.trim() === "" ||
+        delivery_date === ""
+      ) {
+        return toast.warn("All fields are required!");
+      }
+      if (request_amount > availableAmount) {
+        return toast.warn(
+          "Raised requeste amount should be less than or equal to available amount!"
+        );
+      }
+      const formObj = {
+        purchasing_doc_no: id,
+        line_item_no: line_item_no,
+        request_amount: request_amount,
+        delivery_date: convertToEpoch(delivery_date),
+        remarks: remarks,
+      };
 
       const response = await apiCallBack(
         "POST",
-        "po/inspectionCallLetter",
-        formDataToSend,
+        "po/demandeManagement/insert",
+        formObj,
         token
       );
 
       if (response?.status) {
-        toast.success("Inspection call letter uploaded successfully");
+        toast.success(response?.message);
         setIsPopup(false);
         getData();
       } else {
-        toast.error("Failed to upload inspection call letter");
+        toast.error(response?.message);
       }
     } catch (error) {
-      console.error("Error uploading inspection call letter:", error);
+      console.error("Error uploading:", error);
     }
   };
 
@@ -115,6 +162,7 @@ const DemandManagement = () => {
                                   <th>PO Line Item </th>
                                   <th>Updated By</th>
                                   <th>Raised Quantity</th>
+                                  <th>Delivery Date</th>
                                   <th className="min-w-150px">Remarks</th>
                                 </tr>
                               </thead>
@@ -128,14 +176,16 @@ const DemandManagement = () => {
                                             item?.created_at
                                           ).toLocaleString()}
                                       </td>
-                                      <td className="">{data?.line_item_no}</td>
-                                      <td className="">
-                                        {item.updated_by} ({item.created_by_id})
+                                      <td>{item?.line_item_no}</td>
+                                      <td>{item.updated_by}</td>
+                                      <td>{item.request_amount}</td>
+                                      <td>
+                                        {item.delivery_date &&
+                                          new Date(
+                                            item.delivery_date
+                                          ).toLocaleString()}
                                       </td>
-                                      <td className="">
-                                        {item.file_type_name}
-                                      </td>
-                                      <td className="">{item.remarks}</td>
+                                      <td>{item.remarks}</td>
                                     </tr>
                                   ))}
                               </tbody>
@@ -179,11 +229,11 @@ const DemandManagement = () => {
                       name=""
                       id=""
                       className="form-select"
-                      value={formData?.po_line_iten_no}
+                      value={formData?.line_item_no}
                       onChange={(e) =>
                         setFormData({
                           ...formData,
-                          po_line_iten_no: e.target.value,
+                          line_item_no: e.target.value,
                         })
                       }
                     >
@@ -207,15 +257,45 @@ const DemandManagement = () => {
                     <input
                       type="text"
                       className="form-control"
-                      value={formData?.raised_quantity}
+                      value={formData?.request_amount}
                       onChange={(e) =>
                         setFormData({
                           ...formData,
-                          raised_quantity: e.target.value,
+                          request_amount: e.target.value,
                         })
                       }
                     />
-                    <p>Available Amount: 500AUM</p>
+                    <p>Available Amount: {availableAmount}</p>
+                  </div>
+                </div>
+                <div className="col-12">
+                  <div className="mb-3">
+                    <label className="form-label">
+                      Delivery Date <span className="red">*</span>{" "}
+                    </label>
+                    {/* <input
+                      type="date"
+                      className="form-control"
+                      value={formData?.delivery_date}
+                      onChange={(e) =>
+                        setFormData({
+                          ...formData,
+                          delivery_date: e.target.value,
+                        })
+                      }
+                    /> */}
+                    <ReactDatePicker
+                      selected={formData?.delivery_date}
+                      onChange={(date) =>
+                        setFormData({
+                          ...formData,
+                          delivery_date: date,
+                        })
+                      }
+                      dateFormat="dd/MM/yyyy"
+                      className="form-control"
+                      placeholderText="DD/MM/YYYY"
+                    />
                   </div>
                 </div>
                 <div className="col-12">
