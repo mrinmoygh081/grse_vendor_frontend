@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import logo from "../../images/logo.png";
 import { useSelector } from "react-redux";
 
-function Reservation_report() {
+function StoreIssueRequisition() {
   const [apiData, setApiData] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -157,4 +157,4 @@ function Reservation_report() {
   );
 }
 
-export default Reservation_report;
+export default StoreIssueRequisition;

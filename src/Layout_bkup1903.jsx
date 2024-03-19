@@ -43,14 +43,13 @@ import DemandManagement from "./pages/DemandManagement";
 import DisplayStoreActions from "./pages/DisplayStoreActions";
 import ManageVendorActivities from "./pages/ManageVendorActivities";
 
-// All PDF Files
-import GoodsIssueSlip from "./pages/pdfs/GoodsIssueSlip";
-import InspectionReport from "./pages/pdfs/InspectionReport";
-import StoreIssueRequisition from "./pages/pdfs/StoreIssueRequisition";
-import PaymentAdvice from "./pages/pdfs/PaymentAdvice";
+import Goods_issue_slip from "./pages/pdfs/Goods_issue_slip";
+import Inspection_report from "./pages/pdfs/Inspection_report";
+import Reservation_report from "./pages/pdfs/Reservation_report";
+import Payment_Advice from "./pages/pdfs/Payment_Advice";
 
 function Layout() {
-  const { token, isLoggedIn, userType } = useSelector((state) => state.auth);
+  const { token, isLoggedIn } = useSelector((state) => state.auth);
 
   return (
     <>
@@ -75,6 +74,11 @@ function Layout() {
             <Route exact path="/inspection/:id" element={<InspectionCall />} />
             <Route
               exact
+              path="/inspection-release-note/:id"
+              element={<Inspectionreleasenote />}
+            />
+            <Route
+              exact
               path="/demand-management/:id"
               element={<DemandManagement />}
             />
@@ -93,11 +97,6 @@ function Layout() {
               path="/invoice-and-payment-process/:id"
               element={<Checklist />}
             />
-            <Route
-              exact
-              path="/inspection-release-note/:id"
-              element={<Inspectionreleasenote />}
-            />
             <Route exact path="/hr-compliance/:id" element={<HrCompliance />} />
             <Route
               exact
@@ -105,43 +104,43 @@ function Layout() {
               element={<Shippingdocuments />}
             />
             <Route exact path="/gate-in/:id" element={<GateInSub />} />
-            <Route exact path="/checklist" element={<Checklist />} />
+            <Route exact path="/checklist/:id" element={<Checklist />} />
             <Route
               exact
-              path="/checklist/hybrid-bill-material"
+              path="/checklist/hybrid-bill-material/:id"
               element={<BillsMaterialHybrid />}
             />
             <Route
               exact
-              path="/checklist/hybrid-bill-service"
+              path="/checklist/hybrid-bill-service/:id"
               element={<HybridServicePOBills />}
             />
             <Route
               exact
-              path="/checklist/contract-bill-service"
+              path="/checklist/contract-bill-service/:id"
               element={<ServiceContractBills />}
             />
             <Route
               exact
-              path="/checklist/bill-incorrect-deductions"
+              path="/checklist/bill-incorrect-deductions/:id"
               element={<ClaimIncorrectDeductions />}
             />
             <Route
               exact
-              path="/checklist/bill-advance-payment"
+              path="/checklist/bill-advance-payment/:id"
               element={<AdvanceBillHybrid />}
             />
             <Route
               exact
-              path="/checklist/claim-against-pbg"
+              path="/checklist/claim-against-pbg/:id"
               element={<ClaimAgainstPBGSubmission />}
             />
             <Route
               exact
-              path="/checklist/ld-penalty-refund"
+              path="/checklist/ld-penalty-refund/:id"
               element={<LDPenaltyRefund />}
             />
-            <Route exact path="/checklist/:id" element={<ChecklistSub />} />
+            {/* <Route exact path="/checklist/:id" element={<ChecklistSub />} /> */}
             <Route
               exact
               path="/bill-registration-number/:id"
@@ -153,7 +152,11 @@ function Layout() {
               element={<PaymentAdvisesSub />}
             />
             <Route exact path="/pbg-upload/:id" element={<PBGuploadSub />} />
-            <Route exact path="/bg-extension" element={<BGExtensionSub />} />
+            <Route
+              exact
+              path="/bg-extension/:id"
+              element={<BGExtensionSub />}
+            />
             <Route
               exact
               path="/claim-letter/:id"
@@ -178,27 +181,45 @@ function Layout() {
             <Route exact path="/mrs/:id" element={<MRSSub />} />
             <Route exact path="/mir/:id" element={<MaterialIssueReqSub />} />
             <Route exact path="/wmc/:id" element={<WMCSub />} />
-
-            {/* All PDF File Routes  */}
             <Route
               exact
-              path="/display-store-actions/store-issue-requisition"
-              element={<StoreIssueRequisition />}
+              path="/display-store-actions/goods-receipt"
+              element={<Goods_issue_slip />}
             />
             <Route
               exact
-              path="/display-store-actions/goods-issue-slip"
-              element={<GoodsIssueSlip />}
+              path="/display-store-actions/icgn-report"
+              element={<Inspection_report />}
+            />
+            {/* <Route
+              exact
+              path="/display-store-actions/gate-in-entry"
+              element={<Purchase_document />}
+            /> */}
+            <Route
+              exact
+              path="/display-store-actions/payment-advice"
+              element={<Payment_Advice />}
             />
             <Route
               exact
-              path="/display-store-actions/icgrn-report"
-              element={<InspectionReport />}
+              path="/display-store-actions/goods-receipt"
+              element={<Goods_issue_slip />}
+            />
+            <Route
+              exact
+              path="/display-store-actions/icgn-report"
+              element={<Inspection_report />}
+            />
+            <Route
+              exact
+              path="/display-store-actions/gate-in-entry"
+              element={<Reservation_report />}
             />
             <Route
               exact
               path="/display-store-actions/payment-advice"
-              element={<PaymentAdvice />}
+              element={<Payment_Advice />}
             />
           </Routes>
         )}

@@ -155,23 +155,25 @@ const IlmsSub = () => {
                                           ).toLocaleString()}
                                       </td>
                                       <td className="">
-                                        {
-                                          item.file_name &&  <a
-                                          href={`${process.env.REACT_APP_PDF_URL}submitILMS/${item.file_name}`}
-                                          target="_blank"
-                                          rel="noreferrer"
-                                        >
-                                          Click Here
-                                        </a>
-                                        }
+                                        {item.file_name && (
+                                          <a
+                                            href={`${process.env.REACT_APP_PDF_URL}submitILMS/${item.file_name}`}
+                                            target="_blank"
+                                            rel="noreferrer"
+                                          >
+                                            Click Here
+                                          </a>
+                                        )}
                                       </td>
                                       <td className="">
                                         {item?.created_by_id}
                                       </td>
                                       <td className="">{item?.remarks}</td>
-                                      <td className={`${clrLegend(
-                                                  item?.status
-                                                )} bold`}>
+                                      <td
+                                        className={`${clrLegend(
+                                          item?.status
+                                        )} bold`}
+                                      >
                                         {item.status}
                                       </td>
 

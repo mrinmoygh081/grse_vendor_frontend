@@ -26,7 +26,7 @@ const DemandManagement = () => {
     try {
       const data = await apiCallBack(
         "GET",
-        `po/inspectioncallletter/list?poNo=${id}`,
+        `po/demandeManagement/list?poNo=${id}`,
         null,
         token
       );
@@ -37,6 +37,7 @@ const DemandManagement = () => {
       console.error("Error fetching drawing list:", error);
     }
   };
+  console.log(data);
 
   const getPOLineItemData = async () => {
     try {
@@ -127,7 +128,7 @@ const DemandManagement = () => {
                                             item?.created_at
                                           ).toLocaleString()}
                                       </td>
-                                      <td className="">10</td>
+                                      <td className="">{data?.line_item_no}</td>
                                       <td className="">
                                         {item.updated_by} ({item.created_by_id})
                                       </td>

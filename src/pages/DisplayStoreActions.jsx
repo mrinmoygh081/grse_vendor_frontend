@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import Footer from "../components/Footer";
 import SideBar from "../components/SideBar";
 import Header from "../components/Header";
-import { useParams } from "react-router-dom";
+import { redirect, useParams } from "react-router-dom";
 import { apiCallBack } from "../utils/fetchAPIs";
 import { useSelector } from "react-redux";
 import moment from "moment";
@@ -10,6 +10,10 @@ import moment from "moment";
 const DisplayStoreActions = () => {
   const [isPopup, setIsPopup] = useState(false);
   const [icgrnData, setIcgrnData] = useState([]);
+
+  const [pdfPayloads, setPdfPayloads] = useState({});
+  const [pdfName, setPdfName] = useState("");
+
   const { id } = useParams();
   const { token } = useSelector((state) => state.auth);
 
@@ -28,6 +32,32 @@ const DisplayStoreActions = () => {
       console.error("Error fetching ICGRN list:", error);
     }
   };
+
+  const onChangeHandler = (e)=>{
+    setPdfPayloads((prevState)=>({
+      ...prevState,
+      [e.target.name] : e.target.value
+    }))
+  }
+  const onSubmitHandler = (e) => {
+    // e.preventDefault();
+    setIsPopup(false);
+    console.log("payload -sss", pdfPayloads)
+    if(pdfName === "store_issue_requisition"){
+      return window.open('/display-store-actions/store-issue-requisition', '_blank');
+    }
+    if(pdfName === "goods_issue_slip"){
+      return window.open('/display-store-actions/goods-issue-slip', '_blank');
+    }
+    if(pdfName === "icgrn_report"){
+      return window.open('/display-store-actions/icgrn-report', '_blank');
+    }
+    if(pdfName === "payment_advice"){
+      return window.open('/display-store-actions/payment-advice', '_blank');
+    }
+    
+  };
+
   useEffect(() => {
     getIcgrnData();
   }, [id, token]);
@@ -61,41 +91,57 @@ const DisplayStoreActions = () => {
                                 <tr>
                                   <td className="table_center">03-01-2024</td>
                                   <td>
-                                    <a
-                                      href={"/display-store-actions/gate-in-entry"}
-                                      target="_blank"
-                                      rel="noreferrer"
+                                    <span
+                                      className="pdf_check_file_btn"
+                                      onClick={() => {
+                                        setIsPopup(true);
+                                        setPdfName("store_issue_requisition");
+                                      }}
                                     >
                                       Check File
-                                    </a>
+                                    </span>
                                   </td>
-                                  <td>Gate In Entry</td>
+                                  <td>Store Issue Requisition</td>
                                   <td>Mrinmoy Ghosh(65432)</td>
                                 </tr>
                                 <tr>
                                   <td className="table_center">08-01-2024</td>
                                   <td>
-                                    <a
-                                      href={"/display-store-actions/goods-receipt"}
-                                      target="_blank"
-                                      rel="noreferrer"
+                                    <span
+                                      // href={
+                                      //   "/display-store-actions/goods-issue-slip"
+                                      // }
+                                      // target="_blank"
+                                      // rel="noreferrer"
+                                      className="pdf_check_file_btn"
+                                      onClick={() => {
+                                        setIsPopup(true);
+                                        setPdfName("goods_issue_slip");
+                                      }}
                                     >
                                       Check File
-                                    </a>
+                                    </span>
                                   </td>
-                                  <td>Goods Receipt</td>
+                                  <td>Goods Issue Slip</td>
                                   <td>Mrinmoy Ghosh(65432)</td>
                                 </tr>
                                 <tr>
                                   <td className="table_center">10-01-2024</td>
                                   <td>
-                                    <a
-                                      href={"/display-store-actions/icgn-report"}
-                                      target="_blank"
-                                      rel="noreferrer"
+                                    <span
+                                      // href={
+                                      //   "/display-store-actions/icgrn-report"
+                                      // }
+                                      // target="_blank"
+                                      // rel="noreferrer"
+                                      className="pdf_check_file_btn"
+                                      onClick={() => {
+                                        setIsPopup(true);
+                                        setPdfName("icgrn_report");
+                                      }}
                                     >
                                       Check File
-                                    </a>
+                                    </span>
                                   </td>
                                   <td>ICGRN Report</td>
                                   <td>Mrinmoy Ghosh(65432)</td>
@@ -103,13 +149,20 @@ const DisplayStoreActions = () => {
                                 <tr>
                                   <td className="table_center">12-01-2024</td>
                                   <td>
-                                    <a
-                                      href={"/display-store-actions/payment-advice"}
-                                      target="_blank"
-                                      rel="noreferrer"
+                                    <span
+                                      // href={
+                                      //   "/display-store-actions/payment-advice"
+                                      // }
+                                      // target="_blank"
+                                      // rel="noreferrer"
+                                      className="pdf_check_file_btn"
+                                      onClick={() => {
+                                        setIsPopup(true);
+                                        setPdfName("payment_advice");
+                                      }}
                                     >
                                       Check File
-                                    </a>
+                                    </span>
                                   </td>
                                   <td>Payment Advice</td>
                                   <td>Mrinmoy Ghosh(65432)</td>
@@ -149,6 +202,7 @@ const DisplayStoreActions = () => {
           </div>
         </div>
       </div>
+
       <div className={isPopup ? "popup active" : "popup"}>
         <div className="card card-xxl-stretch mb-5 mb-xxl-8">
           <div className="card-header border-0 pt-5">
@@ -166,36 +220,85 @@ const DisplayStoreActions = () => {
           </div>
           <form>
             <div className="row">
-              <div className="col-12">
-                <div className="mb-3">
-                  <label className="form-label">
-                    Shipping File Type <span className="star">*</span>
-                  </label>
-                  <input type="text" className="form-control" />
+              {/* Store Issue Requisition  */}
+              {pdfName === "store_issue_requisition" && (
+                <div className="col-12">
+                  <div className="mb-3">
+                    <label className="form-label">
+                      Reservation Number <span className="star">*</span>
+                    </label>
+                    <input type="text" name="RSNUM" className="form-control" onChange={onChangeHandler} />
+                  </div>
                 </div>
-              </div>
-              <div className="col-12">
-                <div className="mb-3">
-                  <label className="form-label">
-                    Shipping File <span className="star">*</span>
-                  </label>
-                  <input type="file" className="form-control" />
+              )}
+
+              {/* Material Issue List  */}
+              {pdfName === "goods_issue_slip" && (
+                <div className="col-12">
+                  <div className="mb-3">
+                    <label className="form-label">
+                      BTN Number <span className="star">*</span>
+                    </label>
+                    <input type="text" name="MBLNR" className="form-control" onChange={onChangeHandler} />
+                  </div>
+                  <div className="mb-3">
+                    <label className="form-label">
+                      BTN Year <span className="star">*</span>
+                    </label>
+                    <input type="text" name="MJAHR" className="form-control" onChange={onChangeHandler}/>
+                  </div>
                 </div>
-              </div>
-              <div className="col-12">
-                <div className="mb-3">
-                  <label className="form-label">Remarks</label>
-                  <textarea
-                    name=""
-                    id=""
-                    rows="4"
-                    className="form-control"
-                  ></textarea>
+              )}
+
+              {/* ICGRN Report  */}
+              {pdfName === "icgrn_report" && (
+                <div className="col-12">
+                  <div className="mb-3">
+                    <label className="form-label">
+                      BTN Number <span className="star">*</span>
+                    </label>
+                    <input type="text" name="MBLNR" className="form-control" onChange={onChangeHandler} />
+                  </div>
+                  <div className="mb-3">
+                    <label className="form-label">
+                      PRUEFLOS <span className="star">*</span>
+                    </label>
+                    <input
+                      type="text"
+                      name="PRUEFLOS"
+                      className="form-control"
+                      onChange={onChangeHandler}
+                    />
+                  </div>
+                  <div className="mb-3">
+                    <label className="form-label">
+                      Purchase Order No <span className="star">*</span>
+                    </label>
+                    <input type="text" name="EBELN" className="form-control" />
+                  </div>
                 </div>
-              </div>
+              )}
+
+              {/* Payment Advice  */}
+              {pdfName === "payment_advice" && (
+                <div className="col-12">
+                  <div className="mb-3">
+                    <label className="form-label">
+                      BTN Number <span className="star">*</span>
+                    </label>
+                    <input
+                      type="text"
+                      name="ZERGNUM"
+                      className="form-control"
+                      onChange={onChangeHandler}
+                    />
+                  </div>
+                </div>
+              )}
+
               <div className="col-12">
                 <div className="mb-3">
-                  <button className="btn fw-bold btn-primary">UPDATE</button>
+                  <button className="btn fw-bold btn-primary" onClick={onSubmitHandler}  >SUBMIT</button>
                 </div>
               </div>
             </div>

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import logo from "../../images/logo.png";
 import { useSelector } from "react-redux";
 
-function Payment_Advice() {
+function PaymentAdvice() {
   const [apiData, setApiData] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const { token } = useSelector((state) => state.auth);
@@ -528,4 +528,4 @@ function Payment_Advice() {
   );
 }
 
-export default Payment_Advice;
+export default PaymentAdvice;

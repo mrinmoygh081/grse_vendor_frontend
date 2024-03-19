@@ -236,3 +236,16 @@ input[type="number"] {
     display: block;
   }
 }
+
+.card h3 {
+  font-size: 20px;
+}
+.btn_value {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+.btn_value input,
+.btn_value select {
+  max-width: 200px;
+}

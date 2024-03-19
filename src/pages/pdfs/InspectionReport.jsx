@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import logo from "../../images/logo.png";
 import { useSelector } from "react-redux";
 
-function Inspection_report() {
+function InspectionReport() {
   const [apiData, setApiData] = useState();
   const [isLoading, setIsLoading] = useState(false);
   const { token } = useSelector((state) => state.auth);
@@ -215,4 +215,4 @@ function Inspection_report() {
   );
 }
 
-export default Inspection_report;
+export default InspectionReport;

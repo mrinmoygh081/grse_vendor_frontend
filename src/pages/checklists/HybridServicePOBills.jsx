@@ -24,7 +24,7 @@ const HybridServicePOBills = () => {
                     <div className="row g-5 g-xl-8">
                       <div className="col-12">
                         <div className="card">
-                          <h3 className="m-3">GENERAL PARTICULARS:</h3>
+                          <h3 className="m-3">Bills for Service Hybrid PO:</h3>
                           <div className="card-body p-3">
                             <div className="tab-content">
                               <div className="table-responsive">
@@ -483,7 +483,7 @@ const HybridServicePOBills = () => {
           </div>
         </div>
       </div>
-      <div className={isPopup ? "popup active" : "popup"}>
+      {/* <div className={isPopup ? "popup active" : "popup"}>
         <div className="card card-xxl-stretch mb-5 mb-xxl-8">
           <div className="card-header border-0 pt-5">
             <h3 className="card-title align-items-start flex-column">
@@ -588,7 +588,7 @@ const HybridServicePOBills = () => {
             </div>
           </form>
         </div>
-      </div>
+      </div> */}
     </>
   );
 };

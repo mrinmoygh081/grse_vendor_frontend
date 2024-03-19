@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import logo from "../../images/logo.png";
 import { useSelector } from "react-redux";
 
-function Goods_issue_slip() {
+function GoodsIssueSlip() {
   const [apiData, setApiData] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const currentDate = new Date().toLocaleDateString();
@@ -194,4 +194,4 @@ function Goods_issue_slip() {
   );
 }
 
-export default Goods_issue_slip;
+export default GoodsIssueSlip;
