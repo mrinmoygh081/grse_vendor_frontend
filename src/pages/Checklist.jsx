@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Footer from "../components/Footer";
 // import SideBar from "../components/SideBar";
 // import Header from "../components/Header";
@@ -8,9 +8,14 @@ import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import Header from "../components/Header";
 import SideBar from "../components/SideBar";
+import { apiCallBack } from "../utils/fetchAPIs";
+import { useSelector } from "react-redux";
+import { checkTypeArr } from "../utils/smallFun";
 
 const Checklist = () => {
   const { id } = useParams();
+  const { user, token } = useSelector((state) => state.auth);
+  const [data, setData] = useState(null);
 
   const navigate = useNavigate();
   const [isPopup, setIsPopup] = useState(false);
@@ -24,6 +29,21 @@ const Checklist = () => {
       toast.warn("Please choose what type of checklist you want to add.");
     }
   };
+
+  const getData = async () => {
+    try {
+      const data = await apiCallBack("GET", `po/btn?id=${id}`, null, token);
+      if (data?.status) {
+        setData(data?.data);
+      }
+    } catch (error) {
+      console.error("Error fetching WDC list:", error);
+    }
+  };
+
+  useEffect(() => {
+    getData();
+  }, []);
 
   return (
     <>
@@ -86,85 +106,43 @@ const Checklist = () => {
                             <table className="table table-striped table-bordered table_height">
                               <thead>
                                 <tr className="border-0">
-                                  <th>SL No </th>
-                                  <th>BG Number </th>
-                                  <th>PO</th>
-                                  {/* for DO */}
-                                  {/* <th>Recommandation By DO</th> */}
-                                  <th>Action By FO</th>
+                                  <th>BTN Num </th>
+                                  <th>Invoice Number </th>
+                                  <th>Invoice Value</th>
+                                  <th>Net Claim Amount</th>
                                   <th>Action</th>
                                 </tr>
                               </thead>
                               <tbody style={{ maxHeight: "100%" }}>
-                                <tr>
-                                  <td className="table_center">
-                                    01/11/2023-10:30AM
-                                  </td>
-                                  <td>
-                                    {/* <a
-                                      href={require("C:/Users/admin/Downloads/sample.pdf")}
-                                      target="_blank"
-                                      rel="noreferrer"
-                                    >
-                                      Check File
-                                    </a> */}
-                                  </td>
-                                  <td>BG extension request lette</td>
-                                  <td>
-                                    {/* <select
-                                      name=""
-                                      id=""
-                                      className="form-control"
-                                      // disabled
-                                    >
-                                      <option value="">Extension</option>
-                                      <option value="">Release</option>
-                                    </select> */}
-                                    test
-                                  </td>
-                                  <td>
-                                    <div className="view-button-container">
-                                      <button className="btn btn-primary mx-3">
-                                        View
-                                      </button>
-                                    </div>
-                                  </td>
-                                </tr>
-                                <tr>
-                                  <td className="table_center">
-                                    31/10/2023-12:36PM
-                                  </td>
-                                  <td>
-                                    {/* <a
-                                      href={require("C:/Users/admin/Downloads/sample.pdf")}
-                                      target="_blank"
-                                      rel="noreferrer"
-                                    >
-                                      Check File
-                                    </a> */}
-                                  </td>
-                                  <td>BG release letter</td>
-                                  <td>
-                                    {/* disabled for FO but enable for DO */}
-                                    {/* <select
-                                      name=""
-                                      id=""
-                                      className="form-control"
-                                      // disabled
-                                    >
-                                      <option value="">Extension</option>
-                                      <option value="">Release</option>
-                                    </select> */}
-                                    test
-                                  </td>
-                                  <td>
-                                    <div className="view-button-container">
-                                      <button className="btn btn-primary mx-3">
-                                        View
-                                      </button>
-                                    </div>
-                                  </td>
-                                </tr>
+                                {checkTypeArr(data) &&
+                                  data.map((item, i) => {
+                                    console.log(item);
+                                    return (
+                                      <tr key={i}>
+                                        <td className="table_center">
+                                          {item?.btn_num}
+                                        </td>
+                                        <td>{item?.invoice_no}</td>
+                                        <td>{item?.invoice_value}</td>
+                                        <td>{item?.net_claim_amount}</td>
+                                        <td>
+                                          <div className="view-button-container">
+                                            <button
+                                              className="btn btn-primary mx-3"
+                                              onClick={() => {
+                                                navigate(
+                                                  `/checklist/hybrid-bill-material/edit/${id}`,
+                                                  { state: `${item?.btn_num}` }
+                                                );
+                                              }}
+                                            >
+                                              VIEW
+                                            </button>
+                                          </div>
+                                        </td>
+                                      </tr>
+                                    );
+                                  })}
                               </tbody>
                             </table>
                           </div>
@@ -179,7 +157,7 @@ const Checklist = () => {
           </div>
         </div>
       </div>
-      <div className={isPopup ? "popup active" : "popup"}>
+      {/* <div className={isPopup ? "popup active" : "popup"}>
         <div className="card card-xxl-stretch mb-5 mb-xxl-8">
           <div className="card-header border-0 pt-5">
             <h3 className="card-title align-items-start flex-column">
@@ -231,7 +209,7 @@ const Checklist = () => {
             </div>
           </form>
         </div>
-      </div>
+      </div> */}
     </>
   );
 };

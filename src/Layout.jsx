@@ -48,6 +48,7 @@ import GoodsIssueSlip from "./pages/pdfs/GoodsIssueSlip";
 import InspectionReport from "./pages/pdfs/InspectionReport";
 import StoreIssueRequisition from "./pages/pdfs/StoreIssueRequisition";
 import PaymentAdvice from "./pages/pdfs/PaymentAdvice";
+import BillsMaterialHybridEdit from "./pages/checklists/BillsMaterialHybridEdit";
 
 function Layout() {
   const { token, isLoggedIn, userType } = useSelector((state) => state.auth);
@@ -110,6 +111,11 @@ function Layout() {
               exact
               path="/checklist/hybrid-bill-material/:id"
               element={<BillsMaterialHybrid />}
+            />
+            <Route
+              exact
+              path="/checklist/hybrid-bill-material/edit/:id"
+              element={<BillsMaterialHybridEdit />}
             />
             <Route
               exact

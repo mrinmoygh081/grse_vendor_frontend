@@ -14,13 +14,15 @@ import {
 import { inputOnWheelPrevent } from "../../utils/inputOnWheelPrevent";
 import { apiCallBack } from "../../utils/fetchAPIs";
 
-const BillsMaterialHybrid = () => {
+const BillsMaterialHybridEdit = () => {
   const navigate = useNavigate();
   const { isDO } = useSelector((state) => state.selectedPO);
   const { user, token } = useSelector((state) => state.auth);
   const { id } = useParams();
+  const { state } = useLocation();
 
   const [impDates, setImpDates] = useState(null);
+  const [data, setData] = useState(null);
   let initialData = {
     invoice_no: "",
     invoice_filename: "",
@@ -62,11 +64,11 @@ const BillsMaterialHybrid = () => {
     if (typeof credit_note !== "number") {
       credit_note = parseInt(credit_note) || 0;
     }
-    setForm({
-      ...form,
-      net_claim_amount:
-        parseInt(invoice_value) + parseInt(debit_note) - parseInt(credit_note),
-    });
+    // setForm({
+    //   ...form,
+    //   net_claim_amount:
+    //     parseInt(invoice_value) + parseInt(debit_note) - parseInt(credit_note),
+    // });
   };
 
   useEffect(() => {
@@ -92,12 +94,42 @@ const BillsMaterialHybrid = () => {
       console.error("Error fetching WDC list:", error);
     }
   };
+  console.log("btn_num", state);
+
+  const getDataByBTN = async () => {
+    try {
+      const data = await apiCallBack(
+        "GET",
+        `po/btn/btn_num?id=${id}&btn_num=${state}`,
+        null,
+        token
+      );
+      console.log("data2", data);
+      if (data?.status && checkTypeArr(data?.data)) {
+        setData(data?.data[0]);
+      }
+    } catch (error) {
+      console.error("Error fetching WDC list:", error);
+    }
+  };
 
   useEffect(() => {
     getImpDates();
+    getDataByBTN();
   }, []);
 
+  // useEffect(() => {
+  //   if (data) {
+  //     setForm({ ...form, data });
+  //   }
+  // }, [data]);
+  console.log("form", form);
+
   useEffect(() => {
+    if (data) {
+      console.log("data", data);
+      setForm(data);
+    }
     if (impDates) {
       setForm({
         ...form,
@@ -111,7 +143,7 @@ const BillsMaterialHybrid = () => {
         a_ilms_date: impDates?.a_ilms_date || "",
       });
     }
-  }, [impDates]);
+  }, [impDates, data]);
 
   return (
     <>
@@ -136,185 +168,109 @@ const BillsMaterialHybrid = () => {
                                     <tr>
                                       <td>Invoice no:</td>
                                       <td className="btn_value">
-                                        <input
-                                          type="text"
-                                          className="form-control me-3"
-                                          name="invoice_no"
-                                          value={form?.invoice_no}
-                                          onChange={(e) =>
-                                            inputTypeChange(e, form, setForm)
-                                          }
-                                        />
-                                        <input
-                                          type="file"
-                                          className="form-control"
-                                          name="invoice_filename"
-                                          onChange={(e) =>
-                                            inputFileChange(e, form, setForm)
-                                          }
-                                          accept=".pdf"
-                                        />
+                                        <b className="me-3">
+                                          {data?.invoice_no}
+                                        </b>
+                                        {data?.invoice_filename && (
+                                          <a
+                                            href={`${process.env.REACT_APP_PDF_URL}btns/${data?.invoice_filename}`}
+                                            target="_blank"
+                                            rel="noreferrer"
+                                          >
+                                            click here
+                                          </a>
+                                        )}
                                       </td>
                                     </tr>
                                     <tr>
                                       <td>Invoice value:</td>
                                       <td className="btn_value">
-                                        <input
-                                          type="number"
-                                          className="form-control"
-                                          onWheel={inputOnWheelPrevent}
-                                          name="invoice_value"
-                                          value={form?.invoice_value}
-                                          onChange={(e) =>
-                                            inputTypeChange(e, form, setForm)
-                                          }
-                                        />
+                                        <b className="me-3">
+                                          {data?.invoice_value}
+                                        </b>
                                       </td>
                                     </tr>
                                     <tr>
                                       <td>E-Invoice :</td>
                                       <td className="btn_value">
-                                        <select
-                                          name=""
-                                          id=""
-                                          className="form-select me-2"
-                                        >
-                                          <option value="applicable">
-                                            Applicable
-                                          </option>
-                                          <option value="notapplicable">
-                                            Not Applicable
-                                          </option>{" "}
-                                        </select>
-                                        <input
-                                          type="text"
-                                          className="form-control me-2"
-                                          name="e_invoice_no"
-                                          value={form?.e_invoice_no}
-                                          onChange={(e) =>
-                                            inputTypeChange(e, form, setForm)
-                                          }
-                                        />
-                                        <input
-                                          type="file"
-                                          className="form-control"
-                                          name="e_invoice_filename"
-                                          onChange={(e) =>
-                                            inputFileChange(e, form, setForm)
-                                          }
-                                          accept=".pdf"
-                                        />
+                                        <b className="me-3">
+                                          {data?.e_invoice_no}
+                                        </b>
+                                        {data?.e_invoice_filename &&
+                                          data?.e_invoice_filename !==
+                                            "null" && (
+                                            <a
+                                              href={`${process.env.REACT_APP_PDF_URL}btns/${data?.e_invoice_filename}`}
+                                              target="_blank"
+                                              rel="noreferrer"
+                                            >
+                                              click here
+                                            </a>
+                                          )}
                                       </td>
                                     </tr>
                                     <tr>
                                       <td>Debit/Credit Note:</td>
                                       <td className="btn_value">
-                                        <select
-                                          name=""
-                                          id=""
-                                          className="form-select me-2"
-                                        >
-                                          <option value="applicable">
-                                            Applicable
-                                          </option>
-                                          <option value="notapplicable">
-                                            Not Applicable
-                                          </option>{" "}
-                                        </select>
-                                        <input
-                                          type="file"
-                                          className="form-control"
-                                          name="debit_credit_filename"
-                                          onChange={(e) =>
-                                            inputFileChange(e, form, setForm)
-                                          }
-                                          accept=".pdf"
-                                        />
+                                        {data?.debit_credit_filename &&
+                                          data?.debit_credit_filename !==
+                                            "null" && (
+                                            <a
+                                              href={`${process.env.REACT_APP_PDF_URL}btns/${data?.debit_credit_filename}`}
+                                              target="_blank"
+                                              rel="noreferrer"
+                                            >
+                                              click here
+                                            </a>
+                                          )}
                                       </td>
                                     </tr>
                                     <tr>
                                       <td>Debit Note value:</td>
                                       <td className="btn_value">
-                                        <input
-                                          type="number"
-                                          className="form-control"
-                                          onWheel={inputOnWheelPrevent}
-                                          name="debit_note"
-                                          value={form?.debit_note}
-                                          onChange={(e) =>
-                                            inputTypeChange(e, form, setForm)
-                                          }
-                                        />
+                                        <b className="me-3">
+                                          {data?.debit_note}
+                                        </b>
                                       </td>
                                     </tr>
                                     <tr>
                                       <td>Credit Note value:</td>
                                       <td className="btn_value">
-                                        <input
-                                          type="number"
-                                          className="form-control"
-                                          onWheel={inputOnWheelPrevent}
-                                          name="credit_note"
-                                          value={form?.credit_note}
-                                          onChange={(e) => {
-                                            inputTypeChange(e, form, setForm);
-                                          }}
-                                        />
+                                        <b className="me-3">
+                                          {data?.credit_note}
+                                        </b>
                                       </td>
                                     </tr>
                                     <tr>
                                       <td>Net claim amount:</td>
                                       <td className="btn_value">
-                                        <b>{form?.net_claim_amount}</b>
+                                        <b>{data?.net_claim_amount}</b>
                                       </td>
                                     </tr>
                                     <tr>
                                       <td>Contractual SDBG Submission Date</td>
                                       <td className="btn_value">
-                                        <select
-                                          name=""
-                                          id=""
-                                          className="form-select me-2"
-                                        >
-                                          <option value="applicable">
-                                            Applicable
-                                          </option>
-                                          <option value="notapplicable">
-                                            Not Applicable
-                                          </option>
-                                        </select>
                                         <b className="me-3">
                                           {form?.c_sdbg_date &&
                                             new Date(
                                               form?.c_sdbg_date
                                             ).toDateString()}
                                         </b>
-                                        <input
-                                          type="file"
-                                          className="form-control"
-                                          name="c_sdbg_filename"
-                                          onChange={(e) =>
-                                            inputFileChange(e, form, setForm)
-                                          }
-                                          accept=".pdf"
-                                        />
+                                        {data?.c_sdbg_filename &&
+                                          data?.c_sdbg_filename !== "null" && (
+                                            <a
+                                              href={`${process.env.REACT_APP_PDF_URL}btns/${data?.c_sdbg_filename}`}
+                                              target="_blank"
+                                              rel="noreferrer"
+                                            >
+                                              click here
+                                            </a>
+                                          )}
                                       </td>
                                     </tr>
                                     <tr>
                                       <td>Actual SDBG Submission Date</td>
                                       <td className="btn_value">
-                                        <select
-                                          name=""
-                                          id=""
-                                          className="form-select me-2"
-                                        >
-                                          <option value="applicable">
-                                            Applicable
-                                          </option>
-                                          <option value="notapplicable">
-                                            Not Applicable
-                                          </option>
-                                        </select>
                                         <b className="me-3">
                                           {form?.a_sdbg_date &&
                                             new Date(
@@ -328,214 +284,108 @@ const BillsMaterialHybrid = () => {
                                         Demand raised by production/PP&C if any
                                       </td>
                                       <td className="btn_value">
-                                        <select
-                                          name=""
-                                          id=""
-                                          className="form-select me-2"
-                                        >
-                                          <option value="applicable">
-                                            Applicable
-                                          </option>
-                                          <option value="notapplicable">
-                                            Not Applicable
-                                          </option>
-                                        </select>
-                                        <input
-                                          type="file"
-                                          className="form-control"
-                                          name="demand_raise_filename"
-                                          onChange={(e) =>
-                                            inputFileChange(e, form, setForm)
-                                          }
-                                          accept=".pdf"
-                                        />
+                                        {data?.demand_raise_filename &&
+                                          data?.demand_raise_filename !==
+                                            "null" && (
+                                            <a
+                                              href={`${process.env.REACT_APP_PDF_URL}btns/${data?.demand_raise_filename}`}
+                                              target="_blank"
+                                              rel="noreferrer"
+                                            >
+                                              click here
+                                            </a>
+                                          )}
                                       </td>
                                     </tr>
                                     <tr>
                                       <td>Gate Entry Acknowledgement no.</td>
                                       <td className="btn_value">
-                                        <select
-                                          name=""
-                                          id=""
-                                          className="form-select me-2"
-                                        >
-                                          <option value="applicable">
-                                            Applicable
-                                          </option>
-                                          <option value="notapplicable">
-                                            Not Applicable
-                                          </option>
-                                        </select>
-                                        <input
-                                          type="text"
-                                          className="form-control"
-                                          name="gate_entry_no"
-                                          value={form?.gate_entry_no}
-                                          onChange={(e) => {
-                                            inputTypeChange(e, form, setForm);
-                                          }}
-                                        />
+                                        <b className="me-3">
+                                          {data?.gate_entry_no}
+                                        </b>
                                       </td>
                                     </tr>
                                     <tr>
                                       <td>Gate Entry Date</td>
                                       <td className="btn_value">
-                                        <select
-                                          name=""
-                                          id=""
-                                          className="form-select me-2"
-                                        >
-                                          <option value="applicable">
-                                            Applicable
-                                          </option>
-                                          <option value="notapplicable">
-                                            Not Applicable
-                                          </option>
-                                        </select>
-                                        <input
-                                          type="date"
-                                          className="form-control me-2"
-                                          name="gate_entry_date"
-                                          value={form?.gate_entry_date}
-                                          onChange={(e) => {
-                                            inputTypeChange(e, form, setForm);
-                                          }}
-                                        />
-                                        <input
-                                          type="file"
-                                          className="form-control"
-                                          name="get_entry_filename"
-                                          onChange={(e) =>
-                                            inputFileChange(e, form, setForm)
-                                          }
-                                          accept=".pdf"
-                                        />
+                                        <b className="me-3">
+                                          {data?.gate_entry_date}
+                                        </b>
+                                        {data?.get_entry_filename &&
+                                          data?.get_entry_filename !==
+                                            "null" && (
+                                            <a
+                                              href={`${process.env.REACT_APP_PDF_URL}btns/${data?.get_entry_filename}`}
+                                              target="_blank"
+                                              rel="noreferrer"
+                                            >
+                                              click here
+                                            </a>
+                                          )}
                                       </td>
                                     </tr>
                                     <tr>
                                       <td>GRN No 1</td>
                                       <td className="btn_value">
-                                        <input
-                                          type="text"
-                                          className="form-control"
-                                          name="grn_no_1"
-                                          value={form?.grn_no_1}
-                                          onChange={(e) => {
-                                            inputTypeChange(e, form, setForm);
-                                          }}
-                                        />
+                                        <b className="me-3">{data?.grn_no_1}</b>
                                       </td>
                                     </tr>
                                     <tr>
                                       <td>GRN No 2</td>
                                       <td className="btn_value">
-                                        <input
-                                          type="text"
-                                          className="form-control"
-                                          name="grn_no_2"
-                                          value={form?.grn_no_2}
-                                          onChange={(e) => {
-                                            inputTypeChange(e, form, setForm);
-                                          }}
-                                        />
+                                        <b className="me-3">{data?.grn_no_2}</b>
                                       </td>
                                     </tr>
                                     <tr>
                                       <td>GRN No 3</td>
                                       <td className="btn_value">
-                                        <input
-                                          type="text"
-                                          className="form-control"
-                                          name="grn_no_3"
-                                          value={form?.grn_no_3}
-                                          onChange={(e) => {
-                                            inputTypeChange(e, form, setForm);
-                                          }}
-                                        />
+                                        <b className="me-3">{data?.grn_no_3}</b>
                                       </td>
                                     </tr>
                                     <tr>
                                       <td>GRN No 4</td>
                                       <td className="btn_value">
-                                        <input
-                                          type="text"
-                                          className="form-control"
-                                          name="grn_no_4"
-                                          value={form?.grn_no_4}
-                                          onChange={(e) => {
-                                            inputTypeChange(e, form, setForm);
-                                          }}
-                                        />
+                                        <b className="me-3">{data?.grn_no_4}</b>
                                       </td>
                                     </tr>
                                     <tr>
                                       <td>ICGRN no 1</td>
                                       <td className="btn_value">
-                                        <input
-                                          type="text"
-                                          className="form-control"
-                                          name="icgrn_no_1"
-                                          value={form?.icgrn_no_1}
-                                          onChange={(e) => {
-                                            inputTypeChange(e, form, setForm);
-                                          }}
-                                        />
+                                        <b className="me-3">
+                                          {data?.icgrn_no_1}
+                                        </b>
                                       </td>
                                     </tr>
                                     <tr>
                                       <td>ICGRN no 2</td>
                                       <td className="btn_value">
-                                        <input
-                                          type="text"
-                                          className="form-control"
-                                          name="icgrn_no_2"
-                                          value={form?.icgrn_no_2}
-                                          onChange={(e) => {
-                                            inputTypeChange(e, form, setForm);
-                                          }}
-                                        />
+                                        <b className="me-3">
+                                          {data?.icgrn_no_2}
+                                        </b>
                                       </td>
                                     </tr>
                                     <tr>
                                       <td>ICGRN no 3</td>
                                       <td className="btn_value">
-                                        <input
-                                          type="text"
-                                          className="form-control"
-                                          name="icgrn_no_3"
-                                          value={form?.icgrn_no_3}
-                                          onChange={(e) => {
-                                            inputTypeChange(e, form, setForm);
-                                          }}
-                                        />
+                                        <b className="me-3">
+                                          {data?.icgrn_no_3}
+                                        </b>
                                       </td>
                                     </tr>
                                     <tr>
                                       <td>ICGRN no 4</td>
                                       <td className="btn_value">
-                                        <input
-                                          type="text"
-                                          className="form-control"
-                                          name="icgrn_no_4"
-                                          value={form?.icgrn_no_4}
-                                          onChange={(e) => {
-                                            inputTypeChange(e, form, setForm);
-                                          }}
-                                        />
+                                        <b className="me-3">
+                                          {data?.icgrn_no_4}
+                                        </b>
                                       </td>
                                     </tr>
                                     <tr>
                                       <td>Total ICGRN Value</td>
                                       <td className="btn_value">
-                                        <input
-                                          type="text"
-                                          className="form-control"
-                                          name="total_icgrn_value"
-                                          value={form?.total_icgrn_value}
-                                          onChange={(e) => {
-                                            inputTypeChange(e, form, setForm);
-                                          }}
-                                        />
+                                        <b className="me-3">
+                                          {data?.total_icgrn_value}
+                                        </b>
                                       </td>
                                     </tr>
                                     <tr>
@@ -543,18 +393,6 @@ const BillsMaterialHybrid = () => {
                                         Contractual Drawing submission date
                                       </td>
                                       <td className="btn_value">
-                                        <select
-                                          name=""
-                                          id=""
-                                          className="form-select me-2"
-                                        >
-                                          <option value="applicable">
-                                            Applicable
-                                          </option>
-                                          <option value="notapplicable">
-                                            Not Applicable
-                                          </option>
-                                        </select>
                                         <b>
                                           {form?.c_drawing_date &&
                                             new Date(
@@ -566,18 +404,6 @@ const BillsMaterialHybrid = () => {
                                     <tr>
                                       <td>Actual Drawing submission date</td>
                                       <td className="btn_value">
-                                        <select
-                                          name=""
-                                          id=""
-                                          className="form-select me-2"
-                                        >
-                                          <option value="applicable">
-                                            Applicable
-                                          </option>
-                                          <option value="notapplicable">
-                                            Not Applicable
-                                          </option>
-                                        </select>
                                         <b>
                                           {form?.a_drawing_date &&
                                             new Date(
@@ -589,18 +415,6 @@ const BillsMaterialHybrid = () => {
                                     <tr>
                                       <td>Contractual QAP submission date</td>
                                       <td className="btn_value">
-                                        <select
-                                          name=""
-                                          id=""
-                                          className="form-select me-2"
-                                        >
-                                          <option value="applicable">
-                                            Applicable
-                                          </option>
-                                          <option value="notapplicable">
-                                            Not Applicable
-                                          </option>
-                                        </select>
                                         <b>
                                           {form?.c_qap_date &&
                                             new Date(
@@ -612,18 +426,6 @@ const BillsMaterialHybrid = () => {
                                     <tr>
                                       <td>Actual QAP submission date</td>
                                       <td className="btn_value">
-                                        <select
-                                          name=""
-                                          id=""
-                                          className="form-select me-2"
-                                        >
-                                          <option value="applicable">
-                                            Applicable
-                                          </option>
-                                          <option value="notapplicable">
-                                            Not Applicable
-                                          </option>
-                                        </select>
                                         <b>
                                           {form?.a_qap_date &&
                                             new Date(
@@ -635,18 +437,6 @@ const BillsMaterialHybrid = () => {
                                     <tr>
                                       <td>Contractual ILMS submission date</td>
                                       <td className="btn_value">
-                                        <select
-                                          name=""
-                                          id=""
-                                          className="form-select me-2"
-                                        >
-                                          <option value="applicable">
-                                            Applicable
-                                          </option>
-                                          <option value="notapplicable">
-                                            Not Applicable
-                                          </option>
-                                        </select>
                                         <b>
                                           {form?.c_ilms_date &&
                                             new Date(
@@ -658,18 +448,6 @@ const BillsMaterialHybrid = () => {
                                     <tr>
                                       <td>Actual ILMS submission date</td>
                                       <td className="btn_value">
-                                        <select
-                                          name=""
-                                          id=""
-                                          className="form-select me-2"
-                                        >
-                                          <option value="applicable">
-                                            Applicable
-                                          </option>
-                                          <option value="notapplicable">
-                                            Not Applicable
-                                          </option>
-                                        </select>
                                         <b>
                                           {form?.a_ilms_date &&
                                             new Date(
@@ -681,30 +459,19 @@ const BillsMaterialHybrid = () => {
                                     <tr>
                                       <td>PBG</td>
                                       <td className="btn_value">
-                                        <select
-                                          name=""
-                                          id=""
-                                          className="form-select me-2"
-                                        >
-                                          <option value="applicable">
-                                            Applicable
-                                          </option>
-                                          <option value="notapplicable">
-                                            Not Applicable
-                                          </option>
-                                        </select>
-                                        <input
-                                          type="file"
-                                          className="form-control"
-                                          name="pbg_filename"
-                                          onChange={(e) =>
-                                            inputFileChange(e, form, setForm)
-                                          }
-                                          accept=".pdf"
-                                        />
+                                        {data?.pbg_filename &&
+                                          data?.pbg_filename !== "null" && (
+                                            <a
+                                              href={`${process.env.REACT_APP_PDF_URL}btns/${data?.pbg_filename}`}
+                                              target="_blank"
+                                              rel="noreferrer"
+                                            >
+                                              click here
+                                            </a>
+                                          )}
                                       </td>
                                     </tr>
-                                    <tr>
+                                    {/* <tr>
                                       <td colSpan="2">
                                         <div className="form-check">
                                           <input
@@ -730,7 +497,7 @@ const BillsMaterialHybrid = () => {
                                           </label>
                                         </div>
                                       </td>
-                                    </tr>
+                                    </tr> */}
                                   </tbody>
                                 </table>
                               </div>
@@ -741,7 +508,7 @@ const BillsMaterialHybrid = () => {
                                     className="btn fw-bold btn-primary me-3"
                                     onClick={() =>
                                       actionHandlerBTN(
-                                        "BillsMaterialHybrid",
+                                        "Edit",
                                         token,
                                         id,
                                         form,
@@ -955,115 +722,8 @@ const BillsMaterialHybrid = () => {
           </div>
         </div>
       </div>
-      {/* <div className={isPopup ? "popup active" : "popup"}>
-        <div className="card card-xxl-stretch mb-5 mb-xxl-8">
-          <div className="card-header border-0 pt-5">
-            <h3 className="card-title align-items-start flex-column">
-              <span className="card-label fw-bold fs-3 mb-1">
-                Upload Invoice
-              </span>
-            </h3>
-            <button
-              className="btn fw-bold btn-danger"
-              onClick={() => setIsPopup(false)}
-            >
-              Close
-            </button>
-          </div>
-          <form>
-            <div className="row">
-              <div className="col-12">
-                <div className="mb-3">
-                  <label className="form-label">
-                    Invoice Number <span className="star">*</span>
-                  </label>
-                  <input type="text" className="form-control" />
-                </div>
-              </div>
-              <div className="col-12">
-                <div className="mb-3">
-                  <label className="form-label">
-                    Invoice <span className="star">*</span>
-                  </label>
-                  <input type="file" className="form-control" />
-                </div>
-              </div>
-              <div className="col-12">
-                <div className="mb-3">
-                  <label className="form-label">Remarks</label>
-                  <textarea
-                    name=""
-                    id=""
-                    rows="4"
-                    className="form-control"
-                  ></textarea>
-                </div>
-              </div>
-              <div className="col-12">
-                <div className="mb-3">
-                  <button className="btn fw-bold btn-primary">UPDATE</button>
-                </div>
-              </div>
-            </div>
-          </form>
-        </div>
-      </div>
-      {console.log(isSecPopup)}
-      <div className={isSecPopup ? "popup active" : "popup"}>
-        <div className="card card-xxl-stretch mb-5 mb-xxl-8">
-          <div className="card-header border-0 pt-5">
-            <h3 className="card-title align-items-start flex-column">
-              <span className="card-label fw-bold fs-3 mb-1">
-                Upload PBG Copy (optionals)
-              </span>
-            </h3>
-            <button
-              className="btn fw-bold btn-danger"
-              onClick={() => setIsSecPopup(false)}
-            >
-              Close
-            </button>
-          </div>
-          <form>
-            <div className="row">
-              <div className="col-12">
-                <div className="mb-3">
-                  <label className="form-label">
-                    Invoice Number <span className="star">*</span>
-                  </label>
-                  <input type="text" className="form-control" />
-                </div>
-              </div>
-              <div className="col-12">
-                <div className="mb-3">
-                  <label className="form-label">
-                    Invoice <span className="star">*</span>
-                  </label>
-                  <input type="file" className="form-control" />
-                </div>
-              </div>
-              <div className="col-12">
-                <div className="mb-3">
-                  <label className="form-label">Remarks</label>
-                  <textarea
-                    name=""
-                    id=""
-                    rows="4"
-                    className="form-control"
-                  ></textarea>
-                </div>
-              </div>
-              <div className="col-12">
-                <div className="mb-3">
-                  <button className="btn fw-bold btn-primary">UPDATE</button>
-                </div>
-              </div>
-            </div>
-          </form>
-        </div>
-      </div> */}
     </>
   );
 };
 
-export default BillsMaterialHybrid;
+export default BillsMaterialHybridEdit;
