@@ -105,43 +105,43 @@ function Layout() {
               element={<Shippingdocuments />}
             />
             <Route exact path="/gate-in/:id" element={<GateInSub />} />
-            <Route exact path="/checklist" element={<Checklist />} />
+            {/* <Route exact path="/checklist/:id" element={<Checklist />} /> */}
             <Route
               exact
-              path="/checklist/hybrid-bill-material"
+              path="/checklist/hybrid-bill-material/:id"
               element={<BillsMaterialHybrid />}
             />
             <Route
               exact
-              path="/checklist/hybrid-bill-service"
+              path="/checklist/hybrid-bill-service/:id"
               element={<HybridServicePOBills />}
             />
             <Route
               exact
-              path="/checklist/contract-bill-service"
+              path="/checklist/contract-bill-service/:id"
               element={<ServiceContractBills />}
             />
             <Route
               exact
-              path="/checklist/bill-incorrect-deductions"
+              path="/checklist/bill-incorrect-deductions/:id"
               element={<ClaimIncorrectDeductions />}
             />
             <Route
               exact
-              path="/checklist/bill-advance-payment"
+              path="/checklist/bill-advance-payment/:id"
               element={<AdvanceBillHybrid />}
             />
             <Route
               exact
-              path="/checklist/claim-against-pbg"
+              path="/checklist/claim-against-pbg/:id"
               element={<ClaimAgainstPBGSubmission />}
             />
             <Route
               exact
-              path="/checklist/ld-penalty-refund"
+              path="/checklist/ld-penalty-refund/:id"
               element={<LDPenaltyRefund />}
             />
-            <Route exact path="/checklist/:id" element={<ChecklistSub />} />
+            {/* <Route exact path="/checklist/:id" element={<ChecklistSub />} /> */}
             <Route
               exact
               path="/bill-registration-number/:id"
