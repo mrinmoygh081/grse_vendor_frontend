@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Footer from "../components/Footer";
 import SideBar from "../components/SideBar";
 import Header from "../components/Header";
@@ -13,21 +13,19 @@ import { clrLegend } from "../utils/clrLegend";
 import { checkTypeArr } from "../utils/smallFun";
 import { USER_PPNC_DEPARTMENT, USER_VENDOR } from "../constants/userConstants";
 import { APPROVED, REJECTED, SUBMITTED } from "../constants/BGconstants";
-import { groupedByRefNo } from "../utils/groupedByReq";
 
 const WDCSub = () => {
   const [isPopup, setIsPopup] = useState(false);
   const [allData, setAllData] = useState([]);
   const [lineItemData, setLineItemData] = useState([]);
   const [referenceNo, setreferenceNo] = useState("");
-  const [groupedData, setGroupedData] = useState([]);
 
-  const [pncFormData, setPncFormData] = useState({
-    purchasing_doc_no: "",
-    remarks: "",
-    status: "",
-    reference_no: "",
-  });
+  const [pncFormData , setPncFormData] = useState({
+    purchasing_doc_no :"",
+    remarks:"",
+    status:"",
+    reference_no : "",
+  })
 
   const [formData, setFormData] = useState({
     file: null,
@@ -81,13 +79,6 @@ const WDCSub = () => {
     getData();
     getPOLineItemData();
   }, [id, token]);
-
-  useEffect(() => {
-    if (allData && allData.length > 0) {
-      const gData = groupedByRefNo(allData);
-      setGroupedData(gData);
-    }
-  }, [allData]);
 
   const submitHandler = async (flag) => {
     try {
@@ -193,16 +184,16 @@ const WDCSub = () => {
     }
   };
 
-  const PNCApproveRejectHandler = async (doc_no, isApproved, ref_no) => {
+  const PNCApproveRejectHandler = async(doc_no , isApproved , ref_no)=>{
     // const { purchasing_doc_no, remarks , status , reference_no} = pncFormData;
-    console.log("doc---", doc_no);
-    console.log("approval_status---", isApproved);
-    console.log("ref_no---", ref_no);
+    console.log("doc---", doc_no)
+    console.log("approval_status---", isApproved)
+    console.log("ref_no---", ref_no)
     let remarks = "";
-    if (isApproved === "APPROVED") {
-      remarks = "WDC APPROVED";
-    } else {
-      remarks = "WDC REJECTED";
+    if( isApproved === "APPROVED"){
+      remarks = "WDC APPROVED"
+    }else{
+      remarks = "WDC REJECTED"
     }
 
     // console.log("remarks is---", remarks)
@@ -238,7 +229,8 @@ const WDCSub = () => {
     } catch (error) {
       toast.error("Error uploading drawing:", error);
     }
-  };
+    
+  }
 
   return (
     <>
@@ -303,126 +295,101 @@ const WDCSub = () => {
                                 </tr>
                               </thead>
                               <tbody style={{ maxHeight: "100%" }}>
-                                {Object.keys(groupedData).map((it, index) => {
-                                  let items = groupedData[it];
-                                  return (
-                                    <Fragment key={index}>
-                                      <tr>
-                                        <td colSpan={19}>
-                                          <b>{it}</b>
-                                        </td>
-                                      </tr>
-                                      {items &&
-                                        items.map((item, index) => (
-                                          <tr key={index}>
-                                            <td>{item.reference_no}</td>
-                                            <td>
-                                              {item?.created_at &&
-                                                new Date(
-                                                  item.created_at
-                                                ).toLocaleDateString()}
-                                            </td>
-                                            <td>
-                                              {item.file_name && (
-                                                <a
-                                                  href={`${process.env.REACT_APP_PDF_URL}submitWdc/${item.file_name}`}
-                                                  target="_blank"
-                                                  rel="noreferrer"
-                                                >
-                                                  Click Here
-                                                </a>
-                                              )}
-                                            </td>
-                                            <td>{item.created_by_id}</td>
-                                            <td>
-                                              {item?.wdc_date &&
-                                                new Date(
-                                                  item.wdc_date * 1000
-                                                ).toLocaleDateString()}
-                                            </td>
-                                            <td>{item.po_line_iten_no}</td>
-                                            <td>{item.job_location}</td>
-                                            <td>{item.yard_no}</td>
-                                            <td>
-                                              {item?.actual_start_date &&
-                                                new Date(
-                                                  item.actual_start_date * 1000
-                                                ).toLocaleDateString()}
-                                            </td>
-                                            <td>
-                                              {item?.actual_completion_date &&
-                                                new Date(
-                                                  item.actual_completion_date *
-                                                    1000
-                                                ).toLocaleDateString()}
-                                            </td>
-                                            <td>{item.unit}</td>
-                                            <td>{item.messurment}</td>
-                                            <td>{item.quantity}</td>
-                                            <td>{item.entry_by_production}</td>
-                                            <td>{item.stage_datiels}</td>
-                                            <td>
-                                              {item.actual_payable_amount}
-                                            </td>
-                                            <td>{item.remarks}</td>
-                                            <td
-                                              className={`${clrLegend(
-                                                item?.status
-                                              )} bold`}
+                                {allData &&
+                                  allData.map((item, index) => (
+                                    <tr key={index}>
+                                      <td>{item.reference_no}</td>
+                                      <td>
+                                        {item?.created_at &&
+                                          new Date(
+                                            item.created_at
+                                          ).toLocaleDateString()}
+                                      </td>
+                                      <td>
+                                        {item.file_name && (
+                                          <a
+                                            href={`${process.env.REACT_APP_PDF_URL}submitWdc/${item.file_name}`}
+                                            target="_blank"
+                                            rel="noreferrer"
+                                          >
+                                            Click Here
+                                          </a>
+                                        )}
+                                      </td>
+                                      <td>{item.created_by_id}</td>
+                                      <td>
+                                        {item?.wdc_date &&
+                                          new Date(
+                                            item.wdc_date * 1000
+                                          ).toLocaleDateString()}
+                                      </td>
+                                      <td>{item.po_line_iten_no}</td>
+                                      <td>{item.job_location}</td>
+                                      <td>{item.yard_no}</td>
+                                      <td>
+                                        {item?.actual_start_date &&
+                                          new Date(
+                                            item.actual_start_date * 1000
+                                          ).toLocaleDateString()}
+                                      </td>
+                                      <td>
+                                        {item?.actual_completion_date &&
+                                          new Date(
+                                            item.actual_completion_date * 1000
+                                          ).toLocaleDateString()}
+                                      </td>
+                                      <td>{item.unit}</td>
+                                      <td>{item.messurment}</td>
+                                      <td>{item.quantity}</td>
+                                      <td>{item.entry_by_production}</td>
+                                      <td>{item.stage_datiels}</td>
+                                      <td>{item.actual_payable_amount}</td>
+                                      <td>{item.remarks}</td>
+                                      <td
+                                        className={`${clrLegend(
+                                          item?.status
+                                        )} bold`}
+                                      >
+                                        {item.status}
+                                      </td>
+                                      {user?.department_id ===
+                                        USER_PPNC_DEPARTMENT && (
+                                        <td className="min-w-150px">
+                                          {item.status === "SUBMITTED" && (
+                                            <>
+                                            <button
+                                              onClick={() => {
+                                                // setIsPopup(true);
+                                                PNCApproveRejectHandler(
+                                                  item.purchasing_doc_no,
+                                                  "APPROVED",
+                                                  item.reference_no
+                                                );
+                                              }}
+                                              className="btn fw-bold btn-primary mx-3 mb-2"
                                             >
-                                              {item.status}
-                                            </td>
-                                            {user?.department_id ===
-                                              USER_PPNC_DEPARTMENT && (
-                                              <td className="min-w-150px">
-                                                {item.status ===
-                                                  "SUBMITTED" && (
-                                                  <>
-                                                    <button 
-                                                      onClick={() => {
-                                                        reConfirm(
-                                                          { file: true },
-                                                          () =>
-                                                            PNCApproveRejectHandler(
-                                                              item.purchasing_doc_no,
-                                                              "APPROVED",
-                                                              item.reference_no
-                                                            ),
-                                                          "WDC file Approved!!"
-                                                        );
-                                                      }}
-                                                      className="isApprove_btn mx-3 mb-2"
-                                                      style={{backgroundColor:'#3b5ae3'}}
-                                                    >
-                                                      APPROVE
-                                                    </button>
-                                                    <button
-                                                      onClick={() => {
-                                                        reConfirm(
-                                                          { file: true },
-                                                          () =>
-                                                            PNCApproveRejectHandler(
-                                                              item.purchasing_doc_no,
-                                                              "REJECTED",
-                                                              item.reference_no
-                                                            ),
-                                                          "WDC file Rejected!!"
-                                                        );
-                                                      }}
-                                                      className="isApprove_btn mx-3"
-                                                      style={{backgroundColor:'#e66d30'}}
-                                                    >
-                                                      REJECT
-                                                    </button>
-                                                  </>
-                                                )}
-                                              </td>
-                                            )}
-                                          </tr>
-                                        ))}
-                                    </Fragment>
-                                  );
-                                })}
+                                              APPROVE
+                                            </button>
+                                            <button
+                                              onClick={() => {
+                                                // setIsPopup(true);
+                                                PNCApproveRejectHandler(
+                                                  item.purchasing_doc_no,
+                                                  "REJECTED",
+                                                  item.reference_no
+                                                );
+                                              }}
+                                              
+                                              className="btn fw-bold btn-danger mx-3"
+                                            >
+                                              REJECT
+                                            </button>
+                                            </>
+                                          )}
+                                        </td>
+                                      )}
+                                    </tr>
+                                  ))}
                               </tbody>
                             </table>
                           </div>

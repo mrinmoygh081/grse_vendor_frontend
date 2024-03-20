@@ -262,3 +262,18 @@ input[type="number"] {
 .pdf_check_file_btn:hover {
   background-color: rgb(13, 119, 155);
 }
+.isApprove_btn {
+  width: 110px;
+  height: 30px;
+  border: none;
+  outline: none;
+  font-weight: 600;
+  color: white;
+  transition: 0.1s linear;
+}
+.isApprove_btn:nth-child(1):hover {
+  background-color: rgb(18, 48, 219) !important;
+}
+.isApprove_btn:nth-child(2):hover {
+  background-color: rgb(155, 30, 13) !important;
+}

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import Footer from "../components/Footer";
 import SideBar from "../components/SideBar";
 import Header from "../components/Header";
-import { redirect, useParams } from "react-router-dom";
+import { Link, redirect, useParams } from "react-router-dom";
 import { apiCallBack } from "../utils/fetchAPIs";
 import { useSelector } from "react-redux";
 import moment from "moment";
@@ -33,30 +33,31 @@ const DisplayStoreActions = () => {
     }
   };
 
-  const onChangeHandler = (e)=>{
-    setPdfPayloads((prevState)=>({
+  const onChangeHandler = (e) => {
+    setPdfPayloads((prevState) => ({
       ...prevState,
-      [e.target.name] : e.target.value
-    }))
-  }
-  const onSubmitHandler = (e) => {
-    // e.preventDefault();
-    setIsPopup(false);
-    console.log("payload -sss", pdfPayloads)
-    if(pdfName === "store_issue_requisition"){
-      return window.open('/display-store-actions/store-issue-requisition', '_blank');
-    }
-    if(pdfName === "goods_issue_slip"){
-      return window.open('/display-store-actions/goods-issue-slip', '_blank');
-    }
-    if(pdfName === "icgrn_report"){
-      return window.open('/display-store-actions/icgrn-report', '_blank');
-    }
-    if(pdfName === "payment_advice"){
-      return window.open('/display-store-actions/payment-advice', '_blank');
-    }
-    
+      [e.target.name]: e.target.value,
+    }));
   };
+
+  // const onSubmitHandler = (e) => {
+  //   // e.preventDefault();
+  //   setIsPopup(false);
+  //   console.log("payload -sss", pdfPayloads)
+  //   if(pdfName === "store_issue_requisition"){
+  //     return window.open('/display-store-actions/store-issue-requisition', '_blank');
+  //   }
+  //   if(pdfName === "goods_issue_slip"){
+  //     return window.open('/display-store-actions/goods-issue-slip', '_blank');
+  //   }
+  //   if(pdfName === "icgrn_report"){
+  //     return window.open('/display-store-actions/icgrn-report', '_blank');
+  //   }
+  //   if(pdfName === "payment_advice"){
+  //     return window.open('/display-store-actions/payment-advice', '_blank');
+  //   }
+
+  // };
 
   useEffect(() => {
     getIcgrnData();
@@ -91,23 +92,7 @@ const DisplayStoreActions = () => {
                                 <tr>
                                   <td className="table_center">03-01-2024</td>
                                   <td>
-                                    <span
-                                      className="pdf_check_file_btn"
-                                      onClick={() => {
-                                        setIsPopup(true);
-                                        setPdfName("store_issue_requisition");
-                                      }}
-                                    >
-                                      Check File
-                                    </span>
-                                  </td>
-                                  <td>Store Issue Requisition</td>
-                                  <td>Mrinmoy Ghosh(65432)</td>
-                                </tr>
-                                <tr>
-                                  <td className="table_center">08-01-2024</td>
-                                  <td>
-                                    <span
+                                    <a
                                       // href={
                                       //   "/display-store-actions/goods-issue-slip"
                                       // }
@@ -115,12 +100,31 @@ const DisplayStoreActions = () => {
                                       // rel="noreferrer"
                                       className="pdf_check_file_btn"
                                       onClick={() => {
-                                        setIsPopup(true);
+                                        setPdfName("store_issue_requisition");
+                                      }}
+                                    >
+                                      Check File
+                                    </a>
+                                  </td>
+                                  <td>Store Issue Requisition</td>
+                                  <td>Mrinmoy Ghosh(65432)</td>
+                                </tr>
+                                <tr>
+                                  <td className="table_center">08-01-2024</td>
+                                  <td>
+                                    <a
+                                      // href={
+                                      //   "/display-store-actions/goods-issue-slip"
+                                      // }
+                                      // target="_blank"
+                                      // rel="noreferrer"
+                                      className="pdf_check_file_btn"
+                                      onClick={() => {
                                         setPdfName("goods_issue_slip");
                                       }}
                                     >
                                       Check File
-                                    </span>
+                                    </a>
                                   </td>
                                   <td>Goods Issue Slip</td>
                                   <td>Mrinmoy Ghosh(65432)</td>
@@ -128,7 +132,7 @@ const DisplayStoreActions = () => {
                                 <tr>
                                   <td className="table_center">10-01-2024</td>
                                   <td>
-                                    <span
+                                    <a
                                       // href={
                                       //   "/display-store-actions/icgrn-report"
                                       // }
@@ -136,12 +140,11 @@ const DisplayStoreActions = () => {
                                       // rel="noreferrer"
                                       className="pdf_check_file_btn"
                                       onClick={() => {
-                                        setIsPopup(true);
                                         setPdfName("icgrn_report");
                                       }}
                                     >
                                       Check File
-                                    </span>
+                                    </a>
                                   </td>
                                   <td>ICGRN Report</td>
                                   <td>Mrinmoy Ghosh(65432)</td>
@@ -149,7 +152,7 @@ const DisplayStoreActions = () => {
                                 <tr>
                                   <td className="table_center">12-01-2024</td>
                                   <td>
-                                    <span
+                                    <a
                                       // href={
                                       //   "/display-store-actions/payment-advice"
                                       // }
@@ -157,12 +160,11 @@ const DisplayStoreActions = () => {
                                       // rel="noreferrer"
                                       className="pdf_check_file_btn"
                                       onClick={() => {
-                                        setIsPopup(true);
                                         setPdfName("payment_advice");
                                       }}
                                     >
                                       Check File
-                                    </span>
+                                    </a>
                                   </td>
                                   <td>Payment Advice</td>
                                   <td>Mrinmoy Ghosh(65432)</td>
@@ -207,9 +209,7 @@ const DisplayStoreActions = () => {
         <div className="card card-xxl-stretch mb-5 mb-xxl-8">
           <div className="card-header border-0 pt-5">
             <h3 className="card-title align-items-start flex-column">
-              <span className="card-label fw-bold fs-3 mb-1">
-                Upload Shipping documents
-              </span>
+              <span className="card-label fw-bold fs-3 mb-1">Action</span>
             </h3>
             <button
               className="btn fw-bold btn-danger"
@@ -221,86 +221,75 @@ const DisplayStoreActions = () => {
           <form>
             <div className="row">
               {/* Store Issue Requisition  */}
-              {pdfName === "store_issue_requisition" && (
+              {/* {pdfName === "store_issue_requisition" && (
                 <div className="col-12">
                   <div className="mb-3">
                     <label className="form-label">
                       Reservation Number <span className="star">*</span>
                     </label>
-                    <input type="text" name="RSNUM" className="form-control" onChange={onChangeHandler} />
+                    <input type="text" name="reservationNumber" className="form-control" onChange={onChangeHandler} />
+                  </div>
+                  <div className="mb-3">
+                    <label className="form-label">
+                      Reservation Date
+                    </label>
+                    <input type="text" name="reservationDate" className="form-control" onChange={onChangeHandler} />
                   </div>
                 </div>
-              )}
+              )} */}
 
               {/* Material Issue List  */}
-              {pdfName === "goods_issue_slip" && (
+              {/* {pdfName === "goods_issue_slip" && (
                 <div className="col-12">
                   <div className="mb-3">
                     <label className="form-label">
-                      BTN Number <span className="star">*</span>
+                    Issue Number <span className="star">*</span>
                     </label>
-                    <input type="text" name="MBLNR" className="form-control" onChange={onChangeHandler} />
+                    <input type="text" name="issueNo" className="form-control" onChange={onChangeHandler} />
                   </div>
                   <div className="mb-3">
                     <label className="form-label">
-                      BTN Year <span className="star">*</span>
+                    Issue Year 
                     </label>
-                    <input type="text" name="MJAHR" className="form-control" onChange={onChangeHandler}/>
+                    <input type="text" name="issueYear" className="form-control" onChange={onChangeHandler}/>
                   </div>
                 </div>
-              )}
+              )} */}
 
               {/* ICGRN Report  */}
-              {pdfName === "icgrn_report" && (
+              {/* {pdfName === "icgrn_report" && (
                 <div className="col-12">
                   <div className="mb-3">
                     <label className="form-label">
-                      BTN Number <span className="star">*</span>
+                    Doc No. <span className="star">*</span>
                     </label>
-                    <input type="text" name="MBLNR" className="form-control" onChange={onChangeHandler} />
-                  </div>
-                  <div className="mb-3">
-                    <label className="form-label">
-                      PRUEFLOS <span className="star">*</span>
-                    </label>
-                    <input
-                      type="text"
-                      name="PRUEFLOS"
-                      className="form-control"
-                      onChange={onChangeHandler}
-                    />
-                  </div>
-                  <div className="mb-3">
-                    <label className="form-label">
-                      Purchase Order No <span className="star">*</span>
-                    </label>
-                    <input type="text" name="EBELN" className="form-control" />
+                    <input type="text" name="docNo" className="form-control" onChange={onChangeHandler} />
                   </div>
                 </div>
-              )}
+              )} */}
 
               {/* Payment Advice  */}
-              {pdfName === "payment_advice" && (
+              {/* {pdfName === "payment_advice" && (
                 <div className="col-12">
                   <div className="mb-3">
                     <label className="form-label">
-                      BTN Number <span className="star">*</span>
+                      BTN. <span className="star">*</span>
                     </label>
                     <input
                       type="text"
-                      name="ZERGNUM"
+                      name="btn"
                       className="form-control"
                       onChange={onChangeHandler}
                     />
                   </div>
                 </div>
-              )}
+              )} */}
 
-              <div className="col-12">
+              {/* <div className="col-12">
                 <div className="mb-3">
                   <button className="btn fw-bold btn-primary" onClick={onSubmitHandler}  >SUBMIT</button>
                 </div>
-              </div>
+              </div> */}
             </div>
           </form>
         </div>

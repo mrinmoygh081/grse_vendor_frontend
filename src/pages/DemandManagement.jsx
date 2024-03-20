@@ -75,8 +75,6 @@ const DemandManagement = () => {
     getPOLineItemData();
   }, [id, token]);
 
-  console.log(availableAmount);
-
   useEffect(() => {
     if (formData?.line_item_no !== "") {
       getAvailableAmount(formData?.line_item_no);
@@ -98,7 +96,7 @@ const DemandManagement = () => {
       }
       if (request_amount > availableAmount) {
         return toast.warn(
-          "Raised requeste amount should be less than or equal to available amount!"
+          "Raised requeste quantity should be less than or equal to available quantity!"
         );
       }
       const formObj = {
@@ -119,6 +117,12 @@ const DemandManagement = () => {
       if (response?.status) {
         toast.success(response?.message);
         setIsPopup(false);
+        setFormData({
+          remarks: "",
+          line_item_no: "",
+          request_amount: "",
+          delivery_date: "",
+        });
         getData();
       } else {
         toast.error(response?.message);
@@ -265,7 +269,7 @@ const DemandManagement = () => {
                         })
                       }
                     />
-                    <p>Available Amount: {availableAmount}</p>
+                    <p>Available Qunatity: {availableAmount}</p>
                   </div>
                 </div>
                 <div className="col-12">

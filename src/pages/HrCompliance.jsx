@@ -284,6 +284,10 @@ const HrCompliance = () => {
                       <option value="PF Compliance">PF Compliance</option>
                       <option value="ESI Compliance">ESI Compliance</option>
                       <option value="Wage Compliance">Wage Compliance</option>
+                      <option value="Leave Salary Compliance">
+                        Leave Salary Compliance
+                      </option>
+                      <option value="Bonus Compliance">Bonus Compliance</option>
                       <option value="Remarks">Remarks</option>
                       <option value="Others">Others</option>
                     </select>
