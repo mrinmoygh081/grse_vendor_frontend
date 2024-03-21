@@ -188,22 +188,22 @@ function Layout() {
             {/* All PDF File Routes  */}
             <Route
               exact
-              path="/display-store-actions/store-issue-requisition/:payload"
+              path="/display-store-actions/store-issue-requisition"
               element={<StoreIssueRequisition />}
             />
             <Route
               exact
-              path="/display-store-actions/goods-issue-slip/:payload"
+              path="/display-store-actions/goods-issue-slip"
               element={<GoodsIssueSlip />}
             />
             <Route
               exact
-              path="/display-store-actions/icgrn-report/:payload"
+              path="/display-store-actions/icgrn-report"
               element={<InspectionReport />}
             />
             <Route
               exact
-              path="/display-store-actions/payment-advice/:payload"
+              path="/display-store-actions/payment-advice"
               element={<PaymentAdvice />}
             />
           </Routes>

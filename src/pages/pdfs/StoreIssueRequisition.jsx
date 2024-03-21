@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from "react";
 import logo from "../../images/logo.png";
 import { useSelector } from "react-redux";
+import { useLocation, useParams } from "react-router-dom";
 
 function StoreIssueRequisition() {
+  const location = useLocation();
   const [apiData, setApiData] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -14,10 +16,14 @@ function StoreIssueRequisition() {
     window.print();
   };
 
+  // let payloadData = location.state;
+  const {payload} = useParams();
+  const payloadData = JSON.parse(payload) 
+  console.log("payloadData",payloadData)
+
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const dataInfo = {};
         const path = `${process.env.REACT_APP_BACKEND_API}sap/user/reservationReport`;
         const config = {
           method: "POST",
@@ -25,7 +31,7 @@ function StoreIssueRequisition() {
             Authorization: `Bearer ${token}`,
             "Content-Type": "application/json",
           },
-          body: JSON.stringify(dataInfo),
+          body: JSON.stringify(payloadData),
         };
         setIsLoading(true);
         const response = await fetch(path, config);

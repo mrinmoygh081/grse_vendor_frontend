@@ -1,11 +1,17 @@
 import React, { useEffect, useState } from "react";
 import logo from "../../images/logo.png";
 import { useSelector } from "react-redux";
+import { useLocation , useParams} from "react-router-dom";
+
 
 function InspectionReport() {
-  const [apiData, setApiData] = useState();
+  const location = useLocation();
+  const [apiData, setApiData] = useState([]);
+  // const [payloadData , setPayloadData] = useState({});
   const [isLoading, setIsLoading] = useState(false);
   const { token } = useSelector((state) => state.auth);
+
+  // console.log("payload iss--", location.state)
 
   const currentDate = new Date().toLocaleDateString();
   const currentTime = new Date().toLocaleTimeString([], {
@@ -15,18 +21,17 @@ function InspectionReport() {
 
   const handlePrint = () => {
     window.print();
-    // console.log("--->>",window.print.arguments())
-    
   };
+
+  // let payloadData = location.state;
+  const {payload} = useParams();
+  const payloadData = JSON.parse(payload) 
+  console.log("payload iss params--", payloadData)  
+
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const dataInfo = {
-          PRUEFLOS: 1000001009,
-          MBLNR: 5000174040,
-          EBELN: 12345,
-        };
         const path = `${process.env.REACT_APP_BACKEND_API}sap/qa/icgrn/report`;
         const config = {
           method: "POST",
@@ -34,7 +39,7 @@ function InspectionReport() {
             Authorization: `Bearer ${token}`,
             "Content-Type": "application/json",
           },
-          body: JSON.stringify(dataInfo),
+          body: JSON.stringify(payloadData),
         };
         setIsLoading(true);
         const response = await fetch(path, config);
@@ -158,7 +163,7 @@ function InspectionReport() {
               <h4>Loading....</h4>
             ) : (
               <tbody>
-                {apiData?.lineItems.map((item, index) => (
+                {apiData?.lineItems?.map((item, index) => (
                   <tr>
                     <td>{item.purchasing_doc_no_item}</td>
                     <td>{item.materialNumber}</td>

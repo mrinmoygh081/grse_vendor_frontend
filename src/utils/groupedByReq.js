@@ -8,6 +8,7 @@ export const groupedByActionType = (data) => {
     return result;
   }, {});
 };
+
 export const groupedByRefNo = (data) => {
   return data.reduce((result, item) => {
     const byType = item.reference_no;
@@ -18,3 +19,14 @@ export const groupedByRefNo = (data) => {
     return result;
   }, {});
 };
+
+export const groupByDocumentType = (data) =>{
+  return data.reduce((result, item) => {
+    const byType = item.documentType;
+    if (!result[byType]) {
+      result[byType] = [];
+    }
+    result[byType].push(item);
+    return result;
+  }, {});
+}
