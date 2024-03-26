@@ -56,7 +56,7 @@ export const sidebarData = [
   //   link: "/gate-in",
   // },
   {
-    title: "WDC",
+    title: "WDC - JCC",
     link: "/wdc",
   },
   {

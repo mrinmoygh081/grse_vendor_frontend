@@ -27,7 +27,7 @@ const POs = () => {
         logOutFun(dispatch, logoutHandler, poRemoveHandler);
       }
     })();
-  }, [token]); // Include 'token' as a dependency
+  }, [token]);
 
   useEffect(() => {
     if (po) {

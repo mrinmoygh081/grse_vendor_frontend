@@ -26,7 +26,7 @@ import {
 import { logOutFun } from "../utils/logOutFun";
 import { logoutHandler } from "../redux/slices/loginSlice";
 import { poRemoveHandler } from "../redux/slices/poSlice";
-import { groupedByActionType } from "../utils/groupedByReq";
+import { groupedByActionType, groupedByRefNo } from "../utils/groupedByReq";
 
 const SDBGSub = () => {
   const dispatch = useDispatch();
@@ -240,7 +240,6 @@ const SDBGSub = () => {
       token
     );
 
-    console.log(data);
     if (data?.status) {
       setIsCheckEntryPopup(false);
       getSDBG();
@@ -252,7 +251,7 @@ const SDBGSub = () => {
 
   useEffect(() => {
     if (allsdbg && allsdbg.length > 0) {
-      const gData = groupedByActionType(allsdbg);
+      const gData = groupedByRefNo(allsdbg);
       setGroupedBG(gData);
     }
   }, [allsdbg]);
@@ -315,7 +314,7 @@ const SDBGSub = () => {
                             <table className="table table-striped table-bordered table_height">
                               <thead>
                                 <tr className="border-0">
-                                  <th className="min-w-170px">Ref No </th>
+                                  <th className="min-w-170px">Action Type</th>
                                   <th className="min-w-150px">DateTime </th>
                                   <th className="min-w-90px">File</th>
                                   <th className="min-w-150px">Updated By</th>
@@ -341,7 +340,7 @@ const SDBGSub = () => {
                                           return (
                                             <tr key={index}>
                                               <td className="table_center">
-                                                {item?.reference_no}
+                                                {item?.action_type}
                                               </td>
                                               <td className="table_center">
                                                 {item?.created_at &&
@@ -370,53 +369,61 @@ const SDBGSub = () => {
                                               >
                                                 {item?.status}
                                               </td>
-                                              {isDO &&
-                                                item?.status === SUBMITTED && (
-                                                  <td>
-                                                    <button
-                                                      onClick={() => {
-                                                        setIsEntryPopup(true);
-                                                        setFormDatainput({
-                                                          ...formDatainput,
-                                                          reference_no:
-                                                            item?.reference_no,
-                                                        });
-                                                      }}
-                                                      className="btn fw-bold btn-primary me-3"
-                                                    >
-                                                      ACTION
-                                                    </button>
-                                                  </td>
-                                                )}
-                                              {item?.status ===
-                                                FORWARD_TO_FINANCE && (
-                                                <>
-                                                  {user?.department_id ===
-                                                    15 && (
-                                                    <td>
-                                                      {sdbgEntry?.reference_no ? (
-                                                        <button
-                                                          onClick={() => {
-                                                            setIsCheckEntryPopup(
-                                                              true
-                                                            );
-                                                            setFormDatainput({
-                                                              ...formDatainput,
-                                                              reference_no:
-                                                                item?.reference_no,
-                                                            });
-                                                          }}
-                                                          className="btn fw-bold btn-primary me-3"
-                                                        >
-                                                          ACTION
-                                                        </button>
-                                                      ) : (
-                                                        "Waiting for BG Entry by Dealing Officer"
-                                                      )}
-                                                    </td>
+                                              <td>
+                                                {isDO &&
+                                                  item?.status === SUBMITTED &&
+                                                  (item?.action_type ===
+                                                    ACTION_SDBG ||
+                                                    item?.action_type ===
+                                                      ACTION_DD ||
+                                                    item?.action_type ===
+                                                      ACTION_IB) && (
+                                                    <>
+                                                      <button
+                                                        onClick={() => {
+                                                          setIsEntryPopup(true);
+                                                          setFormDatainput({
+                                                            ...formDatainput,
+                                                            reference_no:
+                                                              item?.reference_no,
+                                                          });
+                                                        }}
+                                                        className="btn fw-bold btn-primary me-3"
+                                                      >
+                                                        ACTION
+                                                      </button>
+                                                    </>
                                                   )}
-                                                </>
-                                              )}
+                                                {item?.status ===
+                                                  FORWARD_TO_FINANCE && (
+                                                  <>
+                                                    {user?.department_id ===
+                                                      15 && (
+                                                      <>
+                                                        {sdbgEntry?.reference_no ? (
+                                                          <button
+                                                            onClick={() => {
+                                                              setIsCheckEntryPopup(
+                                                                true
+                                                              );
+                                                              setFormDatainput({
+                                                                ...formDatainput,
+                                                                reference_no:
+                                                                  item?.reference_no,
+                                                              });
+                                                            }}
+                                                            className="btn fw-bold btn-primary me-3"
+                                                          >
+                                                            ACTION
+                                                          </button>
+                                                        ) : (
+                                                          "Waiting for BG Entry by Dealing Officer"
+                                                        )}
+                                                      </>
+                                                    )}
+                                                  </>
+                                                )}
+                                              </td>
                                             </tr>
                                           );
                                         })}
@@ -496,6 +503,7 @@ const SDBGSub = () => {
                     onChange={(e) =>
                       setFormData({ ...formData, sdbgFile: e.target.files[0] })
                     }
+                    accept=".pdf"
                   />
                 </div>
               </div>

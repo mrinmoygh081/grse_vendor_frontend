@@ -176,7 +176,6 @@ const DrawingSub = () => {
                               <tbody style={{ maxHeight: "100%" }}>
                                 {Object.keys(groupedData).map((it, index) => {
                                   let items = groupedData[it];
-                                  console.log("it", it);
                                   return (
                                     <Fragment key={index}>
                                       <tr>
@@ -220,10 +219,9 @@ const DrawingSub = () => {
                                             >
                                               {item.status}
                                             </td>
-
                                             {user.department_id === 2 && (
                                               <td>
-                                                {items.status ===
+                                                {item.status ===
                                                   "SUBMITTED" && (
                                                   <button
                                                     onClick={() => {
@@ -313,6 +311,7 @@ const DrawingSub = () => {
                           drawingFile: e.target.files[0],
                         })
                       }
+                      accept=".pdf"
                     />
                   </div>
                 </div>

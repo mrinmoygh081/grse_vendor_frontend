@@ -2,7 +2,7 @@ import React, { Fragment, useEffect, useRef, useState } from "react";
 import Footer from "../components/Footer";
 import SideBar from "../components/SideBar";
 import Header from "../components/Header";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { apiCallBack } from "../utils/fetchAPIs";
 import { toast } from "react-toastify";
@@ -17,11 +17,12 @@ import { groupedByRefNo } from "../utils/groupedByReq";
 
 const WDCSub = () => {
   const [isPopup, setIsPopup] = useState(false);
+  const [isPopupView, setIsPopupView] = useState(false);
   const [isSecPopup, setIsSecPopup] = useState(false);
   const [allData, setAllData] = useState([]);
   const [lineItemData, setLineItemData] = useState([]);
-  const [referenceNo, setreferenceNo] = useState("");
   const [groupedData, setGroupedData] = useState([]);
+  const [viewData, setViewData] = useState(null);
 
   // const [pncFormData, setPncFormData] = useState({
   //   purchasing_doc_no: "",
@@ -91,7 +92,7 @@ const WDCSub = () => {
     }
   }, [allData]);
 
-  const submitHandler = async (flag) => {
+  const submitHandler = async (flag, ref_no) => {
     try {
       const {
         file,
@@ -144,15 +145,21 @@ const WDCSub = () => {
           fdToSend.append("unit", unit);
           fdToSend.append("messurment", messurment);
           fdToSend.append("quantity", quantity);
+          fdToSend.append("remarks", remarks);
+        }
+        fdToSend.append("status", flag);
+        fdToSend.append("purchasing_doc_no", id);
+        if (flag === APPROVED || flag === REJECTED) {
+          fdToSend.append("reference_no", ref_no);
           fdToSend.append("entry_by_production", entry_by_production);
           fdToSend.append("stage_datiels", stage_datiels);
           fdToSend.append("actual_payable_amount", actual_payable_amount);
         }
-        fdToSend.append("status", flag);
-        fdToSend.append("remarks", remarks);
-        fdToSend.append("purchasing_doc_no", id);
-        if (flag === APPROVED || flag === REJECTED) {
-          fdToSend.append("reference_no", referenceNo);
+        if (flag === APPROVED) {
+          fdToSend.append("remarks", "File Approved!");
+        }
+        if (flag === REJECTED) {
+          fdToSend.append("remarks", "File Rejected!");
         }
 
         const response = await apiCallBack(
@@ -163,11 +170,12 @@ const WDCSub = () => {
         );
 
         if (response?.status) {
-          toast.success("WDC uploaded successfully");
+          toast.success(response?.message);
           setIsPopup(false);
           setIsSecPopup(false);
           setFormData({
             file: null,
+            action_type: "",
             remarks: "",
             wdc_date: "",
             po_line_iten_no: "",
@@ -182,8 +190,10 @@ const WDCSub = () => {
             stage_datiels: "",
             actual_payable_amount: "",
           });
-          fileInputRef.current.value = null;
           getData();
+          if (flag === SUBMITTED) {
+            fileInputRef.current.value = null;
+          }
         } else {
           toast.warn(response?.message);
         }
@@ -191,42 +201,8 @@ const WDCSub = () => {
         toast.warn("All fields are required!");
       }
     } catch (error) {
-      toast.error("Error uploading WDC:", error);
+      toast.error("Error uploading File:", error);
       console.error("error", error);
-    }
-  };
-
-  const ActionHandler = async (doc_no, isApproved, ref_no) => {
-    // const { purchasing_doc_no, remarks , status , reference_no} = pncFormData;
-    let remarks = "";
-    if (isApproved === "APPROVED") {
-      remarks = "WDC APPROVED";
-    } else {
-      remarks = "WDC REJECTED";
-    }
-
-    try {
-      const formDataToSend = new FormData();
-      formDataToSend.append("purchasing_doc_no", doc_no);
-      formDataToSend.append("remarks", remarks);
-      formDataToSend.append("status", isApproved);
-      formDataToSend.append("reference_no", ref_no);
-
-      const response = await apiCallBack(
-        "POST",
-        "po/wdc/submitWdc",
-        formDataToSend,
-        token
-      );
-
-      if (response?.status) {
-        toast.success(response.message);
-        getData();
-      } else {
-        toast.error(response?.message);
-      }
-    } catch (error) {
-      toast.error("Error uploading drawing:", error);
     }
   };
 
@@ -236,7 +212,7 @@ const WDCSub = () => {
         <div className="page d-flex flex-row flex-column-fluid">
           <SideBar />
           <div className="wrapper d-flex flex-column flex-row-fluid">
-            <Header title={"WDC"} id={id} />
+            <Header title={"WDC - JCC"} id={id} />
             <div className="content d-flex flex-column flex-column-fluid">
               <div className="post d-flex flex-column-fluid">
                 <div className="container">
@@ -261,36 +237,14 @@ const WDCSub = () => {
                               <thead>
                                 <tr className="border-0">
                                   {/* <th className="min-w-150px">Reference No</th> */}
-                                  <th className="min-w-150px">Action Type</th>
+                                  <th>Action Type</th>
                                   <th className="min-w-150px">DateTime </th>
-                                  <th className="min-w-150px">WDC File</th>
+                                  <th className="min-w-150px">File</th>
                                   <th className="min-w-150px">Updated By</th>
-                                  <th className="min-w-150px">WDC Date</th>
-                                  <th className="min-w-150px">PO Line Item</th>
-                                  {/* <th className="min-w-150px">Job Location</th> */}
-                                  {/* <th className="min-w-150px">Yard No</th>
-                                  <th className="min-w-150px">
-                                    Actual Start Date
-                                  </th>
-                                  <th className="min-w-150px">
-                                    Actual Completion Date
-                                  </th>
-                                  <th className="min-w-150px">Unit</th>
-                                  <th className="min-w-150px">Measurment</th>
-                                  <th className="min-w-150px">Quantity</th>
-                                  <th className="min-w-150px">
-                                    Entry By Production
-                                  </th>
-                                  <th className="min-w-150px">Stage Datails</th> 
-                                  <th className="min-w-150px">
-                                    Actual Payable Amount
-                                  </th>
-                                  <th className="min-w-150px">Remarks</th> */}
+                                  <th className="min-w-150px">Date</th>
+                                  <th>PO LineItem</th>
                                   <th className="min-w-150px">Status</th>
-                                  {user?.department_id ===
-                                    USER_PPNC_DEPARTMENT && (
-                                    <th className="min-w-150px">Action</th>
-                                  )}
+                                  <th className="min-w-150px">Action</th>
                                 </tr>
                               </thead>
                               <tbody style={{ maxHeight: "100%" }}>
@@ -303,7 +257,7 @@ const WDCSub = () => {
                                           <b>{it}</b>
                                         </td>
                                       </tr>
-                                      {items &&
+                                      {checkTypeArr(items) &&
                                         items.map((item, index) => (
                                           <tr key={index}>
                                             {/* <td>{item.reference_no}</td> */}
@@ -312,7 +266,7 @@ const WDCSub = () => {
                                               {item?.created_at &&
                                                 new Date(
                                                   item.created_at
-                                                ).toLocaleDateString()}
+                                                ).toLocaleString()}
                                             </td>
                                             <td>
                                               {item.file_name && (
@@ -333,30 +287,6 @@ const WDCSub = () => {
                                                 ).toLocaleDateString()}
                                             </td>
                                             <td>{item.po_line_iten_no}</td>
-                                            {/* <td>{item.job_location}</td>
-                                            <td>{item.yard_no}</td> 
-                                            <td>
-                                              {item?.actual_start_date &&
-                                                new Date(
-                                                  item.actual_start_date * 1000
-                                                ).toLocaleDateString()}
-                                            </td>
-                                            <td>
-                                              {item?.actual_completion_date &&
-                                                new Date(
-                                                  item.actual_completion_date *
-                                                    1000
-                                                ).toLocaleDateString()}
-                                            </td>
-                                            <td>{item.unit}</td>
-                                            <td>{item.messurment}</td>
-                                            <td>{item.quantity}</td>
-                                            <td>{item.entry_by_production}</td>
-                                            <td>{item.stage_datiels}</td>
-                                            <td>
-                                              {item.actual_payable_amount}
-                                            </td>
-                                            <td>{item.remarks}</td> */}
                                             <td
                                               className={`${clrLegend(
                                                 item?.status
@@ -364,58 +294,34 @@ const WDCSub = () => {
                                             >
                                               {item.status}
                                             </td>
-                                            {user?.department_id ===
-                                              USER_PPNC_DEPARTMENT && (
-                                              <td className="min-w-150px">
-                                                {item.status ===
-                                                  "SUBMITTED" && (
+                                            <td>
+                                              <button
+                                                onClick={() => {
+                                                  setViewData(item);
+                                                  setIsPopupView(true);
+                                                }}
+                                                className="btn fw-bold btn-secondary m-1"
+                                                type="button"
+                                              >
+                                                View
+                                              </button>
+                                              {item.status === "SUBMITTED" &&
+                                                user.department_id ===
+                                                  USER_PPNC_DEPARTMENT && (
                                                   <>
                                                     <button
                                                       onClick={() => {
-                                                        reConfirm(
-                                                          { file: true },
-                                                          () =>
-                                                            ActionHandler(
-                                                              item.purchasing_doc_no,
-                                                              "APPROVED",
-                                                              item.reference_no
-                                                            ),
-                                                          "File Approved!!"
-                                                        );
+                                                        setViewData(item);
+                                                        setIsSecPopup(true);
                                                       }}
-                                                      className="isApprove_btn mx-3 mb-2"
-                                                      style={{
-                                                        backgroundColor:
-                                                          "#3b5ae3",
-                                                      }}
+                                                      className="btn fw-bold btn-primary"
+                                                      type="button"
                                                     >
-                                                      APPROVE
-                                                    </button>
-                                                    <button
-                                                      onClick={() => {
-                                                        reConfirm(
-                                                          { file: true },
-                                                          () =>
-                                                            ActionHandler(
-                                                              item.purchasing_doc_no,
-                                                              "REJECTED",
-                                                              item.reference_no
-                                                            ),
-                                                          "File Rejected!!"
-                                                        );
-                                                      }}
-                                                      className="isApprove_btn mx-3"
-                                                      style={{
-                                                        backgroundColor:
-                                                          "#e66d30",
-                                                      }}
-                                                    >
-                                                      REJECT
+                                                      Action
                                                     </button>
                                                   </>
                                                 )}
-                                              </td>
-                                            )}
+                                            </td>
                                           </tr>
                                         ))}
                                     </Fragment>
@@ -442,7 +348,7 @@ const WDCSub = () => {
             <div className="card-header border-0 pt-5 pb-3">
               <h3 className="card-title align-items-start flex-column">
                 <span className="card-label fw-bold fs-3 mb-1">
-                  Take Your Action {referenceNo && `for ${referenceNo}`}
+                  Take Your Action
                 </span>
               </h3>
               <button
@@ -472,10 +378,8 @@ const WDCSub = () => {
                       }
                     >
                       <option value="">Choose Your Action</option>
-                      <option value="WDC">WDC</option>
-                      <option value="Job Completion Certificate">
-                        Job Completion Certificate
-                      </option>
+                      <option value="WDC">Work Done Certificate</option>
+                      <option value="JCC">Job Completion Certificate</option>
                     </select>
                   </div>
                 </div>
@@ -645,60 +549,6 @@ const WDCSub = () => {
                     />
                   </div>
                 </div>
-                {/* <div className="col-12 col-md-6">
-                  <div className="mb-3">
-                    <label className="form-label">
-                      Entry By Production <span className="red">*</span>{" "}
-                    </label>
-                    <input
-                      type="text"
-                      className="form-control"
-                      value={formData?.entry_by_production}
-                      onChange={(e) =>
-                        setFormData({
-                          ...formData,
-                          entry_by_production: e.target.value,
-                        })
-                      }
-                    />
-                  </div>
-                </div>
-                <div className="col-12 col-md-6">
-                  <div className="mb-3">
-                    <label className="form-label">
-                      Stage Details <span className="red">*</span>{" "}
-                    </label>
-                    <input
-                      type="text"
-                      className="form-control"
-                      value={formData?.stage_datiels}
-                      onChange={(e) =>
-                        setFormData({
-                          ...formData,
-                          stage_datiels: e.target.value,
-                        })
-                      }
-                    />
-                  </div>
-                </div>
-                <div className="col-12 col-md-6">
-                  <div className="mb-3">
-                    <label className="form-label">
-                      Actual Payable Amount <span className="red">*</span>{" "}
-                    </label>
-                    <input
-                      type="text"
-                      className="form-control"
-                      value={formData?.actual_payable_amount}
-                      onChange={(e) =>
-                        setFormData({
-                          ...formData,
-                          actual_payable_amount: e.target.value,
-                        })
-                      }
-                    />
-                  </div>
-                </div> */}
                 <div className="col-12">
                   <div className="mb-3">
                     <label className="form-label">
@@ -719,43 +569,12 @@ const WDCSub = () => {
                 <div className="col-12">
                   <div className="mb-3 d-flex justify-content-between">
                     <button
-                      onClick={() => submitHandler("SUBMITTED")}
+                      onClick={() => submitHandler("SUBMITTED", null)}
                       className="btn fw-bold btn-primary"
                       type="button"
                     >
                       SUBMIT
                     </button>
-
-                    {user?.department_id === USER_PPNC_DEPARTMENT && (
-                      <div>
-                        <button
-                          onClick={() =>
-                            reConfirm(
-                              { file: true },
-                              () => submitHandler("REJECTED"),
-                              "You're rejecting the File. Please confirm!"
-                            )
-                          }
-                          className="btn fw-bold btn-danger me-2"
-                          type="button"
-                        >
-                          REJECTED
-                        </button>
-                        <button
-                          onClick={() =>
-                            reConfirm(
-                              { file: true },
-                              () => submitHandler("APPROVED"),
-                              "You're approving the File. Please confirm!"
-                            )
-                          }
-                          className="btn fw-bold btn-success"
-                          type="button"
-                        >
-                          APPROVED
-                        </button>
-                      </div>
-                    )}
                   </div>
                 </div>
               </div>
@@ -770,12 +589,16 @@ const WDCSub = () => {
             <div className="card-header border-0 pt-5 pb-3">
               <h3 className="card-title align-items-start flex-column">
                 <span className="card-label fw-bold fs-3 mb-1">
-                  Take Your Action {referenceNo && `for ${referenceNo}`}
+                  Take Your Action{" "}
+                  {viewData?.reference_no && `for ${viewData?.reference_no}`}
                 </span>
               </h3>
               <button
                 className="btn fw-bold btn-danger"
-                onClick={() => setIsSecPopup(false)}
+                onClick={() => {
+                  setViewData(null);
+                  setIsSecPopup(false);
+                }}
               >
                 Close
               </button>
@@ -787,7 +610,7 @@ const WDCSub = () => {
                     <label className="form-label">
                       Action <span className="red">*</span>{" "}
                     </label>
-                    <p>{formData?.action_type}</p>
+                    <p>{viewData?.action_type}</p>
                   </div>
                 </div>
                 <div className="col-12 col-md-6">
@@ -795,18 +618,14 @@ const WDCSub = () => {
                     <label className="form-label">
                       File Info <span className="red">*</span>{" "}
                     </label>
-                    <input
-                      type="file"
-                      className="form-control"
-                      onChange={(e) =>
-                        setFormData({
-                          ...formData,
-                          file: e.target.files[0],
-                        })
-                      }
-                      ref={fileInputRef}
-                      accept=".pdf"
-                    />
+                    <p>
+                      <Link
+                        to={`${process.env.REACT_APP_PDF_URL}submitWDC/${viewData?.file_name}`}
+                        target="_blank"
+                      >
+                        Click here
+                      </Link>
+                    </p>
                   </div>
                 </div>
                 <div className="col-12 col-md-6">
@@ -814,7 +633,7 @@ const WDCSub = () => {
                     <label className="form-label">
                       PO Line Item No <span className="red">*</span>{" "}
                     </label>
-                    <p>{formData?.po_line_iten_no}</p>
+                    <p>{viewData?.po_line_iten_no}</p>
                   </div>
                 </div>
                 <div className="col-12 col-md-6">
@@ -822,7 +641,7 @@ const WDCSub = () => {
                     <label className="form-label">
                       JOB Location <span className="red">*</span>{" "}
                     </label>
-                    <p>{formData?.job_location}</p>
+                    <p>{viewData?.job_location}</p>
                   </div>
                 </div>
                 <div className="col-12 col-md-6">
@@ -830,7 +649,7 @@ const WDCSub = () => {
                     <label className="form-label">
                       Yard No <span className="red">*</span>{" "}
                     </label>
-                    <p>{formData?.yard_no}</p>
+                    <p>{viewData?.yard_no}</p>
                   </div>
                 </div>
                 <div className="col-12 col-md-6">
@@ -838,7 +657,12 @@ const WDCSub = () => {
                     <label className="form-label">
                       Actual Start Date <span className="red">*</span>{" "}
                     </label>
-                    <p>{formData?.actual_start_date}</p>
+                    <p>
+                      {viewData?.actual_start_date &&
+                        new Date(
+                          viewData?.actual_start_date * 1000
+                        ).toLocaleDateString()}
+                    </p>
                   </div>
                 </div>
                 <div className="col-12 col-md-6">
@@ -846,7 +670,12 @@ const WDCSub = () => {
                     <label className="form-label">
                       Actual Completion Date <span className="red">*</span>{" "}
                     </label>
-                    <p>{formData?.actual_completion_date}</p>
+                    <p>
+                      {viewData?.actual_completion_date &&
+                        new Date(
+                          viewData?.actual_completion_date * 1000
+                        ).toLocaleDateString()}
+                    </p>
                   </div>
                 </div>
                 <div className="col-12 col-md-6">
@@ -854,7 +683,7 @@ const WDCSub = () => {
                     <label className="form-label">
                       Unit <span className="red">*</span>{" "}
                     </label>
-                    <p>{formData?.unit}</p>
+                    <p>{viewData?.unit}</p>
                   </div>
                 </div>
                 <div className="col-12 col-md-6">
@@ -862,7 +691,7 @@ const WDCSub = () => {
                     <label className="form-label">
                       Measurement <span className="red">*</span>{" "}
                     </label>
-                    <p>{formData?.messurment}</p>
+                    <p>{viewData?.messurment}</p>
                   </div>
                 </div>
                 <div className="col-12 col-md-6">
@@ -870,7 +699,15 @@ const WDCSub = () => {
                     <label className="form-label">
                       Quantity <span className="red">*</span>{" "}
                     </label>
-                    <p>{formData?.quantity}</p>
+                    <p>{viewData?.quantity}</p>
+                  </div>
+                </div>
+                <div className="col-12">
+                  <div className="mb-3">
+                    <label className="form-label">
+                      Remarks <span className="red">*</span>{" "}
+                    </label>
+                    <p>{viewData?.remarks}</p>
                   </div>
                 </div>
                 <div className="col-12 col-md-6">
@@ -928,53 +765,35 @@ const WDCSub = () => {
                   </div>
                 </div>
                 <div className="col-12">
-                  <div className="mb-3">
-                    <label className="form-label">
-                      Remarks <span className="red">*</span>{" "}
-                    </label>
-                    <p>{formData?.remarks}</p>
-                  </div>
-                </div>
-                <div className="col-12">
                   <div className="mb-3 d-flex justify-content-between">
                     <button
-                      onClick={() => submitHandler("SUBMITTED")}
-                      className="btn fw-bold btn-primary"
+                      onClick={() =>
+                        reConfirm(
+                          { file: true },
+                          () =>
+                            submitHandler("APPROVED", viewData?.reference_no),
+                          "You're approving the File. Please confirm!"
+                        )
+                      }
+                      className="btn fw-bold btn-success"
                       type="button"
                     >
-                      SUBMIT
+                      APPROVED
                     </button>
-
-                    {user?.department_id === USER_PPNC_DEPARTMENT && (
-                      <div>
-                        <button
-                          onClick={() =>
-                            reConfirm(
-                              { file: true },
-                              () => submitHandler("REJECTED"),
-                              "You're rejecting the File. Please confirm!"
-                            )
-                          }
-                          className="btn fw-bold btn-danger me-2"
-                          type="button"
-                        >
-                          REJECTED
-                        </button>
-                        <button
-                          onClick={() =>
-                            reConfirm(
-                              { file: true },
-                              () => submitHandler("APPROVED"),
-                              "You're approving the File. Please confirm!"
-                            )
-                          }
-                          className="btn fw-bold btn-success"
-                          type="button"
-                        >
-                          APPROVED
-                        </button>
-                      </div>
-                    )}
+                    <button
+                      onClick={() =>
+                        reConfirm(
+                          { file: true },
+                          () =>
+                            submitHandler("REJECTED", viewData?.reference_no),
+                          "You're rejecting the File. Please confirm!"
+                        )
+                      }
+                      className="btn fw-bold btn-danger me-2"
+                      type="button"
+                    >
+                      REJECTED
+                    </button>
                   </div>
                 </div>
               </div>
@@ -982,6 +801,161 @@ const WDCSub = () => {
           </div>
         </div>
       )}
+
+      <div className={isPopupView ? "popup active" : "popup"}>
+        <div className="card card-xxl-stretch mb-5 mb-xxl-8">
+          <div className="card-header border-0 pt-5 pb-3">
+            <h3 className="card-title align-items-start flex-column">
+              <span className="card-label fw-bold fs-3 mb-1">
+                All Data for{" "}
+                {viewData?.reference_no && `for ${viewData?.reference_no}`}
+              </span>
+            </h3>
+            <button
+              className="btn fw-bold btn-danger"
+              onClick={() => {
+                setViewData(null);
+                setIsPopupView(false);
+              }}
+            >
+              Close
+            </button>
+          </div>
+          <form>
+            <div className="row">
+              <div className="col-12 col-md-6">
+                <div className="mb-3">
+                  <label className="form-label">
+                    Action <span className="red">*</span>{" "}
+                  </label>
+                  <p>{viewData?.action_type}</p>
+                </div>
+              </div>
+              <div className="col-12 col-md-6">
+                <div className="mb-3">
+                  <label className="form-label">
+                    File Info <span className="red">*</span>{" "}
+                  </label>
+                  <p>
+                    <Link
+                      to={`${process.env.REACT_APP_PDF_URL}submitWDC/${viewData?.file_name}`}
+                      target="_blank"
+                    >
+                      Click here
+                    </Link>
+                  </p>
+                </div>
+              </div>
+              <div className="col-12 col-md-6">
+                <div className="mb-3">
+                  <label className="form-label">
+                    PO Line Item No <span className="red">*</span>{" "}
+                  </label>
+                  <p>{viewData?.po_line_iten_no}</p>
+                </div>
+              </div>
+              <div className="col-12 col-md-6">
+                <div className="mb-3">
+                  <label className="form-label">
+                    JOB Location <span className="red">*</span>{" "}
+                  </label>
+                  <p>{viewData?.job_location}</p>
+                </div>
+              </div>
+              <div className="col-12 col-md-6">
+                <div className="mb-3">
+                  <label className="form-label">
+                    Yard No <span className="red">*</span>{" "}
+                  </label>
+                  <p>{viewData?.yard_no}</p>
+                </div>
+              </div>
+              <div className="col-12 col-md-6">
+                <div className="mb-3">
+                  <label className="form-label">
+                    Actual Start Date <span className="red">*</span>{" "}
+                  </label>
+                  <p>
+                    {viewData?.actual_start_date &&
+                      new Date(
+                        viewData?.actual_start_date * 1000
+                      ).toLocaleDateString()}
+                  </p>
+                </div>
+              </div>
+              <div className="col-12 col-md-6">
+                <div className="mb-3">
+                  <label className="form-label">
+                    Actual Completion Date <span className="red">*</span>{" "}
+                  </label>
+                  <p>
+                    {viewData?.actual_completion_date &&
+                      new Date(
+                        viewData?.actual_completion_date * 1000
+                      ).toLocaleDateString()}
+                  </p>
+                </div>
+              </div>
+              <div className="col-12 col-md-6">
+                <div className="mb-3">
+                  <label className="form-label">
+                    Unit <span className="red">*</span>{" "}
+                  </label>
+                  <p>{viewData?.unit}</p>
+                </div>
+              </div>
+              <div className="col-12 col-md-6">
+                <div className="mb-3">
+                  <label className="form-label">
+                    Measurement <span className="red">*</span>{" "}
+                  </label>
+                  <p>{viewData?.messurment}</p>
+                </div>
+              </div>
+              <div className="col-12 col-md-6">
+                <div className="mb-3">
+                  <label className="form-label">
+                    Quantity <span className="red">*</span>{" "}
+                  </label>
+                  <p>{viewData?.quantity}</p>
+                </div>
+              </div>
+              <div className="col-12 col-md-6">
+                <div className="mb-3">
+                  <label className="form-label">
+                    Entry By Production <span className="red">*</span>{" "}
+                  </label>
+                  <p>{viewData?.entry_by_production}</p>
+                </div>
+              </div>
+              <div className="col-12 col-md-6">
+                <div className="mb-3">
+                  <label className="form-label">
+                    Stage Details <span className="red">*</span>{" "}
+                  </label>
+                  <p>{viewData?.stage_datiels}</p>
+                </div>
+              </div>
+              <div className="col-12 col-md-6">
+                <div className="mb-3">
+                  <label className="form-label">
+                    Actual Payable Amount <span className="red">*</span>{" "}
+                  </label>
+                  <p>{viewData?.actual_payable_amount}</p>
+                </div>
+              </div>
+              <div className="col-12">
+                <div className="mb-3">
+                  <label className="form-label">
+                    Remarks <span className="red">*</span>{" "}
+                  </label>
+                  <p>{viewData?.remarks}</p>
+                </div>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
     </>
   );
 };

@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { Fragment, useEffect, useRef, useState } from "react";
 import Footer from "../components/Footer";
 import SideBar from "../components/SideBar";
 import Header from "../components/Header";
@@ -10,6 +10,7 @@ import Select from "react-select";
 import { reConfirm } from "../utils/reConfirm";
 import { clrLegend } from "../utils/clrLegend";
 import { SUBMITTED } from "../constants/BGconstants";
+import { groupedByRefNo } from "../utils/groupedByReq";
 
 const QAPSub = () => {
   const inputRef = useRef(null);
@@ -24,6 +25,7 @@ const QAPSub = () => {
     remarks: "",
     reference_no: null,
   });
+  const [groupedData, setGroupedData] = useState([]);
 
   const [assign, setAssign] = useState({
     purchasing_doc_no: id,
@@ -80,6 +82,13 @@ const QAPSub = () => {
   }, []);
 
   useEffect(() => {
+    if (allqap && allqap.length > 0) {
+      const gData = groupedByRefNo(allqap);
+      setGroupedData(gData);
+    }
+  }, [allqap]);
+
+  useEffect(() => {
     if (selectedDept) {
       getEmpsByDepts(selectedDept);
     }
@@ -132,6 +141,7 @@ const QAPSub = () => {
       );
       if (data?.status) {
         setFormData({
+          ...formData,
           action_type: "",
           QapFile: null,
           remarks: "",
@@ -151,9 +161,9 @@ const QAPSub = () => {
     const { action_type, QapFile, remarks } = formData;
     if (
       flag === SUBMITTED &&
-      (action_type.trim() === "" || !QapFile || remarks.trim() === "")
+      (action_type.trim() === "" || remarks.trim() === "")
     ) {
-      return toast.warn("Action type, file and remarks are mandatory fields!");
+      return toast.warn("Action type, remarks are mandatory fields!");
     }
     if (remarks.trim() === "") {
       return toast.warn("Remarks are mandatory fields!");
@@ -172,15 +182,15 @@ const QAPSub = () => {
       const formDataToSend = new FormData();
       formDataToSend.append("purchasing_doc_no", id);
       formDataToSend.append("reference_no", formData?.reference_no);
-      formDataToSend.append("file", formData.QapFile);
-      formDataToSend.append("remarks", formData.remarks);
+      formDataToSend.append("file", QapFile);
+      formDataToSend.append("remarks", remarks);
       formDataToSend.append("status", flag);
       formDataToSend.append("updated_by", uType);
       formDataToSend.append("vendor_code", user.vendor_code);
       formDataToSend.append("mailSendTo", mailSendTo);
       formDataToSend.append("action_by_name", user.name);
       formDataToSend.append("action_by_id", user.email);
-      formDataToSend.append("action_type", formData?.action_type);
+      formDataToSend.append("action_type", action_type);
 
       const response = await apiCallBack(
         "POST",
@@ -193,6 +203,7 @@ const QAPSub = () => {
         toast.success("QAP uploaded successfully");
         setIsPopup(false);
         setFormData({
+          reference_no: null,
           action_type: "",
           QapFile: null,
           remarks: "",
@@ -339,7 +350,7 @@ const QAPSub = () => {
                             <table className="table table-striped table-bordered table_height">
                               <thead>
                                 <tr className="border-0">
-                                  <th>Reference No. </th>
+                                  {/* <th>Reference No. </th> */}
                                   <th>DateTime </th>
                                   <th>Action Type </th>
                                   <th>File Info</th>
@@ -352,60 +363,72 @@ const QAPSub = () => {
                                 </tr>
                               </thead>
                               <tbody style={{ maxHeight: "100%" }}>
-                                {allqap &&
-                                  allqap.map((qap, index) => (
-                                    <tr key={index}>
-                                      <td className="table_centerr">
-                                        {qap.reference_no}
-                                      </td>
-                                      <td className="table_center">
-                                        {qap?.created_at &&
-                                          new Date(
-                                            qap?.created_at
-                                          ).toLocaleString()}
-                                      </td>
-                                      <td>{qap.action_type}</td>
-                                      <td>
-                                        {qap.file_name && (
-                                          <a
-                                            href={`${process.env.REACT_APP_PDF_URL}qap/${qap.file_name}`}
-                                            target="_blank"
-                                            rel="noreferrer"
-                                          >
-                                            click Here
-                                          </a>
-                                        )}
-                                      </td>
-                                      <td>{qap.created_by_id}</td>
-                                      <td>{qap.remarks}</td>
-                                      <td
-                                        className={`${clrLegend(
-                                          qap?.status
-                                        )} bold`}
-                                      >
-                                        {qap.status}
-                                      </td>
-                                      {user?.department_id === 3 && (
-                                        <td>
-                                          {qap?.status === SUBMITTED && (
-                                            <button
-                                              onClick={() => {
-                                                setIsPopup(true);
-                                                setFormData({
-                                                  ...formData,
-                                                  reference_no:
-                                                    qap?.reference_no,
-                                                });
-                                              }}
-                                              className="btn fw-bold btn-primary me-3"
-                                            >
-                                              ACTION
-                                            </button>
-                                          )}
+                                {Object.keys(groupedData).map((it, index) => {
+                                  let items = groupedData[it];
+                                  return (
+                                    <Fragment key={index}>
+                                      <tr>
+                                        <td colSpan={10}>
+                                          <b>{it}</b>
                                         </td>
-                                      )}
-                                    </tr>
-                                  ))}
+                                      </tr>
+                                      {items &&
+                                        items.map((qap, index) => (
+                                          <tr key={index}>
+                                            {/* <td className="table_centerr">
+                                              {qap.reference_no}
+                                            </td> */}
+                                            <td className="table_center">
+                                              {qap?.created_at &&
+                                                new Date(
+                                                  qap?.created_at
+                                                ).toLocaleString()}
+                                            </td>
+                                            <td>{qap.action_type}</td>
+                                            <td>
+                                              {qap.file_name && (
+                                                <a
+                                                  href={`${process.env.REACT_APP_PDF_URL}qap/${qap.file_name}`}
+                                                  target="_blank"
+                                                  rel="noreferrer"
+                                                >
+                                                  click Here
+                                                </a>
+                                              )}
+                                            </td>
+                                            <td>{qap.created_by_id}</td>
+                                            <td>{qap.remarks}</td>
+                                            <td
+                                              className={`${clrLegend(
+                                                qap?.status
+                                              )} bold`}
+                                            >
+                                              {qap.status}
+                                            </td>
+                                            {user?.department_id === 3 && (
+                                              <td>
+                                                {qap?.status === SUBMITTED && (
+                                                  <button
+                                                    onClick={() => {
+                                                      setIsPopup(true);
+                                                      setFormData({
+                                                        ...formData,
+                                                        reference_no:
+                                                          qap?.reference_no,
+                                                      });
+                                                    }}
+                                                    className="btn fw-bold btn-primary me-3"
+                                                  >
+                                                    ACTION
+                                                  </button>
+                                                )}
+                                              </td>
+                                            )}
+                                          </tr>
+                                        ))}
+                                    </Fragment>
+                                  );
+                                })}
                               </tbody>
                             </table>
                           </div>
@@ -462,8 +485,6 @@ const QAPSub = () => {
                   </div>
                   <div className="mb-3">
                     <label className="form-label">File Info</label>
-                    &nbsp;&nbsp;
-                    <span className="mandatorystart">*</span>
                     <input
                       type="file"
                       className="form-control"
@@ -474,6 +495,7 @@ const QAPSub = () => {
                           QapFile: e.target.files[0],
                         })
                       }
+                      accept=".pdf"
                     />
                   </div>
                 </div>
@@ -595,7 +617,7 @@ const QAPSub = () => {
                 </button>
               </div>
               <form>
-                <div className="row" style={{ overflow: "unset" }}>
+                <div className="row">
                   <div className="col-12">
                     <div className="mb-3">
                       <label htmlFor="empCategory">Employee Category</label>

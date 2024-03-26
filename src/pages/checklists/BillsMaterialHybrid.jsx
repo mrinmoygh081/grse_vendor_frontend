@@ -174,18 +174,6 @@ const BillsMaterialHybrid = () => {
                                     <tr>
                                       <td>E-Invoice :</td>
                                       <td className="btn_value">
-                                        <select
-                                          name=""
-                                          id=""
-                                          className="form-select me-2"
-                                        >
-                                          <option value="applicable">
-                                            Applicable
-                                          </option>
-                                          <option value="notapplicable">
-                                            Not Applicable
-                                          </option>{" "}
-                                        </select>
                                         <input
                                           type="text"
                                           className="form-control me-2"
@@ -209,18 +197,6 @@ const BillsMaterialHybrid = () => {
                                     <tr>
                                       <td>Debit/Credit Note:</td>
                                       <td className="btn_value">
-                                        <select
-                                          name=""
-                                          id=""
-                                          className="form-select me-2"
-                                        >
-                                          <option value="applicable">
-                                            Applicable
-                                          </option>
-                                          <option value="notapplicable">
-                                            Not Applicable
-                                          </option>{" "}
-                                        </select>
                                         <input
                                           type="file"
                                           className="form-control"
@@ -271,18 +247,6 @@ const BillsMaterialHybrid = () => {
                                     <tr>
                                       <td>Contractual SDBG Submission Date</td>
                                       <td className="btn_value">
-                                        <select
-                                          name=""
-                                          id=""
-                                          className="form-select me-2"
-                                        >
-                                          <option value="applicable">
-                                            Applicable
-                                          </option>
-                                          <option value="notapplicable">
-                                            Not Applicable
-                                          </option>
-                                        </select>
                                         <b className="me-3">
                                           {form?.c_sdbg_date &&
                                             new Date(
@@ -300,21 +264,10 @@ const BillsMaterialHybrid = () => {
                                         />
                                       </td>
                                     </tr>
+                                    {console.log("form", form)}
                                     <tr>
                                       <td>Actual SDBG Submission Date</td>
                                       <td className="btn_value">
-                                        <select
-                                          name=""
-                                          id=""
-                                          className="form-select me-2"
-                                        >
-                                          <option value="applicable">
-                                            Applicable
-                                          </option>
-                                          <option value="notapplicable">
-                                            Not Applicable
-                                          </option>
-                                        </select>
                                         <b className="me-3">
                                           {form?.a_sdbg_date &&
                                             new Date(

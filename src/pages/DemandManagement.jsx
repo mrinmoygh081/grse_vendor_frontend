@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { Fragment, useEffect, useState } from "react";
 import Footer from "../components/Footer";
 import SideBar from "../components/SideBar";
 import Header from "../components/Header";
@@ -10,16 +10,22 @@ import { USER_PPNC_DEPARTMENT } from "../constants/userConstants";
 import { checkTypeArr } from "../utils/smallFun";
 import { convertToEpoch } from "../utils/getDateTimeNow";
 import ReactDatePicker from "react-datepicker";
+import { groupedByRefNo } from "../utils/groupedByReq";
+import { clrLegend } from "../utils/clrLegend";
 
 const DemandManagement = () => {
   const [isPopup, setIsPopup] = useState(false);
+  const [isSecPopup, setIsSecPopup] = useState(false);
   const [data, setData] = useState([]);
   const [lineItemData, setLineItemData] = useState([]);
   const [availableAmount, setAvailableAmount] = useState(null);
+  const [viewData, setViewData] = useState(null);
   const { id } = useParams();
+  const [groupedData, setGroupedData] = useState([]);
 
   const { user, token } = useSelector((state) => state.auth);
   const [formData, setFormData] = useState({
+    action_type: "",
     remarks: "",
     line_item_no: "",
     request_amount: "",
@@ -81,16 +87,37 @@ const DemandManagement = () => {
     }
   }, [formData?.line_item_no]);
 
-  console.log(formData?.delivery_date);
+  useEffect(() => {
+    if (data && data.length > 0) {
+      const gData = groupedByRefNo(data);
+      setGroupedData(gData);
+    }
+  }, [data]);
 
   const actionHandler = async (flag) => {
     try {
-      const { remarks, line_item_no, request_amount, delivery_date } = formData;
+      const {
+        action_type,
+        remarks,
+        line_item_no,
+        request_amount,
+        delivery_date,
+      } = formData;
+
+      if (action_type.trim() === "") {
+        return toast.warn("Action Type are required!");
+      }
       if (
-        remarks.trim() === "" ||
-        line_item_no.trim() === "" ||
-        request_amount.trim() === "" ||
-        delivery_date === ""
+        action_type.trim() === "Service Engineer Requirement" &&
+        (remarks.trim() === "" || line_item_no.trim() === "")
+      ) {
+        return toast.warn("All fields are required!");
+      } else if (
+        action_type.trim() === "Material Requirement" &&
+        (remarks.trim() === "" ||
+          line_item_no.trim() === "" ||
+          request_amount.trim() === "" ||
+          delivery_date === "")
       ) {
         return toast.warn("All fields are required!");
       }
@@ -100,11 +127,13 @@ const DemandManagement = () => {
         );
       }
       const formObj = {
+        action_type: action_type,
         purchasing_doc_no: id,
         line_item_no: line_item_no,
         request_amount: request_amount,
         delivery_date: convertToEpoch(delivery_date),
-        remarks: remarks,
+        created_remarks: remarks,
+        status: flag,
       };
 
       const response = await apiCallBack(
@@ -118,6 +147,7 @@ const DemandManagement = () => {
         toast.success(response?.message);
         setIsPopup(false);
         setFormData({
+          action_type: "",
           remarks: "",
           line_item_no: "",
           request_amount: "",
@@ -162,36 +192,69 @@ const DemandManagement = () => {
                             <table className="table table-striped table-bordered table_height">
                               <thead>
                                 <tr className="border-0">
-                                  <th>DateTime </th>
+                                  <th>DateTime</th>
                                   <th>PO Line Item </th>
-                                  <th>Updated By</th>
+                                  <th>Raised By</th>
                                   <th>Raised Quantity</th>
                                   <th>Delivery Date</th>
                                   <th className="min-w-150px">Remarks</th>
+                                  <th>Status</th>
+                                  <th>Action</th>
                                 </tr>
                               </thead>
                               <tbody style={{ maxHeight: "100%" }}>
-                                {checkTypeArr(data) &&
-                                  data.map((item, index) => (
-                                    <tr key={index}>
-                                      <td className="table_center">
-                                        {item?.created_at &&
-                                          new Date(
-                                            item?.created_at
-                                          ).toLocaleString()}
-                                      </td>
-                                      <td>{item?.line_item_no}</td>
-                                      <td>{item.updated_by}</td>
-                                      <td>{item.request_amount}</td>
-                                      <td>
-                                        {item.delivery_date &&
-                                          new Date(
-                                            item.delivery_date
-                                          ).toLocaleString()}
-                                      </td>
-                                      <td>{item.remarks}</td>
-                                    </tr>
-                                  ))}
+                                {Object.keys(groupedData).map((it, index) => {
+                                  let items = groupedData[it];
+                                  return (
+                                    <Fragment key={index}>
+                                      <tr>
+                                        <td colSpan={10}>
+                                          <b>{it}</b>
+                                        </td>
+                                      </tr>
+                                      {items &&
+                                        items.map((item, i) => (
+                                          <tr key={i}>
+                                            <td className="table_center">
+                                              {item?.created_at &&
+                                                new Date(
+                                                  item?.created_at
+                                                ).toLocaleString()}
+                                            </td>
+                                            <td>{item?.line_item_no}</td>
+                                            <td>{item.created_by}</td>
+                                            <td>{item.request_amount}</td>
+                                            <td>
+                                              {item.delivery_date &&
+                                                new Date(
+                                                  item.delivery_date
+                                                ).toLocaleDateString()}
+                                            </td>
+                                            <td>{item.created_remarks}</td>
+                                            <td
+                                              className={`${clrLegend(
+                                                item?.status
+                                              )} bold`}
+                                            >
+                                              {item.status}
+                                            </td>
+                                            <td>
+                                              <button
+                                                onClick={() => {
+                                                  setViewData(item);
+                                                  setIsSecPopup(true);
+                                                }}
+                                                className="btn fw-bold btn-primary"
+                                                type="button"
+                                              >
+                                                Action
+                                              </button>
+                                            </td>
+                                          </tr>
+                                        ))}
+                                    </Fragment>
+                                  );
+                                })}
                               </tbody>
                             </table>
                           </div>
@@ -207,132 +270,242 @@ const DemandManagement = () => {
         </div>
       </div>
       {user?.department_id === USER_PPNC_DEPARTMENT && (
-        <div className={isPopup ? "popup active" : "popup"}>
-          <div className="card card-xxl-stretch mb-5 mb-xxl-8">
-            <div className="card-header border-0 pt-5 pb-3">
-              <h3 className="card-title align-items-start flex-column">
-                <span className="card-label fw-bold fs-3 mb-1">
-                  Take Your Action
-                </span>
-              </h3>
-              <button
-                className="btn fw-bold btn-danger"
-                onClick={() => setIsPopup(false)}
-              >
-                Close
-              </button>
-            </div>
-            <form>
-              <div className="row">
-                <div className="col-12">
-                  <div className="mb-3">
-                    <label className="form-label">
-                      PO Line Item <span className="red">*</span>{" "}
-                    </label>
-                    <select
-                      name=""
-                      id=""
-                      className="form-select"
-                      value={formData?.line_item_no}
-                      onChange={(e) =>
-                        setFormData({
-                          ...formData,
-                          line_item_no: e.target.value,
-                        })
-                      }
-                    >
-                      <option value="">Choose PO Line Item</option>
-                      {checkTypeArr(lineItemData) &&
-                        lineItemData.map((item, i) => {
-                          return (
-                            <option value={item?.material_item_number} key={i}>
-                              {item?.material_item_number}
-                            </option>
-                          );
-                        })}
-                    </select>
-                  </div>
-                </div>
-                <div className="col-12">
-                  <div className="mb-3">
-                    <label className="form-label">
-                      Raised Quantity <span className="red">*</span>{" "}
-                    </label>
-                    <input
-                      type="text"
-                      className="form-control"
-                      value={formData?.request_amount}
-                      onChange={(e) =>
-                        setFormData({
-                          ...formData,
-                          request_amount: e.target.value,
-                        })
-                      }
-                    />
-                    <p>Available Qunatity: {availableAmount}</p>
-                  </div>
-                </div>
-                <div className="col-12">
-                  <div className="mb-3">
-                    <label className="form-label">
-                      Delivery Date <span className="red">*</span>{" "}
-                    </label>
-                    {/* <input
-                      type="date"
-                      className="form-control"
-                      value={formData?.delivery_date}
-                      onChange={(e) =>
-                        setFormData({
-                          ...formData,
-                          delivery_date: e.target.value,
-                        })
-                      }
-                    /> */}
-                    <ReactDatePicker
-                      selected={formData?.delivery_date}
-                      onChange={(date) =>
-                        setFormData({
-                          ...formData,
-                          delivery_date: date,
-                        })
-                      }
-                      dateFormat="dd/MM/yyyy"
-                      className="form-control"
-                      placeholderText="DD/MM/YYYY"
-                    />
-                  </div>
-                </div>
-                <div className="col-12">
-                  <div className="mb-3">
-                    <label className="form-label">Remarks</label>&nbsp;&nbsp;
-                    <span className="mandatorystart">*</span>
-                    <textarea
-                      name=""
-                      id=""
-                      rows="4"
-                      className="form-control"
-                      value={formData?.remarks}
-                      onChange={(e) =>
-                        setFormData({ ...formData, remarks: e.target.value })
-                      }
-                    ></textarea>
-                  </div>
-                </div>
-                <div className="col-12">
-                  <div className="mb-3 d-flex justify-content-between">
-                    <button
-                      onClick={() => actionHandler("SUBMITTED")}
-                      className="btn fw-bold btn-primary"
-                      type="button"
-                    >
-                      SUBMIT
-                    </button>
-                  </div>
-                </div>
+        <>
+          <div className={isPopup ? "popup active" : "popup"}>
+            <div className="card card-xxl-stretch mb-5 mb-xxl-8">
+              <div className="card-header border-0 pt-5 pb-3">
+                <h3 className="card-title align-items-start flex-column">
+                  <span className="card-label fw-bold fs-3 mb-1">
+                    Take Your Action
+                  </span>
+                </h3>
+                <button
+                  className="btn fw-bold btn-danger"
+                  onClick={() => setIsPopup(false)}
+                >
+                  Close
+                </button>
               </div>
-            </form>
+              <form>
+                <div className="row">
+                  <div className="col-12">
+                    <div className="mb-3">
+                      <label className="form-label">
+                        Action Type <span className="red">*</span>{" "}
+                      </label>
+                      <select
+                        name=""
+                        id=""
+                        className="form-select"
+                        value={formData?.action_type}
+                        onChange={(e) =>
+                          setFormData({
+                            ...formData,
+                            action_type: e.target.value,
+                          })
+                        }
+                      >
+                        <option value="">Choose Action Type</option>
+                        <option value="Material Requirement">
+                          Material Requirement
+                        </option>
+                        <option value="Service Engineer Requirement">
+                          Service Engineer Requirement
+                        </option>
+                      </select>
+                    </div>
+                  </div>
+                  <div className="col-12">
+                    <div className="mb-3">
+                      <label className="form-label">
+                        PO Line Item <span className="red">*</span>{" "}
+                      </label>
+                      <select
+                        name=""
+                        id=""
+                        className="form-select"
+                        value={formData?.line_item_no}
+                        onChange={(e) =>
+                          setFormData({
+                            ...formData,
+                            line_item_no: e.target.value,
+                          })
+                        }
+                      >
+                        <option value="">Choose PO Line Item</option>
+                        {checkTypeArr(lineItemData) &&
+                          lineItemData.map((item, i) => {
+                            return (
+                              <option
+                                value={item?.material_item_number}
+                                key={i}
+                              >
+                                {item?.material_item_number}
+                              </option>
+                            );
+                          })}
+                      </select>
+                    </div>
+                  </div>
+                  {formData?.action_type !== "Service Engineer Requirement" && (
+                    <>
+                      <div className="col-12">
+                        <div className="mb-3">
+                          <label className="form-label">
+                            Raised Quantity <span className="red">*</span>{" "}
+                          </label>
+                          <input
+                            type="number"
+                            className="form-control"
+                            value={formData?.request_amount}
+                            onChange={(e) =>
+                              setFormData({
+                                ...formData,
+                                request_amount: e.target.value,
+                              })
+                            }
+                          />
+                          <p>Available Qunatity: {availableAmount}</p>
+                        </div>
+                      </div>
+                      <div className="col-12">
+                        <div className="mb-3">
+                          <label className="form-label">
+                            Delivery Date <span className="red">*</span>{" "}
+                          </label>
+                          <ReactDatePicker
+                            selected={formData?.delivery_date}
+                            onChange={(date) =>
+                              setFormData({
+                                ...formData,
+                                delivery_date: date,
+                              })
+                            }
+                            dateFormat="dd/MM/yyyy"
+                            className="form-control"
+                            placeholderText="DD/MM/YYYY"
+                          />
+                        </div>
+                      </div>
+                    </>
+                  )}
+                  <div className="col-12">
+                    <div className="mb-3">
+                      <label className="form-label">Remarks</label>&nbsp;&nbsp;
+                      <span className="mandatorystart">*</span>
+                      <textarea
+                        name=""
+                        id=""
+                        rows="4"
+                        className="form-control"
+                        value={formData?.remarks}
+                        onChange={(e) =>
+                          setFormData({ ...formData, remarks: e.target.value })
+                        }
+                      ></textarea>
+                    </div>
+                  </div>
+                  <div className="col-12">
+                    <div className="mb-3 d-flex justify-content-between">
+                      <button
+                        onClick={() => actionHandler("SUBMITTED")}
+                        className="btn fw-bold btn-primary"
+                        type="button"
+                      >
+                        SUBMIT
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </form>
+            </div>
           </div>
-        </div>
+          <div className={isSecPopup ? "popup active" : "popup"}>
+            <div className="card card-xxl-stretch mb-5 mb-xxl-8">
+              <div className="card-header border-0 pt-5 pb-3">
+                <h3 className="card-title align-items-start flex-column">
+                  <span className="card-label fw-bold fs-3 mb-1">
+                    Take Your Action
+                  </span>
+                </h3>
+                <button
+                  className="btn fw-bold btn-danger"
+                  onClick={() => {
+                    setIsSecPopup(false);
+                    setViewData(null);
+                  }}
+                >
+                  Close
+                </button>
+              </div>
+              <form>
+                <div className="row">
+                  <div className="col-12 col-md-6">
+                    <div className="mb-3">
+                      <label className="form-label">
+                        PO Line Item <span className="red">*</span>{" "}
+                      </label>
+                      <p>{viewData?.line_item_no}</p>
+                    </div>
+                  </div>
+                  <div className="col-12 col-md-6">
+                    <div className="mb-3">
+                      <label className="form-label">
+                        Requested Quantity <span className="red">*</span>{" "}
+                      </label>
+                      <p>{viewData?.request_amount}</p>
+                    </div>
+                  </div>
+                  <div className="col-12 col-md-6">
+                    <div className="mb-3">
+                      <label className="form-label">
+                        Received Quantitty <span className="red">*</span>{" "}
+                      </label>
+                      <input
+                        type="number"
+                        className="form-control"
+                        value={formData?.recived_quantity}
+                        onChange={(e) =>
+                          setFormData({
+                            ...formData,
+                            recived_quantity: e.target.value,
+                          })
+                        }
+                      />
+                    </div>
+                  </div>
+                  <div className="col-12">
+                    <div className="mb-3">
+                      <label className="form-label">Remarks</label>&nbsp;&nbsp;
+                      <span className="mandatorystart">*</span>
+                      <textarea
+                        name=""
+                        id=""
+                        rows="4"
+                        className="form-control"
+                        value={formData?.remarks}
+                        onChange={(e) =>
+                          setFormData({ ...formData, remarks: e.target.value })
+                        }
+                      ></textarea>
+                    </div>
+                  </div>
+                  <div className="col-12">
+                    <div className="mb-3 d-flex justify-content-between">
+                      <button
+                        onClick={() => actionHandler("SUBMITTED")}
+                        className="btn fw-bold btn-primary"
+                        type="button"
+                      >
+                        SUBMIT
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div>
+        </>
       )}
     </>
   );
