@@ -87,14 +87,12 @@ const BillsMaterialHybridEdit = () => {
         token
       );
       if (data?.status) {
-        console.log(data?.data);
         setImpDates(data?.data);
       }
     } catch (error) {
       console.error("Error fetching WDC list:", error);
     }
   };
-  console.log("btn_num", state);
 
   const getDataByBTN = async () => {
     try {
@@ -104,7 +102,6 @@ const BillsMaterialHybridEdit = () => {
         null,
         token
       );
-      console.log("data2", data);
       if (data?.status && checkTypeArr(data?.data)) {
         setData(data?.data[0]);
       }
@@ -123,11 +120,10 @@ const BillsMaterialHybridEdit = () => {
   //     setForm({ ...form, data });
   //   }
   // }, [data]);
-  console.log("form", form);
+  // console.log("form", form);
 
   useEffect(() => {
     if (data) {
-      console.log("data", data);
       setForm(data);
     }
     if (impDates) {
@@ -504,33 +500,17 @@ const BillsMaterialHybridEdit = () => {
                               <div className="text-center">
                                 {user?.user_type === USER_VENDOR && (
                                   <button
-                                    type="button"
                                     className="btn fw-bold btn-primary me-3"
+                                    type="button"
                                     onClick={() =>
-                                      actionHandlerBTN(
-                                        "Edit",
-                                        token,
-                                        id,
-                                        form,
-                                        setForm,
-                                        initialData
+                                      navigate(
+                                        `/invoice-and-payment-process/${id}`
                                       )
                                     }
                                   >
-                                    SUBMIT
+                                    BACK
                                   </button>
                                 )}
-                                <button
-                                  className="btn fw-bold btn-primary me-3"
-                                  type="button"
-                                  onClick={() =>
-                                    navigate(
-                                      `/invoice-and-payment-process/${id}`
-                                    )
-                                  }
-                                >
-                                  BACK
-                                </button>
                               </div>
                             </div>
                           </div>
@@ -548,7 +528,7 @@ const BillsMaterialHybridEdit = () => {
                                       <tr>
                                         <td>BTN Number:</td>
                                         <td className="btn_value">
-                                          <b>789789978</b>
+                                          <b>{state}</b>
                                         </td>
                                       </tr>
                                       <tr>
@@ -622,21 +602,27 @@ const BillsMaterialHybridEdit = () => {
                                             <label htmlhtmlFor="QADD">
                                               Actual Delivery Date:
                                             </label>
-                                            <input
-                                              type="date"
-                                              className="form-control"
-                                              id="QADD"
-                                            />
+                                            <p>
+                                              <b>
+                                                {form?.a_qap_date &&
+                                                  new Date(
+                                                    form?.a_qap_date
+                                                  ).toDateString()}
+                                              </b>
+                                            </p>
                                           </div>
                                           <div className="me-3">
                                             <label htmlhtmlFor="QCDD">
                                               Contractual Delivery Date:
                                             </label>
-                                            <input
-                                              type="date"
-                                              className="form-control"
-                                              id="QCDD"
-                                            />
+                                            <p>
+                                              <b>
+                                                {form?.c_qap_date &&
+                                                  new Date(
+                                                    form?.c_qap_date
+                                                  ).toDateString()}
+                                              </b>
+                                            </p>
                                           </div>
                                           <div>
                                             <label>Amount:</label>
@@ -651,21 +637,27 @@ const BillsMaterialHybridEdit = () => {
                                             <label htmlhtmlFor="LADD">
                                               Actual Delivery Date:
                                             </label>
-                                            <input
-                                              type="date"
-                                              className="form-control"
-                                              id="LADD"
-                                            />
+                                            <p>
+                                              <b>
+                                                {form?.a_ilms_date &&
+                                                  new Date(
+                                                    form?.a_ilms_date
+                                                  ).toDateString()}
+                                              </b>
+                                            </p>
                                           </div>
                                           <div className="me-3">
                                             <label htmlhtmlFor="LCDD">
                                               Contractual Delivery Date:
                                             </label>
-                                            <input
-                                              type="date"
-                                              className="form-control"
-                                              id="LCDD"
-                                            />
+                                            <p>
+                                              <b>
+                                                {form?.c_ilms_date &&
+                                                  new Date(
+                                                    form?.c_ilms_date
+                                                  ).toDateString()}
+                                              </b>
+                                            </p>
                                           </div>
                                           <div>
                                             <label>Amount:</label>

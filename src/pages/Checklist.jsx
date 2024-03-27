@@ -18,7 +18,7 @@ const Checklist = () => {
   const [data, setData] = useState(null);
 
   const navigate = useNavigate();
-  const [isPopup, setIsPopup] = useState(false);
+  // const [isPopup, setIsPopup] = useState(false);
   const [slug, setSlug] = useState("");
 
   const NewBillHandler = () => {
