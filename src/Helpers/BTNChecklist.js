@@ -7,7 +7,8 @@ export const actionHandlerBTN = async (
   id,
   form,
   setForm,
-  initialData
+  initialData,
+  navigate
 ) => {
   try {
     const {
@@ -40,7 +41,7 @@ export const actionHandlerBTN = async (
       pbg_filename,
     } = form;
     const fDToSend = new FormData();
-    fDToSend.append("po", id);
+    fDToSend.append("purchasing_doc_no", id);
     fDToSend.append("invoice_no", invoice_no);
     fDToSend.append("invoice_value", invoice_value);
     fDToSend.append("e_invoice_no", e_invoice_no);
@@ -94,6 +95,7 @@ export const actionHandlerBTN = async (
       toast.success(response?.message);
       setForm(initialData);
       // getData();
+      navigate(`/invoice-and-payment-process/${id}`);
     } else {
       toast.error(response?.message);
     }

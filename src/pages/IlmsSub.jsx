@@ -262,6 +262,7 @@ const IlmsSub = () => {
                           drawingFile: e.target.files[0],
                         })
                       }
+                      accept=".pdf"
                     />
                   </div>
                 </div>

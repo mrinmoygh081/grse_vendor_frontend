@@ -548,7 +548,7 @@ const BillsMaterialHybridEdit = () => {
                                       <tr>
                                         <td>BTN Number:</td>
                                         <td className="btn_value">
-                                          <b>78978997</b>
+                                          <b>789789978</b>
                                         </td>
                                       </tr>
                                       <tr>
@@ -587,21 +587,27 @@ const BillsMaterialHybridEdit = () => {
                                             <label htmlhtmlFor="DADD">
                                               Actual Delivery Date:
                                             </label>
-                                            <input
-                                              type="date"
-                                              className="form-control"
-                                              id="DADD"
-                                            />
+                                            <p>
+                                              <b>
+                                                {form?.a_drawing_date &&
+                                                  new Date(
+                                                    form?.a_drawing_date
+                                                  ).toDateString()}
+                                              </b>
+                                            </p>
                                           </div>
                                           <div className="me-3">
                                             <label htmlhtmlFor="DCDD">
                                               Contractual Delivery Date:
                                             </label>
-                                            <input
-                                              type="date"
-                                              className="form-control"
-                                              id="DCDD"
-                                            />
+                                            <p>
+                                              <b>
+                                                {form?.c_drawing_date &&
+                                                  new Date(
+                                                    form?.c_drawing_date
+                                                  ).toDateString()}
+                                              </b>
+                                            </p>
                                           </div>
                                           <div>
                                             <label>Amount:</label>

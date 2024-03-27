@@ -85,7 +85,7 @@ const BillsMaterialHybrid = () => {
         token
       );
       if (data?.status) {
-        console.log(data?.data);
+        console.log("getImpDates", data?.data);
         setImpDates(data?.data);
       }
     } catch (error) {
@@ -281,18 +281,6 @@ const BillsMaterialHybrid = () => {
                                         Demand raised by production/PP&C if any
                                       </td>
                                       <td className="btn_value">
-                                        <select
-                                          name=""
-                                          id=""
-                                          className="form-select me-2"
-                                        >
-                                          <option value="applicable">
-                                            Applicable
-                                          </option>
-                                          <option value="notapplicable">
-                                            Not Applicable
-                                          </option>
-                                        </select>
                                         <input
                                           type="file"
                                           className="form-control"
@@ -307,18 +295,6 @@ const BillsMaterialHybrid = () => {
                                     <tr>
                                       <td>Gate Entry Acknowledgement no.</td>
                                       <td className="btn_value">
-                                        <select
-                                          name=""
-                                          id=""
-                                          className="form-select me-2"
-                                        >
-                                          <option value="applicable">
-                                            Applicable
-                                          </option>
-                                          <option value="notapplicable">
-                                            Not Applicable
-                                          </option>
-                                        </select>
                                         <input
                                           type="text"
                                           className="form-control"
@@ -333,18 +309,6 @@ const BillsMaterialHybrid = () => {
                                     <tr>
                                       <td>Gate Entry Date</td>
                                       <td className="btn_value">
-                                        <select
-                                          name=""
-                                          id=""
-                                          className="form-select me-2"
-                                        >
-                                          <option value="applicable">
-                                            Applicable
-                                          </option>
-                                          <option value="notapplicable">
-                                            Not Applicable
-                                          </option>
-                                        </select>
                                         <input
                                           type="date"
                                           className="form-control me-2"
@@ -496,18 +460,6 @@ const BillsMaterialHybrid = () => {
                                         Contractual Drawing submission date
                                       </td>
                                       <td className="btn_value">
-                                        <select
-                                          name=""
-                                          id=""
-                                          className="form-select me-2"
-                                        >
-                                          <option value="applicable">
-                                            Applicable
-                                          </option>
-                                          <option value="notapplicable">
-                                            Not Applicable
-                                          </option>
-                                        </select>
                                         <b>
                                           {form?.c_drawing_date &&
                                             new Date(
@@ -519,18 +471,6 @@ const BillsMaterialHybrid = () => {
                                     <tr>
                                       <td>Actual Drawing submission date</td>
                                       <td className="btn_value">
-                                        <select
-                                          name=""
-                                          id=""
-                                          className="form-select me-2"
-                                        >
-                                          <option value="applicable">
-                                            Applicable
-                                          </option>
-                                          <option value="notapplicable">
-                                            Not Applicable
-                                          </option>
-                                        </select>
                                         <b>
                                           {form?.a_drawing_date &&
                                             new Date(
@@ -542,18 +482,6 @@ const BillsMaterialHybrid = () => {
                                     <tr>
                                       <td>Contractual QAP submission date</td>
                                       <td className="btn_value">
-                                        <select
-                                          name=""
-                                          id=""
-                                          className="form-select me-2"
-                                        >
-                                          <option value="applicable">
-                                            Applicable
-                                          </option>
-                                          <option value="notapplicable">
-                                            Not Applicable
-                                          </option>
-                                        </select>
                                         <b>
                                           {form?.c_qap_date &&
                                             new Date(
@@ -565,18 +493,6 @@ const BillsMaterialHybrid = () => {
                                     <tr>
                                       <td>Actual QAP submission date</td>
                                       <td className="btn_value">
-                                        <select
-                                          name=""
-                                          id=""
-                                          className="form-select me-2"
-                                        >
-                                          <option value="applicable">
-                                            Applicable
-                                          </option>
-                                          <option value="notapplicable">
-                                            Not Applicable
-                                          </option>
-                                        </select>
                                         <b>
                                           {form?.a_qap_date &&
                                             new Date(
@@ -588,18 +504,6 @@ const BillsMaterialHybrid = () => {
                                     <tr>
                                       <td>Contractual ILMS submission date</td>
                                       <td className="btn_value">
-                                        <select
-                                          name=""
-                                          id=""
-                                          className="form-select me-2"
-                                        >
-                                          <option value="applicable">
-                                            Applicable
-                                          </option>
-                                          <option value="notapplicable">
-                                            Not Applicable
-                                          </option>
-                                        </select>
                                         <b>
                                           {form?.c_ilms_date &&
                                             new Date(
@@ -611,18 +515,6 @@ const BillsMaterialHybrid = () => {
                                     <tr>
                                       <td>Actual ILMS submission date</td>
                                       <td className="btn_value">
-                                        <select
-                                          name=""
-                                          id=""
-                                          className="form-select me-2"
-                                        >
-                                          <option value="applicable">
-                                            Applicable
-                                          </option>
-                                          <option value="notapplicable">
-                                            Not Applicable
-                                          </option>
-                                        </select>
                                         <b>
                                           {form?.a_ilms_date &&
                                             new Date(
@@ -634,18 +526,6 @@ const BillsMaterialHybrid = () => {
                                     <tr>
                                       <td>PBG</td>
                                       <td className="btn_value">
-                                        <select
-                                          name=""
-                                          id=""
-                                          className="form-select me-2"
-                                        >
-                                          <option value="applicable">
-                                            Applicable
-                                          </option>
-                                          <option value="notapplicable">
-                                            Not Applicable
-                                          </option>
-                                        </select>
                                         <input
                                           type="file"
                                           className="form-control"
@@ -699,7 +579,8 @@ const BillsMaterialHybrid = () => {
                                         id,
                                         form,
                                         setForm,
-                                        initialData
+                                        initialData,
+                                        navigate
                                       )
                                     }
                                   >
@@ -722,7 +603,7 @@ const BillsMaterialHybrid = () => {
                           </div>
                         </div>
                       </div>
-                      {isDO && (
+                      {/* {isDO && (
                         <div className="col-12">
                           <div className="card">
                             <h3 className="m-3">ENTRY BY DEALING OFFICER:</h3>
@@ -898,7 +779,7 @@ const BillsMaterialHybrid = () => {
                             </div>
                           </div>
                         </div>
-                      )}
+                      )} */}
                     </div>
                   </form>
                 </div>

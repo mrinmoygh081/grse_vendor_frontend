@@ -118,10 +118,8 @@ const POs = () => {
                     </option>
                     <option value="ICGRN">ICGRN</option>
                     <option value="WDC">WDC</option>
+                    <option value="BTN">BTN</option>
                   </select>
-                  {/* <button className="search_btn">
-                            <FiSearch />
-                          </button> */}
                 </div>
               </div>
             </div>

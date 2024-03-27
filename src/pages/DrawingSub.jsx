@@ -227,7 +227,7 @@ const DrawingSub = () => {
                                                     onClick={() => {
                                                       setIsPopup(true);
                                                       setreferenceNo(
-                                                        items.reference_no
+                                                        item.reference_no
                                                       );
                                                     }}
                                                     className="btn fw-bold btn-primary mx-3"
