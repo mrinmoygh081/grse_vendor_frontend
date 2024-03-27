@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Mar 10, 2024 at 11:27 PM
+-- Generation Time: Mar 27, 2024 at 07:18 AM
 -- Server version: 10.4.28-MariaDB
 -- PHP Version: 8.1.17
 
@@ -42,8 +42,10 @@ CREATE TABLE `actualsubmissiondate` (
 --
 
 INSERT INTO `actualsubmissiondate` (`id`, `purchasing_doc_no`, `milestoneId`, `milestoneText`, `actualSubmissionDate`, `created_at`, `created_by_id`) VALUES
-(4, '7800000040', 2, 'ACTUAL DRAWING SUBMISSION DATE', 1710099931723, 1710100675663, '600400'),
-(5, '7800000040', 3, 'ACTUAL QAP SUBMISSION DATE', 1710104406401, 1710104438658, '600951');
+(21, '7800000040', 1, 'ACTUAL SDBG SUBMISSION DATE', 1711456341026, 1711456341051, '600200'),
+(22, '7800000040', 2, 'ACTUAL DRAWING SUBMISSION DATE', 1711455110864, 1711457056331, '600400'),
+(23, '7800000040', 4, 'ACTUAL ILMS SUBMISSION DATE', 1711455172021, 1711457087542, '600400'),
+(24, '7800000040', 3, 'ACTUAL QAP SUBMISSION DATE', 1711455133087, 1711458343163, '600947');
 
 -- --------------------------------------------------------
 
@@ -107,7 +109,7 @@ INSERT INTO `auth` (`id`, `user_type`, `department_id`, `internal_role_id`, `use
 (13, 2, 3, 2, '600953', '1234', 'grse qap staff', '600953', '2023-10-12 15:58:16', NULL),
 (14, 2, 3, 2, '600950', '1234', 'grse qap staff', '600950', '2023-10-12 15:58:16', NULL),
 (15, 2, 3, 2, '600252', '1234', 'grse qap staff', '600252', '2023-10-12 15:58:16', NULL),
-(16, 0, 14, NULL, 'PPC user', '1234', 'ppc_user', '600100', '2024-01-15 14:08:08', NULL),
+(16, 0, 14, 1, 'PPC user', '1234', 'ppc_user', '600100', '2024-01-15 14:08:08', NULL),
 (18, 0, 15, 1, 'grse_FINANCE_ASSIGNER', '1234', 'grse_FINANCE_ASSIGNER', '600200', '2024-01-23 16:44:53', NULL),
 (19, 0, 16, 0, 'RIC', '1234', 'grse_RIC', '600300', '2024-01-23 16:44:53', NULL),
 (20, 0, 15, 2, 'grse_FINANCE_STAFF', '1234', 'grse_FINANCE_STAFF', '600201', '2024-01-23 16:44:53', NULL),
@@ -115,7 +117,8 @@ INSERT INTO `auth` (`id`, `user_type`, `department_id`, `internal_role_id`, `use
 (22, 2, 2, 1, 'CDO(drawing officer)', '1234', 'CDO(drawing officer)', '600400', '2024-01-23 16:44:53', NULL),
 (23, 0, 15, 2, 'grse_FINANCE_STAFF', '1234', 'grse_FINANCE_STAFF', '600202', '2024-01-23 16:44:53', NULL),
 (24, 0, 15, 2, 'grse_FINANCE_STAFF', '1234', 'grse_FINANCE_STAFF', '600203', '2024-01-23 16:44:53', NULL),
-(25, 12, 12, 1, 'grse_HR', '1234', 'grse_HR', '600247', '2024-01-23 16:44:53', NULL);
+(25, 2, 5, 1, 'grse_STORE', '1234', 'grse_STORE', '600500', '2024-01-23 16:44:53', NULL),
+(27, 2, 18, 1, 'HR', '1234', 'grse_HR', '600600', '2024-01-23 16:44:53', NULL);
 
 -- --------------------------------------------------------
 
@@ -200,6 +203,97 @@ INSERT INTO `bill_registration` (`id`, `po`, `vendor_id`, `invoice`, `bill_date`
 (94, '210000006', '00000105', 'ABC', '2023-09-20 18:30:00', 'aabhinit96@gmail.com', 'DSD', '1695292722734-abhi.png'),
 (95, '7800000040', '50007545', 'afdfsgdrgesrg', '2023-09-25 18:30:00', 'aabhinit96@gmail.com', 'grfgergerg', '1695723989731-abhi.png'),
 (96, '7800000040', '50007545', 'frrrrrrrrrrrrrr', '2023-09-26 18:30:00', 'aabhinit96@gmail.com', 'dsadsadasdasdadadad', '1695791365926-abhi.png');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `btn`
+--
+
+CREATE TABLE `btn` (
+  `btn_num` varchar(30) NOT NULL,
+  `purchasing_doc_no` varchar(30) NOT NULL,
+  `invoice_no` varchar(30) DEFAULT NULL,
+  `invoice_filename` varchar(150) NOT NULL,
+  `invoice_value` varchar(30) DEFAULT NULL,
+  `e_invoice_no` varchar(30) DEFAULT NULL,
+  `e_invoice_filename` varchar(150) DEFAULT NULL,
+  `debit_note` varchar(15) DEFAULT NULL,
+  `credit_note` varchar(15) DEFAULT NULL,
+  `debit_credit_filename` varchar(150) DEFAULT NULL,
+  `net_claim_amount` varchar(15) DEFAULT NULL,
+  `c_sdbg_date` varchar(30) DEFAULT NULL,
+  `c_sdbg_filename` varchar(150) DEFAULT NULL,
+  `a_sdbg_date` varchar(30) DEFAULT NULL,
+  `demand_raise_filename` varchar(150) DEFAULT NULL,
+  `gate_entry_no` varchar(30) DEFAULT NULL,
+  `get_entry_filename` varchar(150) DEFAULT NULL,
+  `gate_entry_date` varchar(30) DEFAULT NULL,
+  `grn_no_1` varchar(30) DEFAULT NULL,
+  `grn_no_2` varchar(30) DEFAULT NULL,
+  `grn_no_3` varchar(30) DEFAULT NULL,
+  `grn_no_4` varchar(30) DEFAULT NULL,
+  `icgrn_no_1` varchar(30) DEFAULT NULL,
+  `icgrn_no_2` varchar(30) DEFAULT NULL,
+  `icgrn_no_3` varchar(30) DEFAULT NULL,
+  `icgrn_no_4` varchar(30) DEFAULT NULL,
+  `icgrn_total` varchar(30) DEFAULT NULL,
+  `c_drawing_date` varchar(30) DEFAULT NULL,
+  `a_drawing_date` varchar(30) DEFAULT NULL,
+  `c_qap_date` varchar(30) DEFAULT NULL,
+  `a_qap_date` varchar(30) DEFAULT NULL,
+  `c_ilms_date` varchar(30) DEFAULT NULL,
+  `a_ilms_date` varchar(30) DEFAULT NULL,
+  `pbg_filename` varchar(150) DEFAULT NULL,
+  `hsn_gstn_icgrn` tinyint(1) DEFAULT NULL,
+  `ld_gate_entry_date` varchar(30) DEFAULT NULL,
+  `ld_contractual_date` varchar(30) DEFAULT NULL,
+  `ld_amount` varchar(15) NOT NULL,
+  `c_drawing_date_do` varchar(30) DEFAULT NULL,
+  `a_drawing_date_do` varchar(30) DEFAULT NULL,
+  `drawing_penalty` varchar(15) DEFAULT NULL,
+  `c_qap_date_do` varchar(30) DEFAULT NULL,
+  `a_qap_date_do` varchar(30) DEFAULT NULL,
+  `qap_penalty` varchar(15) DEFAULT NULL,
+  `c_ilms_date_do` varchar(30) DEFAULT NULL,
+  `a_ilms_date_do` varchar(30) DEFAULT NULL,
+  `ilms_penalty` varchar(15) DEFAULT NULL,
+  `other_penalty` varchar(15) DEFAULT NULL,
+  `total_penalty` varchar(15) NOT NULL,
+  `net_payable_amount` varchar(15) NOT NULL,
+  `updated_by` varchar(30) NOT NULL,
+  `created_at` bigint(20) NOT NULL,
+  `created_by_id` varchar(30) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+
+--
+-- Dumping data for table `btn`
+--
+
+INSERT INTO `btn` (`btn_num`, `purchasing_doc_no`, `invoice_no`, `invoice_filename`, `invoice_value`, `e_invoice_no`, `e_invoice_filename`, `debit_note`, `credit_note`, `debit_credit_filename`, `net_claim_amount`, `c_sdbg_date`, `c_sdbg_filename`, `a_sdbg_date`, `demand_raise_filename`, `gate_entry_no`, `get_entry_filename`, `gate_entry_date`, `grn_no_1`, `grn_no_2`, `grn_no_3`, `grn_no_4`, `icgrn_no_1`, `icgrn_no_2`, `icgrn_no_3`, `icgrn_no_4`, `icgrn_total`, `c_drawing_date`, `a_drawing_date`, `c_qap_date`, `a_qap_date`, `c_ilms_date`, `a_ilms_date`, `pbg_filename`, `hsn_gstn_icgrn`, `ld_gate_entry_date`, `ld_contractual_date`, `ld_amount`, `c_drawing_date_do`, `a_drawing_date_do`, `drawing_penalty`, `c_qap_date_do`, `a_qap_date_do`, `qap_penalty`, `c_ilms_date_do`, `a_ilms_date_do`, `ilms_penalty`, `other_penalty`, `total_penalty`, `net_payable_amount`, `updated_by`, `created_at`, `created_by_id`) VALUES
+('btn-1711459221725', '7800000040', 'demo2', '1711459221665-sample.pdf', '300000', 'ghjkl E-Invoice lhgf', '1711459221666-sample.pdf', '3000', '1000', '1711459221666-sample.pdf', '32000', '1699255657917', '1711459221667-sample.pdf', '1711456341026', '1711459221670-sample.pdf', '302000', '1711459221666-sample.pdf', '2024-04-07', '4234', '42344', '423444', '4234444', '234', '2344', '23444', '2434444', '2342344234442434444', '1699255657917', '1711455110864', '1699255657917', '1711455133087', '1699255657917', '1711455172021', '1711459221670-sample.pdf', 0, ',', 'null', '', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '', '', '', 0, ''),
+('btn-1711459820794', '7800000040', 'demo', '1711459820778-sample.pdf', '30000', '20000', '1711459820778-sample.pdf', '10000', '5000', '1711459820778-sample.pdf', '35000', '1699255657917', '1711459820778-sample.pdf', '1711456341026', '1711459820780-sample.pdf', '56789', '1711459820778-sample.pdf', '2024-03-31', '4234', '42344', '423444', '4234444', '234', '2344', '23444', '2434444', '2342344234442434444', '1699255657917', '1711455110864', '1699255657917', '1711455133087', '1699255657917', '1711455172021', '1711459820780-sample.pdf', 0, ',', 'null', '', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '', '', '', 0, '');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `demande_management`
+--
+
+CREATE TABLE `demande_management` (
+  `id` int(11) NOT NULL,
+  `status` varchar(10) NOT NULL,
+  `action_type` varchar(60) NOT NULL,
+  `reference_no` varchar(30) NOT NULL,
+  `purchasing_doc_no` varchar(11) NOT NULL,
+  `line_item_no` int(11) NOT NULL,
+  `request_amount` int(11) DEFAULT NULL,
+  `recived_quantity` int(11) DEFAULT 0,
+  `delivery_date` bigint(20) DEFAULT NULL,
+  `created_at` bigint(20) DEFAULT NULL,
+  `created_by_id` varchar(20) DEFAULT NULL,
+  `remarks` text DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
@@ -333,20 +427,20 @@ INSERT INTO `depertment_master` (`id`, `name`) VALUES
 (1, 'SDBG'),
 (2, 'DRAWING'),
 (3, 'QAP'),
-(4, 'INSPECTION_CALL_LETTER'),
-(5, 'SHIPPEING_DOUCMENT'),
-(6, 'GATE_ENTRY_GOODS-RECEIPT_ICRGN'),
-(7, 'INVOICE_PBG_CHECKLIST'),
-(8, 'BILL_REGISTRATION'),
+(5, 'STORE'),
+(6, 'USER'),
+(7, 'OTH'),
+(8, 'NCM'),
 (9, 'PAYMENT_RECOMMENDATION'),
-(10, 'RETURING_OF_BILLS'),
+(10, 'VENDOR'),
 (11, 'PAYMENT_VOUCHER'),
 (12, 'ADMIN'),
 (13, 'SUPER_ADMIN'),
 (14, 'PPC'),
 (15, 'FINANCE'),
 (16, 'RIC'),
-(17, 'PURCHASE');
+(17, 'PURCHASE'),
+(18, 'HR');
 
 -- --------------------------------------------------------
 
@@ -374,12 +468,8 @@ CREATE TABLE `drawing` (
 --
 
 INSERT INTO `drawing` (`id`, `reference_no`, `purchasing_doc_no`, `file_name`, `vendor_code`, `file_path`, `remarks`, `status`, `actionType`, `updated_by`, `created_at`, `created_by_id`) VALUES
-(14, 'DW-1710098781784-7545', '7800000040', '1710098781757-sample.pdf', '50007545', 'uploads\\submitDrawing\\1710098781757-sample.pdf', 'HEllo', 'SUBMITTED', 'Upload Drawing ail Chain', 'VENDOR', 1710098781762, '50007545'),
-(15, 'DW-1710098781784-7545', '7800000040', NULL, '50007545', NULL, 'rej', 'REJECTED', 'Acknowledgement/Remarks', 'GRSE', 1710099486122, '600400'),
-(16, 'DW-1710099679836-7545', '7800000040', '1710099679814-sample.pdf', '50007545', 'uploads\\submitDrawing\\1710099679814-sample.pdf', 'DONE', 'SUBMITTED', 'Upload Drawing ail Chain', 'VENDOR', 1710099679818, '50007545'),
-(17, 'DW-1710099679836-7545', '7800000040', NULL, '50007545', NULL, 'fgd', 'REJECTED', 'Acknowledgement/Remarks', 'GRSE', 1710099725348, '600400'),
-(18, 'DW-1710099931737-7545', '7800000040', '1710099931720-sample.pdf', '50007545', 'uploads\\submitDrawing\\1710099931720-sample.pdf', 'klmlm', 'SUBMITTED', 'Upload Drawing ail Chain', 'VENDOR', 1710099931723, '50007545'),
-(20, 'DW-1710099931737-7545', '7800000040', NULL, '50007545', NULL, 'Apprving', 'APPROVED', 'Acknowledgement/Remarks', 'GRSE', 1710100675663, '600400');
+(23, 'DW-1711455110877-7545', '7800000040', '1711455110860-sample.pdf', '50007545', 'uploads\\submitDrawing\\1711455110860-sample.pdf', 'Coverletter', 'SUBMITTED', 'Upload Drawing ail Chain', 'VENDOR', 1711455110864, '50007545'),
+(24, 'DW-1711455110877-7545', '7800000040', NULL, '50007545', NULL, 'approved!!!', 'APPROVED', 'Acknowledgement/Remarks', 'GRSE', 1711457056331, '600400');
 
 -- --------------------------------------------------------
 
@@ -435,7 +525,8 @@ INSERT INTO `eket` (`EBELN`, `EBELP`, `ETENR`, `EINDT`) VALUES
 ('7800000040', 10, 1, '2016-04-29'),
 ('7800000040', 10, 1, '2013-04-15'),
 ('7800000040', 10, 1, '2014-03-22'),
-('4800003580', 20, 1, '2014-04-15');
+('4800003580', 20, 1, '2014-04-15'),
+('7800000047', 20, 1, '2024-04-15');
 
 -- --------------------------------------------------------
 
@@ -480,7 +571,7 @@ INSERT INTO `ekko` (`EBELN`, `BUKRS`, `BSTYP`, `BSART`, `LOEKZ`, `AEDAT`, `ERNAM
 ('4800022835', 'GRSE', 'F', 'ZDM', NULL, '2022-09-13', '491646', '50005041', 'GRSE', 'DP3'),
 ('7800000040', 'GRSE', 'F', 'ZGSR', NULL, '2023-09-10', '493834', '50007545', 'GRSE', 'DP3'),
 ('7800000041', 'GRSE', 'F', 'ZGSR', NULL, '2024-01-23', '493834', '50007546', 'GRSE', 'DP3'),
-('7800000047', 'GRSE', 'F', 'ZDM', NULL, '2022-06-28', '485838', '50007545', 'GRSE', 'DP3'),
+('7800000047', 'GRSE', 'F', 'ZDM', NULL, '2022-06-28', '493834', '50007545', 'GRSE', 'DP3'),
 ('QQ00013227', '5788', 'S', 'ABCD', 'W', '2023-11-07', '34567656787', '1234567890', '1234', '123');
 
 -- --------------------------------------------------------
@@ -536,7 +627,7 @@ INSERT INTO `ekpo` (`EBELN`, `EBELP`, `LOEKZ`, `STATU`, `AEDAT`, `TXZ01`, `MATNR
 ('4800008195', 110, '', '', '10.02.2018', 'Training', '', 'GRSE', '100', '', 'SE57', 0, 1, 'AU', '70,164.00', '70,164.00', '12'),
 ('4800008195', 120, '', '', '10.02.2018', 'Impl of BB Prod facilities at DEP Ranchi', '', 'GRSE', '100', '', 'SE57', 0, 1, 'AU', '1,430,000.0', '1,430,000.00', '12'),
 ('4800011669', 20, '', '', '29.03.2018', 'Implementation of GST for GRSE', '', 'GRSE', '100', '', 'SE57', 0, 1, 'AU', '1,938,406.0', '1,938,406.00', '12'),
-('7800000047', 20, '', '', '02.01.2023', 'WageRevision forOA(non-ranchi)&RanchiEmp', 'SER08205', 'GRSE', '100', '', 'SE57', 0, 1, 'AU', '1,000,000.0', '1,000,000.00', '12'),
+('7800000047', 20, '', '', '02.01.2023', 'WageRevision forOA(non-ranchi)&RanchiEmp', 'SER08205', 'GRSE', '100', '', 'SE57', 180, 1, 'AU', '1,000,000.0', '1,000,000.00', '12'),
 ('1234512354', 10023, 'W', '1', '07.03.2014', 'IncomeTax Rectification in SAP Payroll', NULL, 'GRSE', '100', NULL, 'SE57', 1244, 232131, 'AU', '0', '0', 'TV'),
 ('1234512354', 88, 'W', '1', '20.06.2019', '6. Warranty Support', NULL, 'GRSE', '100', NULL, 'SE74', 0, 1, 'AU', '9000,3222', '124,456,900', 'SG'),
 ('QQ00013227', 10023, 'W', '1', '07.03.2014', 'IncomeTax Rectification in SAP Payroll', NULL, 'GRSE', '100', NULL, 'SE57', 1244, 232131, 'AU', '0', '0', 'TV'),
@@ -621,6 +712,46 @@ INSERT INTO `grse_personnel` (`MANNO`, `NAME1`, `NAME2`, `EMAIL`) VALUES
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `hr`
+--
+
+CREATE TABLE `hr` (
+  `id` int(11) NOT NULL,
+  `purchasing_doc_no` varchar(11) DEFAULT NULL,
+  `action_type` varchar(40) DEFAULT NULL,
+  `file_name` varchar(300) DEFAULT NULL,
+  `file_path` varchar(500) DEFAULT NULL,
+  `remarks` text DEFAULT NULL,
+  `status` varchar(20) NOT NULL,
+  `updated_by` varchar(30) NOT NULL,
+  `created_at` bigint(20) NOT NULL,
+  `created_by_id` varchar(200) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `hr_compliance`
+--
+
+CREATE TABLE `hr_compliance` (
+  `id` int(11) NOT NULL,
+  `reference_no` varchar(60) NOT NULL,
+  `purchasing_doc_no` varchar(11) NOT NULL,
+  `file_name` varchar(500) DEFAULT NULL,
+  `vendor_code` varchar(100) NOT NULL,
+  `file_path` varchar(500) DEFAULT NULL,
+  `remarks` text DEFAULT NULL,
+  `status` varchar(20) NOT NULL,
+  `action_type` varchar(60) DEFAULT NULL,
+  `updated_by` varchar(30) NOT NULL,
+  `created_at` bigint(20) NOT NULL,
+  `created_by_id` varchar(200) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `icgrn`
 --
 
@@ -675,15 +806,8 @@ CREATE TABLE `ilms` (
 --
 
 INSERT INTO `ilms` (`id`, `reference_no`, `purchasing_doc_no`, `file_name`, `file_path`, `remarks`, `status`, `vendor_code`, `type`, `created_at`, `created_by_id`, `updated_by`) VALUES
-(1, 'ILMS-1710078107489-7545', '7800000040', '1710078107407-VANtage Systech recruitment drive - B.Tech (Any Stream), BCA, MCA & M.Tech __ 2023 pass out batch (1).pdf', 'uploads\\submitILMS\\1710078107407-VANtage Systech recruitment drive - B.Tech (Any Stream), BCA, MCA & M.Tech __ 2023 pass out batch (1).pdf', 'mainakkkk', 'PENDING', '50007545', 'Upload ILMS', 1710078107488, '50007545', 'VENDOR'),
-(2, 'ILMS-1710078380095-7545', '7800000040', NULL, NULL, '', 'SUBMITTED', '50007545', 'Upload ILMS', 1710078380095, '50007545', 'VENDOR'),
-(3, 'ILMS-1710078380095-7545', '7800000040', NULL, NULL, 'hiii mainak', 'ACKNOWLEDGED', '50007545', 'Upload ILMS', 1710079102216, '600400', 'GRSE'),
-(4, 'ILMS-1710079298435-7545', '7800000040', '1710079298412-VANtage Systech recruitment drive - B.Tech (Any Stream), BCA, MCA & M.Tech __ 2023 pass out batch.pdf', 'uploads\\submitILMS\\1710079298412-VANtage Systech recruitment drive - B.Tech (Any Stream), BCA, MCA & M.Tech __ 2023 pass out batch.pdf', 'mddd', 'SUBMITTED', '50007545', 'Upload ILMS', 1710079298435, '50007545', 'VENDOR'),
-(5, 'ILMS-1710079298435-7545', '7800000040', '1710079298412-VANtage Systech recruitment drive - B.Tech (Any Stream), BCA, MCA & M.Tech __ 2023 pass out batch.pdf', 'uploads\\submitILMS\\1710079298412-VANtage Systech recruitment drive - B.Tech (Any Stream), BCA, MCA & M.Tech __ 2023 pass out batch.pdf', 'rejected', 'ACKNOWLEDGED', '50007545', 'Others', 1710079357051, '600400', 'GRSE'),
-(6, 'ILMS-1710079517868-7545', '7800000040', NULL, NULL, 'rejected d', 'SUBMITTED', '50007545', 'Others', 1710079517868, '50007545', 'VENDOR'),
-(7, 'ILMS-1710079517868-7545', '7800000040', NULL, NULL, 'rejected qq', 'REJECTED', '50007545', 'Others', 1710079635029, '600400', 'GRSE'),
-(8, 'ILMS-1710079517868-7545', '7800000040', NULL, NULL, '', 'REJECTED', '50007545', 'Others', 1710079655875, '600400', 'GRSE'),
-(9, 'ILMS-1710079517868-7545', '7800000040', NULL, NULL, 'apprived', 'APPROVED', '50007545', 'Remarks', 1710079681087, '600400', 'GRSE');
+(11, 'ILMS-1711455172021-7545', '7800000040', '1711455172018-sample.pdf', 'uploads\\submitILMS\\1711455172018-sample.pdf', 'FKLDJF', 'SUBMITTED', '50007545', 'Upload ILMS', 1711455172021, '50007545', 'VENDOR'),
+(12, 'ILMS-1711455172021-7545', '7800000040', '1711455172018-sample.pdf', 'uploads\\submitILMS\\1711455172018-sample.pdf', 'approved!', 'APPROVED', '50007545', 'Remarks', 1711457087542, '600400', 'GRSE');
 
 -- --------------------------------------------------------
 
@@ -695,8 +819,7 @@ CREATE TABLE `inspection_call_letter` (
   `id` int(11) NOT NULL,
   `purchasing_doc_no` varchar(11) NOT NULL,
   `file_name` varchar(500) DEFAULT NULL,
-  `file_type_id` int(3) NOT NULL,
-  `file_type_name` varchar(255) NOT NULL,
+  `action_type` varchar(60) DEFAULT NULL,
   `vendor_code` varchar(100) NOT NULL,
   `file_path` varchar(500) DEFAULT NULL,
   `remarks` text DEFAULT NULL,
@@ -709,36 +832,34 @@ CREATE TABLE `inspection_call_letter` (
 -- Dumping data for table `inspection_call_letter`
 --
 
-INSERT INTO `inspection_call_letter` (`id`, `purchasing_doc_no`, `file_name`, `file_type_id`, `file_type_name`, `vendor_code`, `file_path`, `remarks`, `updated_by`, `created_at`, `created_by_id`) VALUES
-(1, '4700013227', '1700647390698-t.c.pdf', 0, '', '09383HAL', 'uploads\\inspectionCallLetter\\1700647390698-t.c.pdf', 'BAHAMAS MISSILE DRAWING4', 'VENDOR', 1700647390969, '09383HAL'),
-(8, '47654764345', '1704276529024-eket.pdf', 0, '', '50005041', 'uploads\\inspectionCallLetter\\1704276529024-eket.pdf', 'Vendor upload sdbg', 'GRSE', 1704276529126, '6804'),
-(9, '13141411411', '1706505366118-setup ftp server in Linux server.pdf', 1, '', '600232', 'uploads\\1706505366118-setup ftp server in Linux server.pdf', 'new', 'GRSE', 1706505366130, '600232'),
-(10, '13141411411', '1706505450498-setup ftp server in Linux server.pdf', 1, '', '600232', 'uploads\\1706505450498-setup ftp server in Linux server.pdf', 'new', 'GRSE', 1706505450510, '600232'),
-(11, '13141411411', '1706505783390-setup ftp server in Linux server.pdf', 1, '', '600232', 'uploads\\1706505783390-setup ftp server in Linux server.pdf', 'new', 'GRSE', 1706505783396, '600232'),
-(12, '13141411411', '1706506059315-setup ftp server in Linux server.pdf', 1, '', '600232', 'uploads\\inspectionCallLetter\\1706506059315-setup ftp server in Linux server.pdf', 'new', 'GRSE', 1706506059320, '600232'),
-(13, '13141411411', '1706506095850-setup ftp server in Linux server.pdf', 1, '', '600232', 'uploads\\inspectionCallLetter\\1706506095850-setup ftp server in Linux server.pdf', 'new', 'GRSE', 1706506095851, '600232'),
-(14, '13141411411', '1706517824595-setup ftp server in Linux server.pdf', 1, '', '600232', 'uploads\\inspectionCallLetter\\1706517824595-setup ftp server in Linux server.pdf', 'new', 'GRSE', 1706517824602, '600232'),
-(15, '13141411411', '1706524822832-setup ftp server in Linux server.pdf', 1, '', '600232', 'uploads\\inspectionCallLetter\\1706524822832-setup ftp server in Linux server.pdf', 'new', 'GRSE', 1706524822841, '600232'),
-(16, '13141411411', '1706594417130-setup ftp server in Linux server.pdf', 1, 'my file', '600232', 'uploads\\inspectionCallLetter\\1706594417130-setup ftp server in Linux server.pdf', 'new', 'GRSE', 1706594417135, '600232'),
-(17, '13141411411', NULL, 1, 'my file', '600232', NULL, 'new', 'GRSE', 1706679523511, '600232'),
-(18, '13141411411', '1706685388074-sample.pdf', 1, 'my', '600231', 'uploads\\inspectionCallLetter\\1706685388074-sample.pdf', 'test', 'GRSE', 1706685388076, '600231'),
-(20, '13141411411', '1706694209634-sample.pdf', 1, 'my', '600231', 'uploads\\inspectionCallLetter\\1706694209634-sample.pdf', 'test', 'GRSE', 1706694209635, '600231'),
-(22, '7800000040', '1707461949080-sample.pdf', 2, 'Inspection Call Letter - Stage 2', '600400', 'uploads\\inspectionCallLetter\\1707461949080-sample.pdf', 'fasd', 'GRSE', 1707461949082, '600400'),
-(23, '7800000040', '1707474675255-sample.pdf', 6, 'Dispatch Clearance by CQAE', '50007545', 'uploads\\inspectionCallLetter\\1707474675255-sample.pdf', 'fdsfasd', 'VENDOR', 1707474675260, '50007545'),
-(24, '7800000040', '1708757011264-sample.pdf', 0, 'Inspection Call Letter - Stage 2', '50007545', 'uploads\\inspectionCallLetter\\1708757011264-sample.pdf', 'vc', 'VENDOR', 1708757011266, '50007545'),
-(25, '7800000040', '1709813217727-sample.pdf', 0, 'UPLOAD RM INSPECTION CALL LETTER', '50007545', 'uploads\\inspectionCallLetter\\1709813217727-sample.pdf', 'sAMPLE', 'VENDOR', 1709813217731, '50007545'),
-(26, '7800000040', NULL, 0, 'UPLOAD RM INSPECTION CALL LETTER', '50007545', NULL, 'HEllo', 'VENDOR', 1709813618632, '50007545'),
-(27, '7800000040', NULL, 0, '', '50007545', NULL, NULL, 'VENDOR', 1709813836769, '50007545'),
-(28, '7800000040', NULL, 0, '', '50007545', NULL, NULL, 'VENDOR', 1709813876807, '50007545'),
-(29, '7800000040', '1709813944013-sample.pdf', 0, '', '50007545', 'uploads\\inspectionCallLetter\\1709813944013-sample.pdf', NULL, 'VENDOR', 1709813944014, '50007545'),
-(30, '7800000040', '1709814098422-sample.pdf', 0, 'UPLOAD FINAL INSPECTION/FATS CALL LETTER', '50007545', 'uploads\\inspectionCallLetter\\1709814098422-sample.pdf', 'EDEMO', 'VENDOR', 1709814098424, '50007545'),
-(31, '7800000040', '1709814209288-sample.pdf', 0, 'UPLOAD TEST WITNESS INSPECTION CALL LETTER', '50007545', 'uploads\\inspectionCallLetter\\1709814209288-sample.pdf', 'fadsf', 'VENDOR', 1709814209289, '50007545'),
-(32, '7800000040', '1709814237335-sample.pdf', 0, 'UPLOAD RM INSPECTION CALL LETTER', '50007545', 'uploads\\inspectionCallLetter\\1709814237335-sample.pdf', 'checking', 'VENDOR', 1709814237336, '50007545'),
-(33, '7800000040', NULL, 0, 'REMARKS', '600300', NULL, 'Hello', 'GRSE', 1709814403072, '600300'),
-(34, '7800000040', NULL, 0, 'REMARKS', '600300', NULL, 'dsds', 'GRSE', 1709814421257, '600300'),
-(35, '7800000040', NULL, 0, 'REMARKS', '600300', NULL, 'ds', 'GRSE', 1709814470640, '600300'),
-(36, '7800000040', '1709814747189-sample.pdf', 0, 'UPLOAD FINAL INSPECTION/FATS CALL LETTER', '50007545', 'uploads\\inspectionCallLetter\\1709814747189-sample.pdf', 'Demmo', 'VENDOR', 1709814747191, '50007545'),
-(37, '7800000040', '1710080960008-Birupaksha_Resume_All.pdf', 0, 'UPLOAD RM INSPECTION CALL LETTER', '50007545', 'uploads\\inspectionCallLetter\\1710080960008-Birupaksha_Resume_All.pdf', 'update mainak', 'VENDOR', 1710080960109, '50007545');
+INSERT INTO `inspection_call_letter` (`id`, `purchasing_doc_no`, `file_name`, `action_type`, `vendor_code`, `file_path`, `remarks`, `updated_by`, `created_at`, `created_by_id`) VALUES
+(3, '7800000040', '1711455195161-sample.pdf', 'RM INSPECTION CALL LETTER', '50007545', 'uploads\\inspectionCallLetter\\1711455195161-sample.pdf', 'ILMS Remarks!', 'VENDOR', 1711455195162, '50007545');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `inspection_release_note`
+--
+
+CREATE TABLE `inspection_release_note` (
+  `id` int(11) NOT NULL,
+  `purchasing_doc_no` varchar(11) NOT NULL,
+  `file_name` varchar(500) DEFAULT NULL,
+  `action_type` varchar(60) NOT NULL,
+  `vendor_code` varchar(100) NOT NULL,
+  `file_path` varchar(500) DEFAULT NULL,
+  `remarks` text DEFAULT NULL,
+  `updated_by` varchar(30) NOT NULL,
+  `created_at` bigint(20) NOT NULL,
+  `created_by_id` varchar(200) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `inspection_release_note`
+--
+
+INSERT INTO `inspection_release_note` (`id`, `purchasing_doc_no`, `file_name`, `action_type`, `vendor_code`, `file_path`, `remarks`, `updated_by`, `created_at`, `created_by_id`) VALUES
+(5, '7800000040', '1711455218576-sample.pdf', 'INSPECTION RELEASE NOTE', '50007545', 'uploads\\submitIRN\\1711455218576-sample.pdf', 'ILMS Release Note', 'VENDOR', 1711455218578, '50007545');
 
 -- --------------------------------------------------------
 
@@ -923,6 +1044,237 @@ CREATE TABLE `mrs` (
   `created_at` bigint(20) NOT NULL,
   `created_by_id` varchar(200) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `mseg`
+--
+
+CREATE TABLE `mseg` (
+  `MBLNR` varchar(10) NOT NULL COMMENT 'Number of Material Document',
+  `MJAHR` int(4) DEFAULT NULL COMMENT 'Material Document Year',
+  `ZEILE` int(4) DEFAULT NULL COMMENT 'Item in Material Document',
+  `LINE_ID` int(6) DEFAULT NULL COMMENT 'Unique identification of document line',
+  `PARENT_ID` int(6) DEFAULT NULL COMMENT 'Identifier of immediately superior line',
+  `LINE_DEPTH` int(2) DEFAULT NULL COMMENT 'Hierarchy level of line in document',
+  `MAA_URZEI` int(4) DEFAULT NULL COMMENT 'Original Line for Account Assignment Item in Material Doc.',
+  `BWART` varchar(3) DEFAULT NULL COMMENT 'Movement Type (Inventory Management)',
+  `XAUTO` varchar(1) DEFAULT NULL COMMENT 'Item automatically created',
+  `MATNR` varchar(18) DEFAULT NULL COMMENT 'Material Number',
+  `WERKS` varchar(4) DEFAULT NULL COMMENT 'Plant',
+  `LGORT` varchar(4) DEFAULT NULL COMMENT 'Storage Location',
+  `CHARG` varchar(10) DEFAULT NULL COMMENT 'Batch Number',
+  `INSMK` varchar(1) DEFAULT NULL COMMENT 'Stock Type',
+  `ZUSCH` varchar(1) DEFAULT NULL COMMENT 'Batch status key',
+  `ZUSTD` varchar(1) DEFAULT NULL COMMENT 'Batch in Restricted-Use Stock',
+  `SOBKZ` varchar(1) DEFAULT NULL COMMENT 'Special Stock Indicator',
+  `LIFNR` varchar(10) DEFAULT NULL COMMENT 'Supplier''s Account Number',
+  `KUNNR` varchar(10) DEFAULT NULL COMMENT 'Account number of customer',
+  `KDAUF` varchar(10) DEFAULT NULL COMMENT 'Sales Order Number',
+  `KDPOS` int(6) DEFAULT NULL COMMENT 'Item Number in Sales Order',
+  `KDEIN` int(4) DEFAULT NULL COMMENT 'Delivery schedule for sales order',
+  `PLPLA` varchar(10) DEFAULT NULL COMMENT 'Distribution of Differences',
+  `SHKZG` varchar(1) DEFAULT NULL COMMENT 'Debit/Credit Indicator',
+  `WAERS` varchar(5) DEFAULT NULL COMMENT 'Currency Key',
+  `DMBTR` varchar(13) DEFAULT NULL COMMENT 'Amount in local currency',
+  `BNBTR` varchar(13) DEFAULT NULL COMMENT 'Delivery costs in local currency',
+  `BUALT` varchar(13) DEFAULT NULL COMMENT 'Amount Posted in Alternative Price Control',
+  `SHKUM` varchar(1) DEFAULT NULL COMMENT 'Debit/credit indicator in revaluation',
+  `DMBUM` varchar(13) DEFAULT NULL COMMENT 'Revaluation amount on back-posting to a previous period',
+  `BWTAR` varchar(10) DEFAULT NULL COMMENT 'Valuation Type',
+  `MENGE` bigint(13) DEFAULT NULL COMMENT 'Quantity',
+  `MEINS` varchar(3) DEFAULT NULL COMMENT 'Base Unit of Measure',
+  `ERFMG` bigint(13) DEFAULT NULL COMMENT 'Quantity in unit of entry',
+  `ERFME` varchar(3) DEFAULT NULL COMMENT 'Unit of entry',
+  `BPMNG` bigint(13) DEFAULT NULL COMMENT 'Quantity in Purchase Order Price Unit',
+  `BPRME` varchar(3) DEFAULT NULL COMMENT 'Order Price Unit (Purchasing)',
+  `EBELN` varchar(10) DEFAULT NULL COMMENT 'Purchase order number',
+  `EBELP` int(5) DEFAULT NULL COMMENT 'Item Number of Purchasing Document',
+  `LFBJA` int(4) DEFAULT NULL COMMENT 'Fiscal Year of a Reference Document',
+  `LFBNR` varchar(10) DEFAULT NULL COMMENT 'Document No. of a Reference Document',
+  `LFPOS` int(4) DEFAULT NULL COMMENT 'Item of a Reference Document',
+  `SJAHR` int(4) DEFAULT NULL COMMENT 'Material Document Year',
+  `SMBLN` varchar(10) DEFAULT NULL COMMENT 'Number of Material Document',
+  `SMBLP` int(4) DEFAULT NULL COMMENT 'Item in Material Document',
+  `ELIKZ` varchar(1) DEFAULT NULL COMMENT 'Delivery Completed Indicator',
+  `SGTXT` varchar(50) DEFAULT NULL COMMENT 'Item Text',
+  `EQUNR` varchar(18) DEFAULT NULL COMMENT 'Equipment Number',
+  `WEMPF` varchar(12) DEFAULT NULL COMMENT 'Goods recipient',
+  `ABLAD` varchar(25) DEFAULT NULL COMMENT 'Unloading Point',
+  `GSBER` varchar(4) DEFAULT NULL COMMENT 'Business Area',
+  `KOKRS` varchar(4) DEFAULT NULL COMMENT 'Controlling Area',
+  `PARGB` varchar(4) DEFAULT NULL COMMENT 'Trading partner''s business area',
+  `PARBU` varchar(4) DEFAULT NULL COMMENT 'Clearing company code',
+  `KOSTL` varchar(10) DEFAULT NULL COMMENT 'Cost Center',
+  `PROJN` varchar(16) DEFAULT NULL COMMENT 'Old: Project number : No longer used --> PS_POSNR',
+  `AUFNR` varchar(12) DEFAULT NULL COMMENT 'Order Number',
+  `ANLN1` varchar(12) DEFAULT NULL COMMENT 'Main Asset Number',
+  `ANLN2` varchar(4) DEFAULT NULL COMMENT 'Asset Subnumber',
+  `XSKST` varchar(1) DEFAULT NULL COMMENT 'Indicator: Statistical Posting to Cost Center',
+  `XSAUF` varchar(1) DEFAULT NULL COMMENT 'Indicator: Posting to Order Is Statistical',
+  `XSPRO` varchar(1) DEFAULT NULL COMMENT 'Indicator: Posting to Project Is Statistical',
+  `XSERG` varchar(1) DEFAULT NULL COMMENT 'Indicator: Posting to Profitability Analysis Is Statistical',
+  `GJAHR` int(4) DEFAULT NULL COMMENT 'Fiscal Year',
+  `XRUEM` varchar(1) DEFAULT NULL COMMENT 'Allow Posting to Previous Period (Backposting)',
+  `XRUEJ` varchar(1) DEFAULT NULL COMMENT 'Indicator: post to previous year',
+  `BUKRS` varchar(4) DEFAULT NULL COMMENT 'Company Code',
+  `BELNR` varchar(10) DEFAULT NULL COMMENT 'Document Number of an Accounting Document',
+  `BUZEI` int(3) DEFAULT NULL COMMENT 'Number of Line Item Within Accounting Document',
+  `BELUM` varchar(10) DEFAULT NULL COMMENT 'Document Number of an Accounting Document',
+  `BUZUM` int(3) DEFAULT NULL COMMENT 'Number of Line Item Within Accounting Document',
+  `RSNUM` int(10) DEFAULT NULL COMMENT 'Number of reservation/dependent requirements',
+  `RSPOS` int(4) DEFAULT NULL COMMENT 'Item Number of Reservation / Dependent Requirements',
+  `KZEAR` varchar(1) DEFAULT NULL COMMENT 'Final Issue for Reservation',
+  `PBAMG` bigint(13) DEFAULT NULL COMMENT 'Quantity',
+  `KZSTR` varchar(1) DEFAULT NULL COMMENT 'Transaction/event is relevant to statistics',
+  `UMMAT` varchar(18) DEFAULT NULL COMMENT 'Receiving/Issuing Material',
+  `UMWRK` varchar(4) DEFAULT NULL COMMENT 'Receiving plant/issuing plant',
+  `UMLGO` varchar(4) DEFAULT NULL COMMENT 'Receiving/issuing storage location',
+  `UMCHA` varchar(10) DEFAULT NULL COMMENT 'Receiving/Issuing Batch',
+  `UMZST` varchar(1) DEFAULT NULL COMMENT 'Status of Transfer Batch',
+  `UMZUS` varchar(1) DEFAULT NULL COMMENT 'Status key of transfer batch',
+  `UMBAR` varchar(10) DEFAULT NULL COMMENT 'Valuation Type of Transfer Batch',
+  `UMSOK` varchar(1) DEFAULT NULL COMMENT 'Special stock indicator for physical stock transfer',
+  `KZBEW` varchar(1) DEFAULT NULL COMMENT 'Movement Indicator',
+  `KZVBR` varchar(1) DEFAULT NULL COMMENT 'Consumption posting',
+  `KZZUG` varchar(1) DEFAULT NULL COMMENT 'Receipt Indicator',
+  `WEUNB` varchar(1) DEFAULT NULL COMMENT 'Goods Receipt, Non-Valuated',
+  `PALAN` decimal(11,2) DEFAULT NULL COMMENT 'WMS Number of pallets',
+  `LGNUM` varchar(3) DEFAULT NULL COMMENT 'Warehouse Number / Warehouse Complex',
+  `LGTYP` varchar(3) DEFAULT NULL COMMENT 'Storage Type',
+  `LGPLA` varchar(10) DEFAULT NULL COMMENT 'Storage Bin',
+  `BESTQ` varchar(1) DEFAULT NULL COMMENT 'Stock Category in the Warehouse Management System',
+  `BWLVS` int(3) DEFAULT NULL COMMENT 'Movement Type for Warehouse Management',
+  `TBNUM` int(10) DEFAULT NULL COMMENT 'Transfer Requirement Number',
+  `TBPOS` int(4) DEFAULT NULL COMMENT 'Transfer Requirement Item',
+  `XBLVS` varchar(1) DEFAULT NULL COMMENT 'Indicator: posting in warehouse management system',
+  `VSCHN` varchar(1) DEFAULT NULL COMMENT 'Ind: interim storage posting for source stor.type and bin',
+  `NSCHN` varchar(1) DEFAULT NULL COMMENT 'Ind.: interim storage posting for dest.stor.type and bin',
+  `DYPLA` varchar(1) DEFAULT NULL COMMENT 'Indicator: dynamic storage bin',
+  `UBNUM` int(10) DEFAULT NULL COMMENT 'Posting Change Number',
+  `TBPRI` varchar(1) DEFAULT NULL COMMENT 'Transfer Priority',
+  `TANUM` int(10) DEFAULT NULL COMMENT 'Transfer Order Number',
+  `WEANZ` int(3) DEFAULT NULL COMMENT 'Number of GR/GI Slips to Be Printed',
+  `GRUND` int(4) DEFAULT NULL COMMENT 'Reason for Movement',
+  `EVERS` varchar(2) DEFAULT NULL COMMENT 'Shipping Instructions',
+  `EVERE` varchar(2) DEFAULT NULL COMMENT 'Compliance with Shipping Instructions',
+  `IMKEY` varchar(8) DEFAULT NULL COMMENT 'Internal Key for Real Estate Object',
+  `KSTRG` varchar(12) DEFAULT NULL COMMENT 'Cost Object',
+  `PAOBJNR` int(10) DEFAULT NULL COMMENT 'Profitability Segment Number (CO-PA)',
+  `PRCTR` varchar(10) DEFAULT NULL COMMENT 'Profit Center',
+  `PS_PSP_PNR` int(8) DEFAULT NULL COMMENT 'Work Breakdown Structure Element (WBS Element)',
+  `NPLNR` varchar(12) DEFAULT NULL COMMENT 'Network Number for Account Assignment',
+  `AUFPL` int(10) DEFAULT NULL COMMENT 'Routing number of operations in the order',
+  `APLZL` int(8) DEFAULT NULL COMMENT 'Internal counter',
+  `AUFPS` int(4) DEFAULT NULL COMMENT 'Order item number',
+  `VPTNR` varchar(10) DEFAULT NULL COMMENT 'Partner account number',
+  `FIPOS` varchar(14) DEFAULT NULL COMMENT 'Commitment Item',
+  `SAKTO` varchar(10) DEFAULT NULL COMMENT 'G/L Account Number',
+  `BSTMG` bigint(13) DEFAULT NULL COMMENT 'Goods receipt quantity in order unit',
+  `BSTME` varchar(3) DEFAULT NULL COMMENT 'Purchase Order Unit of Measure',
+  `XWSBR` varchar(1) DEFAULT NULL COMMENT 'Reversal of GR allowed for GR-based IV despite invoice',
+  `EMLIF` varchar(10) DEFAULT NULL COMMENT 'Vendor to be supplied/who is to receive delivery',
+  `EXBWR` varchar(13) DEFAULT NULL COMMENT 'Externally Entered Posting Amount in Local Currency',
+  `VKWRT` varchar(13) DEFAULT NULL COMMENT 'Value at Sales Prices Including Value-Added Tax',
+  `AKTNR` varchar(10) DEFAULT NULL COMMENT 'Promotion',
+  `ZEKKN` int(2) DEFAULT NULL COMMENT 'Sequential Number of Account Assignment',
+  `VFDAT` datetime DEFAULT NULL COMMENT 'Shelf Life Expiration or Best-Before Date',
+  `CUOBJ_CH` bigint(18) DEFAULT NULL COMMENT 'Internal object number of the batch classification',
+  `EXVKW` varchar(13) DEFAULT NULL COMMENT 'Externally Entered Sales Value in Local Currency',
+  `PPRCTR` varchar(10) DEFAULT NULL COMMENT 'Partner Profit Center',
+  `RSART` varchar(1) DEFAULT NULL COMMENT 'Record type',
+  `GEBER` varchar(10) DEFAULT NULL COMMENT 'Fund',
+  `FISTL` varchar(16) DEFAULT NULL COMMENT 'Funds Center',
+  `MATBF` varchar(18) DEFAULT NULL COMMENT 'Material in Respect of Which Stock is Managed',
+  `UMMAB` varchar(18) DEFAULT NULL COMMENT 'Receiving/Issuing Material',
+  `BUSTM` varchar(4) DEFAULT NULL COMMENT 'Posting string for quantities',
+  `BUSTW` varchar(4) DEFAULT NULL COMMENT 'Posting String for Values',
+  `MENGU` varchar(1) DEFAULT NULL COMMENT 'Quantity Updating in Material Master Record',
+  `WERTU` varchar(1) DEFAULT NULL COMMENT 'Value Updating in Material Master Record',
+  `LBKUM` bigint(13) DEFAULT NULL COMMENT 'Total valuated stock before the posting',
+  `SALK3` varchar(13) DEFAULT NULL COMMENT 'Value of total valuated stock before the posting',
+  `VPRSV` varchar(1) DEFAULT NULL COMMENT 'Price control indicator',
+  `FKBER` varchar(16) DEFAULT NULL COMMENT 'Functional Area',
+  `DABRBZ` datetime DEFAULT NULL COMMENT 'Reference date for settlement',
+  `VKWRA` varchar(13) DEFAULT NULL COMMENT 'Value at sales prices excluding value-added tax',
+  `DABRZ` datetime DEFAULT NULL COMMENT 'Reference date for settlement',
+  `XBEAU` varchar(1) DEFAULT NULL COMMENT 'Purchase order created at time of goods receipt',
+  `LSMNG` bigint(13) DEFAULT NULL COMMENT 'Quantity in Unit of Measure from Delivery Note',
+  `LSMEH` varchar(3) DEFAULT NULL COMMENT 'Unit of Measure From Delivery Note',
+  `KZBWS` varchar(1) DEFAULT NULL COMMENT 'Valuation of Special Stock',
+  `QINSPST` varchar(1) DEFAULT NULL COMMENT 'Status of Goods Receipt Inspection',
+  `URZEI` int(4) DEFAULT NULL COMMENT 'Original line in material document',
+  `J_1BEXBASE` varchar(13) DEFAULT NULL COMMENT 'Alternate base amount in document currency',
+  `MWSKZ` varchar(2) DEFAULT NULL COMMENT 'Tax on Sales/Purchases Code',
+  `TXJCD` varchar(15) DEFAULT NULL COMMENT 'Tax Jurisdiction',
+  `EMATN` varchar(18) DEFAULT NULL COMMENT 'Material number corresponding to manufacturer part number',
+  `J_1AGIRUPD` varchar(1) DEFAULT NULL COMMENT 'Goods issue revaluation performed',
+  `VKMWS` varchar(2) DEFAULT NULL COMMENT 'Tax on Sales/Purchases Code',
+  `HSDAT` datetime DEFAULT NULL COMMENT 'Date of Manufacture',
+  `BERKZ` varchar(1) DEFAULT NULL COMMENT 'Material Staging Indicator for Production Supply',
+  `MAT_KDAUF` varchar(10) DEFAULT NULL COMMENT 'Sales order number of valuated sales order stock',
+  `MAT_KDPOS` int(6) DEFAULT NULL COMMENT 'Sales Order Item of Valuated Sales Order Stock',
+  `MAT_PSPNR` int(8) DEFAULT NULL COMMENT 'Valuated Sales Order Stock WBS Element',
+  `XWOFF` varchar(1) DEFAULT NULL COMMENT 'Calculation of val. open',
+  `BEMOT` varchar(2) DEFAULT NULL COMMENT 'Accounting Indicator',
+  `PRZNR` varchar(12) DEFAULT NULL COMMENT 'Business Process',
+  `LLIEF` varchar(10) DEFAULT NULL COMMENT 'Supplying Vendor',
+  `LSTAR` varchar(6) DEFAULT NULL COMMENT 'Activity Type',
+  `XOBEW` varchar(1) DEFAULT NULL COMMENT 'Vendor Stock Valuation Indicator',
+  `GRANT_NBR` varchar(20) DEFAULT NULL COMMENT 'Grant',
+  `ZUSTD_T156M` varchar(1) DEFAULT NULL COMMENT 'Stock Type Modification (Read from Table T156M)',
+  `SPE_GTS_STOCK_TY` varchar(1) DEFAULT NULL COMMENT 'GTS Stock Type',
+  `KBLNR` varchar(10) DEFAULT NULL COMMENT 'Document Number for Earmarked Funds',
+  `KBLPOS` int(3) DEFAULT NULL COMMENT 'Earmarked Funds: Document Item',
+  `XMACC` varchar(1) DEFAULT NULL COMMENT 'Multiple Account Assignment',
+  `VGART_MKPF` varchar(2) DEFAULT NULL COMMENT 'Transaction/Event Type',
+  `BUDAT_MKPF` datetime DEFAULT NULL COMMENT 'Posting Date in the Document',
+  `CPUDT_MKPF` datetime DEFAULT NULL COMMENT 'Day On Which Accounting Document Was Entered',
+  `CPUTM_MKPF` time DEFAULT NULL COMMENT 'Time of Entry',
+  `USNAM_MKPF` varchar(12) DEFAULT NULL COMMENT 'User Name',
+  `XBLNR_MKPF` varchar(16) DEFAULT NULL COMMENT 'Reference Document Number',
+  `TCODE2_MKPF` varchar(20) DEFAULT NULL COMMENT 'Transaction Code',
+  `VBELN_IM` varchar(10) DEFAULT NULL COMMENT 'Delivery',
+  `VBELP_IM` int(6) DEFAULT NULL COMMENT 'Delivery Item',
+  `SGT_SCAT` varchar(16) DEFAULT NULL COMMENT 'Stock Segment',
+  `SGT_UMSCAT` varchar(16) DEFAULT NULL COMMENT 'Receiving/Issuing Stock Segment',
+  `SGT_RCAT` varchar(16) DEFAULT NULL COMMENT 'Requirement Segment',
+  `DISUB_OWNER` varchar(10) DEFAULT NULL COMMENT 'Owner of stock',
+  `FSH_SEASON_YEAR` varchar(4) DEFAULT NULL COMMENT 'Season Year',
+  `FSH_SEASON` varchar(4) DEFAULT NULL COMMENT 'Season',
+  `FSH_COLLECTION` varchar(2) DEFAULT NULL COMMENT 'Fashion Collection',
+  `FSH_THEME` varchar(4) DEFAULT NULL COMMENT 'Fashion Theme',
+  `FSH_UMSEA_YR` varchar(4) DEFAULT NULL COMMENT 'Receiving/Issuing Season Year',
+  `FSH_UMSEA` varchar(4) DEFAULT NULL COMMENT 'Receiving/Issuing Season',
+  `FSH_UMCOLL` varchar(2) DEFAULT NULL COMMENT 'Receiving/Issuing Collection',
+  `FSH_UMTHEME` varchar(4) DEFAULT NULL COMMENT 'Receiving/Issuing Theme',
+  `SGT_CHINT` varchar(1) DEFAULT NULL COMMENT 'Discrete Batch Number',
+  `FSH_DEALLOC_QTY` bigint(13) DEFAULT NULL COMMENT 'ARun Allocated Quantity',
+  `OINAVNW` varchar(13) DEFAULT NULL COMMENT 'Non-deductible input tax',
+  `OICONDCOD` varchar(2) DEFAULT NULL COMMENT 'Joint Venture Indicator (Condition Key)',
+  `CONDI` varchar(2) DEFAULT NULL COMMENT 'Joint Venture Indicator (Condition Key)',
+  `WRF_CHARSTC1` varchar(18) DEFAULT NULL COMMENT 'Characteristic Value 1',
+  `WRF_CHARSTC2` varchar(18) DEFAULT NULL COMMENT 'Characteristic Value 2',
+  `WRF_CHARSTC3` varchar(18) DEFAULT NULL COMMENT 'Characteristic Value 3'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `mseg`
+--
+
+INSERT INTO `mseg` (`MBLNR`, `MJAHR`, `ZEILE`, `LINE_ID`, `PARENT_ID`, `LINE_DEPTH`, `MAA_URZEI`, `BWART`, `XAUTO`, `MATNR`, `WERKS`, `LGORT`, `CHARG`, `INSMK`, `ZUSCH`, `ZUSTD`, `SOBKZ`, `LIFNR`, `KUNNR`, `KDAUF`, `KDPOS`, `KDEIN`, `PLPLA`, `SHKZG`, `WAERS`, `DMBTR`, `BNBTR`, `BUALT`, `SHKUM`, `DMBUM`, `BWTAR`, `MENGE`, `MEINS`, `ERFMG`, `ERFME`, `BPMNG`, `BPRME`, `EBELN`, `EBELP`, `LFBJA`, `LFBNR`, `LFPOS`, `SJAHR`, `SMBLN`, `SMBLP`, `ELIKZ`, `SGTXT`, `EQUNR`, `WEMPF`, `ABLAD`, `GSBER`, `KOKRS`, `PARGB`, `PARBU`, `KOSTL`, `PROJN`, `AUFNR`, `ANLN1`, `ANLN2`, `XSKST`, `XSAUF`, `XSPRO`, `XSERG`, `GJAHR`, `XRUEM`, `XRUEJ`, `BUKRS`, `BELNR`, `BUZEI`, `BELUM`, `BUZUM`, `RSNUM`, `RSPOS`, `KZEAR`, `PBAMG`, `KZSTR`, `UMMAT`, `UMWRK`, `UMLGO`, `UMCHA`, `UMZST`, `UMZUS`, `UMBAR`, `UMSOK`, `KZBEW`, `KZVBR`, `KZZUG`, `WEUNB`, `PALAN`, `LGNUM`, `LGTYP`, `LGPLA`, `BESTQ`, `BWLVS`, `TBNUM`, `TBPOS`, `XBLVS`, `VSCHN`, `NSCHN`, `DYPLA`, `UBNUM`, `TBPRI`, `TANUM`, `WEANZ`, `GRUND`, `EVERS`, `EVERE`, `IMKEY`, `KSTRG`, `PAOBJNR`, `PRCTR`, `PS_PSP_PNR`, `NPLNR`, `AUFPL`, `APLZL`, `AUFPS`, `VPTNR`, `FIPOS`, `SAKTO`, `BSTMG`, `BSTME`, `XWSBR`, `EMLIF`, `EXBWR`, `VKWRT`, `AKTNR`, `ZEKKN`, `VFDAT`, `CUOBJ_CH`, `EXVKW`, `PPRCTR`, `RSART`, `GEBER`, `FISTL`, `MATBF`, `UMMAB`, `BUSTM`, `BUSTW`, `MENGU`, `WERTU`, `LBKUM`, `SALK3`, `VPRSV`, `FKBER`, `DABRBZ`, `VKWRA`, `DABRZ`, `XBEAU`, `LSMNG`, `LSMEH`, `KZBWS`, `QINSPST`, `URZEI`, `J_1BEXBASE`, `MWSKZ`, `TXJCD`, `EMATN`, `J_1AGIRUPD`, `VKMWS`, `HSDAT`, `BERKZ`, `MAT_KDAUF`, `MAT_KDPOS`, `MAT_PSPNR`, `XWOFF`, `BEMOT`, `PRZNR`, `LLIEF`, `LSTAR`, `XOBEW`, `GRANT_NBR`, `ZUSTD_T156M`, `SPE_GTS_STOCK_TY`, `KBLNR`, `KBLPOS`, `XMACC`, `VGART_MKPF`, `BUDAT_MKPF`, `CPUDT_MKPF`, `CPUTM_MKPF`, `USNAM_MKPF`, `XBLNR_MKPF`, `TCODE2_MKPF`, `VBELN_IM`, `VBELP_IM`, `SGT_SCAT`, `SGT_UMSCAT`, `SGT_RCAT`, `DISUB_OWNER`, `FSH_SEASON_YEAR`, `FSH_SEASON`, `FSH_COLLECTION`, `FSH_THEME`, `FSH_UMSEA_YR`, `FSH_UMSEA`, `FSH_UMCOLL`, `FSH_UMTHEME`, `SGT_CHINT`, `FSH_DEALLOC_QTY`, `OINAVNW`, `OICONDCOD`, `CONDI`, `WRF_CHARSTC1`, `WRF_CHARSTC2`, `WRF_CHARSTC3`) VALUES
+('1000001012', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '50000437', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 8, NULL, NULL, NULL, NULL, NULL, '7800000040', 15, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '5788', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+('1000001013', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '50000437', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 3, NULL, NULL, NULL, NULL, NULL, '7800000040', 70, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '5788', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+('1000001014', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '50000437', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 4, NULL, NULL, NULL, NULL, NULL, '7800000040', 80, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '5788', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+('1000001015', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '50000437', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 5, NULL, NULL, NULL, NULL, NULL, '7800000040', 20, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '5788', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+('1000001016', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '50000437', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 2, NULL, NULL, NULL, NULL, NULL, '7800000040', 40, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '5788', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+('1000001017', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '50000437', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, NULL, NULL, NULL, NULL, '7800000040', 40, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '5788', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+('1000001019', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '50000437', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 3, NULL, NULL, NULL, NULL, NULL, '7800000040', 50, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '5788', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+('1000001020', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '50000437', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, NULL, NULL, NULL, NULL, '7800000040', 50, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '5788', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+('1000001021', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '50000437', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, NULL, NULL, NULL, NULL, '7800000040', 15, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '5788', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+('1000001022', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '50000437', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, NULL, NULL, NULL, NULL, '7800000040', 70, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '5788', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+('1000001023', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '50000437', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, NULL, NULL, NULL, NULL, '7800000040', 80, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '5788', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -1454,10 +1806,10 @@ CREATE TABLE `qap_save` (
 
 CREATE TABLE `qap_submission` (
   `id` int(11) NOT NULL,
-  `reference_no` varchar(60) NOT NULL,
+  `reference_no` varchar(60) DEFAULT NULL,
   `purchasing_doc_no` varchar(11) NOT NULL,
   `file_name` varchar(500) DEFAULT NULL,
-  `vendor_code` varchar(100) NOT NULL,
+  `vendor_code` varchar(100) DEFAULT NULL,
   `assigned_from` varchar(100) DEFAULT NULL,
   `assigned_to` varchar(100) DEFAULT NULL,
   `is_assign` int(11) NOT NULL COMMENT '0 => Not Assigned\r\n1 => Assigned',
@@ -1469,25 +1821,16 @@ CREATE TABLE `qap_submission` (
   `created_at` bigint(20) NOT NULL,
   `created_by_name` varchar(255) DEFAULT NULL,
   `created_by_id` varchar(200) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='drawing table';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='QAP Table';
 
 --
 -- Dumping data for table `qap_submission`
 --
 
 INSERT INTO `qap_submission` (`id`, `reference_no`, `purchasing_doc_no`, `file_name`, `vendor_code`, `assigned_from`, `assigned_to`, `is_assign`, `file_path`, `action_type`, `remarks`, `status`, `updated_by`, `created_at`, `created_by_name`, `created_by_id`) VALUES
-(1, 'QAP-1710088718638-7545', '7800000040', '1710088718636-sample.pdf', '50007545', NULL, NULL, 0, 'uploads\\qap\\1710088718636-sample.pdf', 'UPLOAD QAP File', 'GHGG', 'SUBMITTED', 'VENDOR', 1710088718638, 'DCG DATA -CORE SYSTEMS (INDIA) PRIV', '50007545'),
-(4, 'QAP-1710088718638-7545', '7800000040', NULL, '50007545', '600229', '600233', 0, NULL, 'ASSIGNED to QA Staff', 'ghfhfgh', 'ASSIGNED', 'GRSE', 1710102105877, NULL, '600229'),
-(5, 'QAP-1710088718638-7545', '7800000040', NULL, '50007545', '600229', '600951', 1, NULL, 'ASSIGNED to QA Staff', 'again', 'ASSIGNED', 'GRSE', 1710102145252, NULL, '600229'),
-(6, 'QAP-1710088718638-7545', '7800000040', NULL, '50007545', '600229', '600233', 0, NULL, 'undefined', 'working', 'UPDATED', 'GRSE', 1710103212331, 'ABHINIT RAJ', '600951'),
-(7, 'QAP-1710088718638-7545', '7800000040', NULL, '50007545', '600229', '600233', 0, NULL, 'undefined', 'gg', 'UPDATED', 'GRSE', 1710103247372, 'ABHINIT RAJ', '600951'),
-(8, 'QAP-1710088718638-7545', '7800000040', '1710103937923-POLICY_DOCUMENT.pdf', '600951', NULL, NULL, 0, 'uploads\\qap\\1710103937923-POLICY_DOCUMENT.pdf', 'UPLOAD QAP File', 'fffff', 'SUBMITTED', 'GRSE', 1710103938095, 'ABHINIT RAJ', '600951'),
-(9, 'QAP-1710104406401-7545', '7800000040', '1710104406399-sample.pdf', '50007545', NULL, NULL, 0, 'uploads\\qap\\1710104406399-sample.pdf', 'UPLOAD QAP File', 'DO ', 'SUBMITTED', 'VENDOR', 1710104406401, 'DCG DATA -CORE SYSTEMS (INDIA) PRIV', '50007545'),
-(10, 'QAP-1710104406401-7545', '7800000040', NULL, '50007545', '600229', '600233', 0, NULL, 'UPLOAD QAP File', 'hjgfhg', 'ACCEPTED', 'GRSE', 1710104438658, 'ABHINIT RAJ', '600951'),
-(11, 'QAP-1710104406401-7545', '7800000040', NULL, '50007545', '600229', '600233', 0, NULL, NULL, 'jkjnn', 'REJECTED', 'GRSE', 1710104456922, 'ABHINIT RAJ', '600951'),
-(12, 'QAP-1710106440131-7545', '7800000040', '1710106440125-sample.pdf', '50007545', NULL, NULL, 0, 'uploads\\qap\\1710106440125-sample.pdf', 'UPLOAD QAP File', 'dsaf', 'SUBMITTED', 'VENDOR', 1710106440131, 'DCG DATA -CORE SYSTEMS (INDIA) PRIV', '50007545'),
-(13, 'QAP-1710106440131-7545', '7800000040', NULL, '50007545', '600229', '600233', 0, NULL, NULL, 'fasdf', 'ACCEPTED', 'GRSE', 1710106491041, 'ABHINIT RAJ', '600951'),
-(14, 'QAP-1710106440131-7545', '7800000040', NULL, '50007545', '600229', '600233', 0, NULL, NULL, 'nvnv', 'APPROVED', 'GRSE', 1710106500096, 'ABHINIT RAJ', '600951');
+(54, 'QAP-1711455133087-7545', '7800000040', '1711455133085-sample.pdf', '50007545', NULL, NULL, 0, 'uploads\\qap\\1711455133085-sample.pdf', 'UPLOAD QAP File', 'QAP fILE', 'SUBMITTED', 'VENDOR', 1711455133087, 'DCG DATA -CORE SYSTEMS (INDIA) PRIV', '50007545'),
+(55, 'QAP Assigned', '7800000040', NULL, NULL, '600229', '600947', 1, NULL, 'QAP Assigned', 'fhdsk', 'ASSIGNED', 'GRSE', 1711456805342, NULL, '600229'),
+(59, 'QAP-1711455133087-7545', '7800000040', NULL, '600947', NULL, NULL, 0, NULL, NULL, 'Approved!!!', 'APPROVED', 'GRSE', 1711458343163, 'TAMAL SEN', '600947');
 
 -- --------------------------------------------------------
 
@@ -1519,16 +1862,9 @@ CREATE TABLE `sdbg` (
 --
 
 INSERT INTO `sdbg` (`id`, `reference_no`, `purchasing_doc_no`, `file_name`, `file_path`, `remarks`, `status`, `action_type`, `vendor_code`, `assigned_from`, `assigned_to`, `last_assigned`, `created_at`, `created_by_name`, `created_by_id`, `updated_by`) VALUES
-(26, 'SD-1710079295202-7545', '7800000040', '1710079295187-sample.pdf', 'uploads\\submitSDBG\\1710079295187-sample.pdf', 'DEMO', 'SUBMITTED', 'SDBG SUBMISSION', '50007545', NULL, NULL, 0, 1710079295203, NULL, '50007545', 'VENDOR'),
-(27, 'SD-1710079295202-7545', '7800000040', '1710079295187-sample.pdf', 'uploads\\submitSDBG\\1710079295187-sample.pdf', 'SDBG entry forwarded to Finance.', 'FORWARD_TO_FINANCE', 'SDBG SUBMISSION', '50007545', '493834', NULL, 0, 1710079555509, 'Dealing officer', '493834', 'GRSE'),
-(28, 'SD-1710079598945-7545', '7800000040', '1710079598935-sample.pdf', 'uploads\\submitSDBG\\1710079598935-sample.pdf', 'Demo', 'SUBMITTED', 'SDBG SUBMISSION', '50007545', NULL, NULL, 0, 1710079598945, NULL, '50007545', 'VENDOR'),
-(29, 'SD-1710079629271-7545', '7800000040', '1710079629261-sample.pdf', 'uploads\\submitSDBG\\1710079629261-sample.pdf', 'DEMO', 'SUBMITTED', 'DEMAND DRAFT SUBMISSION', '50007545', NULL, NULL, 0, 1710079629272, NULL, '50007545', 'VENDOR'),
-(30, 'SD-1710079648296-7545', '7800000040', '1710079648285-sample.pdf', 'uploads\\submitSDBG\\1710079648285-sample.pdf', 'HELLO', 'SUBMITTED', 'ADVANCED BG SUBMISISON', '50007545', NULL, NULL, 0, 1710079648296, NULL, '50007545', 'VENDOR'),
-(31, 'SD-1710079629271-7545', '7800000040', '1710079629261-sample.pdf', 'uploads\\submitSDBG\\1710079629261-sample.pdf', 'SDBG entry forwarded to Finance.', 'FORWARD_TO_FINANCE', 'DEMAND DRAFT SUBMISSION', '50007545', '493834', NULL, 0, 1710079816517, 'Dealing officer', '493834', 'GRSE'),
-(32, 'SD-1710079648296-7545', '7800000040', '1710079648285-sample.pdf', 'uploads\\submitSDBG\\1710079648285-sample.pdf', 'This SDBG is REJECTED', 'REJECTED', 'ADVANCED BG SUBMISISON', '50007545', NULL, NULL, 0, 1710079825362, 'Dealing officer', '493834', 'GRSE'),
-(33, 'SD-1710079295202-7545', '7800000040', '1710079295187-sample.pdf', 'uploads\\submitSDBG\\1710079295187-sample.pdf', 'Rejected by Finance Officer', 'REJECTED', 'SDBG SUBMISSION', '50007545', '600200', NULL, 1, 1710083885126, 'finance dept', '600200', 'GRSE'),
-(34, 'SD-1710085832092-7545', '7800000040', '1710085831805-Website.pdf', 'uploads\\submitSDBG\\1710085831805-Website.pdf', 'md1', 'SUBMITTED', 'SDBG SUBMISSION', '50007545', NULL, NULL, 0, 1710085832092, NULL, '50007545', 'VENDOR'),
-(35, 'SD-1710085832092-7545', '7800000040', '1710085831805-Website.pdf', 'uploads\\submitSDBG\\1710085831805-Website.pdf', 'BG entry forwarded to Finance.', 'FORWARD_TO_FINANCE', 'SDBG SUBMISSION', '50007545', '493834', NULL, 0, 1710086490587, 'Dealing officer', '493834', 'GRSE');
+(53, 'SD-1711455092996-7545', '7800000040', '1711455092986-sample.pdf', 'uploads\\submitSDBG\\1711455092986-sample.pdf', 'Remarks!!', 'SUBMITTED', 'SDBG SUBMISSION', '50007545', NULL, NULL, 0, 1711455092996, NULL, '50007545', 'VENDOR'),
+(54, 'SD-1711455092996-7545', '7800000040', '1711455092986-sample.pdf', 'uploads\\submitSDBG\\1711455092986-sample.pdf', 'BG entry forwarded to Finance.', 'FORWARD_TO_FINANCE', 'SDBG SUBMISSION', '50007545', '493834', NULL, 0, 1711456246015, 'Dealing officer', '493834', 'GRSE'),
+(55, 'SD-1711455092996-7545', '7800000040', '1711455092986-sample.pdf', 'uploads\\submitSDBG\\1711455092986-sample.pdf', 'APPROVED by Finance Officer', 'APPROVED', 'SDBG APPROVED', '50007545', '600200', NULL, 0, 1711456341026, 'finance dept', '600200', 'GRSE');
 
 -- --------------------------------------------------------
 
@@ -1606,9 +1942,9 @@ CREATE TABLE `sdbg_entry` (
 --
 
 INSERT INTO `sdbg_entry` (`id`, `purchasing_doc_no`, `bank_name`, `branch_name`, `ifsc_code`, `bank_addr1`, `bank_addr2`, `bank_addr3`, `bank_city`, `bank_pin_code`, `bg_no`, `bg_date`, `bg_ammount`, `po_date`, `yard_no`, `validity_date`, `claim_priod`, `check_list_reference`, `check_list_date`, `bg_type`, `vendor_name`, `vendor_address1`, `vendor_address2`, `vendor_address3`, `vendor_city`, `vendor_pin_code`, `extension_date1`, `extension_date2`, `extension_date3`, `extension_date4`, `extension_date5`, `extension_date6`, `release_date`, `demand_notice_date`, `entension_letter_date`, `status`, `created_at`, `created_by`) VALUES
-(6, '7800000040', 'SBI', 'Salt Lake', '', 'PATHAKPARA', NULL, NULL, 'MILKI', '732209', '123456', 1712255400, 90000, 20230910000000, '10', 1711391400, '1711650600', 'SD-1710079295202-7545', 1710079555478, 'SDBG', 'DCG DATA -CORE SYSTEMS (INDIA) PRIV', 'BG Block', NULL, NULL, 'KOLKATA', '700091', 0, NULL, NULL, NULL, NULL, NULL, 0, 0, NULL, 'FORWARD_TO_FINANCE', 1710079555478, '493834'),
-(7, '7800000040', 'sTATE Bank', 'SBIN0012572', '', 'PATHAKPARA', 'address2', 'address3', 'MILKI', '732209', '123456', 1712169000, 6000, 20230910000000, '20', 1712255400, '1712255400', 'SD-1710079629271-7545', 1710079816489, 'SDBG', 'DCG DATA -CORE SYSTEMS (INDIA) PRIV', 'BG Block', NULL, NULL, 'KOLKATA', '700091', 0, NULL, NULL, NULL, NULL, NULL, 0, 0, NULL, 'FORWARD_TO_FINANCE', 1710079816489, '493834'),
-(8, '7800000040', 'dgfdg', 'fgfhgf', '', 'new town, kolkata, India', 'gfhbf', 'ghjhg', 'kolkata', '157', 'rrtyt', 1710268200, 12, 20230910000000, '23', 1709749800, '1710268200', 'SD-1710085832092-7545', 1710086490565, 'SDBG', 'DCG DATA -CORE SYSTEMS (INDIA) PRIV', 'BG Block', NULL, NULL, 'KOLKATA', '700091', 0, NULL, NULL, NULL, NULL, NULL, 0, 0, NULL, 'FORWARD_TO_FINANCE', 1710086490565, '493834');
+(11, '7800000040', 'SBI', 'SBIN0012572', '', 'PATHAKPARA', NULL, NULL, 'MILKI', '732209', '123456', 1711909800, 4555, 20230910000000, '20', 1709922600, '1710527400', 'SD-1711437446664-7545', 1711437514800, 'SDBG', 'DCG DATA -CORE SYSTEMS (INDIA) PRIV', 'BG Block', NULL, NULL, 'KOLKATA', '700091', 0, 0, 0, 0, NULL, NULL, 0, 0, 0, 'FORWARD_TO_FINANCE', 1711437514800, '493834'),
+(12, '7800000040', 'SBI', 'Salt Lake', '', 'PATHAKPARA', NULL, NULL, 'MILKI', '732209', '123456', 1712255400, 4555, 20230910000000, 'ds', 1712255400, '1712082600', 'SD-1711437767194-7545', 1711437916631, 'SDBG', 'DCG DATA -CORE SYSTEMS (INDIA) PRIV', 'BG Block', NULL, NULL, 'KOLKATA', '700091', 0, 0, 0, 0, NULL, NULL, 0, 0, 0, 'FORWARD_TO_FINANCE', 1711437916631, '493834'),
+(13, '7800000040', 'SBI', 'SBIN0012572', '', 'PATHAKPARA', NULL, NULL, 'MILKI', '732209', '123456', 1711909800, 4555, 20230910000000, '30', 1712169000, '1712341800', 'SD-1711455092996-7545', 1711456246000, 'SDBG', 'DCG DATA -CORE SYSTEMS (INDIA) PRIV', 'BG Block', NULL, NULL, 'KOLKATA', '700091', 0, 0, 0, 0, NULL, NULL, 0, 0, 0, 'FORWARD_TO_FINANCE', 1711456246000, '493834');
 
 -- --------------------------------------------------------
 
@@ -1652,8 +1988,7 @@ CREATE TABLE `shipping_documents` (
 --
 
 INSERT INTO `shipping_documents` (`id`, `purchasing_doc_no`, `file_name`, `file_type_id`, `file_type_name`, `vendor_code`, `file_path`, `remarks`, `updated_by`, `created_at`, `created_by_id`) VALUES
-(19, '7800000040', NULL, 0, '', '50007545', NULL, NULL, 'VENDOR', 1710108583519, '50007545'),
-(20, '7800000040', '1710108755791-WelcomeDocument.pdf', 0, 'Manufacturers test certificates', '50007545', 'uploads\\shippingDocuments\\1710108755791-WelcomeDocument.pdf', 'fsd', 'VENDOR', 1710108756068, '50007545');
+(31, '7800000040', '1711455240082-sample.pdf', 0, 'Invoice', '50007545', 'uploads\\shippingDocuments\\1711455240082-sample.pdf', 'Invoice Upload', 'VENDOR', 1711455240083, '50007545');
 
 -- --------------------------------------------------------
 
@@ -1702,7 +2037,8 @@ INSERT INTO `tnc_minutes` (`id`, `file_name`, `file_path`, `file_type`, `created
 (3, '8765678900.pdf', 'uploads\\tncminutes\\8765678900.pdf', 'application/pdf', 1706178444776, '50007545', '8765678900'),
 (4, '8765678900.pdf', 'uploads\\tncminutes\\8765678900.pdf', 'application/pdf', 1706178507219, '50007545', '8765678900'),
 (5, '8765678900.pdf', 'uploads\\tncminutes\\8765678900.pdf', 'application/pdf', 1706178593666, '50007545', '8765678900'),
-(6, '7800000040.pdf', 'uploads\\tncminutes\\7800000040.pdf', 'application/pdf', 1706607258188, '600200', '7800000040');
+(6, '7800000040.pdf', 'uploads\\tncminutes\\7800000040.pdf', 'application/pdf', 1706607258188, '600200', '7800000040'),
+(7, '7800000047.pdf', 'uploads\\tncminutes\\7800000047.pdf', 'application/pdf', 1710316253852, '493834', '7800000047');
 
 -- --------------------------------------------------------
 
@@ -1781,6 +2117,32 @@ INSERT INTO `vendors` (`vendor_id`, `first_name`, `last_name`, `email`) VALUES
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `vendor_activities`
+--
+
+CREATE TABLE `vendor_activities` (
+  `id` int(11) NOT NULL,
+  `purchasing_doc_no` varchar(11) DEFAULT NULL,
+  `action_type` varchar(40) DEFAULT NULL,
+  `file_name` varchar(300) DEFAULT NULL,
+  `file_path` varchar(500) DEFAULT NULL,
+  `remarks` text DEFAULT NULL,
+  `status` varchar(20) NOT NULL,
+  `updated_by` varchar(30) NOT NULL,
+  `created_at` bigint(20) NOT NULL,
+  `created_by_id` varchar(200) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `vendor_activities`
+--
+
+INSERT INTO `vendor_activities` (`id`, `purchasing_doc_no`, `action_type`, `file_name`, `file_path`, `remarks`, `status`, `updated_by`, `created_at`, `created_by_id`) VALUES
+(5, '7800000040', 'UPLOAD INSURANCE COVERAGE', '1711455284602-sample.pdf', 'uploads\\vendorActivities\\1711455284602-sample.pdf', 'IC Upload!', 'SUBMITTED', 'VENDOR', 1711455284604, '50007545');
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `wbs`
 --
 
@@ -1810,14 +2172,15 @@ INSERT INTO `wbs` (`wbs_id`, `project_code`, `purchasing_doc_no`) VALUES
 
 CREATE TABLE `wdc` (
   `id` int(11) NOT NULL,
+  `reference_no` varchar(60) NOT NULL,
   `purchasing_doc_no` varchar(11) NOT NULL,
+  `action_type` varchar(10) NOT NULL,
   `file_name` varchar(500) DEFAULT NULL,
   `vendor_code` varchar(100) DEFAULT NULL,
   `file_path` varchar(500) DEFAULT NULL,
   `remarks` text DEFAULT NULL,
   `status` varchar(10) NOT NULL,
-  `wdc_ref_no` varchar(100) NOT NULL,
-  `wdc_date` bigint(20) NOT NULL,
+  `wdc_date` bigint(20) DEFAULT NULL,
   `po_line_iten_no` varchar(100) NOT NULL,
   `job_location` varchar(200) NOT NULL,
   `yard_no` varchar(60) NOT NULL,
@@ -1826,9 +2189,9 @@ CREATE TABLE `wdc` (
   `unit` varchar(10) NOT NULL,
   `messurment` varchar(30) NOT NULL,
   `quantity` int(11) NOT NULL,
-  `entry_by_production` varchar(60) NOT NULL,
-  `stage_datiels` text NOT NULL,
-  `actual_payable_amount` int(11) NOT NULL,
+  `entry_by_production` varchar(60) DEFAULT NULL,
+  `stage_datiels` text DEFAULT NULL,
+  `actual_payable_amount` int(11) DEFAULT NULL,
   `updated_by` varchar(30) NOT NULL,
   `created_at` bigint(20) NOT NULL,
   `created_by_name` varchar(255) NOT NULL,
@@ -1839,11 +2202,9 @@ CREATE TABLE `wdc` (
 -- Dumping data for table `wdc`
 --
 
-INSERT INTO `wdc` (`id`, `purchasing_doc_no`, `file_name`, `vendor_code`, `file_path`, `remarks`, `status`, `wdc_ref_no`, `wdc_date`, `po_line_iten_no`, `job_location`, `yard_no`, `actual_start_date`, `actual_completion_date`, `unit`, `messurment`, `quantity`, `entry_by_production`, `stage_datiels`, `actual_payable_amount`, `updated_by`, `created_at`, `created_by_name`, `created_by_id`) VALUES
-(1, '7800000047', '1708854873339-sample.pdf', '50007545', 'uploads\\submitWdc\\1708854873339-sample.pdf', 'TEST', 'PENDING', '', 0, '', '', '', 0, 0, '', '', 0, '', '', 0, 'VENDOR', 1708854873343, '', '50007545'),
-(2, '7800000047', '1708855199526-sample.pdf', '50007545', 'uploads\\submitWdc\\1708855199526-sample.pdf', 'fsdfv', 'PENDING', '', 0, '', '', '', 0, 0, '', '', 0, '', '', 0, 'VENDOR', 1708855199530, '', '50007545'),
-(3, '7800000047', '1708856633135-sample.pdf', '50007545', 'uploads\\submitWdc\\1708856633135-sample.pdf', 'teat', 'PENDING', '45', 1707330600, '4567', 'kolkata', '2', 1708540200, 1711477800, 'ncdgd', 'xfsttd', 56, 'defsdyh', 'rgsgd', 5678, 'VENDOR', 1708856633151, '', '50007545'),
-(4, '7800000040', '1708926626598-sample.pdf', NULL, 'uploads\\submitWdc\\1708926626598-sample.pdf', 'test', 'PENDING', '2345', 1707935400, 'efrrfr', 'kilkata', '3244554', 1708540200, 1708540200, '56', '45', 45, '45fvdfv', 'dsfsg', 45, 'GRSE', 1708926626603, '', '600949');
+INSERT INTO `wdc` (`id`, `reference_no`, `purchasing_doc_no`, `action_type`, `file_name`, `vendor_code`, `file_path`, `remarks`, `status`, `wdc_date`, `po_line_iten_no`, `job_location`, `yard_no`, `actual_start_date`, `actual_completion_date`, `unit`, `messurment`, `quantity`, `entry_by_production`, `stage_datiels`, `actual_payable_amount`, `updated_by`, `created_at`, `created_by_name`, `created_by_id`) VALUES
+(11, 'WDC-1711455336825-7545', '7800000040', 'WDC', '1711455336821-sample.pdf', '50007545', 'uploads\\submitWdc\\1711455336821-sample.pdf', 'Demo Remarks!', 'SUBMITTED', 1711455336, '40', '30', '20', 1709231400, 1709317800, '4000', 'Meter', 20, NULL, NULL, NULL, 'VENDOR', 1711455336825, '', '50007545'),
+(12, 'JCC-1711455389309-7545', '7800000040', 'JCC', '1711455389307-sample.pdf', '50007545', 'uploads\\submitWdc\\1711455389307-sample.pdf', 'Testing 2', 'SUBMITTED', 1711455389, '50', 'Testing', '20', 1711650600, 1712341800, '20', 'Meter', 5, NULL, NULL, NULL, 'VENDOR', 1711455389309, '', '50007545');
 
 -- --------------------------------------------------------
 
@@ -2140,6 +2501,7 @@ CREATE TABLE `zpo_milestone` (
 INSERT INTO `zpo_milestone` (`MANDT`, `EBELN`, `MID`, `MTEXT`, `PLAN_DATE`, `MO`) VALUES
 (0, 'QQ00013227', '1', 'CONTRACTUAL SDBG/IB SUBMISSION DATE', 1699255657917, 'M'),
 (0, 'QQ00013227', '3', 'CONTRACTUAL QAP SUBMISSION DATE', 1699255657917, 'O'),
+(1, '1702446752', '2', 'CONTRACTUAL DRAWING SUBMISSION DATE', 1702446752, 'O'),
 (1, '4700013227', '1', 'CONTRACTUAL SDBG/IB SUBMISSION DATE', 1699255657917, 'M'),
 (1, '4700013227', '2', 'CONTRACTUAL DRAWING SUBMISSION DATE', 1699255657917, 'M'),
 (1, '4700013227', '3', 'CONTRACTUAL QAP SUBMISSION DATE', 1699255657917, 'M'),
@@ -2148,7 +2510,12 @@ INSERT INTO `zpo_milestone` (`MANDT`, `EBELN`, `MID`, `MTEXT`, `PLAN_DATE`, `MO`
 (1, '4700013553', '3', 'CONTRACTUAL QAP SUBMISSION DATE', 1699255657917, 'M'),
 (1, '7800000040', '1', 'CONTRACTUAL SDBG/IB SUBMISSION DATE', 1699255657917, 'M'),
 (1, '7800000040', '2', 'CONTRACTUAL DRAWING SUBMISSION DATE', 1699255657917, 'O'),
-(1, '7800000040', '3', 'CONTRACTUAL QAP SUBMISSION DATE', 1699255657917, 'M');
+(1, '7800000040', '3', 'CONTRACTUAL QAP SUBMISSION DATE', 1699255657917, 'M'),
+(1, '7800000040', '4', 'CONTRACTUAL ILMS SUBMISSION DATE', 1699255657917, 'M'),
+(1, '7800000047', '1', 'CONTRACTUAL SDBG/IB SUBMISSION DATE', 1702446752000, 'M'),
+(1, '7800000047', '2', 'CONTRACTUAL DRAWING SUBMISSION DATE', 1703742752000, 'O'),
+(1, '7800000047', '3', 'CONTRACTUAL QAP SUBMISSION DATE', 1705038752000, 'M'),
+(1, '7800000047', '4', 'CONTRACTUAL ILMS SUBMISSION DATE', 1706075552000, 'M');
 
 --
 -- Indexes for dumped tables
@@ -2176,6 +2543,18 @@ ALTER TABLE `billing_officers`
 -- Indexes for table `bill_registration`
 --
 ALTER TABLE `bill_registration`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `btn`
+--
+ALTER TABLE `btn`
+  ADD PRIMARY KEY (`btn_num`);
+
+--
+-- Indexes for table `demande_management`
+--
+ALTER TABLE `demande_management`
   ADD PRIMARY KEY (`id`);
 
 --
@@ -2209,6 +2588,18 @@ ALTER TABLE `emp_department_list`
   ADD PRIMARY KEY (`id`);
 
 --
+-- Indexes for table `hr`
+--
+ALTER TABLE `hr`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `hr_compliance`
+--
+ALTER TABLE `hr_compliance`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Indexes for table `icgrn`
 --
 ALTER TABLE `icgrn`
@@ -2224,6 +2615,12 @@ ALTER TABLE `ilms`
 -- Indexes for table `inspection_call_letter`
 --
 ALTER TABLE `inspection_call_letter`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `inspection_release_note`
+--
+ALTER TABLE `inspection_release_note`
   ADD PRIMARY KEY (`id`);
 
 --
@@ -2261,6 +2658,12 @@ ALTER TABLE `mara`
 --
 ALTER TABLE `mrs`
   ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `mseg`
+--
+ALTER TABLE `mseg`
+  ADD PRIMARY KEY (`MBLNR`);
 
 --
 -- Indexes for table `new_auth`
@@ -2401,6 +2804,12 @@ ALTER TABLE `vendors`
   ADD PRIMARY KEY (`vendor_id`);
 
 --
+-- Indexes for table `vendor_activities`
+--
+ALTER TABLE `vendor_activities`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Indexes for table `wdc`
 --
 ALTER TABLE `wdc`
@@ -2439,19 +2848,25 @@ ALTER TABLE `zpo_milestone`
 -- AUTO_INCREMENT for table `actualsubmissiondate`
 --
 ALTER TABLE `actualsubmissiondate`
-  MODIFY `id` int(5) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `id` int(5) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=25;
 
 --
 -- AUTO_INCREMENT for table `auth`
 --
 ALTER TABLE `auth`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=26;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=28;
 
 --
 -- AUTO_INCREMENT for table `bill_registration`
 --
 ALTER TABLE `bill_registration`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=97;
+
+--
+-- AUTO_INCREMENT for table `demande_management`
+--
+ALTER TABLE `demande_management`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
 
 --
 -- AUTO_INCREMENT for table `department_wise_log`
@@ -2463,19 +2878,31 @@ ALTER TABLE `department_wise_log`
 -- AUTO_INCREMENT for table `depertment_master`
 --
 ALTER TABLE `depertment_master`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
 
 --
 -- AUTO_INCREMENT for table `drawing`
 --
 ALTER TABLE `drawing`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=25;
 
 --
 -- AUTO_INCREMENT for table `emp_department_list`
 --
 ALTER TABLE `emp_department_list`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
+
+--
+-- AUTO_INCREMENT for table `hr`
+--
+ALTER TABLE `hr`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+
+--
+-- AUTO_INCREMENT for table `hr_compliance`
+--
+ALTER TABLE `hr_compliance`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `icgrn`
@@ -2487,13 +2914,19 @@ ALTER TABLE `icgrn`
 -- AUTO_INCREMENT for table `ilms`
 --
 ALTER TABLE `ilms`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
 
 --
 -- AUTO_INCREMENT for table `inspection_call_letter`
 --
 ALTER TABLE `inspection_call_letter`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=38;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+
+--
+-- AUTO_INCREMENT for table `inspection_release_note`
+--
+ALTER TABLE `inspection_release_note`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT for table `internal_role_master`
@@ -2559,19 +2992,19 @@ ALTER TABLE `privilege`
 -- AUTO_INCREMENT for table `qap_save`
 --
 ALTER TABLE `qap_save`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
 
 --
 -- AUTO_INCREMENT for table `qap_submission`
 --
 ALTER TABLE `qap_submission`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=60;
 
 --
 -- AUTO_INCREMENT for table `sdbg`
 --
 ALTER TABLE `sdbg`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=36;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=56;
 
 --
 -- AUTO_INCREMENT for table `sdbg_acknowledgement`
@@ -2583,7 +3016,7 @@ ALTER TABLE `sdbg_acknowledgement`
 -- AUTO_INCREMENT for table `sdbg_entry`
 --
 ALTER TABLE `sdbg_entry`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
 
 --
 -- AUTO_INCREMENT for table `sdbg_return_submisson`
@@ -2595,7 +3028,7 @@ ALTER TABLE `sdbg_return_submisson`
 -- AUTO_INCREMENT for table `shipping_documents`
 --
 ALTER TABLE `shipping_documents`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=32;
 
 --
 -- AUTO_INCREMENT for table `sub_dept`
@@ -2607,7 +3040,7 @@ ALTER TABLE `sub_dept`
 -- AUTO_INCREMENT for table `tnc_minutes`
 --
 ALTER TABLE `tnc_minutes`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT for table `user_role`
@@ -2622,10 +3055,16 @@ ALTER TABLE `user_type`
   MODIFY `id` int(4) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
+-- AUTO_INCREMENT for table `vendor_activities`
+--
+ALTER TABLE `vendor_activities`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+
+--
 -- AUTO_INCREMENT for table `wdc`
 --
 ALTER TABLE `wdc`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
 
 --
 -- AUTO_INCREMENT for table `wmc`
