@@ -329,53 +329,38 @@ const BillsMaterialHybrid = () => {
                                       </td>
                                     </tr>
                                     <tr>
-                                      <td>GRN No 1</td>
+                                      <td>GRN No </td>
                                       <td className="btn_value">
                                         <input
                                           type="text"
-                                          className="form-control"
+                                          className="form-control mx-2"
                                           name="grn_no_1"
                                           value={form?.grn_no_1}
                                           onChange={(e) => {
                                             inputTypeChange(e, form, setForm);
                                           }}
                                         />
-                                      </td>
-                                    </tr>
-                                    <tr>
-                                      <td>GRN No 2</td>
-                                      <td className="btn_value">
                                         <input
                                           type="text"
-                                          className="form-control"
+                                          className="form-control mx-2"
                                           name="grn_no_2"
                                           value={form?.grn_no_2}
                                           onChange={(e) => {
                                             inputTypeChange(e, form, setForm);
                                           }}
                                         />
-                                      </td>
-                                    </tr>
-                                    <tr>
-                                      <td>GRN No 3</td>
-                                      <td className="btn_value">
                                         <input
                                           type="text"
-                                          className="form-control"
+                                          className="form-control mx-2"
                                           name="grn_no_3"
                                           value={form?.grn_no_3}
                                           onChange={(e) => {
                                             inputTypeChange(e, form, setForm);
                                           }}
                                         />
-                                      </td>
-                                    </tr>
-                                    <tr>
-                                      <td>GRN No 4</td>
-                                      <td className="btn_value">
                                         <input
                                           type="text"
-                                          className="form-control"
+                                          className="form-control mx-2"
                                           name="grn_no_4"
                                           value={form?.grn_no_4}
                                           onChange={(e) => {

@@ -25,6 +25,7 @@ export const calculatePenalty = (
 
   // Calculate the difference in time in milliseconds
   const difference = actualTime - contractualTime;
+  if (difference < 0) return 0;
 
   // Calculate the number of weeks delayed
   const weeksDelayed = Math.floor(difference / oneWeek);

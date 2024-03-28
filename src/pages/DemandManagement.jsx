@@ -29,6 +29,7 @@ const DemandManagement = () => {
     remarks: "",
     line_item_no: "",
     request_amount: "",
+    recived_quantity: "",
     delivery_date: "",
   });
 
@@ -94,6 +95,8 @@ const DemandManagement = () => {
     }
   }, [data]);
 
+  console.log(data);
+
   const actionHandler = async (flag) => {
     try {
       const {
@@ -101,6 +104,7 @@ const DemandManagement = () => {
         remarks,
         line_item_no,
         request_amount,
+        recived_quantity,
         delivery_date,
       } = formData;
 
@@ -126,15 +130,27 @@ const DemandManagement = () => {
           "Raised requeste quantity should be less than or equal to available quantity!"
         );
       }
-      const formObj = {
+      let formObj = {
         action_type: action_type,
         purchasing_doc_no: id,
         line_item_no: line_item_no,
         request_amount: request_amount,
         delivery_date: convertToEpoch(delivery_date),
-        created_remarks: remarks,
+        remarks,
         status: flag,
       };
+
+      if (flag === "RECEIVED") {
+        formObj = {
+          action_type: flag,
+          reference_no: viewData?.reference_no,
+          purchasing_doc_no: id,
+          line_item_no: viewData?.line_item_no,
+          recived_quantity,
+          status: flag,
+          remarks,
+        };
+      }
 
       const response = await apiCallBack(
         "POST",
@@ -151,6 +167,56 @@ const DemandManagement = () => {
           remarks: "",
           line_item_no: "",
           request_amount: "",
+          delivery_date: "",
+        });
+        getData();
+      } else {
+        toast.error(response?.message);
+      }
+    } catch (error) {
+      console.error("Error uploading:", error);
+    }
+  };
+
+  const actionHandlerReceiver = async (flag) => {
+    try {
+      const { remarks, request_amount, recived_quantity } = formData;
+
+      if (remarks.trim() === "" || recived_quantity.trim() === "") {
+        return toast.warn("All fields are required!");
+      }
+      if (request_amount > availableAmount) {
+        return toast.warn(
+          "Raised requeste quantity should be less than or equal to available quantity!"
+        );
+      }
+      let formObj = {
+        action_type: flag,
+        reference_no: viewData?.reference_no,
+        purchasing_doc_no: id,
+        line_item_no: viewData?.line_item_no,
+        recived_quantity,
+        status: flag,
+        remarks,
+      };
+
+      const response = await apiCallBack(
+        "POST",
+        "po/demandeManagement/insert",
+        formObj,
+        token
+      );
+
+      if (response?.status) {
+        toast.success(response?.message);
+        setIsPopup(false);
+        setIsSecPopup(false);
+        setFormData({
+          action_type: "",
+          remarks: "",
+          line_item_no: "",
+          request_amount: "",
+          recived_quantity: "",
           delivery_date: "",
         });
         getData();
@@ -193,9 +259,11 @@ const DemandManagement = () => {
                               <thead>
                                 <tr className="border-0">
                                   <th>DateTime</th>
+                                  <th>Action Type</th>
                                   <th>PO Line Item </th>
-                                  <th>Raised By</th>
-                                  <th>Raised Quantity</th>
+                                  <th>Updated By</th>
+                                  <th>Request Quantity</th>
+                                  <th>Received Quantity</th>
                                   <th>Delivery Date</th>
                                   <th className="min-w-150px">Remarks</th>
                                   <th>Status</th>
@@ -221,16 +289,18 @@ const DemandManagement = () => {
                                                   item?.created_at
                                                 ).toLocaleString()}
                                             </td>
+                                            <td>{item?.action_type}</td>
                                             <td>{item?.line_item_no}</td>
-                                            <td>{item.created_by}</td>
+                                            <td>{item.created_by_id}</td>
                                             <td>{item.request_amount}</td>
+                                            <td>{item.recived_quantity}</td>
                                             <td>
                                               {item.delivery_date &&
                                                 new Date(
                                                   item.delivery_date
                                                 ).toLocaleDateString()}
                                             </td>
-                                            <td>{item.created_remarks}</td>
+                                            <td>{item.remarks}</td>
                                             <td
                                               className={`${clrLegend(
                                                 item?.status
@@ -239,16 +309,20 @@ const DemandManagement = () => {
                                               {item.status}
                                             </td>
                                             <td>
-                                              <button
-                                                onClick={() => {
-                                                  setViewData(item);
-                                                  setIsSecPopup(true);
-                                                }}
-                                                className="btn fw-bold btn-primary"
-                                                type="button"
-                                              >
-                                                Action
-                                              </button>
+                                              {item.status === "SUBMITTED" && (
+                                                <>
+                                                  <button
+                                                    onClick={() => {
+                                                      setViewData(item);
+                                                      setIsSecPopup(true);
+                                                    }}
+                                                    className="btn fw-bold btn-primary"
+                                                    type="button"
+                                                  >
+                                                    Action
+                                                  </button>
+                                                </>
+                                              )}
                                             </td>
                                           </tr>
                                         ))}
@@ -276,7 +350,9 @@ const DemandManagement = () => {
               <div className="card-header border-0 pt-5 pb-3">
                 <h3 className="card-title align-items-start flex-column">
                   <span className="card-label fw-bold fs-3 mb-1">
-                    Take Your Action
+                    Take Your Action{" "}
+                    {console.log("viewData", viewData?.reference_no)}
+                    {viewData?.reference_no && `for ${viewData?.reference_no}`}
                   </span>
                 </h3>
                 <button
@@ -312,6 +388,7 @@ const DemandManagement = () => {
                         <option value="Service Engineer Requirement">
                           Service Engineer Requirement
                         </option>
+                        <option value="Others">Others</option>
                       </select>
                     </div>
                   </div>
@@ -493,7 +570,7 @@ const DemandManagement = () => {
                   <div className="col-12">
                     <div className="mb-3 d-flex justify-content-between">
                       <button
-                        onClick={() => actionHandler("SUBMITTED")}
+                        onClick={() => actionHandlerReceiver("RECEIVED")}
                         className="btn fw-bold btn-primary"
                         type="button"
                       >

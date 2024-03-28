@@ -3,6 +3,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Login from "./pages/Login";
 import { useSelector } from "react-redux";
 import POs from "./pages/POs";
+import POArchived from "./pages/POArchived";
 import PODetails from "./pages/PODetails";
 import SDBGSub from "./pages/SDBGSub";
 import DrawingSub from "./pages/DrawingSub";
@@ -65,6 +66,7 @@ function Layout() {
             <Route exact path="/" element={<POs />} />
             <Route exact path="/wdc" element={<WBS />} />
             <Route exact path="/po/:id" element={<PODetails />} />
+            <Route exact path="/poarchive/:id" element={<POArchived />} />
             <Route exact path="/sdbg/:id" element={<SDBGSub />} />
             <Route exact path="/drawing/:id" element={<DrawingSub />} />
             <Route exact path="/qap/:id" element={<QAPSub />} />

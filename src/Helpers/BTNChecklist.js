@@ -103,3 +103,7 @@ export const actionHandlerBTN = async (
     toast.error("Error uploading ilms:", error);
   }
 };
+
+export const actionHandlerByDO = () => {
+  toast.success("Successfully uploaded!");
+};

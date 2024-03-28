@@ -2,7 +2,11 @@ export const clrLegend = (flag) => {
   let clr = "";
   if (flag === "REJECTED") {
     clr = "red";
-  } else if (flag === "ACCEPTED" || flag === "APPROVED") {
+  } else if (
+    flag === "ACCEPTED" ||
+    flag === "APPROVED" ||
+    flag === "RECEIVED"
+  ) {
     clr = "green";
   } else if (flag === "SUBMITTED") {
     clr = "orange";

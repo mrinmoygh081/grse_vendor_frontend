@@ -5,14 +5,19 @@ import Header from "../../components/Header";
 import Footer from "../../components/Footer";
 import { useSelector } from "react-redux";
 import { USER_VENDOR } from "../../constants/userConstants";
-import { actionHandlerBTN } from "../../Helpers/BTNChecklist";
 import {
+  actionHandlerBTN,
+  actionHandlerByDO,
+} from "../../Helpers/BTNChecklist";
+import {
+  calculatePenalty,
   checkTypeArr,
   inputFileChange,
   inputTypeChange,
 } from "../../utils/smallFun";
 import { inputOnWheelPrevent } from "../../utils/inputOnWheelPrevent";
 import { apiCallBack } from "../../utils/fetchAPIs";
+import { toast } from "react-toastify";
 
 const BillsMaterialHybridEdit = () => {
   const navigate = useNavigate();
@@ -52,7 +57,21 @@ const BillsMaterialHybridEdit = () => {
     demand_raise_filename: "",
     pbg_filename: "",
   };
+  let inititalDOData = {
+    btn: state,
+    ld_ge_date: "",
+    ld_c_date: "",
+    ld_amount: "",
+    p_sdbg_amount: "",
+    p_drg_amount: "",
+    p_qap_amount: "",
+    p_ilms_amount: "",
+    o_deduction: "",
+    total_deduction: "",
+    net_payable_amount: "",
+  };
   const [form, setForm] = useState(initialData);
+  const [doForm, setDoForm] = useState(inititalDOData);
 
   const calNetClaimAmount = (invoice_value, debit_note, credit_note) => {
     if (typeof invoice_value !== "number") {
@@ -115,12 +134,83 @@ const BillsMaterialHybridEdit = () => {
     getDataByBTN();
   }, []);
 
-  // useEffect(() => {
-  //   if (data) {
-  //     setForm({ ...form, data });
-  //   }
-  // }, [data]);
-  // console.log("form", form);
+  useEffect(() => {
+    const { o_deduction } = doForm;
+    // if (data) {
+    //   setForm({ ...form, data });
+    // }
+  }, [doForm?.o_deduction]);
+
+  useEffect(() => {
+    const { ld_c_date, ld_ge_date } = doForm;
+    if (ld_c_date && ld_ge_date) {
+      let p_amt = calculatePenalty(ld_c_date, ld_ge_date, 30000, 0.5, 5);
+      setDoForm({ ...doForm, ld_amount: p_amt });
+    }
+  }, [doForm?.ld_c_date, doForm?.ld_ge_date]);
+
+  useEffect(() => {
+    const {
+      a_sdbg_date,
+      a_drawing_date,
+      a_ilms_date,
+      a_qap_date,
+      c_sdbg_date,
+      c_drawing_date,
+      c_ilms_date,
+      c_qap_date,
+    } = form;
+    let p_sdbg = 0;
+    let p_drg = 0;
+    let p_qap = 0;
+    let p_ilms = 0;
+    if (data?.net_claim_amount) {
+      const { net_claim_amount } = data;
+      if (a_sdbg_date && c_sdbg_date) {
+        p_sdbg = calculatePenalty(
+          c_sdbg_date,
+          a_sdbg_date,
+          net_claim_amount,
+          0.5,
+          5
+        );
+      }
+      if (a_drawing_date && c_drawing_date) {
+        p_drg = calculatePenalty(
+          c_drawing_date,
+          a_drawing_date,
+          net_claim_amount,
+          0.25,
+          2
+        );
+      }
+      if (a_qap_date && c_qap_date) {
+        p_qap = calculatePenalty(
+          c_qap_date,
+          a_qap_date,
+          net_claim_amount,
+          0.25,
+          2
+        );
+      }
+      if (a_ilms_date && c_ilms_date) {
+        p_ilms = calculatePenalty(
+          c_ilms_date,
+          a_ilms_date,
+          net_claim_amount,
+          0.25,
+          2
+        );
+      }
+    }
+    setDoForm({
+      ...doForm,
+      p_sdbg_amount: p_sdbg,
+      p_drg_amount: p_drg,
+      p_qap_amount: p_qap,
+      p_ilms_amount: p_ilms,
+    });
+  }, [form]);
 
   useEffect(() => {
     if (data) {
@@ -535,28 +625,42 @@ const BillsMaterialHybridEdit = () => {
                                         <td>Liquidated damage</td>
                                         <td className="btn_value">
                                           <div className="me-3">
-                                            <label htmlhtmlFor="GED">
+                                            <label htmlFor="GED">
                                               Gate Entry Date:
                                             </label>
                                             <input
                                               type="date"
                                               className="form-control "
                                               id="GED"
+                                              value={doForm?.ld_ge_date}
+                                              onChange={(e) =>
+                                                setDoForm({
+                                                  ...doForm,
+                                                  ld_ge_date: e.target.value,
+                                                })
+                                              }
                                             />
                                           </div>
                                           <div className="me-3">
-                                            <label htmlhtmlFor="CLD">
+                                            <label htmlFor="CLD">
                                               Contractual Delivery Date:
                                             </label>
                                             <input
                                               type="date"
                                               className="form-control"
                                               id="CLD"
+                                              value={doForm?.ld_c_date}
+                                              onChange={(e) =>
+                                                setDoForm({
+                                                  ...doForm,
+                                                  ld_c_date: e.target.value,
+                                                })
+                                              }
                                             />
                                           </div>
                                           <div>
                                             <label>Amount:</label>
-                                            <p>&#8377; 5000</p>
+                                            <p>&#8377; {doForm?.ld_amount}</p>
                                           </div>
                                         </td>
                                       </tr>
@@ -564,7 +668,7 @@ const BillsMaterialHybridEdit = () => {
                                         <td>Penalty for Drawing submission</td>
                                         <td className="btn_value">
                                           <div className="me-3">
-                                            <label htmlhtmlFor="DADD">
+                                            <label htmlFor="DADD">
                                               Actual Delivery Date:
                                             </label>
                                             <p>
@@ -577,7 +681,7 @@ const BillsMaterialHybridEdit = () => {
                                             </p>
                                           </div>
                                           <div className="me-3">
-                                            <label htmlhtmlFor="DCDD">
+                                            <label htmlFor="DCDD">
                                               Contractual Delivery Date:
                                             </label>
                                             <p>
@@ -591,7 +695,9 @@ const BillsMaterialHybridEdit = () => {
                                           </div>
                                           <div>
                                             <label>Amount:</label>
-                                            <p>&#8377; 5000</p>
+                                            <p>
+                                              &#8377; {doForm?.p_drg_amount}
+                                            </p>
                                           </div>
                                         </td>
                                       </tr>
@@ -599,7 +705,7 @@ const BillsMaterialHybridEdit = () => {
                                         <td>Penalty for QAP submission</td>
                                         <td className="btn_value">
                                           <div className="me-3">
-                                            <label htmlhtmlFor="QADD">
+                                            <label htmlFor="QADD">
                                               Actual Delivery Date:
                                             </label>
                                             <p>
@@ -612,7 +718,7 @@ const BillsMaterialHybridEdit = () => {
                                             </p>
                                           </div>
                                           <div className="me-3">
-                                            <label htmlhtmlFor="QCDD">
+                                            <label htmlFor="QCDD">
                                               Contractual Delivery Date:
                                             </label>
                                             <p>
@@ -626,7 +732,9 @@ const BillsMaterialHybridEdit = () => {
                                           </div>
                                           <div>
                                             <label>Amount:</label>
-                                            <p>&#8377; 5000</p>
+                                            <p>
+                                              &#8377; {doForm?.p_qap_amount}
+                                            </p>
                                           </div>
                                         </td>
                                       </tr>
@@ -634,7 +742,7 @@ const BillsMaterialHybridEdit = () => {
                                         <td>Penalty for ILMS submission</td>
                                         <td className="btn_value">
                                           <div className="me-3">
-                                            <label htmlhtmlFor="LADD">
+                                            <label htmlFor="LADD">
                                               Actual Delivery Date:
                                             </label>
                                             <p>
@@ -647,7 +755,7 @@ const BillsMaterialHybridEdit = () => {
                                             </p>
                                           </div>
                                           <div className="me-3">
-                                            <label htmlhtmlFor="LCDD">
+                                            <label htmlFor="LCDD">
                                               Contractual Delivery Date:
                                             </label>
                                             <p>
@@ -659,9 +767,12 @@ const BillsMaterialHybridEdit = () => {
                                               </b>
                                             </p>
                                           </div>
+                                          {console.log("doForm", doForm)}
                                           <div>
                                             <label>Amount:</label>
-                                            <p>&#8377; 5000</p>
+                                            <p>
+                                              &#8377; {doForm?.p_ilms_amount}
+                                            </p>
                                           </div>
                                         </td>
                                       </tr>
@@ -669,10 +780,17 @@ const BillsMaterialHybridEdit = () => {
                                         <td>Other deduction if any </td>
                                         <td className="btn_value">
                                           <input
-                                            type="text"
+                                            type="number"
                                             name=""
                                             id=""
                                             className="form-control"
+                                            value={doForm?.o_deduction}
+                                            onChange={(e) =>
+                                              setDoForm({
+                                                ...doForm,
+                                                o_deduction: e.target.value,
+                                              })
+                                            }
                                           />
                                         </td>
                                       </tr>
@@ -692,7 +810,11 @@ const BillsMaterialHybridEdit = () => {
                                   </table>
                                 </div>
                                 <div className="text-center">
-                                  <button className="btn fw-bold btn-primary me-3">
+                                  <button
+                                    type="button"
+                                    className="btn fw-bold btn-primary me-3"
+                                    onClick={() => actionHandlerByDO()}
+                                  >
                                     SUBMIT
                                   </button>
                                   <button

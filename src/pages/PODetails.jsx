@@ -11,6 +11,8 @@ import axios from "axios";
 import { clrLegend } from "../utils/clrLegend";
 import { logOutFun } from "../utils/logOutFun";
 import { logoutHandler } from "../redux/slices/loginSlice";
+import { Link } from "react-router-dom";
+import { MdArchive } from "react-icons/md";
 
 const PODetails = () => {
   const dispatch = useDispatch();
@@ -166,17 +168,23 @@ const PODetails = () => {
                                 Upload TNC Minutes
                               </button>
                               <button
-                                className="btn btn-primary me-3"
+                                className="btn btn-primary me-2"
                                 onClick={handleViewTNCMinutes}
                               >
                                 View TNC Minutes
                               </button>
                               <button
-                                className="btn btn-primary"
+                                className="btn btn-primary me-2"
                                 onClick={handleDownloadSAPPO}
                               >
                                 Download SAP PO
                               </button>
+                              <Link
+                                className="btn btn-primary"
+                                to={`/poarchive/${id}`}
+                              >
+                                <MdArchive style={{ fontSize: "20px" }} />
+                              </Link>
                             </div>
                           </div>
                           {poDetails &&
