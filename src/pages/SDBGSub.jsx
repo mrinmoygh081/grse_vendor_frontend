@@ -221,6 +221,7 @@ const SDBGSub = () => {
 
   const financeEntry = async (flag) => {
     let remarks;
+    let action_type = "SDBG SUBMISSION";
 
     if (flag === "APPROVED") {
       remarks = "APPROVED by Finance Officer";
@@ -234,6 +235,7 @@ const SDBGSub = () => {
       purchasing_doc_no: id,
       status: flag,
       remarks,
+      action_type,
       reference_no: sdbgEntry?.reference_no,
     };
 
