@@ -44,7 +44,7 @@ const ClaimLatterSub = () => {
                                   <th>DateTime </th>
                                   <th>Document</th>
                                   <th>BTN Number</th>
-                                  <th>Updated By</th>
+                                  <th>Action By</th>
                                   <th className="min-w-150px">Remarks</th>
                                 </tr>
                               </thead>

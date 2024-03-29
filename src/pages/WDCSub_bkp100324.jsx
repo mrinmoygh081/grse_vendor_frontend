@@ -20,12 +20,12 @@ const WDCSub = () => {
   const [lineItemData, setLineItemData] = useState([]);
   const [referenceNo, setreferenceNo] = useState("");
 
-  const [pncFormData , setPncFormData] = useState({
-    purchasing_doc_no :"",
-    remarks:"",
-    status:"",
-    reference_no : "",
-  })
+  const [pncFormData, setPncFormData] = useState({
+    purchasing_doc_no: "",
+    remarks: "",
+    status: "",
+    reference_no: "",
+  });
 
   const [formData, setFormData] = useState({
     file: null,
@@ -184,16 +184,16 @@ const WDCSub = () => {
     }
   };
 
-  const PNCApproveRejectHandler = async(doc_no , isApproved , ref_no)=>{
+  const PNCApproveRejectHandler = async (doc_no, isApproved, ref_no) => {
     // const { purchasing_doc_no, remarks , status , reference_no} = pncFormData;
-    console.log("doc---", doc_no)
-    console.log("approval_status---", isApproved)
-    console.log("ref_no---", ref_no)
+    console.log("doc---", doc_no);
+    console.log("approval_status---", isApproved);
+    console.log("ref_no---", ref_no);
     let remarks = "";
-    if( isApproved === "APPROVED"){
-      remarks = "WDC APPROVED"
-    }else{
-      remarks = "WDC REJECTED"
+    if (isApproved === "APPROVED") {
+      remarks = "WDC APPROVED";
+    } else {
+      remarks = "WDC REJECTED";
     }
 
     // console.log("remarks is---", remarks)
@@ -229,8 +229,7 @@ const WDCSub = () => {
     } catch (error) {
       toast.error("Error uploading drawing:", error);
     }
-    
-  }
+  };
 
   return (
     <>
@@ -265,7 +264,7 @@ const WDCSub = () => {
                                   <th className="min-w-150px">Reference No</th>
                                   <th className="min-w-150px">DateTime </th>
                                   <th className="min-w-150px">WDC File</th>
-                                  <th className="min-w-150px">Updated By</th>
+                                  <th className="min-w-150px">Action By</th>
                                   <th className="min-w-150px">WDC Date</th>
                                   <th className="min-w-150px">PO Line Item</th>
                                   <th className="min-w-150px">Job Location</th>
@@ -357,33 +356,32 @@ const WDCSub = () => {
                                         <td className="min-w-150px">
                                           {item.status === "SUBMITTED" && (
                                             <>
-                                            <button
-                                              onClick={() => {
-                                                // setIsPopup(true);
-                                                PNCApproveRejectHandler(
-                                                  item.purchasing_doc_no,
-                                                  "APPROVED",
-                                                  item.reference_no
-                                                );
-                                              }}
-                                              className="btn fw-bold btn-primary mx-3 mb-2"
-                                            >
-                                              APPROVE
-                                            </button>
-                                            <button
-                                              onClick={() => {
-                                                // setIsPopup(true);
-                                                PNCApproveRejectHandler(
-                                                  item.purchasing_doc_no,
-                                                  "REJECTED",
-                                                  item.reference_no
-                                                );
-                                              }}
-                                              
-                                              className="btn fw-bold btn-danger mx-3"
-                                            >
-                                              REJECT
-                                            </button>
+                                              <button
+                                                onClick={() => {
+                                                  // setIsPopup(true);
+                                                  PNCApproveRejectHandler(
+                                                    item.purchasing_doc_no,
+                                                    "APPROVED",
+                                                    item.reference_no
+                                                  );
+                                                }}
+                                                className="btn fw-bold btn-primary mx-3 mb-2"
+                                              >
+                                                APPROVE
+                                              </button>
+                                              <button
+                                                onClick={() => {
+                                                  // setIsPopup(true);
+                                                  PNCApproveRejectHandler(
+                                                    item.purchasing_doc_no,
+                                                    "REJECTED",
+                                                    item.reference_no
+                                                  );
+                                                }}
+                                                className="btn fw-bold btn-danger mx-3"
+                                              >
+                                                REJECT
+                                              </button>
                                             </>
                                           )}
                                         </td>

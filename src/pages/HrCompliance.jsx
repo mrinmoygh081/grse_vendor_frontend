@@ -164,7 +164,7 @@ const HrCompliance = () => {
                                   <th>DateTime </th>
                                   <th>File Info</th>
                                   <th>Action Type</th>
-                                  <th>Updated By</th>
+                                  <th>Action By</th>
                                   <th className="min-w-150px">Remarks</th>
                                   {/* <th>Status</th> */}
                                   {/* {user?.department_id === USER_GRSE_HR && (

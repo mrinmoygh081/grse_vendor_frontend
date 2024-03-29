@@ -20,7 +20,7 @@ const BillsMaterialHybrid = () => {
   const { user, token } = useSelector((state) => state.auth);
   const { id } = useParams();
 
-  const [impDates, setImpDates] = useState(null);
+  const [data, setData] = useState(null);
   let initialData = {
     invoice_no: "",
     invoice_filename: "",
@@ -76,17 +76,16 @@ const BillsMaterialHybrid = () => {
     }
   }, [form?.invoice_value, form?.debit_note, form?.credit_note]);
 
-  const getImpDates = async () => {
+  const getData = async () => {
     try {
-      const data = await apiCallBack(
+      const d = await apiCallBack(
         "GET",
-        `po/btn/getImpDates?id=${id}`,
+        `po/btn/getBTNData?id=${id}`,
         null,
         token
       );
-      if (data?.status) {
-        console.log("getImpDates", data?.data);
-        setImpDates(data?.data);
+      if (d?.status) {
+        setData(d?.data);
       }
     } catch (error) {
       console.error("Error fetching WDC list:", error);
@@ -94,24 +93,24 @@ const BillsMaterialHybrid = () => {
   };
 
   useEffect(() => {
-    getImpDates();
+    getData();
   }, []);
 
   useEffect(() => {
-    if (impDates) {
+    if (data) {
       setForm({
         ...form,
-        c_sdbg_date: impDates?.c_sdbg_date || "",
-        c_drawing_date: impDates?.c_drawing_date || "",
-        c_qap_date: impDates?.c_qap_date || "",
-        c_ilms_date: impDates?.c_ilms_date || "",
-        a_sdbg_date: impDates?.a_sdbg_date || "",
-        a_drawing_date: impDates?.a_drawing_date || "",
-        a_qap_date: impDates?.a_qap_date || "",
-        a_ilms_date: impDates?.a_ilms_date || "",
+        c_sdbg_date: data?.c_sdbg_date || "",
+        c_drawing_date: data?.c_drawing_date || "",
+        c_qap_date: data?.c_qap_date || "",
+        c_ilms_date: data?.c_ilms_date || "",
+        a_sdbg_date: data?.a_sdbg_date || "",
+        a_drawing_date: data?.a_drawing_date || "",
+        a_qap_date: data?.a_qap_date || "",
+        a_ilms_date: data?.a_ilms_date || "",
       });
     }
-  }, [impDates]);
+  }, [data]);
 
   return (
     <>
@@ -253,15 +252,19 @@ const BillsMaterialHybrid = () => {
                                               form?.c_sdbg_date
                                             ).toDateString()}
                                         </b>
-                                        <input
-                                          type="file"
-                                          className="form-control"
-                                          name="c_sdbg_filename"
-                                          onChange={(e) =>
-                                            inputFileChange(e, form, setForm)
-                                          }
-                                          accept=".pdf"
-                                        />
+                                        {checkTypeArr(data?.sdbg_filename)
+                                          ? data?.sdbg_filename.map((item) => {
+                                              return (
+                                                <a
+                                                  href={`${process.env.REACT_APP_PDF_URL}submitSDBG/${item?.file_name}`}
+                                                  target="_blank"
+                                                  rel="noreferrer"
+                                                >
+                                                  click here
+                                                </a>
+                                              );
+                                            })
+                                          : "SDBG File is missing!"}
                                       </td>
                                     </tr>
                                     <tr>
@@ -374,49 +377,34 @@ const BillsMaterialHybrid = () => {
                                       <td className="btn_value">
                                         <input
                                           type="text"
-                                          className="form-control"
+                                          className="form-control mx-2"
                                           name="icgrn_no_1"
                                           value={form?.icgrn_no_1}
                                           onChange={(e) => {
                                             inputTypeChange(e, form, setForm);
                                           }}
                                         />
-                                      </td>
-                                    </tr>
-                                    <tr>
-                                      <td>ICGRN no 2</td>
-                                      <td className="btn_value">
                                         <input
                                           type="text"
-                                          className="form-control"
+                                          className="form-control mx-2"
                                           name="icgrn_no_2"
                                           value={form?.icgrn_no_2}
                                           onChange={(e) => {
                                             inputTypeChange(e, form, setForm);
                                           }}
                                         />
-                                      </td>
-                                    </tr>
-                                    <tr>
-                                      <td>ICGRN no 3</td>
-                                      <td className="btn_value">
                                         <input
                                           type="text"
-                                          className="form-control"
+                                          className="form-control mx-2"
                                           name="icgrn_no_3"
                                           value={form?.icgrn_no_3}
                                           onChange={(e) => {
                                             inputTypeChange(e, form, setForm);
                                           }}
                                         />
-                                      </td>
-                                    </tr>
-                                    <tr>
-                                      <td>ICGRN no 4</td>
-                                      <td className="btn_value">
                                         <input
                                           type="text"
-                                          className="form-control"
+                                          className="form-control mx-2"
                                           name="icgrn_no_4"
                                           value={form?.icgrn_no_4}
                                           onChange={(e) => {

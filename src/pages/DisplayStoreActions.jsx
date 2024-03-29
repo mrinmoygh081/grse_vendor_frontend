@@ -174,7 +174,7 @@ const DisplayStoreActions = () => {
                                   <th>Document</th>
                                   <th>Document Type</th>
                                   {/* <th>ID</th> */}
-                                  <th>Updated By</th>
+                                  <th>Action By</th>
                                 </tr>
                               </thead>
                               <tbody style={{ maxHeight: "100%" }}>
@@ -184,7 +184,11 @@ const DisplayStoreActions = () => {
                                     return (
                                       <Fragment key={index}>
                                         <tr>
-                                          <td colSpan={4} className="fw-bold p-2" style={{fontSize:'15px'}}>
+                                          <td
+                                            colSpan={4}
+                                            className="fw-bold p-2"
+                                            style={{ fontSize: "15px" }}
+                                          >
                                             {doc_Type_Name[it]}
                                           </td>
                                         </tr>
@@ -196,7 +200,13 @@ const DisplayStoreActions = () => {
                                               </td>
                                               <td>
                                                 <a
-                                                  href={`${doc_routes[item.documentType]}/${JSON.stringify(payloadData)}`}
+                                                  href={`${
+                                                    doc_routes[
+                                                      item.documentType
+                                                    ]
+                                                  }/${JSON.stringify(
+                                                    payloadData
+                                                  )}`}
                                                   target="_blank"
                                                   rel="noreferrer"
                                                   // className="pdf_check_file_btn"
@@ -208,7 +218,11 @@ const DisplayStoreActions = () => {
                                                 </a>
                                               </td>
                                               <td>
-                                                {doc_Type_Name[item.documentType]}
+                                                {
+                                                  doc_Type_Name[
+                                                    item.documentType
+                                                  ]
+                                                }
                                               </td>
                                               <td>
                                                 Mrinmoy Ghosh(65432){" "}

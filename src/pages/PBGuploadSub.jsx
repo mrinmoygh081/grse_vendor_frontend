@@ -86,7 +86,7 @@ const PBGuploadSub = () => {
                                   <th>Document</th>
                                   <th>Document Type</th>
 
-                                  <th>Updated By</th>
+                                  <th>Action By</th>
                                   <th className="min-w-150px">Remarks</th>
                                 </tr>
                               </thead>

@@ -50,6 +50,7 @@ import InspectionReport from "./pages/pdfs/InspectionReport";
 import StoreIssueRequisition from "./pages/pdfs/StoreIssueRequisition";
 import PaymentAdvice from "./pages/pdfs/PaymentAdvice";
 import BillsMaterialHybridEdit from "./pages/checklists/BillsMaterialHybridEdit";
+import Registration from "./pages/Registration";
 
 function Layout() {
   const { token, isLoggedIn, userType } = useSelector((state) => state.auth);
@@ -60,6 +61,7 @@ function Layout() {
         {!token && !isLoggedIn ? (
           <Routes>
             <Route exact path="/" element={<Login />} />
+            <Route exact path="/registration" element={<Registration />} />
           </Routes>
         ) : (
           <Routes>

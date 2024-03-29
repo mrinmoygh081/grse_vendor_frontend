@@ -181,7 +181,7 @@ const Shippingdocuments = () => {
                                   <th>DateTime</th>
                                   <th>Shipping Documents</th>
                                   <th>Action Type</th>
-                                  <th>Updated By</th>
+                                  <th>Action By</th>
                                   <th className="min-w-150px">Remarks</th>
                                 </tr>
                               </thead>

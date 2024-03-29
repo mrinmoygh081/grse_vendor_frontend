@@ -240,7 +240,7 @@ const WDCSub = () => {
                                   <th>Action Type</th>
                                   <th className="min-w-150px">DateTime </th>
                                   <th className="min-w-150px">File</th>
-                                  <th className="min-w-150px">Updated By</th>
+                                  <th className="min-w-150px">Action By</th>
                                   <th className="min-w-150px">Date</th>
                                   <th>PO LineItem</th>
                                   <th className="min-w-150px">Status</th>

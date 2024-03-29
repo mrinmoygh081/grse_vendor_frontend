@@ -53,7 +53,7 @@ const PaymentAdvisesSub = () => {
                                   <th>DateTime </th>
                                   <th>Document</th>
                                   <th>Document Type</th>
-                                  <th>Updated By</th>
+                                  <th>Action By</th>
                                 </tr>
                               </thead>
                               <tbody style={{ maxHeight: "100%" }}>

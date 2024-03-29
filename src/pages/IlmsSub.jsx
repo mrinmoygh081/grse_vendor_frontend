@@ -133,7 +133,7 @@ const IlmsSub = () => {
                                   <th>Reference No</th>
                                   <th>DateTime </th>
                                   <th>ILMS File</th>
-                                  <th>Updated By</th>
+                                  <th>Action By</th>
                                   <th className="min-w-150px">Remarks</th>
                                   <th>Status</th>
                                   {user.department_id === 2 ? (

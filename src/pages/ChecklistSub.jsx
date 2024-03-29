@@ -78,7 +78,7 @@ const ChecklistSub = () => {
                                   <th>Invoice, PBG Copy & Checklist</th>
                                   <th>Document Type</th>
                                   <th>Document Number</th>
-                                  <th>Updated By</th>
+                                  <th>Action By</th>
                                   <th className="min-w-150px">Remarks</th>
                                 </tr>
                               </thead>

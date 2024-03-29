@@ -97,11 +97,11 @@ const BillsMaterialHybridEdit = () => {
     }
   }, [form?.invoice_value, form?.debit_note, form?.credit_note]);
 
-  const getImpDates = async () => {
+  const getBTNData = async () => {
     try {
       const data = await apiCallBack(
         "GET",
-        `po/btn/getImpDates?id=${id}`,
+        `po/btn/getBTNData?id=${id}`,
         null,
         token
       );
@@ -130,7 +130,7 @@ const BillsMaterialHybridEdit = () => {
   };
 
   useEffect(() => {
-    getImpDates();
+    getBTNData();
     getDataByBTN();
   }, []);
 

@@ -354,7 +354,7 @@ const QAPSub = () => {
                                   <th>DateTime </th>
                                   <th>Action Type </th>
                                   <th>File Info</th>
-                                  <th>Updated By</th>
+                                  <th>Action By</th>
                                   <th className="min-w-150px">Remarks</th>
                                   <th>Status</th>
                                   {user?.department_id === 3 && (

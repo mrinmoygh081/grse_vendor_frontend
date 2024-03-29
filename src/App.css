@@ -78,9 +78,6 @@ input[type="number"] {
   justify-content: center;
   margin-left: 40px;
 }
-.report-box .form-control {
-  padding: 10px;
-}
 
 /* MainHeader.css */
 .custom-navbar {

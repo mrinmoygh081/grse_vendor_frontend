@@ -115,7 +115,7 @@ const WDCSub = () => {
                                 <tr className="border-0">
                                   <th>DateTime </th>
                                   <th>WDC File</th>
-                                  <th>Updated By</th>
+                                  <th>Action By</th>
                                   <th className="min-w-150px">Remarks</th>
                                   <th>Status</th>
                                 </tr>

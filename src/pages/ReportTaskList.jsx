@@ -82,7 +82,7 @@ const ReportComponent = () => {
       const formDataToSend = {
         // user_id: parseInt(user?.vendor_code),
         page: currentPage,
-        limit: 20,
+        limit: 2,
         // action: "",
         depertment: user?.department_id,
         // startDate: dates?.start * miliSec,
@@ -95,8 +95,6 @@ const ReportComponent = () => {
         formDataToSend,
         token
       );
-
-      console.log(response);
 
       // const chartLabels = response.data.report.map((entry) => entry.status);
       // const chartDataValues = response.data.report.map(
@@ -116,8 +114,8 @@ const ReportComponent = () => {
       //   ],
       // });
 
-      setTableData(response.data?.result);
-      setLogCount(response.data?.logCount);
+      setTableData(response.data.result);
+      setLogCount(response.data.logCount);
     } catch (error) {
       console.error("Error fetching log data:", error.message);
     }
@@ -190,7 +188,7 @@ const ReportComponent = () => {
                           <select
                             name="dept"
                             id="dept"
-                            className="form-select"
+                            className="form-control"
                             value={selectedDept}
                             onChange={(e) => {
                               setSelectedDept(e.target.value);
@@ -218,7 +216,7 @@ const ReportComponent = () => {
                           <select
                             name="employee"
                             id="employee"
-                            className="form-select"
+                            className="form-control"
                             value={selectedEmployee}
                             onChange={(e) => {
                               setSelectedEmployee(e.target.value);
@@ -240,7 +238,7 @@ const ReportComponent = () => {
                     <div className="col">
                       <div className="form-group">
                         <label htmlFor="searchInput">Status</label>
-                        <select name="" id="" className="form-select">
+                        <select name="" id="" className="form-control">
                           <option value="">All</option>
                           <option value="">PENDING</option>
                           <option value="">ACCEPTED</option>
@@ -308,7 +306,6 @@ const ReportComponent = () => {
                   <tbody>
                     {filteredTableData.map((row, index) => (
                       <tr key={index}>
-                        {console.log(row)}
                         <td>
                           {row && row.datetime
                             ? moment(row.datetime * 1000).format(
@@ -321,7 +318,7 @@ const ReportComponent = () => {
                           {row?.depertment === "3" ? (
                             <>
                               <a
-                                href={`${process.env.REACT_APP_PDF_URL}/qap/${row?.file_name}`}
+                                href={`https://localhost:4001/uploads/qap/${row?.file_name}`}
                                 target="_blank"
                                 rel="noopener noreferrer"
                               >
@@ -363,7 +360,7 @@ const ReportComponent = () => {
                         Previous
                       </button>
                     </li>
-                    {Array.from({ length: Math.ceil(logCount / 20) }).map(
+                    {Array.from({ length: Math.ceil(logCount / 2) }).map(
                       (_, index) => (
                         <li
                           key={index}

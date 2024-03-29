@@ -317,7 +317,7 @@ const SDBGSub = () => {
                                   <th className="min-w-170px">Action Type</th>
                                   <th className="min-w-150px">DateTime </th>
                                   <th className="min-w-90px">File</th>
-                                  <th className="min-w-150px">Updated By</th>
+                                  <th className="min-w-150px">Action By</th>
                                   <th className="min-w-150px">Remarks</th>
                                   <th>Status</th>
                                   {(isDO || user?.department_id === 15) && (
@@ -377,7 +377,9 @@ const SDBGSub = () => {
                                                     item?.action_type ===
                                                       ACTION_DD ||
                                                     item?.action_type ===
-                                                      ACTION_IB) && (
+                                                      ACTION_IB ||
+                                                    item?.action_type ===
+                                                      ACTION_PBG) && (
                                                     <>
                                                       <button
                                                         onClick={() => {

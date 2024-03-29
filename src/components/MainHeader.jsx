@@ -37,7 +37,7 @@ const MainHeader = ({ title }) => {
                 Purchase Orders
               </Link>
             </li> */}
-            {/* {user?.user_type !== 1 && (
+            {user?.user_type !== 1 && (
               <>
                 <li className="nav-item">
                   <Link className="nav-link text-black" to={`/log-report`}>
@@ -45,7 +45,7 @@ const MainHeader = ({ title }) => {
                   </Link>
                 </li>
               </>
-            )} */}
+            )}
             {/* <li className="nav-item">
               <Link className="nav-link text-black" to="/bg-extension">
                 BG Extension

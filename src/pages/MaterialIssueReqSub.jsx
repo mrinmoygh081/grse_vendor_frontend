@@ -125,7 +125,7 @@ const MaterialIssueReqSub = () => {
                                 <tr className="border-0">
                                   <th>DateTime </th>
                                   <th>Material Issue Requisition File</th>
-                                  <th>Updated By</th>
+                                  <th>Action By</th>
                                   <th className="min-w-150px">Remarks</th>
                                   {/* <th>Status</th> */}
                                 </tr>

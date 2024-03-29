@@ -12,6 +12,7 @@ import { convertToEpoch } from "../utils/getDateTimeNow";
 import ReactDatePicker from "react-datepicker";
 import { groupedByRefNo } from "../utils/groupedByReq";
 import { clrLegend } from "../utils/clrLegend";
+import { FaPlus } from "react-icons/fa";
 
 const DemandManagement = () => {
   const [isPopup, setIsPopup] = useState(false);
@@ -242,12 +243,17 @@ const DemandManagement = () => {
                     <div className="col-12">
                       <div className="screen_header">
                         {user?.department_id === USER_PPNC_DEPARTMENT && (
-                          <button
-                            onClick={() => setIsPopup(true)}
-                            className="btn fw-bold btn-primary"
-                          >
-                            ACTION
-                          </button>
+                          <>
+                            <button className="btn fw-bold btn-primary me-2">
+                              Print
+                            </button>
+                            <button
+                              onClick={() => setIsPopup(true)}
+                              className="btn fw-bold btn-primary"
+                            >
+                              ACTION
+                            </button>
+                          </>
                         )}
                       </div>
                     </div>
@@ -261,7 +267,7 @@ const DemandManagement = () => {
                                   <th>DateTime</th>
                                   <th>Action Type</th>
                                   <th>PO Line Item </th>
-                                  <th>Updated By</th>
+                                  <th>Action By</th>
                                   <th>Request Quantity</th>
                                   <th>Received Quantity</th>
                                   <th>Delivery Date</th>
@@ -392,60 +398,73 @@ const DemandManagement = () => {
                       </select>
                     </div>
                   </div>
-                  <div className="col-12">
-                    <div className="mb-3">
-                      <label className="form-label">
-                        PO Line Item <span className="red">*</span>{" "}
-                      </label>
-                      <select
-                        name=""
-                        id=""
-                        className="form-select"
-                        value={formData?.line_item_no}
-                        onChange={(e) =>
-                          setFormData({
-                            ...formData,
-                            line_item_no: e.target.value,
-                          })
-                        }
-                      >
-                        <option value="">Choose PO Line Item</option>
-                        {checkTypeArr(lineItemData) &&
-                          lineItemData.map((item, i) => {
-                            return (
-                              <option
-                                value={item?.material_item_number}
-                                key={i}
-                              >
-                                {item?.material_item_number}
-                              </option>
-                            );
-                          })}
-                      </select>
+                  <div
+                    className="d-flex align-items-center"
+                    style={{ gap: "10px" }}
+                  >
+                    <div className="col-12 col-md-6">
+                      <div className="mb-3">
+                        <label className="form-label">
+                          PO Line Item <span className="red">*</span>{" "}
+                        </label>
+                        <select
+                          name=""
+                          id=""
+                          className="form-select"
+                          value={formData?.line_item_no}
+                          onChange={(e) =>
+                            setFormData({
+                              ...formData,
+                              line_item_no: e.target.value,
+                            })
+                          }
+                        >
+                          <option value="">Choose PO Line Item</option>
+                          {checkTypeArr(lineItemData) &&
+                            lineItemData.map((item, i) => {
+                              return (
+                                <option
+                                  value={item?.material_item_number}
+                                  key={i}
+                                >
+                                  {item?.material_item_number}
+                                </option>
+                              );
+                            })}
+                        </select>
+                      </div>
+                    </div>
+                    {formData?.action_type !==
+                      "Service Engineer Requirement" && (
+                      <>
+                        <div className="col-12 col-md-6">
+                          <div className="mb-3">
+                            <label className="form-label">
+                              Raised Quantity <span className="red">*</span>{" "}
+                            </label>
+                            <input
+                              type="number"
+                              className="form-control"
+                              value={formData?.request_amount}
+                              onChange={(e) =>
+                                setFormData({
+                                  ...formData,
+                                  request_amount: e.target.value,
+                                })
+                              }
+                            />
+                            <p>Available Qunatity: {availableAmount}</p>
+                          </div>
+                        </div>
+                      </>
+                    )}
+                    <div>
+                      <FaPlus />
                     </div>
                   </div>
                   {formData?.action_type !== "Service Engineer Requirement" && (
                     <>
-                      <div className="col-12">
-                        <div className="mb-3">
-                          <label className="form-label">
-                            Raised Quantity <span className="red">*</span>{" "}
-                          </label>
-                          <input
-                            type="number"
-                            className="form-control"
-                            value={formData?.request_amount}
-                            onChange={(e) =>
-                              setFormData({
-                                ...formData,
-                                request_amount: e.target.value,
-                              })
-                            }
-                          />
-                          <p>Available Qunatity: {availableAmount}</p>
-                        </div>
-                      </div>
-                      <div className="col-12">
+                      <div className="col-12 col-md-6">
                         <div className="mb-3">
                           <label className="form-label">
                             Delivery Date <span className="red">*</span>{" "}

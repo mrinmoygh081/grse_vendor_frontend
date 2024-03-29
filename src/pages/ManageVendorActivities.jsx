@@ -112,7 +112,7 @@ const ManageVendorActivities = () => {
                                 <tr className="border-0">
                                   <th>DateTime </th>
                                   <th>File Info</th>
-                                  <th>Updated By</th>
+                                  <th>Action By</th>
                                   <th>Action Type</th>
                                   <th className="min-w-150px">Remarks</th>
                                 </tr>

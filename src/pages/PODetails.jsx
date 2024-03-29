@@ -19,7 +19,7 @@ const PODetails = () => {
   const [poDetails, setPoDetails] = useState([]);
   const [file, setFile] = useState(null);
   const { id } = useParams();
-  const { token } = useSelector((state) => state.auth);
+  const { token, user } = useSelector((state) => state.auth);
   const [isPopup, setIsPopup] = useState(false);
 
   window.addEventListener("popstate", () => {
@@ -179,12 +179,16 @@ const PODetails = () => {
                               >
                                 Download SAP PO
                               </button>
-                              <Link
-                                className="btn btn-primary"
-                                to={`/poarchive/${id}`}
-                              >
-                                <MdArchive style={{ fontSize: "20px" }} />
-                              </Link>
+                              {user?.user_type !== 1 && (
+                                <>
+                                  <Link
+                                    className="btn btn-primary"
+                                    to={`/poarchive/${id}`}
+                                  >
+                                    <MdArchive style={{ fontSize: "20px" }} />
+                                  </Link>
+                                </>
+                              )}
                             </div>
                           </div>
                           {poDetails &&
