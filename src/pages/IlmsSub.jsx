@@ -78,19 +78,15 @@ const IlmsSub = () => {
         );
 
         if (response?.status) {
-          if (response.message.includes("This ILMS aleready APPROVED")) {
-            toast.warning(response.message);
-          } else {
-            toast.success("ILMS uploaded successfully");
-            setIsPopup(false);
-            setFormData({
-              drawingFile: null,
-              remarks: "",
-            });
-            getData();
-          }
+          toast.success(response.message);
+          setIsPopup(false);
+          setFormData({
+            drawingFile: null,
+            remarks: "",
+          });
+          getData();
         } else {
-          toast.error("Failed to upload ilms");
+          toast.error(response.message);
         }
       } else {
         toast.warn("Please choose action type!");
