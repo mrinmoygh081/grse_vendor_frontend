@@ -39,6 +39,7 @@ const SDBGSub = () => {
   const [allsdbg, setAllsdbg] = useState([]);
   const [groupedBG, setGroupedBG] = useState([]);
   const [sdbgEntry, setSdbgEntry] = useState([]);
+  const [refNo, setRefNo] = useState(null);
   const [selectedActionType, setSelectedActionType] = useState("");
   const [formData, setFormData] = useState({
     sdbgFile: null,
@@ -72,10 +73,10 @@ const SDBGSub = () => {
     }
   };
 
-  const getSDBGEntry = async () => {
+  const getSDBGEntry = async (refNo) => {
     const data = await apiCallBack(
       "GET",
-      `po/sdbg/getSdbgEntry?poNo=${id}`,
+      `po/sdbg/getSdbgEntry?poNo=${id}&reference_no=${refNo}`,
       null,
       token
     );
@@ -83,6 +84,12 @@ const SDBGSub = () => {
       setSdbgEntry(data?.data);
     }
   };
+
+  useEffect(() => {
+    if (formDatainput?.reference_no) {
+      getSDBGEntry(formDatainput?.reference_no);
+    }
+  }, [formDatainput?.reference_no]);
 
   const getEmpList = async () => {
     const res = await apiCallBack("GET", `po/sdbg/assigneeList`, null, token);
@@ -110,7 +117,6 @@ const SDBGSub = () => {
   useEffect(() => {
     getSDBG();
     if (user?.user_type !== 1) {
-      getSDBGEntry();
       getEmpList();
     }
   }, []);
@@ -173,7 +179,6 @@ const SDBGSub = () => {
       let bg = { ...bgInputs, purchasing_doc_no: id };
       setFormDatainput(bg);
       getSDBG();
-      getSDBGEntry();
     }
   };
   const rejectSDBG = async (flag = "REJECTED") => {
@@ -191,7 +196,6 @@ const SDBGSub = () => {
       let bg = { ...bgInputs, purchasing_doc_no: id };
       setFormDatainput(bg);
       getSDBG();
-      getSDBGEntry();
     } else {
       toast.error(d?.message);
     }
@@ -402,25 +406,21 @@ const SDBGSub = () => {
                                                     {user?.department_id ===
                                                       15 && (
                                                       <>
-                                                        {sdbgEntry?.reference_no ? (
-                                                          <button
-                                                            onClick={() => {
-                                                              setIsCheckEntryPopup(
-                                                                true
-                                                              );
-                                                              setFormDatainput({
-                                                                ...formDatainput,
-                                                                reference_no:
-                                                                  item?.reference_no,
-                                                              });
-                                                            }}
-                                                            className="btn fw-bold btn-primary me-3"
-                                                          >
-                                                            ACTION
-                                                          </button>
-                                                        ) : (
-                                                          "Waiting for BG Entry by Dealing Officer"
-                                                        )}
+                                                        <button
+                                                          onClick={() => {
+                                                            setIsCheckEntryPopup(
+                                                              true
+                                                            );
+                                                            setFormDatainput({
+                                                              ...formDatainput,
+                                                              reference_no:
+                                                                item?.reference_no,
+                                                            });
+                                                          }}
+                                                          className="btn fw-bold btn-primary me-3"
+                                                        >
+                                                          ACTION
+                                                        </button>
                                                       </>
                                                     )}
                                                   </>
@@ -899,7 +899,7 @@ const SDBGSub = () => {
                   <label className="form-label">BG Date</label>
                   <p>
                     {sdbgEntry?.bg_date
-                      ? new Date(sdbgEntry?.validity_date).toLocaleDateString()
+                      ? new Date(sdbgEntry?.bg_date * 1000).toLocaleDateString()
                       : ""}
                   </p>
                 </div>
@@ -949,7 +949,9 @@ const SDBGSub = () => {
                   <label className="form-label">Validity Date</label>
                   <p>
                     {sdbgEntry?.validity_date
-                      ? new Date(sdbgEntry?.validity_date).toLocaleDateString()
+                      ? new Date(
+                          sdbgEntry?.validity_date * 1000
+                        ).toLocaleDateString()
                       : ""}
                   </p>
                 </div>
@@ -959,7 +961,9 @@ const SDBGSub = () => {
                   <label className="form-label">Claim Period</label>
                   <p>
                     {sdbgEntry?.claim_priod
-                      ? new Date(sdbgEntry?.validity_date).toLocaleDateString()
+                      ? new Date(
+                          sdbgEntry?.validity_date * 1000
+                        ).toLocaleDateString()
                       : ""}
                   </p>
                 </div>
