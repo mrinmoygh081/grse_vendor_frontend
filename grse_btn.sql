@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Mar 29, 2024 at 09:23 AM
+-- Generation Time: Apr 03, 2024 at 02:05 PM
 -- Server version: 10.4.28-MariaDB
 -- PHP Version: 8.1.17
 
@@ -213,6 +213,7 @@ INSERT INTO `bill_registration` (`id`, `po`, `vendor_id`, `invoice`, `bill_date`
 CREATE TABLE `btn` (
   `btn_num` varchar(30) NOT NULL,
   `purchasing_doc_no` varchar(30) NOT NULL,
+  `vendor_code` varchar(100) NOT NULL,
   `invoice_no` varchar(30) DEFAULT NULL,
   `invoice_filename` varchar(150) NOT NULL,
   `invoice_value` varchar(30) DEFAULT NULL,
@@ -229,14 +230,8 @@ CREATE TABLE `btn` (
   `gate_entry_no` varchar(30) DEFAULT NULL,
   `get_entry_filename` varchar(150) DEFAULT NULL,
   `gate_entry_date` varchar(30) DEFAULT NULL,
-  `grn_no_1` varchar(30) DEFAULT NULL,
-  `grn_no_2` varchar(30) DEFAULT NULL,
-  `grn_no_3` varchar(30) DEFAULT NULL,
-  `grn_no_4` varchar(30) DEFAULT NULL,
-  `icgrn_no_1` varchar(30) DEFAULT NULL,
-  `icgrn_no_2` varchar(30) DEFAULT NULL,
-  `icgrn_no_3` varchar(30) DEFAULT NULL,
-  `icgrn_no_4` varchar(30) DEFAULT NULL,
+  `grn_nos` varchar(300) DEFAULT NULL,
+  `icgrn_nos` varchar(300) DEFAULT NULL,
   `icgrn_total` varchar(30) DEFAULT NULL,
   `c_drawing_date` varchar(30) DEFAULT NULL,
   `a_drawing_date` varchar(30) DEFAULT NULL,
@@ -262,7 +257,7 @@ CREATE TABLE `btn` (
   `total_penalty` varchar(15) NOT NULL,
   `net_payable_amount` varchar(15) NOT NULL,
   `updated_by` varchar(30) NOT NULL,
-  `created_at` bigint(20) NOT NULL,
+  `created_at` varchar(30) NOT NULL,
   `created_by_id` varchar(30) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
@@ -270,11 +265,16 @@ CREATE TABLE `btn` (
 -- Dumping data for table `btn`
 --
 
-INSERT INTO `btn` (`btn_num`, `purchasing_doc_no`, `invoice_no`, `invoice_filename`, `invoice_value`, `e_invoice_no`, `e_invoice_filename`, `debit_note`, `credit_note`, `debit_credit_filename`, `net_claim_amount`, `c_sdbg_date`, `c_sdbg_filename`, `a_sdbg_date`, `demand_raise_filename`, `gate_entry_no`, `get_entry_filename`, `gate_entry_date`, `grn_no_1`, `grn_no_2`, `grn_no_3`, `grn_no_4`, `icgrn_no_1`, `icgrn_no_2`, `icgrn_no_3`, `icgrn_no_4`, `icgrn_total`, `c_drawing_date`, `a_drawing_date`, `c_qap_date`, `a_qap_date`, `c_ilms_date`, `a_ilms_date`, `pbg_filename`, `hsn_gstn_icgrn`, `ld_gate_entry_date`, `ld_contractual_date`, `ld_amount`, `c_drawing_date_do`, `a_drawing_date_do`, `drawing_penalty`, `c_qap_date_do`, `a_qap_date_do`, `qap_penalty`, `c_ilms_date_do`, `a_ilms_date_do`, `ilms_penalty`, `other_penalty`, `total_penalty`, `net_payable_amount`, `updated_by`, `created_at`, `created_by_id`) VALUES
-('btn-1711459221725', '7800000040', 'demo2', '1711459221665-sample.pdf', '300000', 'ghjkl E-Invoice lhgf', '1711459221666-sample.pdf', '3000', '1000', '1711459221666-sample.pdf', '32000', '1699255657917', '1711459221667-sample.pdf', '1711456341026', '1711459221670-sample.pdf', '302000', '1711459221666-sample.pdf', '2024-04-07', '4234', '42344', '423444', '4234444', '234', '2344', '23444', '2434444', '2342344234442434444', '1699255657917', '1711455110864', '1699255657917', '1711455133087', '1699255657917', '1711455172021', '1711459221670-sample.pdf', 0, ',', 'null', '', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '', '', '', 0, ''),
-('btn-1711459820794', '7800000040', 'demo', '1711459820778-sample.pdf', '30000', '20000', '1711459820778-sample.pdf', '10000', '5000', '1711459820778-sample.pdf', '35000', '1699255657917', '1711459820778-sample.pdf', '1711456341026', '1711459820780-sample.pdf', '56789', '1711459820778-sample.pdf', '2024-03-31', '4234', '42344', '423444', '4234444', '234', '2344', '23444', '2434444', '2342344234442434444', '1699255657917', '1711455110864', '1699255657917', '1711455133087', '1699255657917', '1711455172021', '1711459820780-sample.pdf', 0, ',', 'null', '', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '', '', '', 0, ''),
-('btn-1711537868756', '7800000040', 'demo223', '1711537868743-sample.pdf', '300000', 'null', 'null', '100', '50', '1711537868743-sample.pdf', '300050', '1699255657917', '1711537868744-sample.pdf', '1711456341026', '1711537868744-sample.pdf', '56789', '1711537868744-sample.pdf', '2024-03-30', '4234', 'null', 'null', 'null', '234', 'null', 'null', 'null', '234', '1699255657917', '1711455110864', '1699255657917', '1711455133087', '1699255657917', '1711455172021', '1711537868744-sample.pdf', 0, ',', 'null', '', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '', '', '', 0, ''),
-('BTN202403274031', '7800000040', 'demo221', '1711538776070-sample.pdf', '30000', 'null', 'null', '1000', '500', '1711538776071-sample.pdf', '30500', '1699255657917', '1711538776071-sample.pdf', '1711456341026', '1711538776071-sample.pdf', '56789', '1711538776071-sample.pdf', '2024-03-30', '4234', '42344', 'null', 'null', '234', '2344', 'null', 'null', '2342344', '1699255657917', '1711455110864', '1699255657917', '1711455133087', '1699255657917', '1711455172021', '1711538776074-sample.pdf', 0, ',', 'null', '', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '', '', '', 0, '');
+INSERT INTO `btn` (`btn_num`, `purchasing_doc_no`, `vendor_code`, `invoice_no`, `invoice_filename`, `invoice_value`, `e_invoice_no`, `e_invoice_filename`, `debit_note`, `credit_note`, `debit_credit_filename`, `net_claim_amount`, `c_sdbg_date`, `c_sdbg_filename`, `a_sdbg_date`, `demand_raise_filename`, `gate_entry_no`, `get_entry_filename`, `gate_entry_date`, `grn_nos`, `icgrn_nos`, `icgrn_total`, `c_drawing_date`, `a_drawing_date`, `c_qap_date`, `a_qap_date`, `c_ilms_date`, `a_ilms_date`, `pbg_filename`, `hsn_gstn_icgrn`, `ld_gate_entry_date`, `ld_contractual_date`, `ld_amount`, `c_drawing_date_do`, `a_drawing_date_do`, `drawing_penalty`, `c_qap_date_do`, `a_qap_date_do`, `qap_penalty`, `c_ilms_date_do`, `a_ilms_date_do`, `ilms_penalty`, `other_penalty`, `total_penalty`, `net_payable_amount`, `updated_by`, `created_at`, `created_by_id`) VALUES
+('btn-1711459221725', '7800000040', '', 'demo2', '1711459221665-sample.pdf', '300000', 'ghjkl E-Invoice lhgf', '1711459221666-sample.pdf', '3000', '1000', '1711459221666-sample.pdf', '32000', '1699255657917', '1711459221667-sample.pdf', '1711456341026', '1711459221670-sample.pdf', '302000', '1711459221666-sample.pdf', '2024-04-07', '4234', '234', '2342344234442434444', '1699255657917', '1711455110864', '1699255657917', '1711455133087', '1699255657917', '1711455172021', '1711459221670-sample.pdf', 0, ',', 'null', '', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '', '', '', '0', ''),
+('btn-1711459820794', '7800000040', '', 'demo', '1711459820778-sample.pdf', '30000', '20000', '1711459820778-sample.pdf', '10000', '5000', '1711459820778-sample.pdf', '35000', '1699255657917', '1711459820778-sample.pdf', '1711456341026', '1711459820780-sample.pdf', '56789', '1711459820778-sample.pdf', '2024-03-31', '4234', '234', '2342344234442434444', '1699255657917', '1711455110864', '1699255657917', '1711455133087', '1699255657917', '1711455172021', '1711459820780-sample.pdf', 0, ',', 'null', '', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '', '', '', '0', ''),
+('btn-1711537868756', '7800000040', '', 'demo223', '1711537868743-sample.pdf', '300000', 'null', 'null', '100', '50', '1711537868743-sample.pdf', '300050', '1699255657917', '1711537868744-sample.pdf', '1711456341026', '1711537868744-sample.pdf', '56789', '1711537868744-sample.pdf', '2024-03-30', '4234', '234', '234', '1699255657917', '1711455110864', '1699255657917', '1711455133087', '1699255657917', '1711455172021', '1711537868744-sample.pdf', 0, ',', 'null', '', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '', '', '', '0', ''),
+('BTN202403274031', '7800000040', '', 'demo221', '1711538776070-sample.pdf', '30000', 'null', 'null', '1000', '500', '1711538776071-sample.pdf', '30500', '1699255657917', '1711538776071-sample.pdf', '1711456341026', '1711538776071-sample.pdf', '56789', '1711538776071-sample.pdf', '2024-03-30', '4234', '234', '2342344', '1699255657917', '1711455110864', '1699255657917', '1711455133087', '1699255657917', '1711455172021', '1711538776074-sample.pdf', 0, ',', 'null', '', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '', '', '', '0', ''),
+('BTN20240403123', '7800000040', '50007545', 'DEMO123', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', '1699255657917', '[{\"file_name\":\"1711692203939-sample.pdf\"}]', '1712341800000', 'null', 'null', 'null', 'null', '[{\"grn_no\":\"grn5678\"},{\"grn_no\":\"grn5671\"},{\"grn_no\":\"grn5672\"}]', '{\"total_icgrn_value\":298009,\"icgrn\":[{\"icgrn_no\":\"icgrn2255\",\"icgrn_value\":\"23000\"},{\"icgrn_no\":\"icgrn2256\",\"icgrn_value\":\"230009\"},{\"icgrn_no\":\"icgrn2252\",\"icgrn_value\":\"45000\"}]}', 'null', '1699255657917', '1711455110864', '1699255657917', '1711455133087', '1699255657917', '1711455172021', 'null', 0, ',', 'null', '', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '', '', '', '0', ''),
+('BTN20240403944', '7800000040', '50007545', 'DEMO123', 'null', '40000', 'null', 'null', 'null', 'null', 'null', 'null', '1699255657917', '[{\"file_name\":\"1711692203939-sample.pdf\"}]', '1712341800000', 'null', 'null', 'null', 'null', '[{\"grn_no\":\"grn5678\"},{\"grn_no\":\"grn5671\"},{\"grn_no\":\"grn5672\"}]', '{\"total_icgrn_value\":298009,\"icgrn\":[{\"icgrn_no\":\"icgrn2255\",\"icgrn_value\":\"23000\"},{\"icgrn_no\":\"icgrn2256\",\"icgrn_value\":\"230009\"},{\"icgrn_no\":\"icgrn2252\",\"icgrn_value\":\"45000\"}]}', 'null', '1699255657917', '1711455110864', '1699255657917', '1711455133087', '1699255657917', '1711455172021', 'null', 0, ',', 'null', '', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '', '', '', '0', ''),
+('BTN20240403997', '7800000040', '50007545', 'DEMO567', '', '70000', '', '', '', '', '', '', '1699255657917', '[{\"file_name\":\"1711692203939-sample.pdf\"}]', '1712341800000', '', '', '', '', '[{\"grn_no\":\"grn5678\"},{\"grn_no\":\"grn5671\"},{\"grn_no\":\"grn5672\"}]', '{\"total_icgrn_value\":298009,\"icgrn\":[{\"icgrn_no\":\"icgrn2255\",\"icgrn_value\":\"23000\"},{\"icgrn_no\":\"icgrn2256\",\"icgrn_value\":\"230009\"},{\"icgrn_no\":\"icgrn2252\",\"icgrn_value\":\"45000\"}]}', '', '1699255657917', '1711455110864', '1699255657917', '1711455133087', '1699255657917', '1711455172021', '', 0, ',', '', '', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '', '', '', '3/4/2024', ''),
+('BTN20240403998', '7800000040', '50007545', 'DEMO234', 'null', '50000', 'null', 'null', 'null', 'null', 'null', 'null', '1699255657917', '[{\"file_name\":\"1711692203939-sample.pdf\"}]', '1712341800000', 'null', 'null', 'null', 'null', '[{\"grn_no\":\"grn5678\"},{\"grn_no\":\"grn5671\"},{\"grn_no\":\"grn5672\"}]', '{\"total_icgrn_value\":298009,\"icgrn\":[{\"icgrn_no\":\"icgrn2255\",\"icgrn_value\":\"23000\"},{\"icgrn_no\":\"icgrn2256\",\"icgrn_value\":\"230009\"},{\"icgrn_no\":\"icgrn2252\",\"icgrn_value\":\"45000\"}]}', 'null', '1699255657917', '1711455110864', '1699255657917', '1711455133087', '1699255657917', '1711455172021', 'null', 0, ',', 'null', '', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '', '', '', '3/4/2024', ''),
+('BTN20240403999', '7800000040', '50007545', 'DEMO124', 'null', '30000', 'null', 'null', 'null', 'null', 'null', 'null', '1699255657917', '[{\"file_name\":\"1711692203939-sample.pdf\"}]', '1712341800000', 'null', 'null', 'null', 'null', '[{\"grn_no\":\"grn5678\"},{\"grn_no\":\"grn5671\"},{\"grn_no\":\"grn5672\"}]', '{\"total_icgrn_value\":298009,\"icgrn\":[{\"icgrn_no\":\"icgrn2255\",\"icgrn_value\":\"23000\"},{\"icgrn_no\":\"icgrn2256\",\"icgrn_value\":\"230009\"},{\"icgrn_no\":\"icgrn2252\",\"icgrn_value\":\"45000\"}]}', 'null', '1699255657917', '1711455110864', '1699255657917', '1711455133087', '1699255657917', '1711455172021', 'null', 0, ',', 'null', '', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '', '', '', '3/4/2024', '');
 
 -- --------------------------------------------------------
 
@@ -1778,6 +1778,124 @@ INSERT INTO `privilege` (`id`, `department_id`, `internal_role_id`, `sdbg`, `dra
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `qals`
+--
+
+CREATE TABLE `qals` (
+  `PRUEFLOS` bigint(12) NOT NULL COMMENT 'Inspection Lot Number',
+  `WERK` varchar(4) DEFAULT NULL COMMENT 'Plant',
+  `ART` varchar(8) DEFAULT NULL COMMENT 'Inspection Type',
+  `HERKUNFT` varchar(2) DEFAULT NULL COMMENT 'Inspection Lot Origin',
+  `OBJNR` varchar(22) DEFAULT NULL COMMENT 'Object number',
+  `OBTYP` varchar(3) DEFAULT NULL COMMENT 'Object Category',
+  `STAT11` varchar(1) DEFAULT NULL COMMENT 'GR blocked stock',
+  `INSMK` varchar(1) DEFAULT NULL COMMENT 'Quantity Is or Was in Inspection Stock',
+  `STAT01` varchar(1) DEFAULT NULL COMMENT 'Inspection Lot is Created Automatically',
+  `STAT08` varchar(1) DEFAULT NULL COMMENT 'Automatic Usage Decision Planned',
+  `KZSKIPLOT` varchar(1) DEFAULT NULL COMMENT 'Lot Skipped',
+  `DYN` varchar(1) DEFAULT NULL COMMENT 'Skips Allowed',
+  `HPZ` varchar(1) DEFAULT NULL COMMENT '100% Inspection',
+  `EIN` varchar(1) DEFAULT NULL COMMENT 'Serial Number Management Possible',
+  `ANZSN` int(10) DEFAULT NULL COMMENT 'Number of serial numbers',
+  `STAT30` varchar(1) DEFAULT NULL COMMENT 'Origin of Inspection Lot Unit of Measure for LIS Interface',
+  `QINFSTATUS` varchar(8) DEFAULT NULL COMMENT 'QINF Status',
+  `ENSTEHDAT` datetime DEFAULT NULL COMMENT 'Date of Lot Creation',
+  `ENTSTEZEIT` time DEFAULT NULL COMMENT 'Time of Lot Creation',
+  `ERSTELLER` varchar(12) DEFAULT NULL COMMENT 'Name of User Who Created the Data Record',
+  `ERSTELDAT` datetime DEFAULT NULL COMMENT 'Date on Which the Data Record Was Created',
+  `ERSTELZEIT` time DEFAULT NULL COMMENT 'Time of Lot Creation',
+  `AENDERER` varchar(12) DEFAULT NULL COMMENT 'Name of User who Most Recently Changed the Data Record',
+  `AENDERDAT` datetime DEFAULT NULL COMMENT 'Date on Which Data Record Was Changed',
+  `AENDERZEIT` time DEFAULT NULL COMMENT 'Time of Lot Change',
+  `PASTRTERM` datetime DEFAULT NULL COMMENT 'Inspection Start Date',
+  `PASTRZEIT` time DEFAULT NULL COMMENT 'Inspection Start Time',
+  `PAENDTERM` datetime DEFAULT NULL COMMENT 'End Date of the Inspection',
+  `PAENDZEIT` time DEFAULT NULL COMMENT 'Inspection End Time',
+  `ZAEHL` int(8) DEFAULT NULL COMMENT 'Internal counter',
+  `ZKRIZ` int(7) DEFAULT NULL COMMENT 'Counter for additional criteria',
+  `ZAEHL1` int(8) DEFAULT NULL COMMENT 'Internal counter',
+  `SELMATNR` varchar(18) DEFAULT NULL COMMENT 'Material Number',
+  `STAT17` varchar(1) DEFAULT NULL COMMENT 'Manufacturer Part No. Processing Active',
+  `SELHERST` varchar(10) DEFAULT NULL COMMENT 'Number of Manufacturer',
+  `SELKUNNR` varchar(10) DEFAULT NULL COMMENT 'Account number of customer',
+  `AUFNR` varchar(12) DEFAULT NULL COMMENT 'Order Number',
+  `VERID` varchar(4) DEFAULT NULL COMMENT 'Production Version',
+  `SA_AUFNR` varchar(12) DEFAULT NULL COMMENT 'Run schedule header number',
+  `KUNNR` varchar(10) DEFAULT NULL COMMENT 'Customer (Ship-To Party)',
+  `LIFNR` varchar(10) DEFAULT NULL COMMENT 'Supplier''s Account Number',
+  `MATNR` varchar(18) DEFAULT NULL COMMENT 'Material Number',
+  `CHARG` varchar(10) DEFAULT NULL COMMENT 'Batch Number',
+  `LAGORTCHRG` varchar(4) DEFAULT NULL COMMENT 'Storage Location',
+  `ZEUGNISBIS` datetime DEFAULT NULL COMMENT 'Valid-To Date for The Batch Certificate',
+  `PS_PSP_PNR` int(8) DEFAULT NULL COMMENT 'Valuated Sales Order Stock WBS Element',
+  `KDPOS` int(6) DEFAULT NULL COMMENT 'Sales Order Item of Valuated Sales Order Stock',
+  `EKORG` varchar(4) DEFAULT NULL COMMENT 'Purchasing Organization',
+  `EBELN` varchar(10) DEFAULT NULL COMMENT 'Purchasing Document Number',
+  `EBELP` int(5) DEFAULT NULL COMMENT 'Item Number of Purchasing Document',
+  `ETENR` int(4) DEFAULT NULL COMMENT 'Delivery Schedule Line Counter',
+  `MJAHR` int(4) DEFAULT NULL COMMENT 'Material Document Year',
+  `MBLNR` varchar(10) DEFAULT NULL COMMENT 'Number of Material Document',
+  `ZEILE` int(4) DEFAULT NULL COMMENT 'Item in Material Document',
+  `BUDAT` datetime DEFAULT NULL COMMENT 'Posting Date in the Document',
+  `BWART` varchar(3) DEFAULT NULL COMMENT 'Movement Type (Inventory Management)',
+  `KTEXTLOS` varchar(40) DEFAULT NULL COMMENT 'Short Text',
+  `LTEXTKZ` varchar(1) DEFAULT NULL COMMENT 'Long Text Exists For Inspection Lot',
+  `KTEXTMAT` varchar(40) DEFAULT NULL COMMENT 'Short Text for Inspection Object',
+  `LOSMENGE` bigint(13) DEFAULT NULL COMMENT 'Inspection Lot Quantity',
+  `MENGENEINH` varchar(3) DEFAULT NULL COMMENT 'Base Unit of Measure for Inspection Lot Quantity',
+  `LMENGE01` bigint(13) DEFAULT NULL COMMENT 'Quantity Posted to Unrestricted-Use Stock',
+  `LMENGE02` bigint(13) DEFAULT NULL COMMENT 'Quantity Posted to Scrap',
+  `LMENGE03` bigint(13) DEFAULT NULL COMMENT 'Quantity Posted to Sample',
+  `LMENGE04` bigint(13) DEFAULT NULL COMMENT 'Quantity Posted to Blocked Stock',
+  `LMENGE05` bigint(13) DEFAULT NULL COMMENT 'Quantity Posted to Reserves',
+  `LMENGE06` bigint(13) DEFAULT NULL COMMENT 'Quantity Posted to Another Material',
+  `MATNRNEU` varchar(18) DEFAULT NULL COMMENT 'Material Number to Which the Quantity is Posted',
+  `CHARGNEU` varchar(10) DEFAULT NULL COMMENT 'Batch to Which Goods Are Transferred',
+  `LMENGE07` bigint(13) DEFAULT NULL COMMENT 'Quantity Returned to Vendor',
+  `LMENGE08` bigint(13) DEFAULT NULL COMMENT 'Other Quantity Posted from Inspection Lot Stock',
+  `LMENGE09` bigint(13) DEFAULT NULL COMMENT 'Other Quantity (2) Posted from Inspection Lot Stock',
+  `LMENGEZUB` bigint(13) DEFAULT NULL COMMENT 'Quantity That Must Be Posted',
+  `LMENGELZ` bigint(13) DEFAULT NULL COMMENT 'Sample Quantity for Long-Term Characteristics',
+  `LMENGEPR` bigint(13) DEFAULT NULL COMMENT 'Quantity Actually Inspected',
+  `LMENGEZER` bigint(13) DEFAULT NULL COMMENT 'Quantity Destroyed During Inspection',
+  `LMENGEIST` bigint(13) DEFAULT NULL COMMENT 'Actual Lot Quantity',
+  `LMENGESCH` bigint(13) DEFAULT NULL COMMENT 'Defective Quantity in Inspected Quantity',
+  `LTEXTKZBB` varchar(1) DEFAULT NULL COMMENT 'Logs Exist for Usage Decision',
+  `QPMATLOS` varchar(16) DEFAULT NULL COMMENT 'Allowed Share of Scrap',
+  `AUFNR_CO` varchar(12) DEFAULT NULL COMMENT 'Order Number for Recording Appraisal Costs',
+  `KZVBR` varchar(1) DEFAULT NULL COMMENT 'Consumption posting',
+  `KNTTP` varchar(1) DEFAULT NULL COMMENT 'Account Assignment Category',
+  `PSTYP` varchar(1) DEFAULT NULL COMMENT 'Item category in purchasing document',
+  `STAT05` varchar(1) DEFAULT NULL COMMENT 'Account Assignment Key: Inspection Lot',
+  `KOSTL` varchar(10) DEFAULT NULL COMMENT 'Cost Center',
+  `AUFPS` int(4) DEFAULT NULL COMMENT 'Item Number of Reservation / Dependent Requirements',
+  `KONT_PSPNR` int(8) DEFAULT NULL COMMENT 'Work Breakdown Structure Element (WBS Element)',
+  `NPLNR` varchar(12) DEFAULT NULL COMMENT 'Network Number for Account Assignment',
+  `APLZL` int(8) DEFAULT NULL COMMENT 'Internal counter',
+  `DABRZ` datetime DEFAULT NULL COMMENT 'Reference date for settlement',
+  `KSTRG` varchar(12) DEFAULT NULL COMMENT 'Cost Object',
+  `PAOBJNR` int(10) DEFAULT NULL COMMENT 'Profitability Segment Number (CO-PA)',
+  `PRCTR` varchar(10) DEFAULT NULL COMMENT 'Profit Center',
+  `GSBER` varchar(4) DEFAULT NULL COMMENT 'Business Area',
+  `KONTO` varchar(10) DEFAULT NULL COMMENT 'G/L Account Number',
+  `KOKRS` varchar(4) DEFAULT NULL COMMENT 'Controlling Area',
+  `BUKRS` varchar(4) DEFAULT NULL COMMENT 'Company Code',
+  `LOS_REF` bigint(12) DEFAULT NULL COMMENT 'Inspection Lot Number Which Is Referenced',
+  `PROJECT` varchar(24) DEFAULT NULL COMMENT 'Work Breakdown Structure Element (WBS Element)',
+  `GATE_ENTRY_NO` varchar(10) DEFAULT NULL COMMENT 'Gate Entry Number'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `qals`
+--
+
+INSERT INTO `qals` (`PRUEFLOS`, `WERK`, `ART`, `HERKUNFT`, `OBJNR`, `OBTYP`, `STAT11`, `INSMK`, `STAT01`, `STAT08`, `KZSKIPLOT`, `DYN`, `HPZ`, `EIN`, `ANZSN`, `STAT30`, `QINFSTATUS`, `ENSTEHDAT`, `ENTSTEZEIT`, `ERSTELLER`, `ERSTELDAT`, `ERSTELZEIT`, `AENDERER`, `AENDERDAT`, `AENDERZEIT`, `PASTRTERM`, `PASTRZEIT`, `PAENDTERM`, `PAENDZEIT`, `ZAEHL`, `ZKRIZ`, `ZAEHL1`, `SELMATNR`, `STAT17`, `SELHERST`, `SELKUNNR`, `AUFNR`, `VERID`, `SA_AUFNR`, `KUNNR`, `LIFNR`, `MATNR`, `CHARG`, `LAGORTCHRG`, `ZEUGNISBIS`, `PS_PSP_PNR`, `KDPOS`, `EKORG`, `EBELN`, `EBELP`, `ETENR`, `MJAHR`, `MBLNR`, `ZEILE`, `BUDAT`, `BWART`, `KTEXTLOS`, `LTEXTKZ`, `KTEXTMAT`, `LOSMENGE`, `MENGENEINH`, `LMENGE01`, `LMENGE02`, `LMENGE03`, `LMENGE04`, `LMENGE05`, `LMENGE06`, `MATNRNEU`, `CHARGNEU`, `LMENGE07`, `LMENGE08`, `LMENGE09`, `LMENGEZUB`, `LMENGELZ`, `LMENGEPR`, `LMENGEZER`, `LMENGEIST`, `LMENGESCH`, `LTEXTKZBB`, `QPMATLOS`, `AUFNR_CO`, `KZVBR`, `KNTTP`, `PSTYP`, `STAT05`, `KOSTL`, `AUFPS`, `KONT_PSPNR`, `NPLNR`, `APLZL`, `DABRZ`, `KSTRG`, `PAOBJNR`, `PRCTR`, `GSBER`, `KONTO`, `KOKRS`, `BUKRS`, `LOS_REF`, `PROJECT`, `GATE_ENTRY_NO`) VALUES
+(1000001009, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '50000437', NULL, NULL, NULL, NULL, NULL, NULL, '1234', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '5788', NULL, NULL, NULL),
+(1000001010, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '50000437', NULL, NULL, NULL, NULL, NULL, NULL, '1234', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '5788', NULL, NULL, NULL);
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `qap_save`
 --
 
@@ -1857,7 +1975,8 @@ CREATE TABLE `sdbg` (
 INSERT INTO `sdbg` (`id`, `action_type`, `reference_no`, `purchasing_doc_no`, `file_name`, `file_path`, `status`, `remarks`, `vendor_code`, `assigned_from`, `assigned_to`, `last_assigned`, `created_at`, `created_by_name`, `created_by_id`, `updated_by`) VALUES
 (1, 'SDBG SUBMISSION', 'SD-1711692203947-7545', '7800000040', '1711692203939-sample.pdf', 'uploads\\submitSDBG\\1711692203939-sample.pdf', 'SUBMITTED', 'Remarks!!!', '50007545', NULL, NULL, 0, 1711692203947, NULL, '50007545', 'VENDOR'),
 (2, 'SDBG SUBMISSION', 'SD-1711692203947-7545', '7800000040', '1711692203939-sample.pdf', 'uploads\\submitSDBG\\1711692203939-sample.pdf', 'FORWARD_TO_FINANCE', 'BG entry forwarded to Finance.', '50007545', '493834', NULL, 0, 1711693143306, 'Dealing officer', '493834', 'GRSE'),
-(5, 'SDBG APPROVED', 'SD-1711692203947-7545', '7800000040', '1711692203939-sample.pdf', 'uploads\\submitSDBG\\1711692203939-sample.pdf', 'APPROVED', 'APPROVED by Finance Officer', '50007545', '600200', NULL, 0, 1711695827412, 'finance dept', '600200', 'GRSE');
+(5, 'SDBG SUBMISSION', 'SD-1711692203947-7545', '7800000040', '1711692203939-sample.pdf', 'uploads\\submitSDBG\\1711692203939-sample.pdf', 'APPROVED', 'APPROVED by Finance Officer', '50007545', '600200', NULL, 0, 1711695827412, 'finance dept', '600200', 'GRSE'),
+(6, 'SDBG SUBMISSION', 'SD-1711702383991-7545', '7800000040', '1711702383976-sample.pdf', 'uploads\\submitSDBG\\1711702383976-sample.pdf', 'SUBMITTED', 'hello', '50007545', NULL, NULL, 0, 1711702383991, NULL, '50007545', 'VENDOR');
 
 -- --------------------------------------------------------
 
@@ -2464,6 +2583,35 @@ INSERT INTO `zpo_milestone` (`MANDT`, `EBELN`, `MID`, `MTEXT`, `PLAN_DATE`, `MO`
 (1, '7800000047', '3', 'CONTRACTUAL QAP SUBMISSION DATE', 1705038752000, 'M'),
 (1, '7800000047', '4', 'CONTRACTUAL ILMS SUBMISSION DATE', 1706075552000, 'M');
 
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `ztfi_bil_deface`
+--
+
+CREATE TABLE `ztfi_bil_deface` (
+  `C_PKEY` varchar(26) NOT NULL COMMENT 'PRIMARY KEY',
+  `ZREGNUM` varchar(11) DEFAULT NULL COMMENT 'Bill Tracking Number',
+  `SEQNO` int(10) DEFAULT NULL COMMENT 'Natural number',
+  `ZBILLPER` varchar(3) DEFAULT NULL COMMENT '3-Byte field',
+  `ZCREATE` varchar(1) DEFAULT NULL COMMENT 'Single-Character Flag',
+  `ZDELETE` varchar(1) DEFAULT NULL COMMENT 'Single-Character Flag',
+  `ZBILLTYPE` varchar(8) DEFAULT NULL COMMENT 'Character field, 8 characters long',
+  `ZRECORD` varchar(40) DEFAULT NULL COMMENT 'Vendor Bill Number',
+  `ZREGDATE` date DEFAULT NULL COMMENT 'Field of type DATS',
+  `ZPONO` varchar(10) DEFAULT NULL COMMENT 'Purchasing Document Number',
+  `ZVENDOR` varchar(10) DEFAULT NULL COMMENT 'Account Number of Supplier',
+  `ZCREATEDBY` varchar(12) DEFAULT NULL COMMENT 'User Name',
+  `ZCREATEDON` date DEFAULT NULL COMMENT 'Date',
+  `ZCREATEDAT` time DEFAULT NULL COMMENT 'Field of type TIMS',
+  `ZMODIFIEDBY` varchar(12) DEFAULT NULL COMMENT 'User Name',
+  `ZMODIFIEDON` date DEFAULT NULL COMMENT 'Date',
+  `ZMODIFIEDAT` time DEFAULT NULL COMMENT 'Field of type TIMS',
+  `ZCERWDC_S` varchar(50) DEFAULT NULL COMMENT 'Comment',
+  `ZCERPAY_S` varchar(50) DEFAULT NULL COMMENT 'Comment',
+  `ZCERATTNDR_S` varchar(50) DEFAULT NULL COMMENT 'Comment'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
 --
 -- Indexes for dumped tables
 --
@@ -2671,6 +2819,12 @@ ALTER TABLE `ppc_wbs_project_code`
 --
 ALTER TABLE `privilege`
   ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `qals`
+--
+ALTER TABLE `qals`
+  ADD PRIMARY KEY (`PRUEFLOS`);
 
 --
 -- Indexes for table `qap_save`
@@ -2957,7 +3111,7 @@ ALTER TABLE `qap_submission`
 -- AUTO_INCREMENT for table `sdbg`
 --
 ALTER TABLE `sdbg`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT for table `sdbg_acknowledgement`

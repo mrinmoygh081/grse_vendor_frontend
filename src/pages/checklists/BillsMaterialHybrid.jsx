@@ -34,14 +34,6 @@ const BillsMaterialHybrid = () => {
     gate_entry_no: "",
     gate_entry_date: "",
     get_entry_filename: "",
-    grn_no_1: "",
-    grn_no_2: "",
-    grn_no_3: "",
-    grn_no_4: "",
-    icgrn_no_1: "",
-    icgrn_no_2: "",
-    icgrn_no_3: "",
-    icgrn_no_4: "",
     total_icgrn_value: "",
     hsn_gstn_icgrn: false,
     ld_gate_entry_date: "",
@@ -252,18 +244,22 @@ const BillsMaterialHybrid = () => {
                                               form?.c_sdbg_date
                                             ).toDateString()}
                                         </b>
+                                        {console.log(data)}
                                         {checkTypeArr(data?.sdbg_filename)
-                                          ? data?.sdbg_filename.map((item) => {
-                                              return (
-                                                <a
-                                                  href={`${process.env.REACT_APP_PDF_URL}submitSDBG/${item?.file_name}`}
-                                                  target="_blank"
-                                                  rel="noreferrer"
-                                                >
-                                                  VIEW
-                                                </a>
-                                              );
-                                            })
+                                          ? data?.sdbg_filename.map(
+                                              (item, i) => {
+                                                return (
+                                                  <a
+                                                    href={`${process.env.REACT_APP_PDF_URL}submitSDBG/${item?.file_name}`}
+                                                    target="_blank"
+                                                    rel="noreferrer"
+                                                    key={i}
+                                                  >
+                                                    VIEW
+                                                  </a>
+                                                );
+                                              }
+                                            )
                                           : "SDBG File is missing!"}
                                       </td>
                                     </tr>
@@ -439,17 +435,20 @@ const BillsMaterialHybrid = () => {
                                       <td>PBG</td>
                                       <td className="btn_value">
                                         {checkTypeArr(data?.pbg_filename)
-                                          ? data?.pbg_filename.map((item) => {
-                                              return (
-                                                <a
-                                                  href={`${process.env.REACT_APP_PDF_URL}submitSDBG/${item?.file_name}`}
-                                                  target="_blank"
-                                                  rel="noreferrer"
-                                                >
-                                                  VIEW
-                                                </a>
-                                              );
-                                            })
+                                          ? data?.pbg_filename.map(
+                                              (item, i) => {
+                                                return (
+                                                  <a
+                                                    key={i}
+                                                    href={`${process.env.REACT_APP_PDF_URL}submitSDBG/${item?.file_name}`}
+                                                    target="_blank"
+                                                    rel="noreferrer"
+                                                  >
+                                                    VIEW
+                                                  </a>
+                                                );
+                                              }
+                                            )
                                           : "PBG File is not uploaded!"}
                                       </td>
                                     </tr>

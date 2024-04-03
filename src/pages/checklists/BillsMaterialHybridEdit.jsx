@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { Fragment, useEffect, useState } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import SideBar from "../../components/SideBar";
 import Header from "../../components/Header";
@@ -115,14 +115,14 @@ const BillsMaterialHybridEdit = () => {
 
   const getDataByBTN = async () => {
     try {
-      const data = await apiCallBack(
+      const d = await apiCallBack(
         "GET",
         `po/btn/btn_num?id=${id}&btn_num=${state}`,
         null,
         token
       );
-      if (data?.status && checkTypeArr(data?.data)) {
-        setData(data?.data[0]);
+      if (d?.status && checkTypeArr(d?.data)) {
+        setData(d?.data[0]);
       }
     } catch (error) {
       console.error("Error fetching WDC list:", error);
@@ -145,6 +145,7 @@ const BillsMaterialHybridEdit = () => {
     const { ld_c_date, ld_ge_date } = doForm;
     if (ld_c_date && ld_ge_date) {
       let p_amt = calculatePenalty(ld_c_date, ld_ge_date, 30000, 0.5, 5);
+      console.log("p_amt", p_amt);
       setDoForm({ ...doForm, ld_amount: p_amt });
     }
   }, [doForm?.ld_c_date, doForm?.ld_ge_date]);
@@ -231,6 +232,8 @@ const BillsMaterialHybridEdit = () => {
     }
   }, [impDates, data]);
 
+  console.log(data);
+
   return (
     <>
       <div className="d-flex flex-column flex-root">
@@ -283,8 +286,7 @@ const BillsMaterialHybridEdit = () => {
                                           {data?.e_invoice_no}
                                         </b>
                                         {data?.e_invoice_filename &&
-                                          data?.e_invoice_filename !==
-                                            "null" && (
+                                          data?.e_invoice_filename !== "" && (
                                             <a
                                               href={`${process.env.REACT_APP_PDF_URL}btns/${data?.e_invoice_filename}`}
                                               target="_blank"
@@ -300,7 +302,7 @@ const BillsMaterialHybridEdit = () => {
                                       <td className="btn_value">
                                         {data?.debit_credit_filename &&
                                           data?.debit_credit_filename !==
-                                            "null" && (
+                                            "" && (
                                             <a
                                               href={`${process.env.REACT_APP_PDF_URL}btns/${data?.debit_credit_filename}`}
                                               target="_blank"
@@ -332,7 +334,7 @@ const BillsMaterialHybridEdit = () => {
                                       <td className="btn_value">
                                         <b>{data?.net_claim_amount}</b>
                                       </td>
-                                    </tr>
+                                    </tr>{" "}
                                     <tr>
                                       <td>Contractual SDBG Submission Date</td>
                                       <td className="btn_value">
@@ -340,10 +342,10 @@ const BillsMaterialHybridEdit = () => {
                                           {form?.c_sdbg_date &&
                                             new Date(
                                               form?.c_sdbg_date
-                                            ).toDateString()}
+                                            ).toLocaleDateString()}
                                         </b>
                                         {data?.c_sdbg_filename &&
-                                          data?.c_sdbg_filename !== "null" && (
+                                          data?.c_sdbg_filename !== "" && (
                                             <a
                                               href={`${process.env.REACT_APP_PDF_URL}btns/${data?.c_sdbg_filename}`}
                                               target="_blank"
@@ -361,7 +363,7 @@ const BillsMaterialHybridEdit = () => {
                                           {form?.a_sdbg_date &&
                                             new Date(
                                               form?.a_sdbg_date
-                                            ).toDateString()}
+                                            ).toLocaleDateString()}
                                         </b>
                                       </td>
                                     </tr>
@@ -372,7 +374,7 @@ const BillsMaterialHybridEdit = () => {
                                       <td className="btn_value">
                                         {data?.demand_raise_filename &&
                                           data?.demand_raise_filename !==
-                                            "null" && (
+                                            "" && (
                                             <a
                                               href={`${process.env.REACT_APP_PDF_URL}btns/${data?.demand_raise_filename}`}
                                               target="_blank"
@@ -398,8 +400,7 @@ const BillsMaterialHybridEdit = () => {
                                           {data?.gate_entry_date}
                                         </b>
                                         {data?.get_entry_filename &&
-                                          data?.get_entry_filename !==
-                                            "null" && (
+                                          data?.get_entry_filename !== "" && (
                                             <a
                                               href={`${process.env.REACT_APP_PDF_URL}btns/${data?.get_entry_filename}`}
                                               target="_blank"
@@ -411,58 +412,33 @@ const BillsMaterialHybridEdit = () => {
                                       </td>
                                     </tr>
                                     <tr>
-                                      <td>GRN No 1</td>
-                                      <td className="btn_value">
-                                        <b className="me-3">{data?.grn_no_1}</b>
-                                      </td>
-                                    </tr>
-                                    <tr>
-                                      <td>GRN No 2</td>
-                                      <td className="btn_value">
-                                        <b className="me-3">{data?.grn_no_2}</b>
-                                      </td>
-                                    </tr>
-                                    <tr>
-                                      <td>GRN No 3</td>
-                                      <td className="btn_value">
-                                        <b className="me-3">{data?.grn_no_3}</b>
-                                      </td>
-                                    </tr>
-                                    <tr>
-                                      <td>GRN No 4</td>
-                                      <td className="btn_value">
-                                        <b className="me-3">{data?.grn_no_4}</b>
-                                      </td>
-                                    </tr>
-                                    <tr>
-                                      <td>ICGRN no 1</td>
+                                      <td>GRN No</td>
                                       <td className="btn_value">
                                         <b className="me-3">
-                                          {data?.icgrn_no_1}
+                                          {data?.grn_nos &&
+                                            JSON.parse(data?.grn_nos).map(
+                                              (item, i) => (
+                                                <span key={i} className="px-1">
+                                                  {item?.grn_no}
+                                                </span>
+                                              )
+                                            )}
                                         </b>
                                       </td>
                                     </tr>
                                     <tr>
-                                      <td>ICGRN no 2</td>
+                                      <td>ICGRN No</td>
                                       <td className="btn_value">
                                         <b className="me-3">
-                                          {data?.icgrn_no_2}
-                                        </b>
-                                      </td>
-                                    </tr>
-                                    <tr>
-                                      <td>ICGRN no 3</td>
-                                      <td className="btn_value">
-                                        <b className="me-3">
-                                          {data?.icgrn_no_3}
-                                        </b>
-                                      </td>
-                                    </tr>
-                                    <tr>
-                                      <td>ICGRN no 4</td>
-                                      <td className="btn_value">
-                                        <b className="me-3">
-                                          {data?.icgrn_no_4}
+                                          {data?.icgrn_nos &&
+                                            JSON.parse(data?.icgrn_nos).icgrn &&
+                                            JSON.parse(
+                                              data?.icgrn_nos
+                                            ).icgrn.map((item, i) => (
+                                              <span key={i} className="px-1">
+                                                {item?.icgrn_no}
+                                              </span>
+                                            ))}
                                         </b>
                                       </td>
                                     </tr>
@@ -470,7 +446,9 @@ const BillsMaterialHybridEdit = () => {
                                       <td>Total ICGRN Value</td>
                                       <td className="btn_value">
                                         <b className="me-3">
-                                          {data?.total_icgrn_value}
+                                          {data?.icgrn_nos &&
+                                            JSON.parse(data?.icgrn_nos)
+                                              .total_icgrn_value}
                                         </b>
                                       </td>
                                     </tr>
@@ -483,7 +461,7 @@ const BillsMaterialHybridEdit = () => {
                                           {form?.c_drawing_date &&
                                             new Date(
                                               form?.c_drawing_date
-                                            ).toDateString()}
+                                            ).toLocaleDateString()}
                                         </b>
                                       </td>
                                     </tr>
@@ -494,7 +472,7 @@ const BillsMaterialHybridEdit = () => {
                                           {form?.a_drawing_date &&
                                             new Date(
                                               form?.a_drawing_date
-                                            ).toDateString()}
+                                            ).toLocaleDateString()}
                                         </b>
                                       </td>
                                     </tr>
@@ -505,7 +483,7 @@ const BillsMaterialHybridEdit = () => {
                                           {form?.c_qap_date &&
                                             new Date(
                                               form?.c_qap_date
-                                            ).toDateString()}
+                                            ).toLocaleDateString()}
                                         </b>
                                       </td>
                                     </tr>
@@ -516,7 +494,7 @@ const BillsMaterialHybridEdit = () => {
                                           {form?.a_qap_date &&
                                             new Date(
                                               form?.a_qap_date
-                                            ).toDateString()}
+                                            ).toLocaleDateString()}
                                         </b>
                                       </td>
                                     </tr>
@@ -546,7 +524,7 @@ const BillsMaterialHybridEdit = () => {
                                       <td>PBG</td>
                                       <td className="btn_value">
                                         {data?.pbg_filename &&
-                                          data?.pbg_filename !== "null" && (
+                                          data?.pbg_filename !== "" && (
                                             <a
                                               href={`${process.env.REACT_APP_PDF_URL}btns/${data?.pbg_filename}`}
                                               target="_blank"
@@ -557,7 +535,7 @@ const BillsMaterialHybridEdit = () => {
                                           )}
                                       </td>
                                     </tr>
-                                    {/* <tr>
+                                    <tr>
                                       <td colSpan="2">
                                         <div className="form-check">
                                           <input
@@ -583,7 +561,7 @@ const BillsMaterialHybridEdit = () => {
                                           </label>
                                         </div>
                                       </td>
-                                    </tr> */}
+                                    </tr>
                                   </tbody>
                                 </table>
                               </div>
@@ -676,7 +654,7 @@ const BillsMaterialHybridEdit = () => {
                                                 {form?.a_drawing_date &&
                                                   new Date(
                                                     form?.a_drawing_date
-                                                  ).toDateString()}
+                                                  ).toLocaleDateString()}
                                               </b>
                                             </p>
                                           </div>
@@ -689,7 +667,7 @@ const BillsMaterialHybridEdit = () => {
                                                 {form?.c_drawing_date &&
                                                   new Date(
                                                     form?.c_drawing_date
-                                                  ).toDateString()}
+                                                  ).toLocaleDateString()}
                                               </b>
                                             </p>
                                           </div>
@@ -713,7 +691,7 @@ const BillsMaterialHybridEdit = () => {
                                                 {form?.a_qap_date &&
                                                   new Date(
                                                     form?.a_qap_date
-                                                  ).toDateString()}
+                                                  ).toLocaleDateString()}
                                               </b>
                                             </p>
                                           </div>
@@ -726,7 +704,7 @@ const BillsMaterialHybridEdit = () => {
                                                 {form?.c_qap_date &&
                                                   new Date(
                                                     form?.c_qap_date
-                                                  ).toDateString()}
+                                                  ).toLocaleDateString()}
                                               </b>
                                             </p>
                                           </div>
@@ -750,7 +728,7 @@ const BillsMaterialHybridEdit = () => {
                                                 {form?.a_ilms_date &&
                                                   new Date(
                                                     form?.a_ilms_date
-                                                  ).toDateString()}
+                                                  ).toLocaleDateString()}
                                               </b>
                                             </p>
                                           </div>
@@ -763,7 +741,7 @@ const BillsMaterialHybridEdit = () => {
                                                 {form?.c_ilms_date &&
                                                   new Date(
                                                     form?.c_ilms_date
-                                                  ).toDateString()}
+                                                  ).toLocaleDateString()}
                                               </b>
                                             </p>
                                           </div>
