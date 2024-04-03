@@ -17,6 +17,8 @@ const DisplayStoreActions = () => {
   const [groupByPdfData, setGroupByPdfData] = useState([]);
   const [payloadData, setPayloadData] = useState({});
 
+  console.log(payloadData, "tttttttttttttttttt");
+
   const { id } = useParams();
   const { token } = useSelector((state) => state.auth);
 
@@ -92,7 +94,7 @@ const DisplayStoreActions = () => {
     }
     if (item.documentType === "icgrn_report") {
       setPayloadData({
-        docNo: item.docNo,
+        docNo: item.docno,
       });
       // return navigate(doc_routes[item.documentType], {
       //   state: {
