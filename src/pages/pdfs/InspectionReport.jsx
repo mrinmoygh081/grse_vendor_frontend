@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from "react";
 import logo from "../../images/logo.png";
 import { useSelector } from "react-redux";
-import { useLocation , useParams} from "react-router-dom";
-
+import { useLocation, useParams } from "react-router-dom";
 
 function InspectionReport() {
   const location = useLocation();
@@ -24,10 +23,9 @@ function InspectionReport() {
   };
 
   // let payloadData = location.state;
-  const {payload} = useParams();
-  const payloadData = JSON.parse(payload) 
-  console.log("payload iss params--", payloadData)  
-
+  const { payload } = useParams();
+  const payloadData = JSON.parse(payload);
+  console.log("payload iss params--", payloadData);
 
   useEffect(() => {
     const fetchData = async () => {
