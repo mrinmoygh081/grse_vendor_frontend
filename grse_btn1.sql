@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Mar 27, 2024 at 07:18 AM
+-- Generation Time: Mar 29, 2024 at 09:23 AM
 -- Server version: 10.4.28-MariaDB
 -- PHP Version: 8.1.17
 
@@ -42,10 +42,10 @@ CREATE TABLE `actualsubmissiondate` (
 --
 
 INSERT INTO `actualsubmissiondate` (`id`, `purchasing_doc_no`, `milestoneId`, `milestoneText`, `actualSubmissionDate`, `created_at`, `created_by_id`) VALUES
-(21, '7800000040', 1, 'ACTUAL SDBG SUBMISSION DATE', 1711456341026, 1711456341051, '600200'),
 (22, '7800000040', 2, 'ACTUAL DRAWING SUBMISSION DATE', 1711455110864, 1711457056331, '600400'),
 (23, '7800000040', 4, 'ACTUAL ILMS SUBMISSION DATE', 1711455172021, 1711457087542, '600400'),
-(24, '7800000040', 3, 'ACTUAL QAP SUBMISSION DATE', 1711455133087, 1711458343163, '600947');
+(24, '7800000040', 3, 'ACTUAL QAP SUBMISSION DATE', 1711455133087, 1711458343163, '600947'),
+(27, '7800000040', 1, 'ACTUAL SDBG SUBMISSION DATE', 1712341800000, 1711695827451, '600200');
 
 -- --------------------------------------------------------
 
@@ -272,7 +272,9 @@ CREATE TABLE `btn` (
 
 INSERT INTO `btn` (`btn_num`, `purchasing_doc_no`, `invoice_no`, `invoice_filename`, `invoice_value`, `e_invoice_no`, `e_invoice_filename`, `debit_note`, `credit_note`, `debit_credit_filename`, `net_claim_amount`, `c_sdbg_date`, `c_sdbg_filename`, `a_sdbg_date`, `demand_raise_filename`, `gate_entry_no`, `get_entry_filename`, `gate_entry_date`, `grn_no_1`, `grn_no_2`, `grn_no_3`, `grn_no_4`, `icgrn_no_1`, `icgrn_no_2`, `icgrn_no_3`, `icgrn_no_4`, `icgrn_total`, `c_drawing_date`, `a_drawing_date`, `c_qap_date`, `a_qap_date`, `c_ilms_date`, `a_ilms_date`, `pbg_filename`, `hsn_gstn_icgrn`, `ld_gate_entry_date`, `ld_contractual_date`, `ld_amount`, `c_drawing_date_do`, `a_drawing_date_do`, `drawing_penalty`, `c_qap_date_do`, `a_qap_date_do`, `qap_penalty`, `c_ilms_date_do`, `a_ilms_date_do`, `ilms_penalty`, `other_penalty`, `total_penalty`, `net_payable_amount`, `updated_by`, `created_at`, `created_by_id`) VALUES
 ('btn-1711459221725', '7800000040', 'demo2', '1711459221665-sample.pdf', '300000', 'ghjkl E-Invoice lhgf', '1711459221666-sample.pdf', '3000', '1000', '1711459221666-sample.pdf', '32000', '1699255657917', '1711459221667-sample.pdf', '1711456341026', '1711459221670-sample.pdf', '302000', '1711459221666-sample.pdf', '2024-04-07', '4234', '42344', '423444', '4234444', '234', '2344', '23444', '2434444', '2342344234442434444', '1699255657917', '1711455110864', '1699255657917', '1711455133087', '1699255657917', '1711455172021', '1711459221670-sample.pdf', 0, ',', 'null', '', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '', '', '', 0, ''),
-('btn-1711459820794', '7800000040', 'demo', '1711459820778-sample.pdf', '30000', '20000', '1711459820778-sample.pdf', '10000', '5000', '1711459820778-sample.pdf', '35000', '1699255657917', '1711459820778-sample.pdf', '1711456341026', '1711459820780-sample.pdf', '56789', '1711459820778-sample.pdf', '2024-03-31', '4234', '42344', '423444', '4234444', '234', '2344', '23444', '2434444', '2342344234442434444', '1699255657917', '1711455110864', '1699255657917', '1711455133087', '1699255657917', '1711455172021', '1711459820780-sample.pdf', 0, ',', 'null', '', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '', '', '', 0, '');
+('btn-1711459820794', '7800000040', 'demo', '1711459820778-sample.pdf', '30000', '20000', '1711459820778-sample.pdf', '10000', '5000', '1711459820778-sample.pdf', '35000', '1699255657917', '1711459820778-sample.pdf', '1711456341026', '1711459820780-sample.pdf', '56789', '1711459820778-sample.pdf', '2024-03-31', '4234', '42344', '423444', '4234444', '234', '2344', '23444', '2434444', '2342344234442434444', '1699255657917', '1711455110864', '1699255657917', '1711455133087', '1699255657917', '1711455172021', '1711459820780-sample.pdf', 0, ',', 'null', '', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '', '', '', 0, ''),
+('btn-1711537868756', '7800000040', 'demo223', '1711537868743-sample.pdf', '300000', 'null', 'null', '100', '50', '1711537868743-sample.pdf', '300050', '1699255657917', '1711537868744-sample.pdf', '1711456341026', '1711537868744-sample.pdf', '56789', '1711537868744-sample.pdf', '2024-03-30', '4234', 'null', 'null', 'null', '234', 'null', 'null', 'null', '234', '1699255657917', '1711455110864', '1699255657917', '1711455133087', '1699255657917', '1711455172021', '1711537868744-sample.pdf', 0, ',', 'null', '', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '', '', '', 0, ''),
+('BTN202403274031', '7800000040', 'demo221', '1711538776070-sample.pdf', '30000', 'null', 'null', '1000', '500', '1711538776071-sample.pdf', '30500', '1699255657917', '1711538776071-sample.pdf', '1711456341026', '1711538776071-sample.pdf', '56789', '1711538776071-sample.pdf', '2024-03-30', '4234', '42344', 'null', 'null', '234', '2344', 'null', 'null', '2342344', '1699255657917', '1711455110864', '1699255657917', '1711455133087', '1699255657917', '1711455172021', '1711538776074-sample.pdf', 0, ',', 'null', '', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '', '', '', 0, '');
 
 -- --------------------------------------------------------
 
@@ -294,6 +296,27 @@ CREATE TABLE `demande_management` (
   `created_by_id` varchar(20) DEFAULT NULL,
   `remarks` text DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `demande_management`
+--
+
+INSERT INTO `demande_management` (`id`, `status`, `action_type`, `reference_no`, `purchasing_doc_no`, `line_item_no`, `request_amount`, `recived_quantity`, `delivery_date`, `created_at`, `created_by_id`, `remarks`) VALUES
+(1, 'REQUEST', 'material', 'DM-1711303929932-0100', '7800000040', 15, 2, 0, 1710760850178, 1711303929932, '600100', 'requested'),
+(2, 'REQUEST', 'material', 'DM-1711304031790-0100', '7800000040', 40, 2, 0, 1710760850178, 1711304031790, '600100', 'requested'),
+(4, 'SUBMITTED', 'material', 'DM-1711304235227-0100', '7800000040', 70, 2, 0, 1710760850178, 1711304235227, '600100', 'requested'),
+(5, 'SUBMITTED', 'material', 'DM-1711304253056-0100', '7800000040', 80, 2, 0, 1710760850178, 1711304253056, '600100', 'requested'),
+(6, 'RECEIVED', 'material', 'DM-1711304280393-0100', '7800000040', 20, 2, 1, 1710760850178, 1711304280393, '600100', 'requested'),
+(7, 'SUBMITTED', 'material', 'DM-1711440962820-0100', '7800000040', 20, 2, 0, 1710760850178, 1711440962820, '600100', 'requested'),
+(8, 'RECEIVED', 'material', 'DM-1711440962820-0100', '7800000040', 20, 2, 1, 1710760850178, 1711441692649, '600100', 'received'),
+(9, 'SUBMITTED', 'material', 'DM-1711444636900-0100', '7800000040', 50, 2, 0, 1710760850178, 1711444636900, '600100', 'requested'),
+(10, 'RECEIVED', 'material', 'DM-1711444636900-0100', '7800000040', 50, 2, 1, 1710760850178, 1711444698425, '600100', 'received'),
+(11, 'SUBMITTED', 'material', 'DM-1711444928656-0100', '7800000040', 15, 2, 0, 1710760850178, 1711444928657, '600100', 'requested'),
+(12, 'RECEIVED', 'material', 'DM-1711444928656-0100', '7800000040', 15, 2, 1, 1710760850178, 1711445006218, '600100', 'received'),
+(13, 'SUBMITTED', 'Material Requirement', 'DM-1711529961165-0100', '7800000040', 40, 15, 0, 1710354600, 1711529961165, '600100', 'TESTINg'),
+(14, 'RECEIVED', 'Material Requirement', 'DM-1711529961165-0100', '7800000040', 40, 15, 7, 1710354600, 1711531288549, '600100', 'Received!'),
+(15, 'SUBMITTED', 'Material Requirement', 'DM-1711616207739-0100', '7800000047', 20, 40, 0, 1712341800, 1711616207739, '600100', 'Need Urgently!'),
+(16, 'RECEIVED', 'Material Requirement', 'DM-1711616207739-0100', '7800000047', 20, 40, 10, 1712341800, 1711616253991, '600100', 'Received Today!');
 
 -- --------------------------------------------------------
 
@@ -469,7 +492,8 @@ CREATE TABLE `drawing` (
 
 INSERT INTO `drawing` (`id`, `reference_no`, `purchasing_doc_no`, `file_name`, `vendor_code`, `file_path`, `remarks`, `status`, `actionType`, `updated_by`, `created_at`, `created_by_id`) VALUES
 (23, 'DW-1711455110877-7545', '7800000040', '1711455110860-sample.pdf', '50007545', 'uploads\\submitDrawing\\1711455110860-sample.pdf', 'Coverletter', 'SUBMITTED', 'Upload Drawing ail Chain', 'VENDOR', 1711455110864, '50007545'),
-(24, 'DW-1711455110877-7545', '7800000040', NULL, '50007545', NULL, 'approved!!!', 'APPROVED', 'Acknowledgement/Remarks', 'GRSE', 1711457056331, '600400');
+(24, 'DW-1711455110877-7545', '7800000040', NULL, '50007545', NULL, 'approved!!!', 'APPROVED', 'Acknowledgement/Remarks', 'GRSE', 1711457056331, '600400'),
+(25, 'DW-1711692123616-7545', '7800000040', '1711692123594-sample.pdf', '50007545', 'uploads\\submitDrawing\\1711692123594-sample.pdf', 'HEllo', 'SUBMITTED', 'Upload Drawing ail Chain', 'VENDOR', 1711692123600, '50007545');
 
 -- --------------------------------------------------------
 
@@ -748,37 +772,6 @@ CREATE TABLE `hr_compliance` (
   `created_at` bigint(20) NOT NULL,
   `created_by_id` varchar(200) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
--- --------------------------------------------------------
-
---
--- Table structure for table `icgrn`
---
-
-CREATE TABLE `icgrn` (
-  `id` int(11) NOT NULL,
-  `purchasing_doc_no` varchar(11) NOT NULL,
-  `vendor_code` varchar(100) NOT NULL,
-  `document_type` varchar(40) NOT NULL,
-  `file_name` varchar(300) DEFAULT NULL,
-  `file_path` varchar(500) DEFAULT NULL,
-  `remarks` text DEFAULT NULL,
-  `status` varchar(20) NOT NULL,
-  `updated_by` varchar(30) NOT NULL,
-  `created_at` bigint(20) NOT NULL,
-  `created_by_name` varchar(255) NOT NULL,
-  `created_by_id` varchar(200) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Dumping data for table `icgrn`
---
-
-INSERT INTO `icgrn` (`id`, `purchasing_doc_no`, `vendor_code`, `document_type`, `file_name`, `file_path`, `remarks`, `status`, `updated_by`, `created_at`, `created_by_name`, `created_by_id`) VALUES
-(1, '2100010812', 'V1', 'Gate In Entry', '1699252952506-Holiday List 2023_Data Core & AILABS Kolkata (sans ITeS).pdf', 'uploads\\drawing\\1699252952506-Holiday List 2023_Data Core & AILABS Kolkata (sans ITeS).pdf', 'remarkssss', 'SUBMITTED', 'VENDOR', 1699252952514, 'KAMAL RUIDAS', 'kamal.sspur@gmai.com'),
-(2, '7800000040', 'V1', 'Goods Receipt', '1699253015741-Holiday List 2023_Data Core & AILABS Kolkata (sans ITeS).pdf', 'uploads\\drawing\\1699253015741-Holiday List 2023_Data Core & AILABS Kolkata (sans ITeS).pdf', 'Uploading Drawing', 'SUBMITTED', 'VENDOR', 1699253015750, 'XYZ Pvt. Ltd.', 'XYZ@gmai.com'),
-(3, '4700013227', 'V1', 'ICGRN Report', '1699253037637-Holiday List 2023_Data Core & AILABS Kolkata (sans ITeS).pdf', 'uploads\\drawing\\1699253037637-Holiday List 2023_Data Core & AILABS Kolkata (sans ITeS).pdf', 'remarkssss', 'SUBMITTED', 'VENDOR', 1699253037643, 'KAMAL RUIDAS', 'kamal.sspur@gmai.com'),
-(4, '34567876556', '23114', 'Gate In Entry', '1699598638506-sample.pdf', 'uploads\\drawing\\1699598638506-sample.pdf', 'accepted', 'SUBMITTED', 'GRSE', 1699598638509, 'Abhinit ', '6380');
 
 -- --------------------------------------------------------
 
@@ -1840,13 +1833,13 @@ INSERT INTO `qap_submission` (`id`, `reference_no`, `purchasing_doc_no`, `file_n
 
 CREATE TABLE `sdbg` (
   `id` int(11) NOT NULL,
+  `action_type` varchar(15) NOT NULL,
   `reference_no` varchar(60) DEFAULT NULL,
   `purchasing_doc_no` varchar(11) NOT NULL,
   `file_name` varchar(500) DEFAULT NULL,
   `file_path` varchar(500) DEFAULT NULL,
-  `remarks` text DEFAULT NULL,
   `status` varchar(20) NOT NULL,
-  `action_type` varchar(100) DEFAULT NULL,
+  `remarks` text DEFAULT NULL,
   `vendor_code` varchar(100) DEFAULT NULL,
   `assigned_from` varchar(100) DEFAULT NULL,
   `assigned_to` varchar(100) DEFAULT NULL,
@@ -1861,10 +1854,10 @@ CREATE TABLE `sdbg` (
 -- Dumping data for table `sdbg`
 --
 
-INSERT INTO `sdbg` (`id`, `reference_no`, `purchasing_doc_no`, `file_name`, `file_path`, `remarks`, `status`, `action_type`, `vendor_code`, `assigned_from`, `assigned_to`, `last_assigned`, `created_at`, `created_by_name`, `created_by_id`, `updated_by`) VALUES
-(53, 'SD-1711455092996-7545', '7800000040', '1711455092986-sample.pdf', 'uploads\\submitSDBG\\1711455092986-sample.pdf', 'Remarks!!', 'SUBMITTED', 'SDBG SUBMISSION', '50007545', NULL, NULL, 0, 1711455092996, NULL, '50007545', 'VENDOR'),
-(54, 'SD-1711455092996-7545', '7800000040', '1711455092986-sample.pdf', 'uploads\\submitSDBG\\1711455092986-sample.pdf', 'BG entry forwarded to Finance.', 'FORWARD_TO_FINANCE', 'SDBG SUBMISSION', '50007545', '493834', NULL, 0, 1711456246015, 'Dealing officer', '493834', 'GRSE'),
-(55, 'SD-1711455092996-7545', '7800000040', '1711455092986-sample.pdf', 'uploads\\submitSDBG\\1711455092986-sample.pdf', 'APPROVED by Finance Officer', 'APPROVED', 'SDBG APPROVED', '50007545', '600200', NULL, 0, 1711456341026, 'finance dept', '600200', 'GRSE');
+INSERT INTO `sdbg` (`id`, `action_type`, `reference_no`, `purchasing_doc_no`, `file_name`, `file_path`, `status`, `remarks`, `vendor_code`, `assigned_from`, `assigned_to`, `last_assigned`, `created_at`, `created_by_name`, `created_by_id`, `updated_by`) VALUES
+(1, 'SDBG SUBMISSION', 'SD-1711692203947-7545', '7800000040', '1711692203939-sample.pdf', 'uploads\\submitSDBG\\1711692203939-sample.pdf', 'SUBMITTED', 'Remarks!!!', '50007545', NULL, NULL, 0, 1711692203947, NULL, '50007545', 'VENDOR'),
+(2, 'SDBG SUBMISSION', 'SD-1711692203947-7545', '7800000040', '1711692203939-sample.pdf', 'uploads\\submitSDBG\\1711692203939-sample.pdf', 'FORWARD_TO_FINANCE', 'BG entry forwarded to Finance.', '50007545', '493834', NULL, 0, 1711693143306, 'Dealing officer', '493834', 'GRSE'),
+(5, 'SDBG APPROVED', 'SD-1711692203947-7545', '7800000040', '1711692203939-sample.pdf', 'uploads\\submitSDBG\\1711692203939-sample.pdf', 'APPROVED', 'APPROVED by Finance Officer', '50007545', '600200', NULL, 0, 1711695827412, 'finance dept', '600200', 'GRSE');
 
 -- --------------------------------------------------------
 
@@ -1898,6 +1891,7 @@ CREATE TABLE `sdbg_acknowledgement` (
 
 CREATE TABLE `sdbg_entry` (
   `id` int(11) NOT NULL,
+  `reference_no` varchar(30) NOT NULL,
   `purchasing_doc_no` varchar(18) NOT NULL,
   `bank_name` varchar(100) NOT NULL,
   `branch_name` varchar(255) NOT NULL,
@@ -1910,13 +1904,14 @@ CREATE TABLE `sdbg_entry` (
   `bg_no` varchar(255) NOT NULL,
   `bg_date` bigint(20) NOT NULL,
   `bg_ammount` float NOT NULL,
-  `po_date` bigint(20) DEFAULT NULL,
+  `department` varchar(255) NOT NULL,
+  `po_date` bigint(20) NOT NULL,
   `yard_no` varchar(255) NOT NULL,
   `validity_date` bigint(20) NOT NULL,
   `claim_priod` varchar(150) NOT NULL,
-  `check_list_reference` varchar(200) NOT NULL,
+  `check_list_reference` varchar(200) DEFAULT NULL,
   `check_list_date` bigint(20) NOT NULL,
-  `bg_type` varchar(60) NOT NULL,
+  `bg_type` varchar(60) DEFAULT NULL,
   `vendor_name` varchar(100) DEFAULT NULL,
   `vendor_address1` text DEFAULT NULL,
   `vendor_address2` text DEFAULT NULL,
@@ -1941,10 +1936,8 @@ CREATE TABLE `sdbg_entry` (
 -- Dumping data for table `sdbg_entry`
 --
 
-INSERT INTO `sdbg_entry` (`id`, `purchasing_doc_no`, `bank_name`, `branch_name`, `ifsc_code`, `bank_addr1`, `bank_addr2`, `bank_addr3`, `bank_city`, `bank_pin_code`, `bg_no`, `bg_date`, `bg_ammount`, `po_date`, `yard_no`, `validity_date`, `claim_priod`, `check_list_reference`, `check_list_date`, `bg_type`, `vendor_name`, `vendor_address1`, `vendor_address2`, `vendor_address3`, `vendor_city`, `vendor_pin_code`, `extension_date1`, `extension_date2`, `extension_date3`, `extension_date4`, `extension_date5`, `extension_date6`, `release_date`, `demand_notice_date`, `entension_letter_date`, `status`, `created_at`, `created_by`) VALUES
-(11, '7800000040', 'SBI', 'SBIN0012572', '', 'PATHAKPARA', NULL, NULL, 'MILKI', '732209', '123456', 1711909800, 4555, 20230910000000, '20', 1709922600, '1710527400', 'SD-1711437446664-7545', 1711437514800, 'SDBG', 'DCG DATA -CORE SYSTEMS (INDIA) PRIV', 'BG Block', NULL, NULL, 'KOLKATA', '700091', 0, 0, 0, 0, NULL, NULL, 0, 0, 0, 'FORWARD_TO_FINANCE', 1711437514800, '493834'),
-(12, '7800000040', 'SBI', 'Salt Lake', '', 'PATHAKPARA', NULL, NULL, 'MILKI', '732209', '123456', 1712255400, 4555, 20230910000000, 'ds', 1712255400, '1712082600', 'SD-1711437767194-7545', 1711437916631, 'SDBG', 'DCG DATA -CORE SYSTEMS (INDIA) PRIV', 'BG Block', NULL, NULL, 'KOLKATA', '700091', 0, 0, 0, 0, NULL, NULL, 0, 0, 0, 'FORWARD_TO_FINANCE', 1711437916631, '493834'),
-(13, '7800000040', 'SBI', 'SBIN0012572', '', 'PATHAKPARA', NULL, NULL, 'MILKI', '732209', '123456', 1711909800, 4555, 20230910000000, '30', 1712169000, '1712341800', 'SD-1711455092996-7545', 1711456246000, 'SDBG', 'DCG DATA -CORE SYSTEMS (INDIA) PRIV', 'BG Block', NULL, NULL, 'KOLKATA', '700091', 0, 0, 0, 0, NULL, NULL, 0, 0, 0, 'FORWARD_TO_FINANCE', 1711456246000, '493834');
+INSERT INTO `sdbg_entry` (`id`, `reference_no`, `purchasing_doc_no`, `bank_name`, `branch_name`, `ifsc_code`, `bank_addr1`, `bank_addr2`, `bank_addr3`, `bank_city`, `bank_pin_code`, `bg_no`, `bg_date`, `bg_ammount`, `department`, `po_date`, `yard_no`, `validity_date`, `claim_priod`, `check_list_reference`, `check_list_date`, `bg_type`, `vendor_name`, `vendor_address1`, `vendor_address2`, `vendor_address3`, `vendor_city`, `vendor_pin_code`, `extension_date1`, `extension_date2`, `extension_date3`, `extension_date4`, `extension_date5`, `extension_date6`, `release_date`, `demand_notice_date`, `entension_letter_date`, `status`, `created_at`, `created_by`) VALUES
+(1, 'SD-1711692203947-7545', '7800000040', 'SBI', 'SBIN0012572', '', 'PATHAKPARA', NULL, NULL, 'MILKI', '732209', '123456', 1712341800, 6000, '', 20230910000000, '20', 1715106600, '1714069800', 'SD-1711692203947-7545', 1711693143279, 'SDBG', 'DCG DATA -CORE SYSTEMS (INDIA) PRIV', 'BG Block', NULL, NULL, 'KOLKATA', '700091', 0, 0, 0, 0, NULL, NULL, 0, 0, 0, 'FORWARD_TO_FINANCE', 1711693143279, '493834');
 
 -- --------------------------------------------------------
 
@@ -1988,7 +1981,86 @@ CREATE TABLE `shipping_documents` (
 --
 
 INSERT INTO `shipping_documents` (`id`, `purchasing_doc_no`, `file_name`, `file_type_id`, `file_type_name`, `vendor_code`, `file_path`, `remarks`, `updated_by`, `created_at`, `created_by_id`) VALUES
-(31, '7800000040', '1711455240082-sample.pdf', 0, 'Invoice', '50007545', 'uploads\\shippingDocuments\\1711455240082-sample.pdf', 'Invoice Upload', 'VENDOR', 1711455240083, '50007545');
+(31, '7800000040', '1711455240082-sample.pdf', 0, 'Invoice', '50007545', 'uploads\\shippingDocuments\\1711455240082-sample.pdf', 'Invoice Upload', 'VENDOR', 1711455240083, '50007545'),
+(32, '7800000047', NULL, 0, 'REQUESTED to VENDOR', '600500', NULL, 'Please upload your invoice!', 'GRSE', 1711615951571, '600500');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `store_gate`
+--
+
+CREATE TABLE `store_gate` (
+  `id` int(11) NOT NULL,
+  `purchasing_doc_no` varchar(11) NOT NULL,
+  `acc_no` varchar(20) NOT NULL,
+  `gate_date` varchar(25) NOT NULL,
+  `file_name` varchar(100) NOT NULL,
+  `file_path` varchar(200) NOT NULL,
+  `updated_by` varchar(30) NOT NULL,
+  `created_at` varchar(20) NOT NULL,
+  `created_by_id` varchar(20) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+
+--
+-- Dumping data for table `store_gate`
+--
+
+INSERT INTO `store_gate` (`id`, `purchasing_doc_no`, `acc_no`, `gate_date`, `file_name`, `file_path`, `updated_by`, `created_at`, `created_by_id`) VALUES
+(1, '7800000040', 'ACC3232', '2024-03-28', '', '', '', '2024-03-28', '50007545');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `store_grn`
+--
+
+CREATE TABLE `store_grn` (
+  `id` int(11) NOT NULL,
+  `purchasing_doc_no` varchar(11) NOT NULL,
+  `grn_no` varchar(20) NOT NULL,
+  `file_name` varchar(100) NOT NULL,
+  `file_path` varchar(200) NOT NULL,
+  `updated_by` varchar(30) NOT NULL,
+  `created_at` varchar(20) NOT NULL,
+  `created_by_id` varchar(20) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+
+--
+-- Dumping data for table `store_grn`
+--
+
+INSERT INTO `store_grn` (`id`, `purchasing_doc_no`, `grn_no`, `file_name`, `file_path`, `updated_by`, `created_at`, `created_by_id`) VALUES
+(1, '7800000040', 'grn5678', '', '', '', '2024-03-28', '50007546'),
+(2, '7800000040', 'grn5671', '', '', '', '2024-03-28', '50007547'),
+(3, '7800000040', 'grn5672', '', '', '', '2024-03-28', '50007541');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `store_icgrn`
+--
+
+CREATE TABLE `store_icgrn` (
+  `id` int(11) NOT NULL,
+  `purchasing_doc_no` varchar(11) NOT NULL,
+  `icgrn_no` varchar(20) NOT NULL,
+  `icgrn_value` varchar(12) NOT NULL,
+  `file_name` varchar(100) NOT NULL,
+  `file_path` varchar(200) NOT NULL,
+  `updated_by` varchar(30) NOT NULL,
+  `created_at` varchar(20) NOT NULL,
+  `created_by_id` varchar(20) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+
+--
+-- Dumping data for table `store_icgrn`
+--
+
+INSERT INTO `store_icgrn` (`id`, `purchasing_doc_no`, `icgrn_no`, `icgrn_value`, `file_name`, `file_path`, `updated_by`, `created_at`, `created_by_id`) VALUES
+(1, '7800000040', 'icgrn2255', '23000', '', '', '', '2024-03-28', '50007545'),
+(2, '7800000040', 'icgrn2256', '230009', '', '', '', '2024-03-28', '50007578'),
+(3, '7800000040', 'icgrn2252', '45000', '', '', '', '2024-03-28', '50007546');
 
 -- --------------------------------------------------------
 
@@ -2241,131 +2313,6 @@ INSERT INTO `wmc` (`id`, `purchasing_doc_no`, `document_type`, `file_name`, `fil
 -- --------------------------------------------------------
 
 --
--- Table structure for table `zbts`
---
-
-CREATE TABLE `zbts` (
-  `MANDT` varchar(3) DEFAULT NULL,
-  `ZBTNO` varchar(11) NOT NULL,
-  `RERDAT` date DEFAULT current_timestamp(),
-  `RERZET` time DEFAULT current_timestamp(),
-  `RERNAM` varchar(12) DEFAULT NULL,
-  `RLAEDA` date DEFAULT NULL,
-  `RCTIME` time DEFAULT NULL,
-  `RAENAM` varchar(12) DEFAULT NULL,
-  `LIFNR` varchar(10) DEFAULT NULL,
-  `ZVBNO` varchar(40) DEFAULT NULL,
-  `VEN_BILL_DATE` date DEFAULT NULL,
-  `EBELN` varchar(10) DEFAULT NULL,
-  `DPERNR1` int(8) DEFAULT NULL,
-  `DRERDAT1` date DEFAULT NULL,
-  `DRERZET1` time DEFAULT NULL,
-  `DRERNAM1` varchar(12) DEFAULT NULL,
-  `DPERNR2` int(8) DEFAULT NULL,
-  `DRERDAT2` date DEFAULT NULL,
-  `DRERZET2` time DEFAULT NULL,
-  `DRERNAM2` varchar(12) DEFAULT NULL,
-  `DAERDAT` date DEFAULT NULL,
-  `DAERZET` time DEFAULT NULL,
-  `DAERNAM` varchar(12) DEFAULT NULL,
-  `DALAEDA` date DEFAULT NULL,
-  `DAAENAM` varchar(12) DEFAULT NULL,
-  `DEERDAT` date DEFAULT NULL,
-  `DEERZET` time DEFAULT NULL,
-  `DEERNAM` varchar(12) DEFAULT NULL,
-  `DELAEDA` date DEFAULT NULL,
-  `DEAENAM` varchar(12) DEFAULT NULL,
-  `DFERDAT` date DEFAULT NULL,
-  `DFERZET` time DEFAULT NULL,
-  `DFERNAM` varchar(12) DEFAULT NULL,
-  `DFLAEDA` date DEFAULT NULL,
-  `DFAENAM` varchar(12) DEFAULT NULL,
-  `ZRMK1` varchar(140) DEFAULT NULL,
-  `DSTATUS` varchar(1) DEFAULT NULL,
-  `FPERNR1` int(8) DEFAULT NULL,
-  `ZRMK2` varchar(140) DEFAULT NULL,
-  `FPERNR2` int(8) DEFAULT NULL,
-  `ZDCOMMENT` varchar(255) DEFAULT NULL,
-  `ZRMK3` varchar(140) DEFAULT NULL,
-  `ZRMK4` varchar(140) DEFAULT NULL,
-  `ZFCOMMENT` varchar(255) DEFAULT NULL,
-  `FSTATUS` varchar(1) DEFAULT NULL,
-  `BSTATUS` varchar(1) DEFAULT NULL,
-  `UNITNO` varchar(4) DEFAULT NULL,
-  `COMNO` varchar(3) DEFAULT NULL,
-  `FRERDAT` date DEFAULT NULL,
-  `FRERZET` time DEFAULT NULL,
-  `FRERNAM` varchar(12) DEFAULT NULL,
-  `FRLAEDA` date DEFAULT NULL,
-  `FRAENAM` varchar(12) DEFAULT NULL,
-  `FAERDAT` date DEFAULT NULL,
-  `FAERZET` time DEFAULT NULL,
-  `FAERNAM` varchar(12) DEFAULT NULL,
-  `FALAEDA` date DEFAULT NULL,
-  `FAAENAM` varchar(12) DEFAULT NULL,
-  `FEERDAT` date DEFAULT NULL,
-  `FEERZET` time DEFAULT NULL,
-  `FEERNAM` varchar(12) DEFAULT NULL,
-  `FELAEDA` date DEFAULT NULL,
-  `FEAENAM` varchar(12) DEFAULT NULL,
-  `FPERDAT` date DEFAULT NULL,
-  `FPERZET` time DEFAULT NULL,
-  `FPERNAM` varchar(12) DEFAULT NULL,
-  `FPLAEDA` date DEFAULT NULL,
-  `FPAENAM` varchar(12) DEFAULT NULL,
-  `BPERDAT` date DEFAULT NULL,
-  `BPERZET` time DEFAULT NULL,
-  `BPERNAM` varchar(12) DEFAULT NULL,
-  `BPLAEDA` date DEFAULT NULL,
-  `BPAENAM` varchar(12) DEFAULT NULL,
-  `HOLD` varchar(1) DEFAULT NULL,
-  `ALERT_GM` varchar(1) DEFAULT NULL,
-  `ALERT_DIR` varchar(1) DEFAULT NULL,
-  `ALERT_AGM_DGM` varchar(1) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci COMMENT='BILL TRACKING SYSTEM';
-
---
--- Dumping data for table `zbts`
---
-
-INSERT INTO `zbts` (`MANDT`, `ZBTNO`, `RERDAT`, `RERZET`, `RERNAM`, `RLAEDA`, `RCTIME`, `RAENAM`, `LIFNR`, `ZVBNO`, `VEN_BILL_DATE`, `EBELN`, `DPERNR1`, `DRERDAT1`, `DRERZET1`, `DRERNAM1`, `DPERNR2`, `DRERDAT2`, `DRERZET2`, `DRERNAM2`, `DAERDAT`, `DAERZET`, `DAERNAM`, `DALAEDA`, `DAAENAM`, `DEERDAT`, `DEERZET`, `DEERNAM`, `DELAEDA`, `DEAENAM`, `DFERDAT`, `DFERZET`, `DFERNAM`, `DFLAEDA`, `DFAENAM`, `ZRMK1`, `DSTATUS`, `FPERNR1`, `ZRMK2`, `FPERNR2`, `ZDCOMMENT`, `ZRMK3`, `ZRMK4`, `ZFCOMMENT`, `FSTATUS`, `BSTATUS`, `UNITNO`, `COMNO`, `FRERDAT`, `FRERZET`, `FRERNAM`, `FRLAEDA`, `FRAENAM`, `FAERDAT`, `FAERZET`, `FAERNAM`, `FALAEDA`, `FAAENAM`, `FEERDAT`, `FEERZET`, `FEERNAM`, `FELAEDA`, `FEAENAM`, `FPERDAT`, `FPERZET`, `FPERNAM`, `FPLAEDA`, `FPAENAM`, `BPERDAT`, `BPERZET`, `BPERNAM`, `BPLAEDA`, `BPAENAM`, `HOLD`, `ALERT_GM`, `ALERT_DIR`, `ALERT_AGM_DGM`) VALUES
-('NAA', '20230920001', '2023-09-28', '13:23:49', 'DCG1', NULL, '08:45:00', NULL, '50007545', 'BILL-INV_001', '0000-00-00', '7800000040', 600947, '0000-00-00', '10:33:03', 'DCG1', 600947, '0000-00-00', '10:29:23', '600229', NULL, '00:00:00', NULL, NULL, NULL, NULL, '00:00:00', NULL, NULL, NULL, '0000-00-00', '10:37:29', 'DCG1', NULL, NULL, NULL, '2', 600947, ' hjashjas', NULL, NULL, NULL, NULL, NULL, NULL, NULL, '1', NULL, NULL, '00:00:00', NULL, NULL, NULL, NULL, '00:00:00', NULL, NULL, NULL, NULL, '00:00:00', NULL, NULL, NULL, NULL, '00:00:00', NULL, NULL, NULL, NULL, '00:00:00', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
-('NA', '20230920002', '0000-00-00', '13:23:15', 'DCG1', NULL, '00:00:00', NULL, '50007545', 'BILL-INV_002', '0000-00-00', '7800000040', 600229, NULL, '00:00:00', NULL, NULL, NULL, '00:00:00', NULL, NULL, '00:00:00', NULL, NULL, NULL, NULL, '00:00:00', NULL, NULL, NULL, NULL, '00:00:00', NULL, NULL, NULL, NULL, '1', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '1', NULL, NULL, '00:00:00', NULL, NULL, NULL, NULL, '00:00:00', NULL, NULL, NULL, NULL, '00:00:00', NULL, NULL, NULL, NULL, '00:00:00', NULL, NULL, NULL, NULL, '00:00:00', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
-('NA', '20230925001', '0000-00-00', '11:40:35', 'DCG1', NULL, '00:00:00', NULL, '50007545', 'BILL-INV_003', '0000-00-00', '7800000040', 600229, NULL, '00:00:00', NULL, NULL, NULL, '00:00:00', NULL, NULL, '00:00:00', NULL, NULL, NULL, NULL, '00:00:00', NULL, NULL, NULL, NULL, '00:00:00', NULL, NULL, NULL, NULL, '1', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '1', NULL, NULL, '00:00:00', NULL, NULL, NULL, NULL, '00:00:00', NULL, NULL, NULL, NULL, '00:00:00', NULL, NULL, NULL, NULL, '00:00:00', NULL, NULL, NULL, NULL, '00:00:00', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
-(NULL, '', '0000-00-00', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
-(NULL, '20230927001', NULL, NULL, 'Mrinmoy Ghos', NULL, NULL, NULL, '50007523', '123232344', '2023-09-27', '8765678987', 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'new gengrated bill', '1', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
-(NULL, '20230927001', NULL, NULL, 'Mrinmoy Ghos', NULL, NULL, NULL, '50007523', '123232344', '2023-09-27', '8765678987', 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'new gengrated bill', '1', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
-(NULL, '20230927001', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '1', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
-(NULL, '20230927001', '2023-09-27', '00:00:00', 'Mrinmoy Ghos', NULL, NULL, NULL, '50007523', '123232344', '2023-09-27', '8765678987', 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'new gengrated bill', '1', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
-(NULL, '20230927002', '2023-09-27', '00:00:00', 'Mrinmoy Ghos', NULL, NULL, NULL, '50007523', '123232344', '2023-09-27', '8765678987', 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'new gengrated bill', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
-(NULL, '20230927002', '2023-09-27', '00:00:00', 'Mrinmoy Ghos', NULL, NULL, NULL, '50007523', '123232344', '2023-09-27', '8765678987', 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'new gengrated bill', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
-(NULL, '20230927007', '2023-09-27', '00:00:00', 'Mrinmoy Ghos', NULL, NULL, NULL, '50007523', '123232344', '2023-09-27', '8765678987', 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'new gengrated bill', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
-(NULL, '20230927008', '2023-09-27', '00:00:00', 'Mrinmoy Ghos', NULL, NULL, NULL, '50007523', '123232344', '2023-09-27', '8765678987', 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'new gengrated bill', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
-(NULL, '20230927009', '2023-09-27', '00:00:00', 'Mrinmoy Ghos', NULL, NULL, NULL, '50007523', '123232344', '2023-09-27', '8765678987', 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'new gengrated bill', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
-(NULL, '20230927009', '2023-09-27', '00:00:00', 'Mrinmoy Ghos', NULL, NULL, NULL, '50007523', '123232344', '2023-09-27', '8765678987', 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'new gengrated bill', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
-(NULL, '20230927011', '2023-09-27', '00:00:00', 'Mrinmoy Ghos', NULL, NULL, NULL, '50007523', '123232344', '2023-09-27', '8765678987', 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'new gengrated bill', '1', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
-(NULL, '20230927011', '2023-09-27', '00:00:00', 'Mrinmoy Ghos', NULL, NULL, NULL, '50007523', '123232344', '2023-09-27', '8765678987', 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'new gengrated bill', '1', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
-(NULL, '20230927013', '2023-09-27', '00:00:00', 'Mrinmoy Ghos', NULL, NULL, NULL, '50007523', '123232344', '2023-09-27', '8765678987', 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'new gengrated bill', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
-(NULL, '20230927013', '2023-09-27', '00:00:00', 'Mrinmoy Ghos', NULL, NULL, NULL, '50007523', '123232344', '2023-09-27', '8765678987', 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'new gengrated bill', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
-(NULL, '20230927015', '2023-09-27', '00:00:00', 'Mrinmoy Ghos', NULL, NULL, NULL, '50007523', '123232344', '2023-09-27', '8765678987', 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'new gengrated bill', '1', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
-(NULL, '20230927016', '2023-09-27', '00:00:00', 'Mrinmoy Ghos', NULL, NULL, NULL, '50007523', '123232344', '2023-09-27', '8765678987', 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'new gengrated bill', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
-(NULL, '20230927017', '2023-09-27', '00:00:00', 'Mrinmoy Ghos', NULL, NULL, NULL, '50007523', '123232344', '2023-09-27', '8765678987', 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'new gengrated bill', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
-(NULL, '20230927018', '2023-09-27', '00:00:00', 'Mrinmoy Ghos', NULL, NULL, NULL, '50007523', '123232344', '2023-09-27', '8765678987', 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'new gengrated bill', '1', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
-(NULL, '20230927019', '2023-09-27', '00:00:00', 'Mrinmoy Ghos', NULL, NULL, NULL, '50007523', '123232344', '2023-09-27', '8765678987', 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'new gengrated bill', '1', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
-(NULL, '20230927020', '2023-09-27', '00:00:00', 'Mrinmoy Ghos', NULL, NULL, NULL, '50007523', '123232344', '2023-09-27', '8765678987', 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'new gengrated bill', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
-(NULL, '20230927021', '2023-09-27', '00:00:00', 'Mrinmoy Ghos', NULL, NULL, NULL, '50007523', '123232344', '2023-09-27', '8765678987', 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'new gengrated bill', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
-(NULL, '20230927022', '2023-09-27', '00:00:00', 'Mrinmoy Ghos', NULL, NULL, NULL, '50007523', '123232344', '2023-09-27', '8765678987', 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'new gengrated bill', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
-(NULL, '20230927023', '2023-09-27', '00:00:00', 'Mrinmoy Ghos', NULL, NULL, NULL, '50007523', '123232344', '2023-09-27', '8765678987', 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'new gengrated bill', '1', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
-(NULL, '20230927024', '2023-09-27', '00:00:00', 'Mrinmoy Ghos', NULL, NULL, NULL, '50007523', '123232344', '2023-09-27', '8765678987', 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'new gengrated bill', '1', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
-(NULL, '20230927025', '2023-09-27', '00:00:00', 'Mrinmoy Ghos', NULL, NULL, NULL, '50007523', '123232344', '2023-09-27', '8765678987', 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'new gengrated bill', '1', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
-(NULL, '20230927026', '2023-09-27', '00:00:00', 'Mrinmoy Ghos', NULL, NULL, NULL, '50007545', 'bksingh', '2023-09-26', '7800000040', 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'trycatch', '1', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
-(NULL, '20230929001', '2023-09-29', '16:53:34', 'Mrinmoy Ghos', NULL, NULL, NULL, '50007545', '234543212345t', '2023-09-13', '7800000040', 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'ee', '2', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
-(NULL, '20231123001', '2023-11-23', '11:30:11', 'Mrinmoy Ghos', NULL, NULL, NULL, '50007523', '123232344', '2023-09-27', '8765678987', 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'new gengrated bill', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
-(NULL, '20231123002', '2023-11-23', '11:30:55', 'Mrinmoy Ghos', NULL, NULL, NULL, '50007523', '123232344', '2023-09-27', '8765678987', 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'new gengrated bill', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
-
--- --------------------------------------------------------
-
---
 -- Table structure for table `zbtsd`
 --
 
@@ -2600,12 +2547,6 @@ ALTER TABLE `hr_compliance`
   ADD PRIMARY KEY (`id`);
 
 --
--- Indexes for table `icgrn`
---
-ALTER TABLE `icgrn`
-  ADD PRIMARY KEY (`id`);
-
---
 -- Indexes for table `ilms`
 --
 ALTER TABLE `ilms`
@@ -2774,6 +2715,24 @@ ALTER TABLE `shipping_documents`
   ADD PRIMARY KEY (`id`);
 
 --
+-- Indexes for table `store_gate`
+--
+ALTER TABLE `store_gate`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `store_grn`
+--
+ALTER TABLE `store_grn`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `store_icgrn`
+--
+ALTER TABLE `store_icgrn`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Indexes for table `sub_dept`
 --
 ALTER TABLE `sub_dept`
@@ -2848,7 +2807,7 @@ ALTER TABLE `zpo_milestone`
 -- AUTO_INCREMENT for table `actualsubmissiondate`
 --
 ALTER TABLE `actualsubmissiondate`
-  MODIFY `id` int(5) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=25;
+  MODIFY `id` int(5) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=28;
 
 --
 -- AUTO_INCREMENT for table `auth`
@@ -2866,7 +2825,7 @@ ALTER TABLE `bill_registration`
 -- AUTO_INCREMENT for table `demande_management`
 --
 ALTER TABLE `demande_management`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
 
 --
 -- AUTO_INCREMENT for table `department_wise_log`
@@ -2884,7 +2843,7 @@ ALTER TABLE `depertment_master`
 -- AUTO_INCREMENT for table `drawing`
 --
 ALTER TABLE `drawing`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=25;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=26;
 
 --
 -- AUTO_INCREMENT for table `emp_department_list`
@@ -2902,12 +2861,6 @@ ALTER TABLE `hr`
 -- AUTO_INCREMENT for table `hr_compliance`
 --
 ALTER TABLE `hr_compliance`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
-
---
--- AUTO_INCREMENT for table `icgrn`
---
-ALTER TABLE `icgrn`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
@@ -3004,7 +2957,7 @@ ALTER TABLE `qap_submission`
 -- AUTO_INCREMENT for table `sdbg`
 --
 ALTER TABLE `sdbg`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=56;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT for table `sdbg_acknowledgement`
@@ -3016,7 +2969,7 @@ ALTER TABLE `sdbg_acknowledgement`
 -- AUTO_INCREMENT for table `sdbg_entry`
 --
 ALTER TABLE `sdbg_entry`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `sdbg_return_submisson`
@@ -3028,7 +2981,25 @@ ALTER TABLE `sdbg_return_submisson`
 -- AUTO_INCREMENT for table `shipping_documents`
 --
 ALTER TABLE `shipping_documents`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=32;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=33;
+
+--
+-- AUTO_INCREMENT for table `store_gate`
+--
+ALTER TABLE `store_gate`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+
+--
+-- AUTO_INCREMENT for table `store_grn`
+--
+ALTER TABLE `store_grn`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+
+--
+-- AUTO_INCREMENT for table `store_icgrn`
+--
+ALTER TABLE `store_icgrn`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `sub_dept`

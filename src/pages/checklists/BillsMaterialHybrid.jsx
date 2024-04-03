@@ -260,7 +260,7 @@ const BillsMaterialHybrid = () => {
                                                   target="_blank"
                                                   rel="noreferrer"
                                                 >
-                                                  click here
+                                                  VIEW
                                                 </a>
                                               );
                                             })
@@ -297,29 +297,27 @@ const BillsMaterialHybrid = () => {
                                     <tr>
                                       <td>Gate Entry Acknowledgement no.</td>
                                       <td className="btn_value">
-                                        <input
-                                          type="text"
-                                          className="form-control"
-                                          name="gate_entry_no"
-                                          value={form?.gate_entry_no}
-                                          onChange={(e) => {
-                                            inputTypeChange(e, form, setForm);
-                                          }}
-                                        />
+                                        <p>
+                                          {checkTypeArr(data?.gate_entry) &&
+                                            data?.gate_entry.map((item, i) => (
+                                              <b key={i} className="mx-2">
+                                                {item?.acc_no}
+                                              </b>
+                                            ))}
+                                        </p>
                                       </td>
                                     </tr>
                                     <tr>
                                       <td>Gate Entry Date</td>
                                       <td className="btn_value">
-                                        <input
-                                          type="date"
-                                          className="form-control me-2"
-                                          name="gate_entry_date"
-                                          value={form?.gate_entry_date}
-                                          onChange={(e) => {
-                                            inputTypeChange(e, form, setForm);
-                                          }}
-                                        />
+                                        <p>
+                                          {checkTypeArr(data?.gate_entry) &&
+                                            data?.gate_entry.map((item, i) => (
+                                              <b key={i} className="mx-2">
+                                                {item?.gate_date}
+                                              </b>
+                                            ))}
+                                        </p>
                                         <input
                                           type="file"
                                           className="form-control"
@@ -334,97 +332,39 @@ const BillsMaterialHybrid = () => {
                                     <tr>
                                       <td>GRN No </td>
                                       <td className="btn_value">
-                                        <input
-                                          type="text"
-                                          className="form-control mx-2"
-                                          name="grn_no_1"
-                                          value={form?.grn_no_1}
-                                          onChange={(e) => {
-                                            inputTypeChange(e, form, setForm);
-                                          }}
-                                        />
-                                        <input
-                                          type="text"
-                                          className="form-control mx-2"
-                                          name="grn_no_2"
-                                          value={form?.grn_no_2}
-                                          onChange={(e) => {
-                                            inputTypeChange(e, form, setForm);
-                                          }}
-                                        />
-                                        <input
-                                          type="text"
-                                          className="form-control mx-2"
-                                          name="grn_no_3"
-                                          value={form?.grn_no_3}
-                                          onChange={(e) => {
-                                            inputTypeChange(e, form, setForm);
-                                          }}
-                                        />
-                                        <input
-                                          type="text"
-                                          className="form-control mx-2"
-                                          name="grn_no_4"
-                                          value={form?.grn_no_4}
-                                          onChange={(e) => {
-                                            inputTypeChange(e, form, setForm);
-                                          }}
-                                        />
+                                        <p>
+                                          {checkTypeArr(data?.grn_nos) &&
+                                            data?.grn_nos.map((item, i) => (
+                                              <b key={i} className="mx-2">
+                                                {item?.grn_no}
+                                              </b>
+                                            ))}
+                                        </p>
                                       </td>
                                     </tr>
                                     <tr>
-                                      <td>ICGRN no 1</td>
+                                      <td>ICGRN no </td>
                                       <td className="btn_value">
-                                        <input
-                                          type="text"
-                                          className="form-control mx-2"
-                                          name="icgrn_no_1"
-                                          value={form?.icgrn_no_1}
-                                          onChange={(e) => {
-                                            inputTypeChange(e, form, setForm);
-                                          }}
-                                        />
-                                        <input
-                                          type="text"
-                                          className="form-control mx-2"
-                                          name="icgrn_no_2"
-                                          value={form?.icgrn_no_2}
-                                          onChange={(e) => {
-                                            inputTypeChange(e, form, setForm);
-                                          }}
-                                        />
-                                        <input
-                                          type="text"
-                                          className="form-control mx-2"
-                                          name="icgrn_no_3"
-                                          value={form?.icgrn_no_3}
-                                          onChange={(e) => {
-                                            inputTypeChange(e, form, setForm);
-                                          }}
-                                        />
-                                        <input
-                                          type="text"
-                                          className="form-control mx-2"
-                                          name="icgrn_no_4"
-                                          value={form?.icgrn_no_4}
-                                          onChange={(e) => {
-                                            inputTypeChange(e, form, setForm);
-                                          }}
-                                        />
+                                        <p>
+                                          {checkTypeArr(
+                                            data?.icgrn_nos?.icgrn
+                                          ) &&
+                                            data?.icgrn_nos?.icgrn.map(
+                                              (item, i) => (
+                                                <b key={i} className="mx-2">
+                                                  {item?.icgrn_no}
+                                                </b>
+                                              )
+                                            )}
+                                        </p>
                                       </td>
                                     </tr>
                                     <tr>
                                       <td>Total ICGRN Value</td>
                                       <td className="btn_value">
-                                        <input
-                                          type="text"
-                                          className="form-control"
-                                          name="total_icgrn_value"
-                                          value={form?.total_icgrn_value}
-                                          onChange={(e) => {
-                                            inputTypeChange(e, form, setForm);
-                                          }}
-                                        />
+                                        <b>
+                                          {data?.icgrn_nos?.total_icgrn_value}
+                                        </b>
                                       </td>
                                     </tr>
                                     <tr>
@@ -498,15 +438,19 @@ const BillsMaterialHybrid = () => {
                                     <tr>
                                       <td>PBG</td>
                                       <td className="btn_value">
-                                        <input
-                                          type="file"
-                                          className="form-control"
-                                          name="pbg_filename"
-                                          onChange={(e) =>
-                                            inputFileChange(e, form, setForm)
-                                          }
-                                          accept=".pdf"
-                                        />
+                                        {checkTypeArr(data?.pbg_filename)
+                                          ? data?.pbg_filename.map((item) => {
+                                              return (
+                                                <a
+                                                  href={`${process.env.REACT_APP_PDF_URL}submitSDBG/${item?.file_name}`}
+                                                  target="_blank"
+                                                  rel="noreferrer"
+                                                >
+                                                  VIEW
+                                                </a>
+                                              );
+                                            })
+                                          : "PBG File is not uploaded!"}
                                       </td>
                                     </tr>
                                     <tr>
