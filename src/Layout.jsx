@@ -51,6 +51,7 @@ import StoreIssueRequisition from "./pages/pdfs/StoreIssueRequisition";
 import PaymentAdvice from "./pages/pdfs/PaymentAdvice";
 import BillsMaterialHybridEdit from "./pages/checklists/BillsMaterialHybridEdit";
 import Registration from "./pages/Registration";
+import Gateentrypdf from "./pages/pdfs/Gateentrypdf";
 
 function Layout() {
   const { token, isLoggedIn, userType } = useSelector((state) => state.auth);
@@ -199,6 +200,11 @@ function Layout() {
               exact
               path="/display-store-actions/goods-issue-slip/:payload"
               element={<GoodsIssueSlip />}
+            />
+            <Route
+              exact
+              path="/display-store-actions/goods-entry/:payload"
+              element={<Gateentrypdf />}
             />
             <Route
               exact

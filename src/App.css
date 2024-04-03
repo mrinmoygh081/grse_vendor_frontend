@@ -274,3 +274,10 @@ input[type="number"] {
 .isApprove_btn:nth-child(2):hover {
   background-color: rgb(155, 30, 13) !important;
 }
+.underline {
+  text-decoration: underline;
+}
+.gatrentrycall {
+  font-size: 25px;
+  width: 90%;
+}

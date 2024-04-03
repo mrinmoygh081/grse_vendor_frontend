@@ -111,7 +111,7 @@ const DisplayStoreActions = () => {
       // });
     }
   };
-  console.log("groupByPdfData-", groupByPdfData);
+  console.log("groupByPdfData-abhi", groupByPdfData);
 
   // const onChangeHandler = (e) => {
   //   setPdfPayloads((prevState) => ({
@@ -195,6 +195,7 @@ const DisplayStoreActions = () => {
                                         {items &&
                                           items.map((item, index) => (
                                             <tr key={index}>
+                                              {console.log(item, "abhinit")}
                                               <td className="table_center">
                                                 {item.dateTime}
                                               </td>
@@ -214,7 +215,11 @@ const DisplayStoreActions = () => {
                                                     CheckFileHandler(item)
                                                   }
                                                 >
-                                                  Check File
+                                                  Check File{" "}
+                                                  {item.docno ||
+                                                    item.btn ||
+                                                    item.issueNo ||
+                                                    item.reservationNumber}
                                                 </a>
                                               </td>
                                               <td>
@@ -224,10 +229,7 @@ const DisplayStoreActions = () => {
                                                   ]
                                                 }
                                               </td>
-                                              <td>
-                                                Mrinmoy Ghosh(65432){" "}
-                                                {item.updatedBy}
-                                              </td>
+                                              <td>{item.updatedBy}</td>
                                             </tr>
                                           ))}
                                       </Fragment>
