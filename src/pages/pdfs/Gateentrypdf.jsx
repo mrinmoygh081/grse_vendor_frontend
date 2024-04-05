@@ -104,9 +104,9 @@ function Gateentrypdf() {
                     {/* <td>{apiData?.entry_date}</td> */}
                     <td>
                       {" "}
-                      {apiData.entry_date
-                        ? new Date(apiData.entry_date).toLocaleDateString()
-                        : "N/A"}
+                      {apiData?.entry_date
+                        ? new Date(apiData?.entry_date).toLocaleDateString()
+                        : ""}
                     </td>
                   </tr>
 
