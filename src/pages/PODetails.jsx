@@ -93,7 +93,7 @@ const PODetails = () => {
 
       const contentType = response.headers["content-type"];
       if (contentType !== "application/pdf") {
-        toast.error("Invalid content type. Expected application/pdf.");
+        toast.error("Not Uploaded TNC Minutes!");
         return;
       }
 
@@ -124,7 +124,7 @@ const PODetails = () => {
       }
     } catch (error) {
       console.error("Error downloading SAP PO:", error.message);
-      toast.error("Error downloading SAP PO. Please try again.");
+      toast.error("Not downloading SAP PO. Please try again.");
     }
   };
 
