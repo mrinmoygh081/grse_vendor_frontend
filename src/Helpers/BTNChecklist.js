@@ -90,7 +90,7 @@ export const actionHandlerBTN = async (
       fDToSend,
       token
     );
-    console.log(response);
+    console.log("response", response);
     if (response?.status) {
       toast.success(response?.message);
       setForm(initialData);
@@ -100,10 +100,33 @@ export const actionHandlerBTN = async (
       toast.error(response?.message);
     }
   } catch (error) {
-    toast.error("Error uploading ilms:", error);
+    toast.error("Error:", error);
   }
 };
 
-export const actionHandlerByDO = () => {
-  toast.success("Successfully uploaded!");
+export const actionHandlerByDO = async (
+  doForm,
+  setDoForm,
+  initialData,
+  navigate,
+  id,
+  token
+) => {
+  try {
+    const response = await apiCallBack(
+      "POST",
+      "po/btn/BillsMaterialHybridByDO",
+      doForm,
+      token
+    );
+    if (response?.status) {
+      toast.success(response?.message);
+      setDoForm(initialData);
+      navigate(`/invoice-and-payment-process/${id}`);
+    } else {
+      toast.error(response?.message);
+    }
+  } catch (error) {
+    toast.error("Error:", error);
+  }
 };

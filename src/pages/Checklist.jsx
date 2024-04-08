@@ -14,6 +14,7 @@ import { checkTypeArr } from "../utils/smallFun";
 
 const Checklist = () => {
   const { id } = useParams();
+  const { isDO } = useSelector((state) => state.selectedPO);
   const { user, token } = useSelector((state) => state.auth);
   const [data, setData] = useState(null);
 
@@ -96,7 +97,7 @@ const Checklist = () => {
                               </select>
                             </div>
                             <button
-                              className="btn btn-primary mx-3 mb-3"
+                              className="btn btn-sm btn-primary mx-3 mb-3"
                               onClick={NewBillHandler}
                             >
                               ADD
@@ -116,28 +117,42 @@ const Checklist = () => {
                               <tbody style={{ maxHeight: "100%" }}>
                                 {checkTypeArr(data) &&
                                   data.map((item, i) => {
-                                    console.log(item);
                                     return (
                                       <tr key={i}>
-                                        <td className="table_center">
-                                          {item?.btn_num}
-                                        </td>
+                                        <td>{item?.btn_num}</td>
                                         <td>{item?.invoice_no}</td>
                                         <td>{item?.invoice_value}</td>
                                         <td>{item?.net_claim_amount}</td>
                                         <td>
                                           <div className="view-button-container">
                                             <button
-                                              className="btn btn-primary mx-3"
+                                              className="btn btn-sm btn-secondary m-1"
                                               onClick={() => {
                                                 navigate(
-                                                  `/checklist/hybrid-bill-material/edit/${id}`,
+                                                  `/checklist/hybrid-bill-material/view/${id}`,
                                                   { state: `${item?.btn_num}` }
                                                 );
                                               }}
                                             >
                                               VIEW
                                             </button>
+                                            {isDO && (
+                                              <>
+                                                <button
+                                                  className="btn btn-sm btn-primary m-1"
+                                                  onClick={() => {
+                                                    navigate(
+                                                      `/checklist/hybrid-bill-material/edit/${id}`,
+                                                      {
+                                                        state: `${item?.btn_num}`,
+                                                      }
+                                                    );
+                                                  }}
+                                                >
+                                                  Action
+                                                </button>
+                                              </>
+                                            )}
                                           </div>
                                         </td>
                                       </tr>
@@ -157,59 +172,6 @@ const Checklist = () => {
           </div>
         </div>
       </div>
-      {/* <div className={isPopup ? "popup active" : "popup"}>
-        <div className="card card-xxl-stretch mb-5 mb-xxl-8">
-          <div className="card-header border-0 pt-5">
-            <h3 className="card-title align-items-start flex-column">
-              <span className="card-label fw-bold fs-3 mb-1">
-                Upload Shipping documents
-              </span>
-            </h3>
-            <button
-              className="btn fw-bold btn-danger"
-              onClick={() => setIsPopup(false)}
-            >
-              Close
-            </button>
-          </div>
-          <form>
-            <div className="row">
-              <div className="col-12">
-                <div className="mb-3">
-                  <label className="form-label">
-                    Shipping File Type <span className="star">*</span>
-                  </label>
-                  <input type="text" className="form-control" />
-                </div>
-              </div>
-              <div className="col-12">
-                <div className="mb-3">
-                  <label className="form-label">
-                    Shipping File <span className="star">*</span>
-                  </label>
-                  <input type="file" className="form-control" />
-                </div>
-              </div>
-              <div className="col-12">
-                <div className="mb-3">
-                  <label className="form-label">Remarks</label>
-                  <textarea
-                    name=""
-                    id=""
-                    rows="4"
-                    className="form-control"
-                  ></textarea>
-                </div>
-              </div>
-              <div className="col-12">
-                <div className="mb-3">
-                  <button className="btn fw-bold btn-primary">UPDATE</button>
-                </div>
-              </div>
-            </div>
-          </form>
-        </div>
-      </div> */}
     </>
   );
 };

@@ -12,9 +12,8 @@ import {
   checkTypeArr,
 } from "../../utils/smallFun";
 import { apiCallBack } from "../../utils/fetchAPIs";
-import { inputOnWheelPrevent } from "../../utils/inputOnWheelPrevent";
 
-const BillsMaterialHybridEdit = () => {
+const BillsMaterialHybridView = () => {
   const navigate = useNavigate();
   const { isDO } = useSelector((state) => state.selectedPO);
   const { user, token } = useSelector((state) => state.auth);
@@ -23,6 +22,7 @@ const BillsMaterialHybridEdit = () => {
 
   const [impDates, setImpDates] = useState(null);
   const [data, setData] = useState(null);
+  const [doData, setDoData] = useState(null);
   let initialData = {
     invoice_no: "",
     invoice_filename: "",
@@ -116,6 +116,23 @@ const BillsMaterialHybridEdit = () => {
     }
   };
 
+  const getBTNDOData = async () => {
+    try {
+      const d = await apiCallBack(
+        "GET",
+        `po/btn/btn_do?btn_num=${state}`,
+        null,
+        token
+      );
+      console.log("DFdf", d, state);
+      if (d?.status && checkTypeArr(d?.data)) {
+        setDoData(d?.data[0]);
+      }
+    } catch (error) {
+      console.error("Error fetching WDC list:", error);
+    }
+  };
+
   useEffect(() => {
     let net = data?.icgrn_nos && JSON.parse(data?.icgrn_nos).total_icgrn_value;
     let report = calculateNetPay(
@@ -143,6 +160,7 @@ const BillsMaterialHybridEdit = () => {
 
   useEffect(() => {
     getBTNData();
+    getBTNDOData();
     getDataByBTN();
   }, []);
 
@@ -150,7 +168,6 @@ const BillsMaterialHybridEdit = () => {
     const { ld_c_date, ld_ge_date } = doForm;
     if (ld_c_date && ld_ge_date) {
       let p_amt = calculatePenalty(ld_c_date, ld_ge_date, 30000, 0.5, 5);
-      console.log("p_amt", p_amt);
       setDoForm({ ...doForm, ld_amount: p_amt });
     }
   }, [doForm?.ld_c_date, doForm?.ld_ge_date]);
@@ -237,8 +254,9 @@ const BillsMaterialHybridEdit = () => {
     }
   }, [impDates, data]);
 
-  console.log("data", data);
-  console.log("doForm", doForm);
+  //   console.log("data", data);
+  //   console.log("doForm", doForm);
+  //   console.log("doData", doData);
 
   return (
     <>
@@ -597,7 +615,7 @@ const BillsMaterialHybridEdit = () => {
                           </div>
                         </div>
                       </div>
-                      {isDO && (
+                      {doData ? (
                         <div className="col-12">
                           <div className="card">
                             <h3 className="m-3">ENTRY BY DEALING OFFICER:</h3>
@@ -609,7 +627,7 @@ const BillsMaterialHybridEdit = () => {
                                       <tr>
                                         <td>BTN Number:</td>
                                         <td className="btn_value">
-                                          <b>{state}</b>
+                                          <b>{doData?.btn_num}</b>
                                         </td>
                                       </tr>
                                       <tr>
@@ -619,39 +637,19 @@ const BillsMaterialHybridEdit = () => {
                                             <label htmlFor="GED">
                                               Gate Entry Date:
                                             </label>
-                                            <input
-                                              type="date"
-                                              className="form-control "
-                                              id="GED"
-                                              value={doForm?.ld_ge_date}
-                                              onChange={(e) =>
-                                                setDoForm({
-                                                  ...doForm,
-                                                  ld_ge_date: e.target.value,
-                                                })
-                                              }
-                                            />
+                                            <br />
+                                            <b>{doData?.btn_num}</b>
                                           </div>
                                           <div className="me-3">
                                             <label htmlFor="CLD">
                                               Contractual Delivery Date:
                                             </label>
-                                            <input
-                                              type="date"
-                                              className="form-control"
-                                              id="CLD"
-                                              value={doForm?.ld_c_date}
-                                              onChange={(e) =>
-                                                setDoForm({
-                                                  ...doForm,
-                                                  ld_c_date: e.target.value,
-                                                })
-                                              }
-                                            />
+                                            <br />
+                                            <b>{doData?.contractual_ld}</b>
                                           </div>
                                           <div>
                                             <label>Amount:</label>
-                                            <p>&#8377; {doForm?.ld_amount}</p>
+                                            <p>&#8377; {doData?.ld_amount}</p>
                                           </div>
                                         </td>
                                       </tr>
@@ -769,27 +767,14 @@ const BillsMaterialHybridEdit = () => {
                                       <tr>
                                         <td>Other deduction if any </td>
                                         <td className="btn_value">
-                                          <input
-                                            type="number"
-                                            name=""
-                                            id=""
-                                            className="form-control"
-                                            value={doForm?.o_deduction}
-                                            onChange={(e) =>
-                                              setDoForm({
-                                                ...doForm,
-                                                o_deduction: e.target.value,
-                                              })
-                                            }
-                                            onWheel={inputOnWheelPrevent}
-                                          />
+                                          {doData?.other_deduction}
                                         </td>
                                       </tr>
                                       <tr>
                                         <td>Total deductions</td>
                                         <td>
                                           <b>
-                                            &#8377; {doForm?.total_deduction}
+                                            &#8377; {doData?.total_deduction}
                                           </b>
                                         </td>
                                       </tr>
@@ -797,7 +782,7 @@ const BillsMaterialHybridEdit = () => {
                                         <td>Net payable amount</td>
                                         <td>
                                           <b>
-                                            &#8377; {doForm?.net_payable_amount}
+                                            &#8377; {doData?.net_payable_amout}
                                           </b>
                                         </td>
                                       </tr>
@@ -805,22 +790,26 @@ const BillsMaterialHybridEdit = () => {
                                   </table>
                                 </div>
                                 <div className="text-center">
-                                  <button
-                                    type="button"
-                                    className="btn fw-bold btn-primary me-3"
-                                    onClick={() =>
-                                      actionHandlerByDO(
-                                        doForm,
-                                        setDoForm,
-                                        initialData,
-                                        navigate,
-                                        id,
-                                        token
-                                      )
-                                    }
-                                  >
-                                    SUBMIT
-                                  </button>
+                                  {user?.user_type !== 1 && (
+                                    <>
+                                      <button
+                                        type="button"
+                                        className="btn fw-bold btn-primary me-3"
+                                        onClick={() =>
+                                          actionHandlerByDO(
+                                            doForm,
+                                            setDoForm,
+                                            initialData,
+                                            navigate,
+                                            id,
+                                            token
+                                          )
+                                        }
+                                      >
+                                        SUBMIT
+                                      </button>
+                                    </>
+                                  )}
                                   <button
                                     className="btn fw-bold btn-primary"
                                     onClick={() =>
@@ -836,6 +825,12 @@ const BillsMaterialHybridEdit = () => {
                             </div>
                           </div>
                         </div>
+                      ) : (
+                        <>
+                          <div className="col-12">
+                            Waiting for the action from the Dealing Officer.
+                          </div>
+                        </>
                       )}
                     </div>
                   </form>
@@ -850,4 +845,4 @@ const BillsMaterialHybridEdit = () => {
   );
 };
 
-export default BillsMaterialHybridEdit;
+export default BillsMaterialHybridView;

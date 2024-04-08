@@ -43,7 +43,7 @@ const WDCSub = () => {
     unit: "",
     messurment: "",
     quantity: "",
-    entry_by_production: "",
+    // entry_by_production: "",
     stage_datiels: "",
     actual_payable_amount: "",
   });
@@ -106,7 +106,7 @@ const WDCSub = () => {
         unit,
         messurment,
         quantity,
-        entry_by_production,
+        // entry_by_production,
         stage_datiels,
         actual_payable_amount,
       } = formData;
@@ -150,8 +150,9 @@ const WDCSub = () => {
         fdToSend.append("status", flag);
         fdToSend.append("purchasing_doc_no", id);
         if (flag === APPROVED || flag === REJECTED) {
+          // fdToSend.append("action_type", action_type);
           fdToSend.append("reference_no", ref_no);
-          fdToSend.append("entry_by_production", entry_by_production);
+          // fdToSend.append("entry_by_production", entry_by_production);
           fdToSend.append("stage_datiels", stage_datiels);
           fdToSend.append("actual_payable_amount", actual_payable_amount);
         }
@@ -186,7 +187,7 @@ const WDCSub = () => {
             unit: "",
             messurment: "",
             quantity: "",
-            entry_by_production: "",
+            // entry_by_production: "",
             stage_datiels: "",
             actual_payable_amount: "",
           });
@@ -198,7 +199,7 @@ const WDCSub = () => {
           toast.warn(response?.message);
         }
       } else {
-        toast.warn("All fields are required!");
+        toast.warn("Please fill up the required fields!");
       }
     } catch (error) {
       toast.error("Error uploading File:", error);
@@ -294,13 +295,13 @@ const WDCSub = () => {
                                             >
                                               {item.status}
                                             </td>
-                                            <td>
+                                            <td className="d-flex">
                                               <button
                                                 onClick={() => {
                                                   setViewData(item);
                                                   setIsPopupView(true);
                                                 }}
-                                                className="btn fw-bold btn-secondary m-1"
+                                                className="btn btn-sm fw-bold btn-secondary m-1"
                                                 type="button"
                                               >
                                                 View
@@ -314,7 +315,7 @@ const WDCSub = () => {
                                                         setViewData(item);
                                                         setIsSecPopup(true);
                                                       }}
-                                                      className="btn fw-bold btn-primary"
+                                                      className="btn btn-sm fw-bold btn-primary m-1"
                                                       type="button"
                                                     >
                                                       Action
@@ -481,6 +482,7 @@ const WDCSub = () => {
                       dateFormat="dd/MM/yyyy"
                       className="form-control"
                       placeholderText="DD/MM/YYYY"
+                      maxDate={new Date()}
                     />
                   </div>
                 </div>
@@ -501,6 +503,7 @@ const WDCSub = () => {
                       dateFormat="dd/MM/yyyy"
                       className="form-control"
                       placeholderText="DD/MM/YYYY"
+                      minDate={new Date()}
                     />
                   </div>
                 </div>
@@ -710,7 +713,7 @@ const WDCSub = () => {
                     <p>{viewData?.remarks}</p>
                   </div>
                 </div>
-                <div className="col-12 col-md-6">
+                {/* <div className="col-12 col-md-6">
                   <div className="mb-3">
                     <label className="form-label">
                       Entry By Production <span className="red">*</span>{" "}
@@ -727,7 +730,7 @@ const WDCSub = () => {
                       }
                     />
                   </div>
-                </div>
+                </div> */}
                 <div className="col-12 col-md-6">
                   <div className="mb-3">
                     <label className="form-label">
@@ -920,14 +923,14 @@ const WDCSub = () => {
                   <p>{viewData?.quantity}</p>
                 </div>
               </div>
-              <div className="col-12 col-md-6">
+              {/* <div className="col-12 col-md-6">
                 <div className="mb-3">
                   <label className="form-label">
                     Entry By Production <span className="red">*</span>{" "}
                   </label>
                   <p>{viewData?.entry_by_production}</p>
                 </div>
-              </div>
+              </div> */}
               <div className="col-12 col-md-6">
                 <div className="mb-3">
                   <label className="form-label">
