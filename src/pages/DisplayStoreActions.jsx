@@ -17,7 +17,7 @@ const DisplayStoreActions = () => {
   const [groupByPdfData, setGroupByPdfData] = useState([]);
   const [payloadData, setPayloadData] = useState({});
 
-  console.log(payloadData, "tttttttttttttttttt");
+  console.log(groupByPdfData, "tttttttttttttttttt");
 
   const { id } = useParams();
   const { token } = useSelector((state) => state.auth);
@@ -42,12 +42,14 @@ const DisplayStoreActions = () => {
     goods_issue_slip: "Goods Issue Slip",
     icgrn_report: "ICGRN Report",
     ztfi_bil_deface: "Payment Advice",
+    gate_entry: "Gate in Entry",
   };
   const doc_routes = {
     reservation_report: "/display-store-actions/store-issue-requisition",
     goods_issue_slip: "/display-store-actions/goods-issue-slip",
     icgrn_report: "/display-store-actions/icgrn-report",
     ztfi_bil_deface: "/display-store-actions/payment-advice",
+    gate_entry: "/display-store-actions/goods-entry",
   };
 
   const getAllPdfHandler = async () => {
@@ -105,6 +107,16 @@ const DisplayStoreActions = () => {
     if (item.documentType === "ztfi_bil_deface") {
       setPayloadData({
         btn: item.btn,
+      });
+      // return navigate(doc_routes[item.documentType], {
+      //   state: {
+      //     btn: item.btn,
+      //   }
+      // });
+    }
+    if (item.documentType === "gate_entry") {
+      setPayloadData({
+        btn: item.gateEntryNo,
       });
       // return navigate(doc_routes[item.documentType], {
       //   state: {
@@ -221,7 +233,8 @@ const DisplayStoreActions = () => {
                                                   {item.docno ||
                                                     item.btn ||
                                                     item.issueNo ||
-                                                    item.reservationNumber}
+                                                    item.reservationNumber ||
+                                                    item.gateEntryNo}
                                                 </a>
                                               </td>
                                               <td>

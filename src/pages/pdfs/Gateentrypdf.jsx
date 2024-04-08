@@ -30,7 +30,7 @@ function Gateentrypdf() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const path = `${process.env.REACT_APP_BACKEND_API}sap/qa/icgrn/report`;
+        const path = `${process.env.REACT_APP_BACKEND_API}sap/store/gateentryReport`;
         const config = {
           method: "POST",
           headers: {
@@ -95,70 +95,87 @@ function Gateentrypdf() {
                     <td className="text-start" width={"5%"}>
                       :
                     </td>
-                    {/* <td>{apiData?.docNo}</td> */}
-                    <td>{2345678}</td>
+                    <td>{apiData?.gate_entry_no}</td>
+                    {/* <td>{2345678}</td> */}
                   </tr>
                   <tr>
                     <td>Date</td>
                     <td className="text-start">:</td>
-                    {/* <td>{apiData?.docdate}</td> */}
-                    {currentDate}
+                    {/* <td>{apiData?.entry_date}</td> */}
+                    <td>
+                      {" "}
+                      {apiData?.entry_date
+                        ? new Date(apiData?.entry_date).toLocaleDateString()
+                        : ""}
+                    </td>
                   </tr>
 
                   <tr>
                     <td>Vendor</td>
                     <td>:</td>
                     {/* <td>{apiData?.purchasing_doc_no}</td> */}
-                    <td>{"Xyz"}</td>
+                    <td>{apiData?.vendor_name}</td>
                   </tr>
-                  {/* <tr>
-                    <td>Purchase Order Date</td>
-                    <td>:</td>
-                    <td>{apiData?.purchasing_doc_date}</td>
-                  </tr> */}
                 </tbody>
               </table>
             </div>
 
-            <div className="col-6 ">
+            {/* <div className="col-6 ">
               <div className="w-75">
                 <h5 className="m-2" style={{ fontSize: "13px" }}>
                   Invoice No :
                 </h5>
-                {/* <p className="m-0" style={{ fontSize: "14px" }}>
-                  {apiData?.suppplier}, {apiData?.vendorName} <br />
-                  {apiData?.vendorCity} <br /> {apiData?.vendorPinCode} <br />
-                  {apiData?.vendorCountry}
-                </p> */}
+                <p className="m-0" style={{ fontSize: "14px" }}>
+                  {apiData?.invoice_number}
+                </p>
                 <p
                   className="m-2 w-50 p-0 text-end"
                   style={{ fontSize: "14px" }}
-                >
-                  {apiData?.vendorDistrict}
-                </p>
+                ></p>
               </div>
               <div className="w-75">
                 <h5 className="m-2" style={{ fontSize: "13px" }}>
                   Vehicle No :
                 </h5>
-                {/* <p className="m-0" style={{ fontSize: "14px" }}>
+                <p className="m-0" style={{ fontSize: "14px" }}>
                   {apiData?.suppplier}, {apiData?.vendorName} <br />
                   {apiData?.vendorCity} <br /> {apiData?.vendorPinCode} <br />
                   {apiData?.vendorCountry}
-                </p> */}
+                </p>
                 <p
                   className="m-2 w-50 p-0 text-end"
                   style={{ fontSize: "14px" }}
                 >
                   {apiData?.vendorDistrict}
                 </p>
+                
               </div>
+            </div> */}
+
+            <div className="col-6 d-flex justify-content-start top_info_table">
+              <table className="w-75 h-75" style={{ fontSize: "14px" }}>
+                <tbody>
+                  <tr>
+                    <td width={"60%"}>Invoice No</td>
+                    <td className="text-start" width={"5%"}>
+                      :
+                    </td>
+                    <td> {apiData?.invoice_number}</td>
+                    {/* <td>{2345678}</td> */}
+                  </tr>
+                  <tr>
+                    <td> Vehicle No</td>
+                    <td className="text-start">:</td>
+                    <td>{apiData?.vehicle_no}</td>
+                  </tr>
+                </tbody>
+              </table>
             </div>
           </>
         )}
       </div>
 
-      <div className="row" style={{ minHeight: "300px" }}>
+      {/* <div className="row" style={{ minHeight: "300px" }}>
         <div className="col-12">
           <table className="table table_container_1">
             <thead>
@@ -172,15 +189,44 @@ function Gateentrypdf() {
 
             <tbody>
               <tr>
-                {/* <td>{item.purchasing_doc_no_item}</td>
+                <td>{item.purchasing_doc_no_item}</td>
                     <td>{item.materialNumber}</td>
-                    <td>{item.materialDesc}</td> */}
+                    <td>{item.materialDesc}</td>
                 <td>{1234}</td>
                 <td>{10}</td>
                 <td>{9}</td>
                 <td>{13}</td>
               </tr>
             </tbody>
+          </table>
+        </div>
+      </div> */}
+
+      <div className="row" style={{ minHeight: "300px" }}>
+        <div className="col-12">
+          <table className="table table_container_1">
+            <thead>
+              <tr>
+                <th>PO NO</th>
+                <th>Item</th>
+                <th>Quantity</th>
+                <th>Challan Quantity</th>
+              </tr>
+            </thead>
+            {isLoading ? (
+              <h4>Loading....</h4>
+            ) : (
+              <tbody>
+                {apiData?.line_items?.map((item, index) => (
+                  <tr>
+                    <td>{item?.purchising_doc_no}</td>
+                    <td>{item?.po_line_item_no}</td>
+                    <td>{item?.net_quantity}</td>
+                    <td>{item?.chalan_quantity}</td>
+                  </tr>
+                ))}
+              </tbody>
+            )}
           </table>
         </div>
       </div>

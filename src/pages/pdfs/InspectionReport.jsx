@@ -97,7 +97,13 @@ function InspectionReport() {
                   <tr>
                     <td>Doc Date</td>
                     <td className="text-start">:</td>
-                    <td>{apiData?.docdate}</td>
+                    {/* <td>{apiData?.docdate}</td> */}
+                    <td>
+                      {" "}
+                      {apiData?.docdate
+                        ? new Date(apiData?.docdate).toLocaleDateString()
+                        : ""}
+                    </td>
                   </tr>
                   <tr>
                     <td>Challan/iInvoice/File No</td>
@@ -112,7 +118,15 @@ function InspectionReport() {
                   <tr>
                     <td>Purchase Order Date</td>
                     <td>:</td>
-                    <td>{apiData?.purchasing_doc_date}</td>
+                    {/* <td>{apiData?.purchasing_doc_date}</td> */}
+                    <td>
+                      {" "}
+                      {apiData?.purchasing_doc_date
+                        ? new Date(
+                            apiData?.purchasing_doc_date
+                          ).toLocaleDateString()
+                        : ""}
+                    </td>
                   </tr>
                 </tbody>
               </table>
