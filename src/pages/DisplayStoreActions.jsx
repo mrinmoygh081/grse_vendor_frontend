@@ -91,7 +91,7 @@ const DisplayStoreActions = () => {
     }
     if (item.documentType === "gate_entry") {
       setPayloadData({
-        btn: item.gateEntryNo,
+        gate_entry_no: item.gateEntryNo,
       });
     }
   };
