@@ -284,3 +284,9 @@ input[type="number"] {
 .table_height td {
   min-height: 35px;
 }
+.searchui {
+  outline: none;
+  border-radius: 5px;
+  border: 1px solid skyblue;
+  padding: 5px;
+}
