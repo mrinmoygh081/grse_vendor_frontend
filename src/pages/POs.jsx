@@ -196,7 +196,7 @@ const POs = () => {
                               po.Drawing.DrawingActualSubmissionDate
                             ).toLocaleDateString()
                           : "NA"}{" "}
-                        | {po?.Drawing?.DrawingLastStatus}
+                        | {po?.Drawing?.DrawingLastStatus || "NA"}
                       </td>
                       <td>
                         {/* QAP Date:{" "} */}

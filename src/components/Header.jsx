@@ -90,13 +90,25 @@ export default function Header({ title, id }) {
                     PO number: <br /> <span className="menu-title">{id}</span>
                   </div>
                 </div>
-                <div
+                {/* <div
                   className="menu menu-lg-rounded menu-column menu-state-bg menu-title-gray-700 menu-state-title-primary menu-state-icon-primary menu-state-bullet-primary menu-arrow-gray-400 fw-bold my-5 my-lg-0 align-items-stretch"
                   style={{ width: "110px" }}
                 >
                   <div className="menu-item here show menu-lg-down-accordion pe-lg-2">
+                    User Logged In: <br />{" "}
+                    <span className="menu-title">{user.user.username}</span>
+                  </div>
+                </div> */}
+                <div
+                  className="menu menu-lg-rounded menu-column menu-state-bg menu-title-gray-700 menu-state-title-primary menu-state-icon-primary menu-state-bullet-primary menu-arrow-gray-400 fw-bold my-5 my-lg-0 align-items-stretch"
+                  style={{ width: "200px" }}
+                >
+                  <div className="menu-item here show menu-lg-down-accordion pe-lg-2">
                     Logged In: <br />
-                    <span className="menu-title">{user.user.vendor_code}</span>
+                    <span className="menu-title">
+                      {user?.user?.vendor_code}
+                    </span>
+                    <span className="menu-title">{`(${user?.user?.username})`}</span>
                     <span
                       onClick={() =>
                         reConfirm(

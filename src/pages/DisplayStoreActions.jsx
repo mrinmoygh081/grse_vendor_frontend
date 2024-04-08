@@ -7,6 +7,7 @@ import { apiCallBack } from "../utils/fetchAPIs";
 import { useSelector } from "react-redux";
 import { groupByDocumentType } from "../utils/groupedByReq";
 import moment from "moment";
+import { FiSearch } from "react-icons/fi";
 
 const DisplayStoreActions = () => {
   const navigate = useNavigate();
@@ -16,6 +17,7 @@ const DisplayStoreActions = () => {
   const [allPdfData, setAllPdfData] = useState([]);
   const [groupByPdfData, setGroupByPdfData] = useState([]);
   const [payloadData, setPayloadData] = useState({});
+  const [searchQuery, setSearchQuery] = useState("");
 
   console.log(groupByPdfData, "tttttttttttttttttt");
 
@@ -166,6 +168,22 @@ const DisplayStoreActions = () => {
     }
   }, [allPdfData]);
 
+  const filteredPdfData = Object.keys(groupByPdfData).reduce((acc, key) => {
+    const filteredItems = groupByPdfData[key].filter((item) => {
+      return (
+        item?.docno?.includes(searchQuery) ||
+        item?.btn?.includes(searchQuery) ||
+        item?.issueNo?.includes(searchQuery) ||
+        item?.reservationNumber?.includes(searchQuery) ||
+        item?.gateEntryNo?.includes(searchQuery)
+      );
+    });
+    if (filteredItems.length > 0) {
+      acc[key] = filteredItems;
+    }
+    return acc;
+  }, {});
+
   return (
     <>
       <div className="d-flex flex-column flex-root">
@@ -181,6 +199,15 @@ const DisplayStoreActions = () => {
                       <div className="card-body p-3">
                         <div className="tab-content">
                           <div className="table-responsive">
+                            <div className="search-bar mb-4 d-flex align-items-center justify-content-end">
+                              <input
+                                className="searchui"
+                                type="text"
+                                placeholder="Search..."
+                                value={searchQuery}
+                                onChange={(e) => setSearchQuery(e.target.value)}
+                              />
+                            </div>
                             <table className="table table-striped table-bordered table_height">
                               <thead>
                                 <tr className="border-0">
@@ -192,9 +219,9 @@ const DisplayStoreActions = () => {
                                 </tr>
                               </thead>
                               <tbody style={{ maxHeight: "100%" }}>
-                                {Object.keys(groupByPdfData).map(
+                                {Object.keys(filteredPdfData).map(
                                   (it, index) => {
-                                    let items = groupByPdfData[it];
+                                    let items = filteredPdfData[it];
                                     return (
                                       <Fragment key={index}>
                                         <tr>
@@ -251,131 +278,6 @@ const DisplayStoreActions = () => {
                                     );
                                   }
                                 )}
-                                {/* {allPdfData?.map((item, index) => (
-                                  <tr key={index}>
-                                    <td className="table_center">
-                                      {item.dateTime}
-                                    </td>
-                                    <td>
-                                      <a
-                                        href={`${
-                                          doc_routes[item.documentType]
-                                        }/${JSON.stringify(payloadData)}`}
-                                        target="_blank"
-                                        rel="noreferrer"
-                                        // className="pdf_check_file_btn"
-                                        onClick={() => CheckFileHandler(item)}
-                                      >
-                                        Check File
-                                      </a>
-                                    </td>
-                                    <td>{doc_Type_Name[item.documentType]}</td>
-                                    <td>
-                                      Mrinmoy Ghosh(65432) {item.updatedBy}
-                                    </td>
-                                  </tr>
-                                ))} */}
-                                {/* <tr>
-                                  <td className="table_center">03-01-2024</td>
-                                  <td>
-                                    <a
-                                      href={
-                                        "/display-store-actions/goods-issue-slip"
-                                      }
-                                      target="_blank"
-                                      rel="noreferrer"
-                                      // className="pdf_check_file_btn"
-                                      onClick={() => {
-                                        setPdfName("store_issue_requisition");
-                                      }}
-                                    >
-                                      Check File
-                                    </a>
-                                  </td>
-                                  <td>Store Issue Requisition</td>
-                                  <td>Mrinmoy Ghosh(65432)</td>
-                                </tr>
-                                <tr>
-                                  <td className="table_center">08-01-2024</td>
-                                  <td>
-                                    <a
-                                      href={
-                                        "/display-store-actions/goods-issue-slip"
-                                      }
-                                      target="_blank"
-                                      rel="noreferrer"
-                                      // className="pdf_check_file_btn"
-                                      onClick={() => {
-                                        setPdfName("goods_issue_slip");
-                                      }}
-                                    >
-                                      Check File
-                                    </a>
-                                  </td>
-                                  <td>Goods Issue Slip</td>
-                                  <td>Mrinmoy Ghosh(65432)</td>
-                                </tr>
-                                <tr>
-                                  <td className="table_center">10-01-2024</td>
-                                  <td>
-                                    <a
-                                      href={
-                                        "/display-store-actions/icgrn-report"
-                                      }
-                                      target="_blank"
-                                      rel="noreferrer"
-                                      // className="pdf_check_file_btn"
-                                      onClick={() => {
-                                        setPdfName("icgrn_report");
-                                      }}
-                                    >
-                                      Check File
-                                    </a>
-                                  </td>
-                                  <td>ICGRN Report</td>
-                                  <td>Mrinmoy Ghosh(65432)</td>
-                                </tr>
-                                <tr>
-                                  <td className="table_center">12-01-2024</td>
-                                  <td>
-                                    <a
-                                      href={
-                                        "/display-store-actions/payment-advice"
-                                      }
-                                      target="_blank"
-                                      rel="noreferrer"
-                                      // className="pdf_check_file_btn"
-                                      onClick={() => {
-                                        setPdfName("payment_advice");
-                                      }}
-                                    >
-                                      Check File
-                                    </a>
-                                  </td>
-                                  <td>Payment Advice</td>
-                                  <td>Mrinmoy Ghosh(65432)</td>
-                                </tr> */}
-                                {/* {icgrnData.map((icgrnItem, index) => (
-                                  <tr key={index}>
-                                    <td className="table_center">
-                                      {moment(icgrnItem.created_at)
-                                        .utc()
-                                        .format("YYYY-MM-DD")}
-                                    </td>
-                                    <td>
-                                      <a
-                                        href={`${process.env.REACT_APP_BACKEND_API}po/download?id=${icgrnItem.file_path}&type=qap`}
-                                        target="_blank"
-                                        rel="noreferrer"
-                                      >
-                                        Check File
-                                      </a>
-                                    </td>
-                                    <td>{icgrnItem.document_type}</td>
-                                    <td>{icgrnItem.id}</td>
-                                    <td>{icgrnItem.updated_by}</td>
-                                  </tr>
-                                ))} */}
                               </tbody>
                             </table>
                           </div>

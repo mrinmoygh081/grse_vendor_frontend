@@ -72,7 +72,7 @@ const PODetails = () => {
 
         setIsPopup(false);
       } else {
-        toast.error("Error uploading TNC Minutes. Please try again.");
+        toast.error("TNC Minutes not uploaded!. Please try again.");
       }
     } catch (error) {
       console.error("Error uploading TNC Minutes:", error.message);
@@ -346,7 +346,7 @@ const PODetails = () => {
                                       <th className="">Item number</th>
                                       <th>Material code</th>
                                       <th>Description</th>
-                                      <th>Quanity</th>
+                                      <th>Quantity</th>
                                       <th>UOM</th>
                                       <th>Contractual delivery date </th>
                                     </tr>
