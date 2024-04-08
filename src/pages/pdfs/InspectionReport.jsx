@@ -184,7 +184,10 @@ function InspectionReport() {
                     <td>{item.rejectedQty}</td>
                     <td>{item.baseUnit}</td>
                     <td>{item.udCode}</td>
-                    <td> </td>
+                    <td>
+                      {item.inspDate &&
+                        new Date(item.inspDate).toLocaleDateString()}
+                    </td>
                   </tr>
                 ))}
               </tbody>

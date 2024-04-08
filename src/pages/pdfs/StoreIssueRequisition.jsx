@@ -10,16 +10,19 @@ function StoreIssueRequisition() {
 
   const { token } = useSelector((state) => state.auth);
   const currentDate = new Date().toLocaleDateString();
-  const currentTime = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+  const currentTime = new Date().toLocaleTimeString([], {
+    hour: "2-digit",
+    minute: "2-digit",
+  });
 
   const handlePrint = () => {
     window.print();
   };
 
   // let payloadData = location.state;
-  const {payload} = useParams();
-  const payloadData = JSON.parse(payload) 
-  console.log("payloadData",payloadData)
+  const { payload } = useParams();
+  const payloadData = JSON.parse(payload);
+  console.log("payloadData", payloadData);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -116,7 +119,7 @@ function StoreIssueRequisition() {
                   <td></td>
                   <td></td>
                   <td></td>
-                  <td></td>
+                  <td>{item.purchising_doc_no}</td>
                 </tr>
               ))}
             </tbody>
