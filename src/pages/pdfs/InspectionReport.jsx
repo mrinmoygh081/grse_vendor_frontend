@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from "react";
 import logo from "../../images/logo.png";
 import { useSelector } from "react-redux";
-import { useLocation, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 
 function InspectionReport() {
-  const location = useLocation();
   const [apiData, setApiData] = useState([]);
   // const [payloadData , setPayloadData] = useState({});
   const [isLoading, setIsLoading] = useState(false);

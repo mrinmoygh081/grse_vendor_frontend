@@ -1,3 +1,5 @@
+// import { toast } from "react-toastify";
+
 export const checkTypeArr = (data) => {
   return data && Array.isArray(data) && data.length > 0;
 };
@@ -40,4 +42,36 @@ export const calculatePenalty = (
   const penaltyAmount = (originalValue * penaltyPercentage) / 100;
 
   return penaltyAmount;
+};
+
+export const calculateNetPay = (net, ld, sdbg, drg, qap, ilms, other) => {
+  // if (!net || net === "") {
+  //   toast.warn("ICGRN Value is missing");
+  // }
+  if (!ld && ld === "") {
+    ld = 0;
+  } else if (!sdbg && sdbg === "") {
+    sdbg = 0;
+  } else if (!drg && drg === "") {
+    drg = 0;
+  } else if (!qap && qap === "") {
+    qap = 0;
+  } else if (!ilms && ilms === "") {
+    ilms = 0;
+  } else if (!other && other === "") {
+    other = 0;
+  }
+  let deduct =
+    parseInt(ld) +
+    parseInt(sdbg) +
+    parseInt(drg) +
+    parseInt(qap) +
+    parseInt(ilms) +
+    parseInt(other);
+
+  let net_pay = parseInt(net) - deduct;
+  return {
+    deduct,
+    net_pay,
+  };
 };

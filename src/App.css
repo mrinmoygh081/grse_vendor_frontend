@@ -281,3 +281,6 @@ input[type="number"] {
   font-size: 25px;
   width: 90%;
 }
+.table_height td {
+  min-height: 35px;
+}

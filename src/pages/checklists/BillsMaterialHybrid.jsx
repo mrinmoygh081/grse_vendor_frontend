@@ -449,7 +449,7 @@ const BillsMaterialHybrid = () => {
                                                 );
                                               }
                                             )
-                                          : "PBG File is not uploaded!"}
+                                          : "PBG NOT AVAILABLE"}
                                       </td>
                                     </tr>
                                     <tr>

@@ -52,6 +52,7 @@ import PaymentAdvice from "./pages/pdfs/PaymentAdvice";
 import BillsMaterialHybridEdit from "./pages/checklists/BillsMaterialHybridEdit";
 import Registration from "./pages/Registration";
 import Gateentrypdf from "./pages/pdfs/Gateentrypdf";
+import BillsMaterialHybridView from "./pages/checklists/BillsMaterialHybridView";
 
 function Layout() {
   const { token, isLoggedIn, userType } = useSelector((state) => state.auth);
@@ -121,6 +122,11 @@ function Layout() {
               exact
               path="/checklist/hybrid-bill-material/edit/:id"
               element={<BillsMaterialHybridEdit />}
+            />
+            <Route
+              exact
+              path="/checklist/hybrid-bill-material/view/:id"
+              element={<BillsMaterialHybridView />}
             />
             <Route
               exact
