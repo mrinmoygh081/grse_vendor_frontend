@@ -111,7 +111,7 @@ function StoreIssueRequisition() {
                   <td>{item.requirementQty}</td>
                   <td>{item.storageLocation}</td>
                   <td>{item.wbs}</td>
-                  <td>{item.wbsElement}</td>
+                  <td>{item.wbsDescription}</td>
                   <td></td>
                   <td></td>
                   <td>{item.plant}</td>
@@ -119,7 +119,7 @@ function StoreIssueRequisition() {
                   <td></td>
                   <td></td>
                   <td></td>
-                  <td>{item.purchising_doc_no}</td>
+                  <td>{item.purchasing_doc_no}</td>
                 </tr>
               ))}
             </tbody>
