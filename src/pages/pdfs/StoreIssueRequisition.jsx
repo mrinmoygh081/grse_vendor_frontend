@@ -85,6 +85,7 @@ function StoreIssueRequisition() {
               <tr>
                 <th>RES. No.</th>
                 <th>Item No</th>
+                <th>Material No</th>
                 <th>Material Description</th>
                 <th>UOM</th>
                 <th>Qty</th>
@@ -107,6 +108,7 @@ function StoreIssueRequisition() {
                   <td>{item.reservationNumber}</td>
                   <td>{item.itemNumber}</td>
                   <td>P9101EF0500</td>
+                  <td></td>
                   <td>{item.unit}</td>
                   <td>{item.requirementQty}</td>
                   <td>{item.storageLocation}</td>
