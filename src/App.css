@@ -290,3 +290,18 @@ input[type="number"] {
   border: 1px solid skyblue;
   padding: 5px;
 }
+.section-divider {
+  border-top: 1px dotted black;
+}
+
+.section-container {
+  margin-bottom: 20px;
+}
+.goodreceptslip {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+.goodreceptslip-font {
+  letter-spacing: 0.3em;
+}
