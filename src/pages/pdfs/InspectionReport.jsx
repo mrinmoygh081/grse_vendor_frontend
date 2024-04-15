@@ -106,7 +106,7 @@ function InspectionReport() {
                     </td>
                   </tr>
                   <tr>
-                    <td>Challan/iInvoice/File No</td>
+                    <td>Invoice No</td>
                     <td className="text-start">:</td>
                     <td></td>
                   </tr>

@@ -789,7 +789,10 @@ const BillsMaterialHybridEdit = () => {
                                         <td>Total deductions</td>
                                         <td>
                                           <b>
-                                            &#8377; {doForm?.total_deduction}
+                                            &#8377;{" "}
+                                            {isNaN(doForm?.total_deduction)
+                                              ? 0
+                                              : doForm?.total_deduction}
                                           </b>
                                         </td>
                                       </tr>
@@ -797,7 +800,10 @@ const BillsMaterialHybridEdit = () => {
                                         <td>Net payable amount</td>
                                         <td>
                                           <b>
-                                            &#8377; {doForm?.net_payable_amount}
+                                            &#8377;{" "}
+                                            {isNaN(doForm?.net_payable_amount)
+                                              ? 0
+                                              : doForm?.net_payable_amount}
                                           </b>
                                         </td>
                                       </tr>

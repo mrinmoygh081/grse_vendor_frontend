@@ -305,3 +305,14 @@ input[type="number"] {
 .goodreceptslip-font {
   letter-spacing: 0.3em;
 }
+
+.square-box {
+  border: 1px solid #000;
+  padding: 20px;
+}
+
+.print-button-container {
+  position: fixed;
+  top: 30px;
+  right: 50px;
+}

@@ -54,6 +54,7 @@ import Registration from "./pages/Registration";
 import Gateentrypdf from "./pages/pdfs/Gateentrypdf";
 import BillsMaterialHybridView from "./pages/checklists/BillsMaterialHybridView";
 import GoodsReceiptSlip from "./pages/pdfs/GoodsReceiptSlip";
+import ServiceEntrySheetPdf from "./pages/pdfs/ServiceEntrySheetPdf";
 
 function Layout() {
   const { token, isLoggedIn, userType } = useSelector((state) => state.auth);
@@ -227,6 +228,11 @@ function Layout() {
               exact
               path="/display-store-actions/payment-advice/:payload"
               element={<PaymentAdvice />}
+            />
+            <Route
+              exact
+              path="/display-store-actions/service-entry-sheet/:payload"
+              element={<ServiceEntrySheetPdf />}
             />
           </Routes>
         )}

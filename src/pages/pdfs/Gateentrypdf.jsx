@@ -155,14 +155,14 @@ function Gateentrypdf() {
             <div className="col-6 d-flex justify-content-start top_info_table">
               <table className="w-75 h-75" style={{ fontSize: "14px" }}>
                 <tbody>
-                  <tr>
+                  {/* <tr>
                     <td width={"60%"}>Invoice No</td>
                     <td className="text-start" width={"5%"}>
                       :
                     </td>
                     <td> {apiData?.invoice_number}</td>
-                    {/* <td>{2345678}</td> */}
-                  </tr>
+                    <td>{2345678}</td>
+                  </tr> */}
                   <tr>
                     <td> Vehicle No</td>
                     <td className="text-start">:</td>
@@ -211,6 +211,7 @@ function Gateentrypdf() {
                 <th>Item</th>
                 <th>Quantity</th>
                 <th>Challan Quantity</th>
+                <th>Invoice No</th>
               </tr>
             </thead>
             {isLoading ? (
@@ -223,6 +224,7 @@ function Gateentrypdf() {
                     <td>{item?.po_line_item_no}</td>
                     <td>{item?.net_quantity}</td>
                     <td>{item?.chalan_quantity}</td>
+                    <td>{item?.invoice_number}</td>
                   </tr>
                 ))}
               </tbody>

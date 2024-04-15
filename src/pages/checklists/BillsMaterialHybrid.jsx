@@ -21,6 +21,7 @@ const BillsMaterialHybrid = () => {
   const { id } = useParams();
 
   const [data, setData] = useState(null);
+  console.log(data, "datadata bikky");
   let initialData = {
     invoice_no: "",
     invoice_filename: "",
@@ -104,6 +105,34 @@ const BillsMaterialHybrid = () => {
     }
   }, [data]);
 
+  const createInvoiceNo = async () => {
+    try {
+      const payload = {
+        purchasing_doc_no: id,
+        invoice_no: form.invoice_no,
+      };
+      const response = await apiCallBack(
+        "POST",
+        "po/btn/getGrnIcrenPenelty",
+        payload,
+        token
+      );
+      if (response?.status) {
+        const { gate_entry_no, grn_no, invoice_date } = response.data;
+        setForm({
+          ...form,
+          gate_entry_no: gate_entry_no,
+          gate_entry_date: new Date(invoice_date).toLocaleDateString(),
+          grn_no: grn_no,
+        });
+      } else {
+        console.error("Error creating invoice number:", response.message);
+      }
+    } catch (error) {
+      console.error("Error creating invoice number:", error);
+    }
+  };
+
   return (
     <>
       <div className="d-flex flex-column flex-root">
@@ -133,7 +162,10 @@ const BillsMaterialHybrid = () => {
                                           name="invoice_no"
                                           value={form?.invoice_no}
                                           onChange={(e) =>
-                                            inputTypeChange(e, form, setForm)
+                                            setForm({
+                                              ...form,
+                                              invoice_no: e.target.value,
+                                            })
                                           }
                                         />
                                         <input
@@ -145,6 +177,13 @@ const BillsMaterialHybrid = () => {
                                           }
                                           accept=".pdf"
                                         />
+                                        <button
+                                          type="button"
+                                          className="btn btn-primary btn-sm m-4"
+                                          onClick={createInvoiceNo}
+                                        >
+                                          Create Invoice No
+                                        </button>
                                       </td>
                                     </tr>
                                     <tr>
@@ -292,7 +331,7 @@ const BillsMaterialHybrid = () => {
                                     </tr>
                                     <tr>
                                       <td>Gate Entry Acknowledgement no.</td>
-                                      <td className="btn_value">
+                                      {/* <td className="btn_value">
                                         <p>
                                           {checkTypeArr(data?.gate_entry) &&
                                             data?.gate_entry.map((item, i) => (
@@ -301,12 +340,15 @@ const BillsMaterialHybrid = () => {
                                               </b>
                                             ))}
                                         </p>
+                                      </td> */}
+                                      <td className="btn_value">
+                                        {form.gate_entry_no}
                                       </td>
                                     </tr>
                                     <tr>
                                       <td>Gate Entry Date</td>
                                       <td className="btn_value">
-                                        <p>
+                                        {/* <p>
                                           {checkTypeArr(data?.gate_entry) &&
                                             data?.gate_entry.map((item, i) => (
                                               <b key={i} className="mx-2">
@@ -322,12 +364,14 @@ const BillsMaterialHybrid = () => {
                                             inputFileChange(e, form, setForm)
                                           }
                                           accept=".pdf"
-                                        />
+                                        /> */}
+
+                                        {form.gate_entry_date}
                                       </td>
                                     </tr>
                                     <tr>
                                       <td>GRN No </td>
-                                      <td className="btn_value">
+                                      {/* <td className="btn_value">
                                         <p>
                                           {checkTypeArr(data?.grn_nos) &&
                                             data?.grn_nos.map((item, i) => (
@@ -336,12 +380,15 @@ const BillsMaterialHybrid = () => {
                                               </b>
                                             ))}
                                         </p>
+                                      </td> */}
+                                      <td className="btn_value">
+                                        {form.grn_no}
                                       </td>
                                     </tr>
                                     <tr>
                                       <td>ICGRN no </td>
                                       <td className="btn_value">
-                                        <p>
+                                        {/* <p>
                                           {checkTypeArr(
                                             data?.icgrn_nos?.icgrn
                                           ) &&
@@ -352,7 +399,8 @@ const BillsMaterialHybrid = () => {
                                                 </b>
                                               )
                                             )}
-                                        </p>
+                                        </p> */}
+                                        {form.grn_no}
                                       </td>
                                     </tr>
                                     <tr>

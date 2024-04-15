@@ -91,6 +91,11 @@ function GoodsReceiptSlip() {
                     <td className="text-start">:</td>
                     <td>{"10S0010007424"}</td>
                   </tr>
+                  <tr>
+                    <td className="fw-bold">Invoice No</td>
+                    <td className="text-start">:</td>
+                    <td>{"10S0010007424"}</td>
+                  </tr>
                 </tbody>
               </table>
             </div>
