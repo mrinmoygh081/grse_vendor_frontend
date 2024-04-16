@@ -185,6 +185,7 @@ const PODetails = () => {
                                     className="btn btn-primary"
                                     to={`/poarchive/${id}`}
                                   >
+                                    Po Version
                                     <MdArchive style={{ fontSize: "20px" }} />
                                   </Link>
                                 </>
