@@ -61,6 +61,9 @@ const MainHeader = ({ title }) => {
                 <b>
                   Logged In: <br />
                   <span className="menu-title">{user?.vendor_code}</span>
+                  <span className="menu-title">
+                    {user.name ? `(${user.name})` : ""}
+                  </span>
                   <span
                     onClick={() =>
                       reConfirm(

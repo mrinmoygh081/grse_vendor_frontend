@@ -440,7 +440,7 @@ const DemandManagement = () => {
                         <div className="col-12 col-md-6">
                           <div className="mb-3">
                             <label className="form-label">
-                              Raised Quantity <span className="red">*</span>{" "}
+                              demand quantity <span className="red">*</span>{" "}
                             </label>
                             <input
                               type="number"

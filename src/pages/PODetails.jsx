@@ -177,7 +177,7 @@ const PODetails = () => {
                                 className="btn btn-primary me-2"
                                 onClick={handleDownloadSAPPO}
                               >
-                                Download SAP PO
+                                Download PO
                               </button>
                               {user?.user_type !== 1 && (
                                 <>

@@ -174,14 +174,14 @@ const POs = () => {
                           ? new Date(
                               po.SD.SdContractualSubmissionDate
                             ).toLocaleDateString()
-                          : "NA"}{" "}
+                          : "--"}{" "}
                         |{" "}
                         {po?.SD?.SdActualSubmissionDate
                           ? new Date(
                               po.SD.SdActualSubmissionDate
                             ).toLocaleDateString()
-                          : "NA"}{" "}
-                        | {po?.SD?.SdLastStatus || "NA"}
+                          : "--"}{" "}
+                        | {po?.SD?.SdLastStatus || "--"}
                       </td>
                       <td>
                         {/* Drawing Date:{" "} */}
@@ -189,14 +189,14 @@ const POs = () => {
                           ? new Date(
                               po.Drawing.DrawingContractualSubmissionDate
                             ).toLocaleDateString()
-                          : "NA"}{" "}
+                          : "--"}{" "}
                         |{" "}
                         {po?.Drawing?.DrawingActualSubmissionDate
                           ? new Date(
                               po.Drawing.DrawingActualSubmissionDate
                             ).toLocaleDateString()
-                          : "NA"}{" "}
-                        | {po?.Drawing?.DrawingLastStatus || "NA"}
+                          : "--"}{" "}
+                        | {po?.Drawing?.DrawingLastStatus || "--"}
                       </td>
                       <td>
                         {/* QAP Date:{" "} */}
@@ -204,14 +204,14 @@ const POs = () => {
                           ? new Date(
                               po.QAP.qapContractualSubmissionDate
                             ).toLocaleDateString()
-                          : "NA"}{" "}
+                          : "--"}{" "}
                         |{" "}
                         {po?.QAP?.qapActualSubmissionDate
                           ? new Date(
                               po.QAP.qapActualSubmissionDate
                             ).toLocaleDateString()
-                          : "NA"}{" "}
-                        | {po?.QAP?.qapLastStatus || "NA"}
+                          : "--"}{" "}
+                        | {po?.QAP?.qapLastStatus || "--"}
                       </td>
 
                       <td>
@@ -220,14 +220,14 @@ const POs = () => {
                           ? new Date(
                               po.ILMS.ilmsContractualSubmissionDate
                             ).toLocaleDateString()
-                          : "NA"}{" "}
+                          : "--"}{" "}
                         |{" "}
                         {po?.ILMS?.ilmsActualSubmissionDate
                           ? new Date(
                               po.ILMS.ilmsActualSubmissionDate
                             ).toLocaleDateString()
-                          : "NA"}{" "}
-                        | {po?.ILMS?.ilmsLastStatus || "NA"}
+                          : "--"}{" "}
+                        | {po?.ILMS?.ilmsLastStatus || "--"}
                       </td>
 
                       <td>{po?.currentStage?.current}</td>

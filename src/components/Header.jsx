@@ -8,6 +8,8 @@ import { Link, useLocation } from "react-router-dom";
 export default function Header({ title, id }) {
   const user = useSelector((state) => state.auth);
 
+  console.log(user, "user");
+
   const dispatch = useDispatch();
   const location = useLocation();
   const logOutFun = () => {
@@ -108,7 +110,9 @@ export default function Header({ title, id }) {
                     <span className="menu-title">
                       {user?.user?.vendor_code}
                     </span>
-                    <span className="menu-title">{`(${user?.user?.username})`}</span>
+                    <span className="menu-title">
+                      {user.user.name ? `(${user.user.name})` : ""}
+                    </span>
                     <span
                       onClick={() =>
                         reConfirm(
