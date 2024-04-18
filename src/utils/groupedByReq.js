@@ -19,8 +19,18 @@ export const groupedByRefNo = (data) => {
     return result;
   }, {});
 };
+export const groupedByActiontype = (data) => {
+  return data.reduce((result, item) => {
+    const byType = item.action_type;
+    if (!result[byType]) {
+      result[byType] = [];
+    }
+    result[byType].push(item);
+    return result;
+  }, {});
+};
 
-export const groupByDocumentType = (data) =>{
+export const groupByDocumentType = (data) => {
   return data.reduce((result, item) => {
     const byType = item.documentType;
     if (!result[byType]) {
@@ -29,4 +39,4 @@ export const groupByDocumentType = (data) =>{
     result[byType].push(item);
     return result;
   }, {});
-}
+};

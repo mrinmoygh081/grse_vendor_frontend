@@ -8,6 +8,9 @@ import MainHeader from "../components/MainHeader";
 import WBS from "./WBS";
 import { logOutFun } from "../utils/logOutFun";
 import { logoutHandler } from "../redux/slices/loginSlice";
+import { jsPDF } from "jspdf";
+import "jspdf-autotable";
+// import "jspdf-autotable";
 
 const POs = () => {
   const dispatch = useDispatch();
@@ -61,6 +64,38 @@ const POs = () => {
     return matchesSearchQuery && matchesSelectedStatus;
   });
 
+  useEffect(() => {
+    // Dummy data for demonstration
+    setPolist([
+      {
+        poNumber: "4800008195",
+        poType: "Hybrid",
+        drawings: "P1",
+        qap: "",
+        ilms: "50005041 (PriceWaterhouseCoopers Pvt Ltd)",
+        currentStatus: "Not Started",
+      },
+      // Add more data as needed
+    ]);
+  }, []);
+
+  const generatePDF = () => {
+    const doc = new jsPDF();
+
+    // Get the table element from the DOM
+    const table = document.querySelector(".table");
+
+    // Use jsPDF Autotable plugin to generate PDF from the table
+    if (table) {
+      doc.autoTable({
+        html: table,
+      });
+
+      // Save the PDF with a filename
+      doc.save("po_table.pdf");
+    }
+  };
+
   return (
     <>
       {/* {user.department_name !== "PPC" && ( */}
@@ -92,6 +127,16 @@ const POs = () => {
                 </div>
               </div>
             </div>
+            {/* <div className="card_headline">
+              <div>
+                <button
+                  onClick={generatePDF}
+                  className="btn fw-bold btn-primary"
+                >
+                  Download Po Details
+                </button>
+              </div>
+            </div> */}
             <div className="card_headline">
               <div>
                 <div className="search_top">

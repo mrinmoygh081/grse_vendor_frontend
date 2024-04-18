@@ -53,6 +53,12 @@ const Shippingdocuments = () => {
       file_type_name: "Preservation certificate",
     },
     {
+      file_type_name: "E-way bill",
+    },
+    {
+      file_type_name: "Under taking",
+    },
+    {
       file_type_name: "Remarks",
     },
   ];

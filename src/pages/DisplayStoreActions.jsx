@@ -81,7 +81,7 @@ const DisplayStoreActions = () => {
     }
     if (item.documentType === "icgrn_report") {
       setPayloadData({
-        docNo: item.docno,
+        docNo: item.docNo,
       });
     }
     if (item.documentType === "ztfi_bil_deface") {
@@ -174,7 +174,7 @@ const DisplayStoreActions = () => {
                                             <tr key={index}>
                                               <td>
                                                 {" "}
-                                                {item.docno ||
+                                                {item.docNo ||
                                                   item.btn ||
                                                   item.issueNo ||
                                                   item.reservationNumber ||

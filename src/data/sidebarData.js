@@ -36,10 +36,6 @@ export const sidebarData = [
     link: "/shipping-documents",
   },
   {
-    title: "HR Compliance",
-    link: "/hr-compliance",
-  },
-  {
     title: "Demand Management",
     link: "/demand-management",
   },
@@ -48,21 +44,31 @@ export const sidebarData = [
     link: "/display-store-actions",
   },
   {
-    title: "Manage Vendor Activities",
-    link: "/manage-vendor-activities",
-  },
-  // {
-  //   title: "Gate In Entry / GR / ICGRN",
-  //   link: "/gate-in",
-  // },
-  {
     title: "WDC - JCC",
     link: "/wdc",
+  },
+  {
+    title: "HR Compliance",
+    link: "/hr-compliance",
   },
   {
     title: "Invoice And Payment Process",
     link: "/invoice-and-payment-process",
   },
+  {
+    title: "Upload Claim",
+    link: "/claim-letter",
+  },
+  {
+    title: "Manage Vendor Activities",
+    link: "/manage-vendor-activities",
+  },
+
+  // {
+  //   title: "Gate In Entry / GR / ICGRN",
+  //   link: "/gate-in",
+  // },
+
   // {
   //   title: "Invoice, PBG Copy & Checklist",
   //   link: "/checklist",
@@ -75,10 +81,7 @@ export const sidebarData = [
   //   title: "Payment advises",
   //   link: "/payment-advise",
   // },
-  {
-    title: "Upload Claim",
-    link: "/claim-letter",
-  },
+
   // {
   //   title: "Raise Demand",
   //   link: "/raise-demand",

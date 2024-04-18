@@ -12,6 +12,7 @@ import { reConfirm } from "../utils/reConfirm";
 import { inputOnWheelPrevent } from "../utils/inputOnWheelPrevent";
 import { clrLegend } from "../utils/clrLegend";
 import { BGEntry, bgInputs } from "../Helpers/BG";
+import jsPDF from "jspdf";
 import {
   ACTION_ABG,
   ACTION_DD,
@@ -261,6 +262,106 @@ const SDBGSub = () => {
       setGroupedBG(gData);
     }
   }, [allsdbg]);
+
+  const handleDownloadPDF = () => {
+    // Generate PDF
+    const pdf = generatePDFFromSDBGEntry(sdbgEntry);
+
+    // Trigger download
+    pdf.save("sdbg_entry.pdf");
+  };
+
+  const generatePDFFromSDBGEntry = (entry) => {
+    const pdf = new jsPDF();
+
+    // Add content to PDF
+    let y = 20; // Initial y-coordinate
+    pdf.text(20, y, `Reference No: ${entry?.reference_no}`);
+    y += 10; // Increase y-coordinate for the next line
+    pdf.text(20, y, `Bankers Name: ${entry?.bank_name}`);
+    y += 10;
+    pdf.text(20, y, `Bankers Branch: ${entry?.branch_name}`);
+    y += 10;
+    pdf.text(20, y, `Bankers Address1: ${entry?.bank_addr1}`);
+    y += 10;
+    if (entry?.bank_addr2) {
+      pdf.text(20, y, `Bankers Address2: ${entry?.bank_addr2}`);
+      y += 10;
+    }
+    if (entry?.bank_addr3) {
+      pdf.text(20, y, `Bankers Address3: ${entry?.bank_addr3}`);
+      y += 10;
+    }
+    pdf.text(20, y, `Bankers City: ${entry?.bank_city}`);
+    y += 10;
+    pdf.text(20, y, `Bank Pincode: ${entry?.bank_pin_code}`);
+    y += 10;
+    pdf.text(20, y, `Bank Guarantee No: ${entry?.bg_no}`);
+    y += 10;
+    pdf.text(
+      20,
+      y,
+      `BG Date: ${
+        entry?.bg_date
+          ? new Date(entry?.bg_date * 1000).toLocaleDateString()
+          : ""
+      }`
+    );
+    y += 10;
+    pdf.text(20, y, `BG Amount: ${entry?.bg_ammount}`);
+    y += 10;
+    pdf.text(20, y, `BG Type: ${entry?.bg_type}`);
+    y += 10;
+    pdf.text(20, y, `Department: ${entry?.department}`);
+    y += 10;
+    pdf.text(20, y, `PO Number: ${entry?.purchasing_doc_no}`);
+    y += 10;
+    pdf.text(
+      20,
+      y,
+      `PO Date: ${
+        entry?.po_date && new Date(entry?.po_date).toLocaleDateString()
+      }`
+    );
+    y += 10;
+    pdf.text(20, y, `Yard No: ${entry?.yard_no}`);
+    y += 10;
+    pdf.text(
+      20,
+      y,
+      `Validity Date: ${
+        entry?.validity_date
+          ? new Date(entry?.validity_date * 1000).toLocaleDateString()
+          : ""
+      }`
+    );
+    y += 10;
+    pdf.text(
+      20,
+      y,
+      `Claim Period: ${
+        entry?.claim_priod
+          ? new Date(entry?.validity_date * 1000).toLocaleDateString()
+          : ""
+      }`
+    );
+    y += 10;
+    pdf.text(20, y, `Vendor Name: ${entry?.vendor_name}`);
+    y += 10;
+    pdf.text(20, y, `Vendor Address1: ${entry?.vendor_address1}`);
+    y += 10;
+    // pdf.text(20, y, `Vendor Address2: ${entry.vendor_address2}`);
+    // y += 10;
+    // pdf.text(20, y, `Vendor Address3: ${entry.vendor_address3}`);
+    // y += 10;
+    // pdf.text(20, y, `Vendor Address3: ${entry.vendor_address3}`);
+    // y += 10;
+    pdf.text(20, y, `Vendor City: ${entry?.vendor_city}`);
+    y += 10;
+    pdf.text(20, y, `Vendor Pincode: ${entry?.vendor_pin_code}`);
+    y += 10;
+    return pdf;
+  };
 
   return (
     <>
@@ -825,6 +926,12 @@ const SDBGSub = () => {
                   Check BG Entry
                 </span>
               </h3>
+              <button
+                className="btn fw-bold btn-success btn-sm"
+                onClick={handleDownloadPDF}
+              >
+                Download BG Entry
+              </button>
               <button
                 className="btn fw-bold btn-danger"
                 onClick={() => setIsCheckEntryPopup(false)}
