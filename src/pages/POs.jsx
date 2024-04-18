@@ -10,7 +10,7 @@ import { logOutFun } from "../utils/logOutFun";
 import { logoutHandler } from "../redux/slices/loginSlice";
 import { jsPDF } from "jspdf";
 import "jspdf-autotable";
-// import "jspdf-autotable";
+import * as XLSX from "xlsx";
 
 const POs = () => {
   const dispatch = useDispatch();
@@ -78,22 +78,37 @@ const POs = () => {
       // Add more data as needed
     ]);
   }, []);
-
-  const generatePDF = () => {
-    const doc = new jsPDF();
-
-    // Get the table element from the DOM
+  const generateExcel = () => {
     const table = document.querySelector(".table");
 
-    // Use jsPDF Autotable plugin to generate PDF from the table
-    if (table) {
-      doc.autoTable({
-        html: table,
-      });
+    const rows = table.querySelectorAll("tr");
 
-      // Save the PDF with a filename
-      doc.save("po_table.pdf");
-    }
+    const data = [];
+    rows.forEach((row) => {
+      const rowData = [];
+      const cells = row.querySelectorAll("td, th");
+      cells.forEach((cell) => {
+        rowData.push(cell.innerText);
+      });
+      data.push(rowData);
+    });
+
+    const wb = XLSX.utils.book_new();
+
+    const ws = XLSX.utils.aoa_to_sheet(data);
+    XLSX.utils.book_append_sheet(wb, ws, "Po Details");
+
+    const excelBuffer = XLSX.write(wb, { bookType: "xlsx", type: "array" });
+
+    const excelBlob = new Blob([excelBuffer], {
+      type: "application/octet-stream",
+    });
+
+    const downloadLink = document.createElement("a");
+    downloadLink.href = URL.createObjectURL(excelBlob);
+    downloadLink.download = "po_table.xlsx";
+
+    downloadLink.click();
   };
 
   return (
@@ -127,16 +142,16 @@ const POs = () => {
                 </div>
               </div>
             </div>
-            {/* <div className="card_headline">
+            <div className="card_headline">
               <div>
                 <button
-                  onClick={generatePDF}
+                  onClick={generateExcel}
                   className="btn fw-bold btn-primary"
                 >
                   Download Po Details
                 </button>
               </div>
-            </div> */}
+            </div>
             <div className="card_headline">
               <div>
                 <div className="search_top">

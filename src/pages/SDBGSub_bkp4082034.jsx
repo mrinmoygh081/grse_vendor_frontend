@@ -12,6 +12,7 @@ import { reConfirm } from "../utils/reConfirm";
 import { inputOnWheelPrevent } from "../utils/inputOnWheelPrevent";
 import { clrLegend } from "../utils/clrLegend";
 import { BGEntry, bgInputs } from "../Helpers/BG";
+import jsPDF from "jspdf";
 import {
   ACTION_ABG,
   ACTION_DD,
@@ -26,7 +27,11 @@ import {
 import { logOutFun } from "../utils/logOutFun";
 import { logoutHandler } from "../redux/slices/loginSlice";
 import { poRemoveHandler } from "../redux/slices/poSlice";
-import { groupedByActionType, groupedByRefNo } from "../utils/groupedByReq";
+import {
+  groupedByActionType,
+  groupedByRefNo,
+  groupedByActiontype,
+} from "../utils/groupedByReq";
 
 const SDBGSub = () => {
   const dispatch = useDispatch();
@@ -38,13 +43,16 @@ const SDBGSub = () => {
   const [isCheckEntryPopup, setIsCheckEntryPopup] = useState(false);
   const [allsdbg, setAllsdbg] = useState([]);
   const [groupedBG, setGroupedBG] = useState([]);
+  const [groupedactiontype, setgroupedactiontype] = useState([]);
   const [sdbgEntry, setSdbgEntry] = useState([]);
+  const [refNo, setRefNo] = useState(null);
   const [selectedActionType, setSelectedActionType] = useState("");
   const [formData, setFormData] = useState({
     sdbgFile: null,
     remarks: "",
   });
-
+  console.log(groupedactiontype, "ooooooooooooooooooooooooooooooo");
+  console.log(groupedBG, "ppppppppppppppppppppppppppppppppp");
   let bg = { ...bgInputs, purchasing_doc_no: id };
   const [formDatainput, setFormDatainput] = useState(bg);
   const { user, token, userType } = useSelector((state) => state.auth);
@@ -256,11 +264,117 @@ const SDBGSub = () => {
 
   useEffect(() => {
     if (allsdbg && allsdbg.length > 0) {
-      // const gData = groupedByRefNo(allsdbg);
-      const gData = groupedByActionType(allsdbg);
+      const gData = groupedByRefNo(allsdbg);
       setGroupedBG(gData);
     }
   }, [allsdbg]);
+
+  useEffect(() => {
+    if (allsdbg && allsdbg.length > 0) {
+      const gData = groupedByActiontype(allsdbg);
+      setgroupedactiontype(gData);
+    }
+  }, [allsdbg]);
+
+  const handleDownloadPDF = () => {
+    // Generate PDF
+    const pdf = generatePDFFromSDBGEntry(sdbgEntry);
+
+    // Trigger download
+    pdf.save("sdbg_entry.pdf");
+  };
+
+  const generatePDFFromSDBGEntry = (entry) => {
+    const pdf = new jsPDF();
+
+    // Add content to PDF
+    let y = 20; // Initial y-coordinate
+    pdf.text(20, y, `Reference No: ${entry?.reference_no}`);
+    y += 10; // Increase y-coordinate for the next line
+    pdf.text(20, y, `Bankers Name: ${entry?.bank_name}`);
+    y += 10;
+    pdf.text(20, y, `Bankers Branch: ${entry?.branch_name}`);
+    y += 10;
+    pdf.text(20, y, `Bankers Address1: ${entry?.bank_addr1}`);
+    y += 10;
+    if (entry?.bank_addr2) {
+      pdf.text(20, y, `Bankers Address2: ${entry?.bank_addr2}`);
+      y += 10;
+    }
+    if (entry?.bank_addr3) {
+      pdf.text(20, y, `Bankers Address3: ${entry?.bank_addr3}`);
+      y += 10;
+    }
+    pdf.text(20, y, `Bankers City: ${entry?.bank_city}`);
+    y += 10;
+    pdf.text(20, y, `Bank Pincode: ${entry?.bank_pin_code}`);
+    y += 10;
+    pdf.text(20, y, `Bank Guarantee No: ${entry?.bg_no}`);
+    y += 10;
+    pdf.text(
+      20,
+      y,
+      `BG Date: ${
+        entry?.bg_date
+          ? new Date(entry?.bg_date * 1000).toLocaleDateString()
+          : ""
+      }`
+    );
+    y += 10;
+    pdf.text(20, y, `BG Amount: ${entry?.bg_ammount}`);
+    y += 10;
+    pdf.text(20, y, `BG Type: ${entry?.bg_type}`);
+    y += 10;
+    pdf.text(20, y, `Department: ${entry?.department}`);
+    y += 10;
+    pdf.text(20, y, `PO Number: ${entry?.purchasing_doc_no}`);
+    y += 10;
+    pdf.text(
+      20,
+      y,
+      `PO Date: ${
+        entry?.po_date && new Date(entry?.po_date).toLocaleDateString()
+      }`
+    );
+    y += 10;
+    pdf.text(20, y, `Yard No: ${entry?.yard_no}`);
+    y += 10;
+    pdf.text(
+      20,
+      y,
+      `Validity Date: ${
+        entry?.validity_date
+          ? new Date(entry?.validity_date * 1000).toLocaleDateString()
+          : ""
+      }`
+    );
+    y += 10;
+    pdf.text(
+      20,
+      y,
+      `Claim Period: ${
+        entry?.claim_priod
+          ? new Date(entry?.validity_date * 1000).toLocaleDateString()
+          : ""
+      }`
+    );
+    y += 10;
+    pdf.text(20, y, `Vendor Name: ${entry?.vendor_name}`);
+    y += 10;
+    pdf.text(20, y, `Vendor Address1: ${entry?.vendor_address1}`);
+    y += 10;
+    // pdf.text(20, y, `Vendor Address2: ${entry.vendor_address2}`);
+    // y += 10;
+    // pdf.text(20, y, `Vendor Address3: ${entry.vendor_address3}`);
+    // y += 10;
+    // pdf.text(20, y, `Vendor Address3: ${entry.vendor_address3}`);
+    // y += 10;
+    pdf.text(20, y, `Vendor City: ${entry?.vendor_city}`);
+    y += 10;
+    pdf.text(20, y, `Vendor Pincode: ${entry?.vendor_pin_code}`);
+    y += 10;
+    return pdf;
+  };
 
   return (
     <>
@@ -320,7 +434,8 @@ const SDBGSub = () => {
                             <table className="table table-striped table-bordered table_height">
                               <thead>
                                 <tr className="border-0">
-                                  {/* <th className="min-w-170px">Action Type</th> */}
+                                  <th className="min-w-170px">Reference No</th>
+                                  <th className="min-w-170px">Action Type</th>
                                   <th className="min-w-150px">DateTime </th>
                                   <th className="min-w-90px">File</th>
                                   <th className="min-w-150px">Action By</th>
@@ -332,43 +447,57 @@ const SDBGSub = () => {
                                 </tr>
                               </thead>
                               <tbody style={{ maxHeight: "100%" }}>
-                                {Object.keys(groupedBG).map((it, index) => {
-                                  let items = groupedBG[it];
-                                  return (
-                                    <Fragment key={index}>
-                                      <tr>
-                                        <td colSpan={10}>
-                                          <b>{it}</b>
-                                        </td>
-                                      </tr>
-                                      {items &&
-                                        groupedByRefNo(items) &&
-                                        Object.keys(groupedByRefNo(items)).map(
-                                          (item, ind) => {
-                                            let ite =
-                                              groupedByRefNo(items)[item];
+                                {Object.keys(groupedactiontype).map(
+                                  (actionType, index) => {
+                                    const items = groupedactiontype[actionType];
+                                    const uniqueReferenceNos = [
+                                      ...new Set(
+                                        items.map((item) => item.reference_no)
+                                      ),
+                                    ];
+                                    return (
+                                      <Fragment key={index}>
+                                        <tr>
+                                          <td colSpan={10}>
+                                            <b>{actionType}</b>
+                                          </td>
+                                        </tr>
+                                        {uniqueReferenceNos.map(
+                                          (referenceNo, refIndex) => {
+                                            const referenceItems = items.filter(
+                                              (item) =>
+                                                item.reference_no ===
+                                                referenceNo
+                                            );
                                             return (
-                                              <Fragment key={ind}>
+                                              <Fragment
+                                                key={`${actionType}-${referenceNo}`}
+                                              >
                                                 <tr>
                                                   <td colSpan={10}>
-                                                    <b>{item}</b>
+                                                    <b>{referenceNo}</b>
                                                   </td>
                                                 </tr>
-                                                {ite &&
-                                                  ite.map((data, dex) => (
-                                                    <tr>
-                                                      {/* <td className="table_center">
-                                                        {data?.action_type}
-                                                      </td> */}
+                                                {referenceItems.map(
+                                                  (item, itemIndex) => (
+                                                    <tr
+                                                      key={`${actionType}-${referenceNo}-${itemIndex}`}
+                                                    >
                                                       <td className="table_center">
-                                                        {data?.created_at &&
+                                                        {item.reference_no}
+                                                      </td>
+                                                      <td className="table_center">
+                                                        {item.action_type}
+                                                      </td>
+                                                      <td className="table_center">
+                                                        {item.created_at &&
                                                           new Date(
-                                                            data?.created_at
+                                                            item.created_at
                                                           ).toLocaleString()}
                                                       </td>
                                                       <td>
                                                         <a
-                                                          href={`${process.env.REACT_APP_PDF_URL}/submitSDBG/${data.file_name}`}
+                                                          href={`${process.env.REACT_APP_PDF_URL}/submitSDBG/${item.file_name}`}
                                                           target="_blank"
                                                           rel="noreferrer"
                                                         >
@@ -376,40 +505,62 @@ const SDBGSub = () => {
                                                         </a>
                                                       </td>
                                                       <td>
-                                                        {data?.created_by_name}{" "}
-                                                        ({data?.created_by_id})
+                                                        {item.created_by_name} (
+                                                        {item.created_by_id})
                                                       </td>
-                                                      <td>{data?.remarks}</td>
+                                                      <td>{item.remarks}</td>
                                                       <td
                                                         className={`${clrLegend(
-                                                          data?.status
+                                                          item.status
                                                         )} bold`}
                                                       >
-                                                        {data?.status}
+                                                        {item.status}
                                                       </td>
                                                       <td>
                                                         {isDO &&
-                                                          data?.status ===
+                                                          item.status ===
                                                             SUBMITTED &&
-                                                          (data?.action_type ===
+                                                          (item.action_type ===
                                                             ACTION_SDBG ||
-                                                            data?.action_type ===
+                                                            item.action_type ===
                                                               ACTION_DD ||
-                                                            data?.action_type ===
+                                                            item.action_type ===
                                                               ACTION_IB ||
-                                                            data?.action_type ===
+                                                            item.action_type ===
                                                               ACTION_PBG) && (
-                                                            <>
+                                                            <button
+                                                              onClick={() => {
+                                                                setIsEntryPopup(
+                                                                  true
+                                                                );
+                                                                setFormDatainput(
+                                                                  {
+                                                                    ...formDatainput,
+                                                                    reference_no:
+                                                                      item.reference_no,
+                                                                  }
+                                                                );
+                                                              }}
+                                                              className="btn fw-bold btn-primary me-3"
+                                                            >
+                                                              ACTION
+                                                            </button>
+                                                          )}
+                                                        {item.status ===
+                                                          FORWARD_TO_FINANCE && (
+                                                          <>
+                                                            {user?.department_id ===
+                                                              15 && (
                                                               <button
                                                                 onClick={() => {
-                                                                  setIsEntryPopup(
+                                                                  setIsCheckEntryPopup(
                                                                     true
                                                                   );
                                                                   setFormDatainput(
                                                                     {
                                                                       ...formDatainput,
                                                                       reference_no:
-                                                                        data?.reference_no,
+                                                                        item.reference_no,
                                                                     }
                                                                   );
                                                                 }}
@@ -417,45 +568,21 @@ const SDBGSub = () => {
                                                               >
                                                                 ACTION
                                                               </button>
-                                                            </>
-                                                          )}
-                                                        {data?.status ===
-                                                          FORWARD_TO_FINANCE && (
-                                                          <>
-                                                            {user?.department_id ===
-                                                              15 && (
-                                                              <>
-                                                                <button
-                                                                  onClick={() => {
-                                                                    setIsCheckEntryPopup(
-                                                                      true
-                                                                    );
-                                                                    setFormDatainput(
-                                                                      {
-                                                                        ...formDatainput,
-                                                                        reference_no:
-                                                                          data?.reference_no,
-                                                                      }
-                                                                    );
-                                                                  }}
-                                                                  className="btn fw-bold btn-primary me-3"
-                                                                >
-                                                                  ACTION
-                                                                </button>
-                                                              </>
                                                             )}
                                                           </>
                                                         )}
                                                       </td>
                                                     </tr>
-                                                  ))}
+                                                  )
+                                                )}
                                               </Fragment>
                                             );
                                           }
                                         )}
-                                    </Fragment>
-                                  );
-                                })}
+                                      </Fragment>
+                                    );
+                                  }
+                                )}
                               </tbody>
                             </table>
                           </div>
@@ -743,7 +870,6 @@ const SDBGSub = () => {
               <div className="col-md-6 col-12">
                 <div className="mb-3">
                   <label className="form-label">Yard No</label>&nbsp;&nbsp;
-                  <span className="mandatorystart">*</span>
                   <input
                     type="text"
                     className="form-control"
@@ -847,6 +973,12 @@ const SDBGSub = () => {
                   Check BG Entry
                 </span>
               </h3>
+              <button
+                className="btn fw-bold btn-success btn-sm"
+                onClick={handleDownloadPDF}
+              >
+                Download BG Entry
+              </button>
               <button
                 className="btn fw-bold btn-danger"
                 onClick={() => setIsCheckEntryPopup(false)}

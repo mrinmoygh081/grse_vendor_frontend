@@ -54,32 +54,20 @@ export default function Registration() {
                 {regData?.user_type !== "" && (
                   <>
                     {regData?.user_type === "GRSE" && (
-                      <>
-                        <div className="fv-row mb-3">
-                          <label className="form-label fs-6 fw-bolder text-dark">
-                            Functional Area
-                          </label>
-                          <select className="form-select form-control-lg form-control-solid">
-                            <option value="">Choose Department Type</option>
-                            <option value="Finance">Finance</option>
-                            <option value="Design">Design</option>
-                            <option value="QAP">Quality Assurance</option>
-                            <option value="PPNC">Purchase</option>
-                            <option value="PPNC">Contract</option>
-                            <option value="PPNC">General</option>
-                          </select>
-                        </div>
-                        <div className="fv-row mb-3">
-                          <label className="form-label fs-6 fw-bolder text-dark">
-                            Role
-                          </label>
-                          <select className="form-select form-control-lg form-control-solid">
-                            <option value="">Choose Role</option>
-                            <option value="Nodal Officer">Nodal Officer</option>
-                            <option value="General User">General User</option>
-                          </select>
-                        </div>
-                      </>
+                      <div className="fv-row mb-3">
+                        <label className="form-label fs-6 fw-bolder text-dark">
+                          Functional Area
+                        </label>
+                        <select className="form-select form-control-lg form-control-solid">
+                          <option value="">Choose Department Type</option>
+                          <option value="Finance">Finance</option>
+                          <option value="Design">Design</option>
+                          <option value="QAP">Quality Assurance</option>
+                          <option value="PPNC">Purchase</option>
+                          <option value="PPNC">Contract</option>
+                          <option value="PPNC">General</option>
+                        </select>
+                      </div>
                     )}
 
                     <div className="fv-row mb-3">
