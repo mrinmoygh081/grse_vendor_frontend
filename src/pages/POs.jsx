@@ -210,11 +210,14 @@ const POs = () => {
                           onClick={() => dispatch(poHandler(po))}
                         >
                           <u>{po?.poNumber}</u> |{" "}
-                          {po?.poType === "material"
+                          {/* {po?.poType === "material"
                             ? "Hybrid"
                             : po?.poType === "service"
                             ? "Service"
-                            : ""}{" "}
+                            : ""}{" "} */}
+                          <span style={{ textTransform: "capitalize" }}>
+                            {po?.poType}
+                          </span>
                           {user && user?.user_type !== 1 && (
                             <>
                               {" "}
