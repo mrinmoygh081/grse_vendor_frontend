@@ -2,7 +2,7 @@ import React, { Fragment, useEffect, useState } from "react";
 import SideBar from "../components/SideBar";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { apiCallBack } from "../utils/fetchAPIs";
 import { useDispatch, useSelector } from "react-redux";
 import { doHandler, poRemoveHandler } from "../redux/slices/poSlice";
@@ -16,6 +16,7 @@ import { MdArchive } from "react-icons/md";
 
 const PODetails = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const [poDetails, setPoDetails] = useState([]);
   const [file, setFile] = useState(null);
   const { id } = useParams();
@@ -128,6 +129,27 @@ const PODetails = () => {
     }
   };
 
+  const getData = async () => {
+    try {
+      const data = await apiCallBack(
+        "GET",
+        `po/download/getPoFileList?poNo=${id}`,
+        null,
+        token
+      );
+      console.log(data);
+      if (data?.status) {
+        if (data?.data && data?.data.length > 0) {
+          navigate(`/poarchive/${id}`);
+        } else {
+          toast.warn("Ammedment of the PO is not available.");
+        }
+      }
+    } catch (error) {
+      console.error("Error fetching drawing list:", error);
+    }
+  };
+
   return (
     <>
       <main>
@@ -181,13 +203,19 @@ const PODetails = () => {
                               </button>
                               {user?.user_type !== 1 && (
                                 <>
-                                  <Link
+                                  {/* <Link
                                     className="btn btn-primary"
                                     to={`/poarchive/${id}`}
                                   >
                                     Po Version
                                     <MdArchive style={{ fontSize: "20px" }} />
-                                  </Link>
+                                  </Link> */}
+                                  <button
+                                    onClick={getData}
+                                    className="btn btn-primary"
+                                  >
+                                    PO Version
+                                  </button>
                                 </>
                               )}
                             </div>

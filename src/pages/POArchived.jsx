@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect, useRef, useState } from "react";
+import React, { Fragment, useEffect, useState } from "react";
 import Footer from "../components/Footer";
 import SideBar from "../components/SideBar";
 import Header from "../components/Header";
@@ -10,7 +10,6 @@ import { checkTypeArr } from "../utils/smallFun";
 const POArchived = () => {
   const { id } = useParams();
   const [data, setData] = useState([]);
-
   const { user, token } = useSelector((state) => state.auth);
 
   const getData = async () => {
@@ -48,20 +47,20 @@ const POArchived = () => {
                       <div className="card-body p-3">
                         <div className="tab-content">
                           <div className="table-responsive">
-                            <table
-                              className="table table-striped table-bordered table_height"
-                              style={{ maxWidth: "50%" }}
-                            >
-                              <thead>
-                                <tr className="border-0">
-                                  <th>File Name</th>
-                                  <th>Action</th>
-                                </tr>
-                              </thead>
-                              <tbody>
-                                {checkTypeArr(data) &&
-                                  data.map((item, index) => {
-                                    return (
+                            {data && data.length > 0 ? (
+                              <table
+                                className="table table-striped table-bordered table_height"
+                                style={{ maxWidth: "50%" }}
+                              >
+                                <thead>
+                                  <tr className="border-0">
+                                    <th>File Name</th>
+                                    <th>Action</th>
+                                  </tr>
+                                </thead>
+                                <tbody>
+                                  {checkTypeArr(data) &&
+                                    data.map((item, index) => (
                                       <Fragment key={index}>
                                         <tr>
                                           <td className="table_center">
@@ -80,10 +79,12 @@ const POArchived = () => {
                                           </td>
                                         </tr>
                                       </Fragment>
-                                    );
-                                  })}
-                              </tbody>
-                            </table>
+                                    ))}
+                                </tbody>
+                              </table>
+                            ) : (
+                              <p>No data found</p>
+                            )}
                           </div>
                         </div>
                       </div>
