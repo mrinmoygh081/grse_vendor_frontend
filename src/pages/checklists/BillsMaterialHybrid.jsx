@@ -117,13 +117,16 @@ const BillsMaterialHybrid = () => {
         payload,
         token
       );
+      console.log("createInvoiceNo", response);
       if (response?.status) {
-        const { gate_entry_no, grn_no, invoice_date } = response.data;
+        const { gate_entry_no, grn_no, invoice_date, total_price } =
+          response.data;
         setForm({
           ...form,
           gate_entry_no: gate_entry_no,
           gate_entry_date: new Date(invoice_date).toLocaleDateString(),
           grn_no: grn_no,
+          total_price: total_price,
         });
       } else {
         console.error("Error creating invoice number:", response.message);
@@ -182,7 +185,7 @@ const BillsMaterialHybrid = () => {
                                           className="btn btn-primary btn-sm m-4"
                                           onClick={createInvoiceNo}
                                         >
-                                          Create Invoice No
+                                          CHECK
                                         </button>
                                       </td>
                                     </tr>
@@ -283,7 +286,6 @@ const BillsMaterialHybrid = () => {
                                               form?.c_sdbg_date
                                             ).toDateString()}
                                         </b>
-                                        {console.log(data)}
                                         {checkTypeArr(data?.sdbg_filename)
                                           ? data?.sdbg_filename.map(
                                               (item, i) => {
@@ -407,7 +409,8 @@ const BillsMaterialHybrid = () => {
                                       <td>Total ICGRN Value</td>
                                       <td className="btn_value">
                                         <b>
-                                          {data?.icgrn_nos?.total_icgrn_value}
+                                          {form.total_price}
+                                          {/* {data?.icgrn_nos?.total_icgrn_value} */}
                                         </b>
                                       </td>
                                     </tr>
