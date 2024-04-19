@@ -104,24 +104,20 @@ const DrawingSub = () => {
       );
 
       if (response?.status) {
-        if (response.message.includes("This drawing aleready APPROVED")) {
-          toast.warning(response.message);
-        } else {
-          toast.success("Drawing uploaded successfully");
-          setIsPopup(false);
-          setFormData({
-            drawingFile: null,
-            remarks: "",
-          });
-          setSelectedActionType("");
-          inputFileRef.current.value = null;
-          getData();
-        }
+        toast.success(response.message);
+        setIsPopup(false);
+        setFormData({
+          drawingFile: null,
+          remarks: "",
+        });
+        setSelectedActionType("");
+        inputFileRef.current.value = null;
+        getData();
       } else {
         toast.error(response?.message);
       }
     } catch (error) {
-      toast.error("Error uploading drawing:", error);
+      toast.error("Error:", error);
     }
   };
 
@@ -145,16 +141,16 @@ const DrawingSub = () => {
                   <div className="row g-5 g-xl-8">
                     <div className="col-12">
                       <div className="screen_header">
-                        {userType === 1 && (
-                          <button
-                            onClick={() => {
-                              setIsPopup(true);
-                            }}
-                            className="btn fw-bold btn-primary mx-3"
-                          >
-                            ACTION
-                          </button>
-                        )}
+                        {/* {userType === 1 && ( */}
+                        <button
+                          onClick={() => {
+                            setIsPopup(true);
+                          }}
+                          className="btn fw-bold btn-primary mx-3"
+                        >
+                          ACTION
+                        </button>
+                        {/* )} */}
                       </div>
                     </div>
                     <div className="col-12">
@@ -164,7 +160,7 @@ const DrawingSub = () => {
                             <table className="table table-striped table-bordered table_height">
                               <thead>
                                 <tr className="border-0">
-                                  <th>Reference No. </th>
+                                  {/* <th>Reference No. </th> */}
                                   <th>DateTime </th>
                                   <th>Drawing File</th>
                                   <th>Action By</th>
@@ -186,9 +182,9 @@ const DrawingSub = () => {
                                       {items &&
                                         items.map((item, i) => (
                                           <tr key={i}>
-                                            <td className="table_center">
+                                            {/* <td className="table_center">
                                               {item.reference_no}
-                                            </td>
+                                            </td> */}
                                             <td className="table_center">
                                               {item?.created_at &&
                                                 new Date(
@@ -257,7 +253,7 @@ const DrawingSub = () => {
         </div>
       </div>
 
-      {(userType === 1 || user?.department_id === 2) && (
+      {
         <div className={isPopup ? "popup active" : "popup"}>
           <div className="card card-xxl-stretch mb-5 mb-xxl-8">
             <div className="card-header border-0 pt-5">
@@ -385,7 +381,7 @@ const DrawingSub = () => {
             </form>
           </div>
         </div>
-      )}
+      }
 
       {/* <div className={isPopupAssign ? "popup active" : "popup"}>
         <div className="card card-xxl-stretch mb-5 mb-xxl-8">

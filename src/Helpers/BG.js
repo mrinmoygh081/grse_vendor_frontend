@@ -57,7 +57,6 @@ export const BGEntry = async (formDatainput, token) => {
     bg_no,
     bg_date,
     bg_ammount,
-    yard_no,
     validity_date,
     claim_priod,
     bg_type,
@@ -75,7 +74,6 @@ export const BGEntry = async (formDatainput, token) => {
     bg_no === "" ||
     bg_date === "" ||
     bg_ammount === "" ||
-    // yard_no === "" ||
     validity_date === "" ||
     claim_priod === "" ||
     bg_type === ""

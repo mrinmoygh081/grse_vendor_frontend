@@ -256,7 +256,6 @@ const SDBGSub = () => {
 
   useEffect(() => {
     if (allsdbg && allsdbg.length > 0) {
-      // const gData = groupedByRefNo(allsdbg);
       const gData = groupedByActionType(allsdbg);
       setGroupedBG(gData);
     }
@@ -742,8 +741,7 @@ const SDBGSub = () => {
               </div>
               <div className="col-md-6 col-12">
                 <div className="mb-3">
-                  <label className="form-label">Yard No</label>&nbsp;&nbsp;
-                  <span className="mandatorystart">*</span>
+                  <label className="form-label">Yard No</label>
                   <input
                     type="text"
                     className="form-control"
