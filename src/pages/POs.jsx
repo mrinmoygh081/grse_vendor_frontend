@@ -64,20 +64,20 @@ const POs = () => {
     return matchesSearchQuery && matchesSelectedStatus;
   });
 
-  useEffect(() => {
-    // Dummy data for demonstration
-    setPolist([
-      {
-        poNumber: "4800008195",
-        poType: "Hybrid",
-        drawings: "P1",
-        qap: "",
-        ilms: "50005041 (PriceWaterhouseCoopers Pvt Ltd)",
-        currentStatus: "Not Started",
-      },
-      // Add more data as needed
-    ]);
-  }, []);
+  // useEffect(() => {
+  //   // Dummy data for demonstration
+  //   setPolist([
+  //     {
+  //       poNumber: "4800008195",
+  //       poType: "Hybrid",
+  //       drawings: "P1",
+  //       qap: "",
+  //       ilms: "50005041 (PriceWaterhouseCoopers Pvt Ltd)",
+  //       currentStatus: "Not Started",
+  //     },
+  //     // Add more data as needed
+  //   ]);
+  // }, []);
   const generateExcel = () => {
     const table = document.querySelector(".table");
 
@@ -193,7 +193,7 @@ const POs = () => {
                   <th>Drawings</th>
                   <th>QAP</th>
                   <th>ILMS</th>
-                  <th>Current Status</th>
+                  <th>Current Stage</th>
                 </tr>
               </thead>
               <tbody>

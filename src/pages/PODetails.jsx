@@ -125,7 +125,7 @@ const PODetails = () => {
       }
     } catch (error) {
       console.error("Error downloading SAP PO:", error.message);
-      toast.error("Not downloading SAP PO. Please try again.");
+      toast.warn("PO DOCUMENT NOT AVAILABLE.");
     }
   };
 
@@ -142,7 +142,7 @@ const PODetails = () => {
         if (data?.data && data?.data.length > 0) {
           navigate(`/poarchive/${id}`);
         } else {
-          toast.warn("Ammedment of the PO is not available.");
+          toast.warn("PO AMMENDMENT NOT AVAILABLE.");
         }
       }
     } catch (error) {
@@ -214,7 +214,7 @@ const PODetails = () => {
                                     onClick={getData}
                                     className="btn btn-primary"
                                   >
-                                    PO Version
+                                    <MdArchive style={{ fontSize: "20px" }} />
                                   </button>
                                 </>
                               )}

@@ -301,7 +301,7 @@ const BillsMaterialHybrid = () => {
                                                 );
                                               }
                                             )
-                                          : "SDBG File is missing!"}
+                                          : "SDBG NOT SUBMITTED."}
                                       </td>
                                     </tr>
                                     <tr>
@@ -500,7 +500,7 @@ const BillsMaterialHybrid = () => {
                                                 );
                                               }
                                             )
-                                          : "PBG NOT AVAILABLE"}
+                                          : "PBG NOT SUBMITTED"}
                                       </td>
                                     </tr>
                                     <tr>
