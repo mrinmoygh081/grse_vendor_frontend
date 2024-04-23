@@ -193,7 +193,7 @@ const PODetails = () => {
                                 className="btn btn-primary me-2"
                                 onClick={handleViewTNCMinutes}
                               >
-                                View TNC Minutes
+                                Document Attachement
                               </button>
                               <button
                                 className="btn btn-primary me-2"

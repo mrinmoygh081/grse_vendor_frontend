@@ -5,7 +5,10 @@ import Header from "../../components/Header";
 import Footer from "../../components/Footer";
 import { useSelector } from "react-redux";
 import { USER_VENDOR } from "../../constants/userConstants";
-import { actionHandlerBTN } from "../../Helpers/BTNChecklist";
+import {
+  actionHandlerBTN,
+  actionHandlerserviceBTN,
+} from "../../Helpers/BTNChecklist";
 import {
   checkTypeArr,
   inputFileChange,
@@ -13,23 +16,33 @@ import {
 } from "../../utils/smallFun";
 import { inputOnWheelPrevent } from "../../utils/inputOnWheelPrevent";
 import { apiCallBack } from "../../utils/fetchAPIs";
+import { formatDate } from "../../utils/getDateTimeNow";
 
 const HybridServicePOBills = () => {
   const navigate = useNavigate();
   const { isDO } = useSelector((state) => state.selectedPO);
   const { user, token } = useSelector((state) => state.auth);
   const { id } = useParams();
+  const [fileData, setFileData] = useState(null);
 
   const [data, setData] = useState(null);
+  console.log(user, "useruseruseruseruseruser");
   let initialData = {
+    po_no: "",
+    vendor_name: "",
+    vendor_code: "",
     invoice_no: "",
+    wdc_number: "",
     invoice_filename: "",
     invoice_value: "",
     e_invoice_no: "",
     e_invoice_filename: "",
     debit_note: "",
+    gst_rate: "",
     credit_note: "",
-    net_claim_amount: 0,
+    total_amount: "",
+    net_gross_claim_amount: 0,
+    pbg: "",
     debit_credit_filename: "",
     gate_entry_no: "",
     gate_entry_date: "",
@@ -41,38 +54,67 @@ const HybridServicePOBills = () => {
     c_sdbg_filename: "",
     demand_raise_filename: "",
     pbg_filename: "",
+    esi_compliance_certified: "",
   };
   const [form, setForm] = useState(initialData);
 
-  const calNetClaimAmount = (invoice_value, debit_note, credit_note) => {
-    if (typeof invoice_value !== "number") {
-      invoice_value = parseInt(invoice_value) || 0;
-    }
-    if (typeof debit_note !== "number") {
-      debit_note = parseInt(debit_note) || 0;
-    }
-    if (typeof credit_note !== "number") {
-      credit_note = parseInt(credit_note) || 0;
-    }
-    setForm({
-      ...form,
-      net_claim_amount:
-        parseInt(invoice_value) + parseInt(debit_note) - parseInt(credit_note),
-    });
+  // const calNetClaimAmount = (invoice_value, debit_note, credit_note,gst_rate) => {
+  //   if (typeof invoice_value !== "number") {
+  //     invoice_value = parseInt(invoice_value) || 0;
+  //   }
+  //   if (typeof debit_note !== "number") {
+  //     debit_note = parseInt(debit_note) || 0;
+  //   }
+  //   if (typeof credit_note !== "number") {
+  //     credit_note = parseInt(credit_note) || 0;
+  //   }
+  //   if (typeof credit_note !== "number") {
+  //     gst_rate = parseInt(gst_rate) || 0;
+  //   }
+  //   setForm({
+  //     ...form,
+  //     net_claim_amount:
+  //       parseInt(invoice_value) + parseInt(debit_note) - parseInt(credit_note),
+  //   });
+  // };
+
+  const calNetClaimAmount = (
+    invoice_value,
+    debit_note,
+    credit_note,
+    gst_rate
+  ) => {
+    invoice_value = parseInt(invoice_value) || 0;
+    debit_note = parseInt(debit_note) || 0;
+    credit_note = parseInt(credit_note) || 0;
+    gst_rate = parseInt(gst_rate) || 0;
+
+    const net_gross_claim_amount =
+      invoice_value + debit_note - credit_note + gst_rate;
+
+    setForm((prevForm) => ({
+      ...prevForm,
+      net_gross_claim_amount: net_gross_claim_amount,
+    }));
   };
 
   useEffect(() => {
-    const { invoice_value, debit_note, credit_note } = form;
-    if (invoice_value || debit_note || credit_note) {
-      calNetClaimAmount(invoice_value, debit_note, credit_note);
+    const { invoice_value, debit_note, credit_note, gst_rate } = form;
+    if (invoice_value || debit_note || credit_note || gst_rate) {
+      calNetClaimAmount(invoice_value, debit_note, credit_note, gst_rate);
     }
-  }, [form?.invoice_value, form?.debit_note, form?.credit_note]);
+  }, [
+    form?.invoice_value,
+    form?.debit_note,
+    form?.credit_note,
+    form?.gst_rate,
+  ]);
 
   const getData = async () => {
     try {
       const d = await apiCallBack(
         "GET",
-        `po/btn/getBTNData?id=${id}`,
+        `po/btn/getBTNDataServiceHybrid?id=${id}`,
         null,
         token
       );
@@ -100,9 +142,53 @@ const HybridServicePOBills = () => {
         a_drawing_date: data?.a_drawing_date || "",
         a_qap_date: data?.a_qap_date || "",
         a_ilms_date: data?.a_ilms_date || "",
+        vendor_name: data?.vendor?.vendor_name || "",
+        vendor_code: data?.vendor?.vendor_code || "",
+        esi_compliance_certified: data?.pfEsi?.esi || "",
+        pf_compliance_certified: data?.pfEsi?.pf || "",
       });
     }
   }, [data]);
+
+  const handleKeyPress = (e) => {
+    if (e.key === "Enter") {
+      createInvoiceNo();
+    }
+  };
+
+  const createInvoiceNo = async () => {
+    try {
+      const response = await apiCallBack(
+        "GET",
+        `po/btn/getWdcInfoServiceHybrid?reference_no=${form?.wdc_number}`,
+        null,
+        token
+      );
+      console.log("createInvoiceNo", response);
+      if (response?.status) {
+        const { actual_start_date, actual_completion_date, total_amount } =
+          response.data;
+
+        // const startTimestamp = actual_start_date * 1000;
+        // const completionTimestamp = actual_completion_date * 1000;
+
+        // const startDate = new Date(startTimestamp).toLocaleDateString();
+        // const completionDate = new Date(
+        //   completionTimestamp
+        // ).toLocaleDateString();
+        setForm({
+          ...form,
+          actual_start_date,
+          actual_completion_date,
+          total_amount,
+        });
+      } else {
+        console.error("Error creating invoice number:", response.message);
+      }
+    } catch (error) {
+      console.error("Error creating invoice number:", error);
+    }
+  };
 
   return (
     <>
@@ -230,15 +316,57 @@ const HybridServicePOBills = () => {
                                       </td>
                                     </tr>
                                     <tr>
+                                      <td>GST Rate:</td>
+                                      <td className="btn_value">
+                                        <input
+                                          type="number"
+                                          className="form-control"
+                                          onWheel={inputOnWheelPrevent}
+                                          name="gst_rate"
+                                          value={form?.gst_rate}
+                                          onChange={(e) =>
+                                            inputTypeChange(e, form, setForm)
+                                          }
+                                        />
+                                      </td>
+                                    </tr>
+                                    <tr>
                                       <td>Net claim amount:</td>
                                       <td className="btn_value">
-                                        <b>{form?.net_claim_amount}</b>
+                                        <b>{form?.net_gross_claim_amount}</b>
+                                      </td>
+                                    </tr>
+                                    <tr>
+                                      <td>PBG</td>
+                                      <td className="btn_value">
+                                        {checkTypeArr(data?.pbg_filename)
+                                          ? data?.pbg_filename.map(
+                                              (item, i) => {
+                                                return (
+                                                  <a
+                                                    key={i}
+                                                    href={`${process.env.REACT_APP_PDF_URL}submitSDBG/${item?.file_name}`}
+                                                    target="_blank"
+                                                    rel="noreferrer"
+                                                  >
+                                                    VIEW
+                                                  </a>
+                                                );
+                                              }
+                                            )
+                                          : "PBG NOT SUBMITTED"}
+                                      </td>
+                                    </tr>
+                                    <tr>
+                                      <td>Total:</td>
+                                      <td className="btn_value">
+                                        <b>{form?.total_amount}</b>
                                       </td>
                                     </tr>
                                     <tr>
                                       <td>Work Done Certificate no.</td>
                                       <td className="btn_value">
-                                        {checkTypeArr(data?.sdbg_filename)
+                                        {/* {checkTypeArr(data?.sdbg_filename)
                                           ? data?.sdbg_filename.map(
                                               (item, i) => {
                                                 return (
@@ -253,7 +381,21 @@ const HybridServicePOBills = () => {
                                                 );
                                               }
                                             )
-                                          : "WDC File is missing!"}
+                                          : "WDC File is missing!"}createInvoiceNo */}
+
+                                        <input
+                                          type="text"
+                                          className="form-control me-3"
+                                          name="wdc_number"
+                                          value={form?.wdc_number}
+                                          onChange={(e) =>
+                                            setForm({
+                                              ...form,
+                                              wdc_number: e.target.value,
+                                            })
+                                          }
+                                          onKeyPress={handleKeyPress}
+                                        />
                                       </td>
                                     </tr>
                                     <tr>
@@ -263,7 +405,7 @@ const HybridServicePOBills = () => {
                                           {form?.a_sdbg_date &&
                                             new Date(
                                               form?.a_sdbg_date
-                                            ).toDateString()}
+                                            ).toLocaleDateString()}
                                         </b>
                                       </td>
                                     </tr>
@@ -274,7 +416,7 @@ const HybridServicePOBills = () => {
                                           {form?.a_sdbg_date &&
                                             new Date(
                                               form?.a_sdbg_date
-                                            ).toDateString()}
+                                            ).toLocaleDateString()}
                                         </b>
                                       </td>
                                     </tr>
@@ -282,10 +424,10 @@ const HybridServicePOBills = () => {
                                       <td>Actual work start date</td>
                                       <td className="btn_value">
                                         <b className="me-3">
-                                          {form?.a_sdbg_date &&
+                                          {form?.actual_start_date &&
                                             new Date(
-                                              form?.a_sdbg_date
-                                            ).toDateString()}
+                                              form?.actual_start_date * 1000
+                                            ).toLocaleDateString()}
                                         </b>
                                       </td>
                                     </tr>
@@ -293,11 +435,110 @@ const HybridServicePOBills = () => {
                                       <td>Actual work completion date</td>
                                       <td className="btn_value">
                                         <b className="me-3">
-                                          {form?.a_sdbg_date &&
-                                            new Date(
-                                              form?.a_sdbg_date
-                                            ).toDateString()}
+                                          {form?.actual_completion_date &&
+                                            formatDate(
+                                              form?.actual_completion_date *
+                                                1000
+                                            )}
                                         </b>
+                                      </td>
+                                    </tr>
+                                    {/* <tr>
+                                      <td>ESI Compliance Certified By HR</td>
+                                      <td className="btn_value">
+                                        <b className="me-3">
+                                          {false ? (
+                                            <a
+                                              href={`${process.env.REACT_APP_PDF_URL}submitSDBG/${data?.file_name}`}
+                                              target="_blank"
+                                              rel="noreferrer"
+                                            >
+                                              VIEW
+                                            </a>
+                                          ) : (
+                                            "ESI NOT SUBMITTED."
+                                          )}
+                                        </b>
+                                      </td>
+                                    </tr> */}
+                                    <tr>
+                                      <td>ESI Compliance Certified By HR</td>
+                                      <td className="btn_value">
+                                        <b className="me-3">
+                                          {data?.pfEsi?.esi !== null ? (
+                                            <span>PF COMPLIANT</span>
+                                          ) : (
+                                            <span>PF NOT SUBMITTED</span>
+                                          )}
+                                        </b>
+                                      </td>
+                                    </tr>
+                                    {/* <tr>
+                                      {console.log(data, "dataBBBBBBBBBBB")}
+                                      <td>PF Compliance Certified By HR</td>
+                                      <td className="btn_value">
+                                        <b className="me-3">
+                                          {checkTypeArr(data?.sdbg_filename) ? (
+                                            <a
+                                              href={`${process.env.REACT_APP_PDF_URL}submitSDBG/${data?.file_name}`}
+                                              target="_blank"
+                                              rel="noreferrer"
+                                            >
+                                              VIEW
+                                            </a>
+                                          ) : (
+                                            "PF NOT SUBMITTED."
+                                          )}
+
+                                          {false ? (
+                                            <a
+                                              href={`${process.env.REACT_APP_PDF_URL}submitSDBG/${data?.file_name}`}
+                                              target="_blank"
+                                              rel="noreferrer"
+                                            >
+                                              VIEW
+                                            </a>
+                                          ) : (
+                                            "PF NOT SUBMITTED."
+                                          )}
+                                        </b>
+                                      </td>
+                                    </tr> */}
+
+                                    <tr>
+                                      <td>PF Compliance Certified By HR</td>
+                                      <td className="btn_value">
+                                        <b className="me-3">
+                                          {data?.pfEsi?.pf !== null ? (
+                                            <span>PF COMPLIANT</span>
+                                          ) : (
+                                            <span>PF NOT SUBMITTED</span>
+                                          )}
+                                        </b>
+                                      </td>
+                                    </tr>
+                                    <tr>
+                                      <td>Wage Compliance Certified By HR</td>
+                                      <td className="btn_value">
+                                        <b className="me-3">
+                                          {false ? (
+                                            <a
+                                              href={`${process.env.REACT_APP_PDF_URL}submitSDBG/${data?.file_name}`}
+                                              target="_blank"
+                                              rel="noreferrer"
+                                            >
+                                              VIEW
+                                            </a>
+                                          ) : (
+                                            "WAGE NOT SUBMITTED."
+                                          )}
+                                        </b>
+                                      </td>
+                                    </tr>
+                                    <tr>
+                                      <td>Choice GRSE Department</td>
+                                      <td className="btn_value">
+                                        <b className="me-3"></b>
                                       </td>
                                     </tr>
                                     <tr>
@@ -336,9 +577,10 @@ const HybridServicePOBills = () => {
                                     type="button"
                                     className="btn fw-bold btn-primary me-3"
                                     onClick={() =>
-                                      actionHandlerBTN(
+                                      actionHandlerserviceBTN(
                                         "BillsMaterialHybrid",
                                         token,
+                                        user,
                                         id,
                                         form,
                                         setForm,

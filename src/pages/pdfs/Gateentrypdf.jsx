@@ -211,6 +211,8 @@ function Gateentrypdf() {
                 <th>Item</th>
                 <th>Quantity</th>
                 <th>Challan Quantity</th>
+                <th>Material Code</th>
+                <th>Material Description</th>
                 <th>Invoice No</th>
               </tr>
             </thead>
@@ -222,8 +224,10 @@ function Gateentrypdf() {
                   <tr>
                     <td>{item?.purchising_doc_no}</td>
                     <td>{item?.po_line_item_no}</td>
-                    <td>{item?.net_quantity}</td>
+                    <td>{item?.quantity}</td>
                     <td>{item?.chalan_quantity}</td>
+                    <td>{item?.material_code}</td>
+                    <td>{item?.material_desc}</td>
                     <td>{item?.invoice_number}</td>
                   </tr>
                 ))}

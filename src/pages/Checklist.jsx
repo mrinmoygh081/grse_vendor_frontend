@@ -117,6 +117,7 @@ const Checklist = () => {
                               <tbody style={{ maxHeight: "100%" }}>
                                 {checkTypeArr(data) &&
                                   data.map((item, i) => {
+                                    console.log(item, "loop");
                                     return (
                                       <tr key={i}>
                                         <td>{item?.btn_num}</td>
@@ -125,11 +126,26 @@ const Checklist = () => {
                                         <td>{item?.net_claim_amount}</td>
                                         <td>
                                           <div className="view-button-container">
+                                            {console.log(
+                                              "hhhhhhhh",
+                                              item.btn_type,
+                                              item.btn_num
+                                            )}
                                             <button
                                               className="btn btn-sm btn-secondary m-1"
                                               onClick={() => {
+                                                let type = "";
+
+                                                if (
+                                                  item.btn_type ===
+                                                  "MATERIAL_HYBRID"
+                                                ) {
+                                                  type = "hybrid-bill-material";
+                                                } else {
+                                                  type = "hybrid-bill-service";
+                                                }
                                                 navigate(
-                                                  `/checklist/hybrid-bill-material/view/${id}`,
+                                                  `/checklist/${type}/view/${id}`,
                                                   { state: `${item?.btn_num}` }
                                                 );
                                               }}

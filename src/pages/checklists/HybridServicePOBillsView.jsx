@@ -13,7 +13,7 @@ import {
 } from "../../utils/smallFun";
 import { apiCallBack } from "../../utils/fetchAPIs";
 
-const BillsMaterialHybridView = () => {
+const HybridServicePOBillsView = () => {
   const navigate = useNavigate();
   const { isDO } = useSelector((state) => state.selectedPO);
   const { user, token } = useSelector((state) => state.auth);
@@ -270,7 +270,7 @@ const BillsMaterialHybridView = () => {
                     <div className="row g-5 g-xl-8">
                       <div className="col-12">
                         <div className="card">
-                          <h3 className="m-3">Bills for Material Hybrid PO:</h3>
+                          <h3 className="m-3">Bills for Service Hybrid PO:</h3>
                           <div className="card-body p-3">
                             <div className="tab-content">
                               <div className="table-responsive">
@@ -288,7 +288,7 @@ const BillsMaterialHybridView = () => {
                                             target="_blank"
                                             rel="noreferrer"
                                           >
-                                            click here
+                                            VIEW
                                           </a>
                                         )}
                                       </td>
@@ -314,7 +314,7 @@ const BillsMaterialHybridView = () => {
                                               target="_blank"
                                               rel="noreferrer"
                                             >
-                                              click here
+                                              VIEW
                                             </a>
                                           )}
                                       </td>
@@ -330,7 +330,7 @@ const BillsMaterialHybridView = () => {
                                               target="_blank"
                                               rel="noreferrer"
                                             >
-                                              click here
+                                              VIEW
                                             </a>
                                           )}
                                       </td>
@@ -373,7 +373,7 @@ const BillsMaterialHybridView = () => {
                                               target="_blank"
                                               rel="noreferrer"
                                             >
-                                              click here
+                                              VIEW
                                             </a>
                                           )}
                                       </td>
@@ -402,7 +402,7 @@ const BillsMaterialHybridView = () => {
                                               target="_blank"
                                               rel="noreferrer"
                                             >
-                                              click here
+                                              VIEW
                                             </a>
                                           )}
                                       </td>
@@ -442,7 +442,7 @@ const BillsMaterialHybridView = () => {
                                               target="_blank"
                                               rel="noreferrer"
                                             >
-                                              click here
+                                              VIEW
                                             </a>
                                           )}
                                       </td>
@@ -566,7 +566,7 @@ const BillsMaterialHybridView = () => {
                                               target="_blank"
                                               rel="noreferrer"
                                             >
-                                              click here
+                                              VIEW
                                             </a>
                                           )}
                                       </td>
@@ -843,4 +843,4 @@ const BillsMaterialHybridView = () => {
   );
 };
 
-export default BillsMaterialHybridView;
+export default HybridServicePOBillsView;

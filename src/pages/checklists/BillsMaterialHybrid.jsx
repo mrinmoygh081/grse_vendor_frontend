@@ -21,7 +21,7 @@ const BillsMaterialHybrid = () => {
   const { id } = useParams();
 
   const [data, setData] = useState(null);
-  console.log(data, "datadata bikky");
+
   let initialData = {
     invoice_no: "",
     invoice_filename: "",
@@ -30,6 +30,7 @@ const BillsMaterialHybrid = () => {
     e_invoice_filename: "",
     debit_note: "",
     credit_note: "",
+    gst_rate: "",
     net_claim_amount: 0,
     debit_credit_filename: "",
     gate_entry_no: "",
@@ -45,29 +46,39 @@ const BillsMaterialHybrid = () => {
   };
   const [form, setForm] = useState(initialData);
 
-  const calNetClaimAmount = (invoice_value, debit_note, credit_note) => {
-    if (typeof invoice_value !== "number") {
-      invoice_value = parseInt(invoice_value) || 0;
-    }
-    if (typeof debit_note !== "number") {
-      debit_note = parseInt(debit_note) || 0;
-    }
-    if (typeof credit_note !== "number") {
-      credit_note = parseInt(credit_note) || 0;
-    }
-    setForm({
-      ...form,
-      net_claim_amount:
-        parseInt(invoice_value) + parseInt(debit_note) - parseInt(credit_note),
-    });
-  };
+  console.log(form, "from 0000000000000000000000");
+  console.log(data, "datadata bikky");
 
+  const calNetClaimAmount = (
+    invoice_value,
+    debit_note,
+    credit_note,
+    gst_rate
+  ) => {
+    invoice_value = parseInt(invoice_value) || 0;
+    debit_note = parseInt(debit_note) || 0;
+    credit_note = parseInt(credit_note) || 0;
+    gst_rate = parseInt(gst_rate) || 0;
+
+    const net_claim_amount =
+      invoice_value + debit_note - credit_note + gst_rate;
+
+    setForm((prevForm) => ({
+      ...prevForm,
+      net_claim_amount: net_claim_amount,
+    }));
+  };
   useEffect(() => {
-    const { invoice_value, debit_note, credit_note } = form;
-    if (invoice_value || debit_note || credit_note) {
-      calNetClaimAmount(invoice_value, debit_note, credit_note);
+    const { invoice_value, debit_note, credit_note, gst_rate } = form;
+    if (invoice_value || debit_note || credit_note || gst_rate) {
+      calNetClaimAmount(invoice_value, debit_note, credit_note, gst_rate);
     }
-  }, [form?.invoice_value, form?.debit_note, form?.credit_note]);
+  }, [
+    form?.invoice_value,
+    form?.debit_note,
+    form?.credit_note,
+    form?.gst_rate,
+  ]);
 
   const getData = async () => {
     try {
@@ -157,7 +168,7 @@ const BillsMaterialHybrid = () => {
                                 <table className="table table-striped table-bordered table_height">
                                   <tbody style={{ maxHeight: "100%" }}>
                                     <tr>
-                                      <td>Invoice no:</td>
+                                      <td>Invoice No:</td>
                                       <td className="btn_value">
                                         <input
                                           type="text"
@@ -190,22 +201,7 @@ const BillsMaterialHybrid = () => {
                                       </td>
                                     </tr>
                                     <tr>
-                                      <td>Invoice value:</td>
-                                      <td className="btn_value">
-                                        <input
-                                          type="number"
-                                          className="form-control"
-                                          onWheel={inputOnWheelPrevent}
-                                          name="invoice_value"
-                                          value={form?.invoice_value}
-                                          onChange={(e) =>
-                                            inputTypeChange(e, form, setForm)
-                                          }
-                                        />
-                                      </td>
-                                    </tr>
-                                    <tr>
-                                      <td>E-Invoice :</td>
+                                      <td>E-Invoice No :</td>
                                       <td className="btn_value">
                                         <input
                                           type="text"
@@ -225,8 +221,31 @@ const BillsMaterialHybrid = () => {
                                           }
                                           accept=".pdf"
                                         />
+                                        <button
+                                          type="button"
+                                          className="btn btn-primary btn-sm m-4"
+                                          onClick={createInvoiceNo}
+                                        >
+                                          CHECK
+                                        </button>
                                       </td>
                                     </tr>
+                                    <tr>
+                                      <td>Invoice value:</td>
+                                      <td className="btn_value">
+                                        <input
+                                          type="number"
+                                          className="form-control"
+                                          onWheel={inputOnWheelPrevent}
+                                          name="invoice_value"
+                                          value={form?.invoice_value}
+                                          onChange={(e) =>
+                                            inputTypeChange(e, form, setForm)
+                                          }
+                                        />
+                                      </td>
+                                    </tr>
+
                                     <tr>
                                       <td>Debit/Credit Note:</td>
                                       <td className="btn_value">
@@ -268,6 +287,21 @@ const BillsMaterialHybrid = () => {
                                           onChange={(e) => {
                                             inputTypeChange(e, form, setForm);
                                           }}
+                                        />
+                                      </td>
+                                    </tr>
+                                    <tr>
+                                      <td>GST Rate:</td>
+                                      <td className="btn_value">
+                                        <input
+                                          type="number"
+                                          className="form-control"
+                                          onWheel={inputOnWheelPrevent}
+                                          name="gst_rate"
+                                          value={form?.gst_rate}
+                                          onChange={(e) =>
+                                            inputTypeChange(e, form, setForm)
+                                          }
                                         />
                                       </td>
                                     </tr>

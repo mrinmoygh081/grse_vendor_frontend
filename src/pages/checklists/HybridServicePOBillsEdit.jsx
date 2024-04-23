@@ -12,8 +12,9 @@ import {
   checkTypeArr,
 } from "../../utils/smallFun";
 import { apiCallBack } from "../../utils/fetchAPIs";
+import { inputOnWheelPrevent } from "../../utils/inputOnWheelPrevent";
 
-const BillsMaterialHybridView = () => {
+const HybridServicePOBillsEdit = () => {
   const navigate = useNavigate();
   const { isDO } = useSelector((state) => state.selectedPO);
   const { user, token } = useSelector((state) => state.auth);
@@ -22,7 +23,6 @@ const BillsMaterialHybridView = () => {
 
   const [impDates, setImpDates] = useState(null);
   const [data, setData] = useState(null);
-  const [doData, setDoData] = useState(null);
   let initialData = {
     invoice_no: "",
     invoice_filename: "",
@@ -59,10 +59,7 @@ const BillsMaterialHybridView = () => {
   };
   const [form, setForm] = useState(initialData);
   const [doForm, setDoForm] = useState(inititalDOData);
-  console.log(data, "ssssssssssssssdata");
-  console.log(doData, "doData-------");
-  console.log(form, "form*******************8");
-  console.log(doForm, "doForm888888888888888888");
+
   const calNetClaimAmount = (invoice_value, debit_note, credit_note) => {
     if (typeof invoice_value !== "number") {
       invoice_value = parseInt(invoice_value) || 0;
@@ -119,23 +116,6 @@ const BillsMaterialHybridView = () => {
     }
   };
 
-  const getBTNDOData = async () => {
-    try {
-      const d = await apiCallBack(
-        "GET",
-        `po/btn/btn_do?btn_num=${state}`,
-        null,
-        token
-      );
-      console.log("DFdf", d, state);
-      if (d?.status && checkTypeArr(d?.data)) {
-        setDoData(d?.data[0]);
-      }
-    } catch (error) {
-      console.error("Error fetching WDC list:", error);
-    }
-  };
-
   useEffect(() => {
     let net = data?.icgrn_nos && JSON.parse(data?.icgrn_nos).total_icgrn_value;
     let report = calculateNetPay(
@@ -163,18 +143,42 @@ const BillsMaterialHybridView = () => {
 
   useEffect(() => {
     getBTNData();
-    getBTNDOData();
     getDataByBTN();
   }, []);
 
+  // useEffect(() => {
+  //   const { ld_c_date, ld_ge_date } = doForm;
+  //   if (ld_c_date && ld_ge_date && data?.icgrn_nos) {
+  //     let p_amt = calculatePenalty(
+  //       ld_c_date,
+  //       ld_ge_date,
+  //       data?.icgrn_nos,
+  //       0.5,
+  //       5
+  //     );
+  //     console.log("p_amt", p_amt, ld_c_date, ld_ge_date, data?.icgrn_nos);
+  //     setDoForm({ ...doForm, ld_amount: p_amt });
+  //   }
+  // }, [doForm?.ld_c_date, doForm?.ld_ge_date, data?.icgrn_nos]);
+
   useEffect(() => {
-    const { ld_c_date, ld_ge_date, total_price } = doForm;
-    if (ld_c_date && ld_ge_date) {
-      let p_amt = calculatePenalty(ld_c_date, ld_ge_date, total_price, 0.5, 5);
-      console.log(ld_c_date, ld_ge_date, total_price, "total_price");
+    const { ld_c_date, ld_ge_date } = doForm;
+    if (ld_c_date && ld_ge_date && data?.icgrn_nos) {
+      const icgrnData = JSON.parse(data.icgrn_nos);
+
+      const totalIcgrnValue = icgrnData.total_icgrn_value;
+
+      let p_amt = calculatePenalty(
+        ld_c_date,
+        ld_ge_date,
+        totalIcgrnValue,
+        0.5,
+        5
+      );
+      console.log("p_amt", p_amt, ld_c_date, ld_ge_date, totalIcgrnValue);
       setDoForm({ ...doForm, ld_amount: p_amt });
     }
-  }, [doForm?.ld_c_date, doForm?.ld_ge_date]);
+  }, [doForm?.ld_c_date, doForm?.ld_ge_date, data?.icgrn_nos]);
 
   useEffect(() => {
     const {
@@ -191,37 +195,27 @@ const BillsMaterialHybridView = () => {
     let p_drg = 0;
     let p_qap = 0;
     let p_ilms = 0;
-    if (data?.total_price) {
-      const { total_price } = data;
-      if (a_sdbg_date && c_sdbg_date) {
-        p_sdbg = calculatePenalty(
-          c_sdbg_date,
-          a_sdbg_date,
-          total_price,
-          0.5,
-          5
-        );
+
+    if (data?.icgrn_nos) {
+      const icgrnData = JSON.parse(data?.icgrn_nos).total_icgrn_value;
+
+      if (a_sdbg_date && c_sdbg_date && icgrnData) {
+        p_sdbg = calculatePenalty(c_sdbg_date, a_sdbg_date, icgrnData, 0.25, 2);
       }
-      if (a_drawing_date && c_drawing_date) {
+      if (a_drawing_date && c_drawing_date && icgrnData) {
         p_drg = calculatePenalty(
           c_drawing_date,
           a_drawing_date,
-          total_price,
+          icgrnData,
           0.25,
           2
         );
       }
-      if (a_qap_date && c_qap_date) {
-        p_qap = calculatePenalty(c_qap_date, a_qap_date, total_price, 0.25, 2);
+      if (a_qap_date && c_qap_date && icgrnData) {
+        p_qap = calculatePenalty(c_qap_date, a_qap_date, icgrnData, 0.25, 2);
       }
-      if (a_ilms_date && c_ilms_date) {
-        p_ilms = calculatePenalty(
-          c_ilms_date,
-          a_ilms_date,
-          total_price,
-          0.25,
-          2
-        );
+      if (a_ilms_date && c_ilms_date && icgrnData) {
+        p_ilms = calculatePenalty(c_ilms_date, a_ilms_date, icgrnData, 0.25, 2);
       }
     }
     setDoForm({
@@ -231,7 +225,7 @@ const BillsMaterialHybridView = () => {
       p_qap_amount: p_qap,
       p_ilms_amount: p_ilms,
     });
-  }, [form]);
+  }, [form, data?.icgrn_nos]);
 
   useEffect(() => {
     if (data) {
@@ -252,9 +246,8 @@ const BillsMaterialHybridView = () => {
     }
   }, [impDates, data]);
 
-  //   console.log("data", data);
-  //   console.log("doForm", doForm);
-  //   console.log("doData", doData);
+  console.log("data", data);
+  console.log("doForm", doForm);
 
   return (
     <>
@@ -541,7 +534,7 @@ const BillsMaterialHybridView = () => {
                                           {form?.c_ilms_date &&
                                             new Date(
                                               form?.c_ilms_date
-                                            ).toLocaleDateString()}
+                                            ).toDateString()}
                                         </b>
                                       </td>
                                     </tr>
@@ -552,7 +545,7 @@ const BillsMaterialHybridView = () => {
                                           {form?.a_ilms_date &&
                                             new Date(
                                               form?.a_ilms_date
-                                            ).toLocaleDateString()}
+                                            ).toDateString()}
                                         </b>
                                       </td>
                                     </tr>
@@ -613,7 +606,7 @@ const BillsMaterialHybridView = () => {
                           </div>
                         </div>
                       </div>
-                      {doData ? (
+                      {isDO && (
                         <div className="col-12">
                           <div className="card">
                             <h3 className="m-3">ENTRY BY DEALING OFFICER:</h3>
@@ -625,7 +618,7 @@ const BillsMaterialHybridView = () => {
                                       <tr>
                                         <td>BTN Number:</td>
                                         <td className="btn_value">
-                                          <b>{doData?.btn_num}</b>
+                                          <b>{state}</b>
                                         </td>
                                       </tr>
                                       <tr>
@@ -635,19 +628,39 @@ const BillsMaterialHybridView = () => {
                                             <label htmlFor="GED">
                                               Gate Entry Date:
                                             </label>
-                                            <br />
-                                            <b>{doData?.btn_num}</b>
+                                            <input
+                                              type="date"
+                                              className="form-control "
+                                              id="GED"
+                                              value={doForm?.ld_ge_date}
+                                              onChange={(e) =>
+                                                setDoForm({
+                                                  ...doForm,
+                                                  ld_ge_date: e.target.value,
+                                                })
+                                              }
+                                            />
                                           </div>
                                           <div className="me-3">
                                             <label htmlFor="CLD">
                                               Contractual Delivery Date:
                                             </label>
-                                            <br />
-                                            <b>{doData?.contractual_ld}</b>
+                                            <input
+                                              type="date"
+                                              className="form-control"
+                                              id="CLD"
+                                              value={doForm?.ld_c_date}
+                                              onChange={(e) =>
+                                                setDoForm({
+                                                  ...doForm,
+                                                  ld_c_date: e.target.value,
+                                                })
+                                              }
+                                            />
                                           </div>
                                           <div>
                                             <label>Amount:</label>
-                                            <p>&#8377; {doData?.ld_amount}</p>
+                                            <p>&#8377; {doForm?.ld_amount}</p>
                                           </div>
                                         </td>
                                       </tr>
@@ -765,14 +778,30 @@ const BillsMaterialHybridView = () => {
                                       <tr>
                                         <td>Other deduction if any </td>
                                         <td className="btn_value">
-                                          {doData?.other_deduction}
+                                          <input
+                                            type="number"
+                                            name=""
+                                            id=""
+                                            className="form-control"
+                                            value={doForm?.o_deduction}
+                                            onChange={(e) =>
+                                              setDoForm({
+                                                ...doForm,
+                                                o_deduction: e.target.value,
+                                              })
+                                            }
+                                            onWheel={inputOnWheelPrevent}
+                                          />
                                         </td>
                                       </tr>
                                       <tr>
                                         <td>Total deductions</td>
                                         <td>
                                           <b>
-                                            &#8377; {doData?.total_deduction}
+                                            &#8377;{" "}
+                                            {isNaN(doForm?.total_deduction)
+                                              ? 0
+                                              : doForm?.total_deduction}
                                           </b>
                                         </td>
                                       </tr>
@@ -780,7 +809,10 @@ const BillsMaterialHybridView = () => {
                                         <td>Net payable amount</td>
                                         <td>
                                           <b>
-                                            &#8377; {doData?.net_payable_amout}
+                                            &#8377;{" "}
+                                            {isNaN(doForm?.net_payable_amount)
+                                              ? 0
+                                              : doForm?.net_payable_amount}
                                           </b>
                                         </td>
                                       </tr>
@@ -788,26 +820,22 @@ const BillsMaterialHybridView = () => {
                                   </table>
                                 </div>
                                 <div className="text-center">
-                                  {user?.user_type !== 1 && (
-                                    <>
-                                      <button
-                                        type="button"
-                                        className="btn fw-bold btn-primary me-3"
-                                        onClick={() =>
-                                          actionHandlerByDO(
-                                            doForm,
-                                            setDoForm,
-                                            initialData,
-                                            navigate,
-                                            id,
-                                            token
-                                          )
-                                        }
-                                      >
-                                        SUBMIT
-                                      </button>
-                                    </>
-                                  )}
+                                  <button
+                                    type="button"
+                                    className="btn fw-bold btn-primary me-3"
+                                    onClick={() =>
+                                      actionHandlerByDO(
+                                        doForm,
+                                        setDoForm,
+                                        initialData,
+                                        navigate,
+                                        id,
+                                        token
+                                      )
+                                    }
+                                  >
+                                    SUBMIT
+                                  </button>
                                   <button
                                     className="btn fw-bold btn-primary"
                                     onClick={() =>
@@ -823,12 +851,6 @@ const BillsMaterialHybridView = () => {
                             </div>
                           </div>
                         </div>
-                      ) : (
-                        <>
-                          <div className="col-12">
-                            Waiting for the action from GRSE.
-                          </div>
-                        </>
                       )}
                     </div>
                   </form>
@@ -843,4 +865,4 @@ const BillsMaterialHybridView = () => {
   );
 };
 
-export default BillsMaterialHybridView;
+export default HybridServicePOBillsEdit;

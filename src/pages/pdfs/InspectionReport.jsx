@@ -168,6 +168,9 @@ function InspectionReport() {
                 <th>Base UOM</th>
                 <th>UD Code</th>
                 <th>Insp.Dt</th>
+                <th>Invoice Number</th>
+                <th>Gate Entry Number</th>
+                <th>Gate Entry Date</th>
               </tr>
             </thead>
             {isLoading ? (
@@ -187,6 +190,13 @@ function InspectionReport() {
                     <td>
                       {item.inspDate &&
                         new Date(item.inspDate).toLocaleDateString()}
+                    </td>
+
+                    <td>{item?.invoiceNo}</td>
+                    <td>{item?.gateEntryNo}</td>
+                    <td>
+                      {item.gateEntryDate &&
+                        new Date(item.gateEntryDate).toLocaleDateString()}
                     </td>
                   </tr>
                 ))}

@@ -146,14 +146,39 @@ const BillsMaterialHybridEdit = () => {
     getDataByBTN();
   }, []);
 
+  // useEffect(() => {
+  //   const { ld_c_date, ld_ge_date } = doForm;
+  //   if (ld_c_date && ld_ge_date && data?.icgrn_nos) {
+  //     let p_amt = calculatePenalty(
+  //       ld_c_date,
+  //       ld_ge_date,
+  //       data?.icgrn_nos,
+  //       0.5,
+  //       5
+  //     );
+  //     console.log("p_amt", p_amt, ld_c_date, ld_ge_date, data?.icgrn_nos);
+  //     setDoForm({ ...doForm, ld_amount: p_amt });
+  //   }
+  // }, [doForm?.ld_c_date, doForm?.ld_ge_date, data?.icgrn_nos]);
+
   useEffect(() => {
     const { ld_c_date, ld_ge_date } = doForm;
-    if (ld_c_date && ld_ge_date) {
-      let p_amt = calculatePenalty(ld_c_date, ld_ge_date, 30000, 0.5, 5);
-      console.log("p_amt", p_amt);
+    if (ld_c_date && ld_ge_date && data?.icgrn_nos) {
+      const icgrnData = JSON.parse(data.icgrn_nos);
+
+      const totalIcgrnValue = icgrnData.total_icgrn_value;
+
+      let p_amt = calculatePenalty(
+        ld_c_date,
+        ld_ge_date,
+        totalIcgrnValue,
+        0.5,
+        5
+      );
+      console.log("p_amt", p_amt, ld_c_date, ld_ge_date, totalIcgrnValue);
       setDoForm({ ...doForm, ld_amount: p_amt });
     }
-  }, [doForm?.ld_c_date, doForm?.ld_ge_date]);
+  }, [doForm?.ld_c_date, doForm?.ld_ge_date, data?.icgrn_nos]);
 
   useEffect(() => {
     const {
@@ -170,43 +195,27 @@ const BillsMaterialHybridEdit = () => {
     let p_drg = 0;
     let p_qap = 0;
     let p_ilms = 0;
-    if (data?.net_claim_amount) {
-      const { net_claim_amount } = data;
-      if (a_sdbg_date && c_sdbg_date) {
-        p_sdbg = calculatePenalty(
-          c_sdbg_date,
-          a_sdbg_date,
-          net_claim_amount,
-          0.5,
-          5
-        );
+
+    if (data?.icgrn_nos) {
+      const icgrnData = JSON.parse(data?.icgrn_nos).total_icgrn_value;
+
+      if (a_sdbg_date && c_sdbg_date && icgrnData) {
+        p_sdbg = calculatePenalty(c_sdbg_date, a_sdbg_date, icgrnData, 0.25, 2);
       }
-      if (a_drawing_date && c_drawing_date) {
+      if (a_drawing_date && c_drawing_date && icgrnData) {
         p_drg = calculatePenalty(
           c_drawing_date,
           a_drawing_date,
-          net_claim_amount,
+          icgrnData,
           0.25,
           2
         );
       }
-      if (a_qap_date && c_qap_date) {
-        p_qap = calculatePenalty(
-          c_qap_date,
-          a_qap_date,
-          net_claim_amount,
-          0.25,
-          2
-        );
+      if (a_qap_date && c_qap_date && icgrnData) {
+        p_qap = calculatePenalty(c_qap_date, a_qap_date, icgrnData, 0.25, 2);
       }
-      if (a_ilms_date && c_ilms_date) {
-        p_ilms = calculatePenalty(
-          c_ilms_date,
-          a_ilms_date,
-          net_claim_amount,
-          0.25,
-          2
-        );
+      if (a_ilms_date && c_ilms_date && icgrnData) {
+        p_ilms = calculatePenalty(c_ilms_date, a_ilms_date, icgrnData, 0.25, 2);
       }
     }
     setDoForm({
@@ -216,7 +225,7 @@ const BillsMaterialHybridEdit = () => {
       p_qap_amount: p_qap,
       p_ilms_amount: p_ilms,
     });
-  }, [form]);
+  }, [form, data?.icgrn_nos]);
 
   useEffect(() => {
     if (data) {

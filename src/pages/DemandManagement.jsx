@@ -23,6 +23,7 @@ const DemandManagement = () => {
   const [viewData, setViewData] = useState(null);
   const { id } = useParams();
   const [groupedData, setGroupedData] = useState([]);
+  const [dynamicFields, setDynamicFields] = useState([]);
 
   const { user, token } = useSelector((state) => state.auth);
   const [formData, setFormData] = useState({
@@ -229,6 +230,13 @@ const DemandManagement = () => {
     }
   };
 
+  const addNewField = () => {
+    setDynamicFields([
+      ...dynamicFields,
+      { line_item_no: "", request_amount: "" },
+    ]);
+  };
+
   return (
     <>
       <div className="d-flex flex-column flex-root">
@@ -398,70 +406,125 @@ const DemandManagement = () => {
                       </select>
                     </div>
                   </div>
-                  <div
-                    className="d-flex align-items-center"
-                    style={{ gap: "10px" }}
-                  >
-                    <div className="col-12 col-md-6">
-                      <div className="mb-3">
-                        <label className="form-label">
-                          PO Line Item <span className="red">*</span>{" "}
-                        </label>
-                        <select
-                          name=""
-                          id=""
-                          className="form-select"
-                          value={formData?.line_item_no}
-                          onChange={(e) =>
-                            setFormData({
-                              ...formData,
-                              line_item_no: e.target.value,
-                            })
-                          }
-                        >
-                          <option value="">Choose PO Line Item</option>
-                          {checkTypeArr(lineItemData) &&
-                            lineItemData.map((item, i) => {
-                              return (
-                                <option
-                                  value={item?.material_item_number}
-                                  key={i}
-                                >
-                                  {item?.material_item_number}
-                                </option>
-                              );
-                            })}
-                        </select>
-                      </div>
-                    </div>
-                    {formData?.action_type !==
-                      "Service Engineer Requirement" && (
-                      <>
-                        <div className="col-12 col-md-6">
-                          <div className="mb-3">
-                            <label className="form-label">
-                              demand quantity <span className="red">*</span>{" "}
-                            </label>
-                            <input
-                              type="number"
-                              className="form-control"
-                              value={formData?.request_amount}
-                              onChange={(e) =>
-                                setFormData({
-                                  ...formData,
-                                  request_amount: e.target.value,
-                                })
-                              }
-                            />
-                            <p>Available Qunatity: {availableAmount}</p>
-                          </div>
-                        </div>
-                      </>
-                    )}
-                    <div>
-                      <FaPlus />
+                  <div className="col-12 col-md-3">
+                    <div className="mb-3">
+                      <label className="form-label">
+                        PO Line Item <span className="red">*</span>{" "}
+                      </label>
+                      <select
+                        name=""
+                        id=""
+                        className="form-select"
+                        value={formData?.line_item_no}
+                        onChange={(e) =>
+                          setFormData({
+                            ...formData,
+                            line_item_no: e.target.value,
+                          })
+                        }
+                      >
+                        <option value="">Choose PO Line Item</option>
+                        {checkTypeArr(lineItemData) &&
+                          lineItemData.map((item, i) => {
+                            return (
+                              <option
+                                value={item?.material_item_number}
+                                key={i}
+                              >
+                                {item?.material_item_number}
+                              </option>
+                            );
+                          })}
+                      </select>
                     </div>
                   </div>
+                  {formData?.action_type !== "Service Engineer Requirement" && (
+                    <>
+                      <div className="col-12 col-md-3">
+                        <div className="mb-3">
+                          <label className="form-label">Available Amount</label>
+                          <p>{availableAmount}</p>
+                        </div>
+                      </div>
+                      <div className="col-12 col-md-4">
+                        <div className="mb-3">
+                          <label className="form-label">
+                            Demand Quantity <span className="red">*</span>{" "}
+                          </label>
+                          <input
+                            type="number"
+                            className="form-control"
+                            value={formData?.request_amount}
+                            onChange={(e) =>
+                              setFormData({
+                                ...formData,
+                                request_amount: e.target.value,
+                              })
+                            }
+                          />
+                        </div>
+                      </div>
+                    </>
+                  )}
+                  <div className="col-md-2 flex_center">
+                    <FaPlus onClick={addNewField} />
+                  </div>
+                  {dynamicFields.map((field, index) => (
+                    <Fragment key={index}>
+                      <div className="col-12 col-md-3">
+                        <div className="mb-3">
+                          <select
+                            name=""
+                            id=""
+                            className="form-select"
+                            value={formData?.line_item_no}
+                            onChange={(e) =>
+                              setFormData({
+                                ...formData,
+                                line_item_no: e.target.value,
+                              })
+                            }
+                          >
+                            <option value="">Choose PO Line Item</option>
+                            {checkTypeArr(lineItemData) &&
+                              lineItemData.map((item, i) => {
+                                return (
+                                  <option
+                                    value={item?.material_item_number}
+                                    key={i}
+                                  >
+                                    {item?.material_item_number}
+                                  </option>
+                                );
+                              })}
+                          </select>
+                        </div>
+                      </div>
+                      <div className="col-12 col-md-3">
+                        <div className="mb-3">
+                          <p>{availableAmount}</p>
+                        </div>
+                      </div>
+                      <div className="col-12 col-md-4">
+                        <div className="mb-3">
+                          <input
+                            type="number"
+                            className="form-control"
+                            value={formData?.request_amount}
+                            onChange={(e) =>
+                              setFormData({
+                                ...formData,
+                                request_amount: e.target.value,
+                              })
+                            }
+                          />
+                        </div>
+                      </div>
+                      <div className="col-md-2 flex_center">
+                        <FaPlus onClick={addNewField} />
+                      </div>
+                    </Fragment>
+                  ))}
                   {formData?.action_type !== "Service Engineer Requirement" && (
                     <>
                       <div className="col-12 col-md-6">

@@ -57,6 +57,11 @@ input[type="number"] {
 .min-w-90px {
   width: 90px;
 }
+.flex_center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
 /* .navbar {
   margin-bottom: 90px;
 }

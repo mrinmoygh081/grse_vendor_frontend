@@ -13,7 +13,7 @@ import {
 } from "../../utils/smallFun";
 import { apiCallBack } from "../../utils/fetchAPIs";
 
-const BillsMaterialHybridView = () => {
+const ServiceContractBillsView = () => {
   const navigate = useNavigate();
   const { isDO } = useSelector((state) => state.selectedPO);
   const { user, token } = useSelector((state) => state.auth);
@@ -262,7 +262,7 @@ const BillsMaterialHybridView = () => {
         <div className="page d-flex flex-row flex-column-fluid">
           <SideBar />
           <div className="wrapper d-flex flex-column flex-row-fluid">
-            <Header title={"Bills for Material Hybrid PO"} id={id} />
+            <Header title={"Service Contract Bills"} id={id} />
             <div className="content d-flex flex-column flex-column-fluid">
               <div className="post d-flex flex-column-fluid">
                 <div className="container">
@@ -270,7 +270,7 @@ const BillsMaterialHybridView = () => {
                     <div className="row g-5 g-xl-8">
                       <div className="col-12">
                         <div className="card">
-                          <h3 className="m-3">Bills for Material Hybrid PO:</h3>
+                          <h3 className="m-3">Service Contract Bills:</h3>
                           <div className="card-body p-3">
                             <div className="tab-content">
                               <div className="table-responsive">
@@ -288,7 +288,7 @@ const BillsMaterialHybridView = () => {
                                             target="_blank"
                                             rel="noreferrer"
                                           >
-                                            click here
+                                            VIEW
                                           </a>
                                         )}
                                       </td>
@@ -314,7 +314,7 @@ const BillsMaterialHybridView = () => {
                                               target="_blank"
                                               rel="noreferrer"
                                             >
-                                              click here
+                                              VIEW
                                             </a>
                                           )}
                                       </td>
@@ -330,7 +330,7 @@ const BillsMaterialHybridView = () => {
                                               target="_blank"
                                               rel="noreferrer"
                                             >
-                                              click here
+                                              VIEW
                                             </a>
                                           )}
                                       </td>
@@ -352,11 +352,46 @@ const BillsMaterialHybridView = () => {
                                       </td>
                                     </tr>
                                     <tr>
+                                      <td>GST Rate:</td>
+                                      <td className="btn_value">
+                                        <b className="me-3">
+                                          {data?.credit_note}
+                                        </b>
+                                      </td>
+                                    </tr>
+                                    <tr>
                                       <td>Net claim amount:</td>
                                       <td className="btn_value">
                                         <b>{data?.net_claim_amount}</b>
                                       </td>
                                     </tr>{" "}
+                                    <tr>
+                                      <td>PBG</td>
+                                      <td className="btn_value">
+                                        {checkTypeArr(data?.pbg_filename)
+                                          ? data?.pbg_filename.map(
+                                              (item, i) => {
+                                                return (
+                                                  <a
+                                                    key={i}
+                                                    href={`${process.env.REACT_APP_PDF_URL}submitSDBG/${item?.file_name}`}
+                                                    target="_blank"
+                                                    rel="noreferrer"
+                                                  >
+                                                    VIEW
+                                                  </a>
+                                                );
+                                              }
+                                            )
+                                          : "PBG NOT SUBMITTED"}
+                                      </td>
+                                    </tr>
+                                    <tr>
+                                      <td>Total:</td>
+                                      <td className="btn_value">
+                                        <b>{form?.total_amount}</b>
+                                      </td>
+                                    </tr>
                                     <tr>
                                       <td>Contractual SDBG Submission Date</td>
                                       <td className="btn_value">
@@ -373,7 +408,7 @@ const BillsMaterialHybridView = () => {
                                               target="_blank"
                                               rel="noreferrer"
                                             >
-                                              click here
+                                              VIEW
                                             </a>
                                           )}
                                       </td>
@@ -402,7 +437,7 @@ const BillsMaterialHybridView = () => {
                                               target="_blank"
                                               rel="noreferrer"
                                             >
-                                              click here
+                                              VIEW
                                             </a>
                                           )}
                                       </td>
@@ -442,7 +477,7 @@ const BillsMaterialHybridView = () => {
                                               target="_blank"
                                               rel="noreferrer"
                                             >
-                                              click here
+                                              VIEW
                                             </a>
                                           )}
                                       </td>
@@ -566,7 +601,7 @@ const BillsMaterialHybridView = () => {
                                               target="_blank"
                                               rel="noreferrer"
                                             >
-                                              click here
+                                              VIEW
                                             </a>
                                           )}
                                       </td>
@@ -843,4 +878,4 @@ const BillsMaterialHybridView = () => {
   );
 };
 
-export default BillsMaterialHybridView;
+export default ServiceContractBillsView;

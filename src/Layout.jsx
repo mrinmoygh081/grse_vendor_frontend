@@ -55,6 +55,8 @@ import Gateentrypdf from "./pages/pdfs/Gateentrypdf";
 import BillsMaterialHybridView from "./pages/checklists/BillsMaterialHybridView";
 import GoodsReceiptSlip from "./pages/pdfs/GoodsReceiptSlip";
 import ServiceEntrySheetPdf from "./pages/pdfs/ServiceEntrySheetPdf";
+import HybridServicePOBillsEdit from "./pages/checklists/HybridServicePOBillsEdit";
+import HybridServicePOBillsView from "./pages/checklists/HybridServicePOBillsView";
 
 function Layout() {
   const { token, isLoggedIn, userType } = useSelector((state) => state.auth);
@@ -134,6 +136,16 @@ function Layout() {
               exact
               path="/checklist/hybrid-bill-service/:id"
               element={<HybridServicePOBills />}
+            />
+            <Route
+              exact
+              path="/checklist/hybrid-bill-service/edit/:id"
+              element={<HybridServicePOBillsEdit />}
+            />
+            <Route
+              exact
+              path="/checklist/hybrid-bill-service/view/:id"
+              element={<HybridServicePOBillsView />}
             />
             <Route
               exact
