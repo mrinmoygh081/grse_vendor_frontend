@@ -14,6 +14,7 @@ import { checkTypeArr } from "../utils/smallFun";
 import { USER_PPNC_DEPARTMENT, USER_VENDOR } from "../constants/userConstants";
 import { APPROVED, REJECTED, SUBMITTED } from "../constants/BGconstants";
 import { groupedByRefNo } from "../utils/groupedByReq";
+import { inputOnWheelPrevent } from "../utils/inputOnWheelPrevent";
 
 const WDCSub = () => {
   const [isPopup, setIsPopup] = useState(false);
@@ -543,12 +544,13 @@ const WDCSub = () => {
                       Quantity <span className="red">*</span>{" "}
                     </label>
                     <input
-                      type="text"
+                      type="number"
                       className="form-control"
                       value={formData?.quantity}
                       onChange={(e) =>
                         setFormData({ ...formData, quantity: e.target.value })
                       }
+                      onWheel={inputOnWheelPrevent}
                     />
                   </div>
                 </div>
@@ -755,7 +757,7 @@ const WDCSub = () => {
                       Actual Payable Amount <span className="red">*</span>{" "}
                     </label>
                     <input
-                      type="text"
+                      type="number"
                       className="form-control"
                       value={formData?.actual_payable_amount}
                       onChange={(e) =>
@@ -764,6 +766,7 @@ const WDCSub = () => {
                           actual_payable_amount: e.target.value,
                         })
                       }
+                      onWheel={inputOnWheelPrevent}
                     />
                   </div>
                 </div>
@@ -867,9 +870,7 @@ const WDCSub = () => {
               </div>
               <div className="col-12 col-md-6">
                 <div className="mb-3">
-                  <label className="form-label">
-                    Yard No <span className="red">*</span>{" "}
-                  </label>
+                  <label className="form-label">Yard No</label>
                   <p>{viewData?.yard_no}</p>
                 </div>
               </div>
