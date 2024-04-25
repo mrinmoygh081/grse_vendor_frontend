@@ -107,7 +107,8 @@ function StoreIssueRequisition() {
                 <tr key={index}>
                   <td>{item.reservationNumber}</td>
                   <td>{item.itemNumber}</td>
-                  <td>P9101EF0500</td>
+                  <td>{item?.materialNubmer}</td>
+                  <td>{item?.materialDescription}</td>
                   <td></td>
                   <td>{item.unit}</td>
                   <td>{item.requirementQty}</td>

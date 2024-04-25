@@ -13,10 +13,13 @@ import {
 } from "../../utils/smallFun";
 import { inputOnWheelPrevent } from "../../utils/inputOnWheelPrevent";
 import { apiCallBack } from "../../utils/fetchAPIs";
+import { formatDate } from "../../utils/getDateTimeNow";
 
 const BillsMaterialHybrid = () => {
   const navigate = useNavigate();
-  const { isDO } = useSelector((state) => state.selectedPO);
+  const { isDO, poType } = useSelector((state) => state.selectedPO);
+
+  console.log(poType, "lokinggod");
   const { user, token } = useSelector((state) => state.auth);
   const { id } = useParams();
 
@@ -48,8 +51,8 @@ const BillsMaterialHybrid = () => {
   };
   const [form, setForm] = useState(initialData);
 
-  console.log(form, "from 0000000000000000000000");
-  console.log(data, "datadata bikky");
+  // console.log(form, "from 0000000000000000000000");
+  // console.log(data, "datadata bikky");
 
   const calNetClaimAmount = (
     invoice_value,
@@ -131,7 +134,7 @@ const BillsMaterialHybrid = () => {
         payload,
         token
       );
-      console.log("createInvoiceNo", response);
+      // console.log("createInvoiceNo", response);
       if (response?.status) {
         const { gate_entry_no, grn_nos, icgrn_nos, invoice_date, total_price } =
           response.data;
@@ -225,13 +228,13 @@ const BillsMaterialHybrid = () => {
                                           }
                                           accept=".pdf"
                                         />
-                                        <button
+                                        {/* <button
                                           type="button"
                                           className="btn btn-primary btn-sm m-4"
                                           onClick={createInvoiceNo}
                                         >
                                           CHECK
-                                        </button>
+                                        </button> */}
                                       </td>
                                     </tr>
                                     <tr>
@@ -450,6 +453,10 @@ const BillsMaterialHybrid = () => {
                                           {form.total_price}
                                           {/* {data?.icgrn_nos?.total_icgrn_value} */}
                                         </b>
+                                        {console.log(
+                                          form.total_price,
+                                          "total_price normal"
+                                        )}
                                       </td>
                                     </tr>
                                     <tr>
@@ -459,9 +466,7 @@ const BillsMaterialHybrid = () => {
                                       <td className="btn_value">
                                         <b>
                                           {form?.c_drawing_date &&
-                                            new Date(
-                                              form?.c_drawing_date
-                                            ).toDateString()}
+                                            formatDate(form?.c_drawing_date)}
                                         </b>
                                       </td>
                                     </tr>
@@ -616,113 +621,6 @@ const BillsMaterialHybrid = () => {
           </div>
         </div>
       </div>
-      {/* <div className={isPopup ? "popup active" : "popup"}>
-        <div className="card card-xxl-stretch mb-5 mb-xxl-8">
-          <div className="card-header border-0 pt-5">
-            <h3 className="card-title align-items-start flex-column">
-              <span className="card-label fw-bold fs-3 mb-1">
-                Upload Invoice
-              </span>
-            </h3>
-            <button
-              className="btn fw-bold btn-danger"
-              onClick={() => setIsPopup(false)}
-            >
-              Close
-            </button>
-          </div>
-          <form>
-            <div className="row">
-              <div className="col-12">
-                <div className="mb-3">
-                  <label className="form-label">
-                    Invoice Number <span className="star">*</span>
-                  </label>
-                  <input type="text" className="form-control" />
-                </div>
-              </div>
-              <div className="col-12">
-                <div className="mb-3">
-                  <label className="form-label">
-                    Invoice <span className="star">*</span>
-                  </label>
-                  <input type="file" className="form-control" />
-                </div>
-              </div>
-              <div className="col-12">
-                <div className="mb-3">
-                  <label className="form-label">Remarks</label>
-                  <textarea
-                    name=""
-                    id=""
-                    rows="4"
-                    className="form-control"
-                  ></textarea>
-                </div>
-              </div>
-              <div className="col-12">
-                <div className="mb-3">
-                  <button className="btn fw-bold btn-primary">UPDATE</button>
-                </div>
-              </div>
-            </div>
-          </form>
-        </div>
-      </div>
-      {console.log(isSecPopup)}
-      <div className={isSecPopup ? "popup active" : "popup"}>
-        <div className="card card-xxl-stretch mb-5 mb-xxl-8">
-          <div className="card-header border-0 pt-5">
-            <h3 className="card-title align-items-start flex-column">
-              <span className="card-label fw-bold fs-3 mb-1">
-                Upload PBG Copy (optionals)
-              </span>
-            </h3>
-            <button
-              className="btn fw-bold btn-danger"
-              onClick={() => setIsSecPopup(false)}
-            >
-              Close
-            </button>
-          </div>
-          <form>
-            <div className="row">
-              <div className="col-12">
-                <div className="mb-3">
-                  <label className="form-label">
-                    Invoice Number <span className="star">*</span>
-                  </label>
-                  <input type="text" className="form-control" />
-                </div>
-              </div>
-              <div className="col-12">
-                <div className="mb-3">
-                  <label className="form-label">
-                    Invoice <span className="star">*</span>
-                  </label>
-                  <input type="file" className="form-control" />
-                </div>
-              </div>
-              <div className="col-12">
-                <div className="mb-3">
-                  <label className="form-label">Remarks</label>
-                  <textarea
-                    name=""
-                    id=""
-                    rows="4"
-                    className="form-control"
-                  ></textarea>
-                </div>
-              </div>
-              <div className="col-12">
-                <div className="mb-3">
-                  <button className="btn fw-bold btn-primary">UPDATE</button>
-                </div>
-              </div>
-            </div>
-          </form>
-        </div>
-      </div> */}
     </>
   );
 };

@@ -119,6 +119,10 @@ const Checklist = () => {
                                   data.map((item, i) => {
                                     return (
                                       <tr key={i}>
+                                        {console.log(
+                                          item,
+                                          "itemitemitemitemitem"
+                                        )}
                                         <td>{item?.btn_num}</td>
                                         <td>{item?.invoice_no}</td>
                                         <td>{item?.invoice_value}</td>
@@ -132,7 +136,7 @@ const Checklist = () => {
 
                                                 if (
                                                   item.btn_type ===
-                                                  "MATERIAL_HYBRID"
+                                                  "hybrid-bill-material"
                                                 ) {
                                                   type = "hybrid-bill-material";
                                                 } else {

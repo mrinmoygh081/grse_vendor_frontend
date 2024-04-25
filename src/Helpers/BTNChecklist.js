@@ -35,6 +35,7 @@ export const actionHandlerBTN = async (
       icgrn_no_4,
       grn_nos,
       icgrn_nos,
+      total_price,
       total_icgrn_value,
       hsn_gstn_icgrn,
       ld_gate_entry_date,
@@ -43,6 +44,10 @@ export const actionHandlerBTN = async (
       demand_raise_filename,
       pbg_filename,
     } = form;
+    if (total_price !== net_claim_amount) {
+      toast.warning("Total price and net claim amount should be equal!");
+      return;
+    }
     const fDToSend = new FormData();
     fDToSend.append("purchasing_doc_no", id);
     fDToSend.append("invoice_no", invoice_no);
@@ -65,6 +70,7 @@ export const actionHandlerBTN = async (
     fDToSend.append("grn_nos", grn_nos || "");
     fDToSend.append("icgrn_nos", icgrn_nos || "");
     fDToSend.append("total_icgrn_value", total_icgrn_value);
+    fDToSend.append("total_price", total_price);
     fDToSend.append("hsn_gstn_icgrn", hsn_gstn_icgrn);
     fDToSend.append("ld_gate_entry_date", ld_gate_entry_date);
     fDToSend.append("ld_contractual_date", ld_contractual_date);

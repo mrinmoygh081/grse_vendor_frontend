@@ -450,31 +450,14 @@ const HybridServicePOBillsView = () => {
                                     <tr>
                                       <td>GRN No</td>
                                       <td className="btn_value">
-                                        <b className="me-3">
-                                          {data?.grn_nos &&
-                                            JSON.parse(data?.grn_nos).map(
-                                              (item, i) => (
-                                                <span key={i} className="px-1">
-                                                  {item?.grn_no}
-                                                </span>
-                                              )
-                                            )}
-                                        </b>
+                                        <b className="me-3">{data?.grn_nos}</b>
                                       </td>
                                     </tr>
                                     <tr>
                                       <td>ICGRN No</td>
                                       <td className="btn_value">
                                         <b className="me-3">
-                                          {data?.icgrn_nos &&
-                                            JSON.parse(data?.icgrn_nos).icgrn &&
-                                            JSON.parse(
-                                              data?.icgrn_nos
-                                            ).icgrn.map((item, i) => (
-                                              <span key={i} className="px-1">
-                                                {item?.icgrn_no}
-                                              </span>
-                                            ))}
+                                          {data?.icgrn_nos}
                                         </b>
                                       </td>
                                     </tr>
@@ -482,9 +465,7 @@ const HybridServicePOBillsView = () => {
                                       <td>Total ICGRN Value</td>
                                       <td className="btn_value">
                                         <b className="me-3">
-                                          {data?.icgrn_nos &&
-                                            JSON.parse(data?.icgrn_nos)
-                                              .total_icgrn_value}
+                                          {data?.icgrn_nos}
                                         </b>
                                       </td>
                                     </tr>

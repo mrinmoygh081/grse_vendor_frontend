@@ -59,10 +59,10 @@ const BillsMaterialHybridView = () => {
   };
   const [form, setForm] = useState(initialData);
   const [doForm, setDoForm] = useState(inititalDOData);
-  console.log(data, "ssssssssssssssdata");
-  console.log(doData, "doData-------");
-  console.log(form, "form*******************8");
-  console.log(doForm, "doForm888888888888888888");
+  // console.log(data, "ssssssssssssssdata");
+  // console.log(doData, "doData-------");
+  // console.log(form, "form*******************8");
+  // console.log(doForm, "doForm888888888888888888");
   const calNetClaimAmount = (invoice_value, debit_note, credit_note) => {
     if (typeof invoice_value !== "number") {
       invoice_value = parseInt(invoice_value) || 0;
@@ -171,7 +171,7 @@ const BillsMaterialHybridView = () => {
     const { ld_c_date, ld_ge_date, total_price } = doForm;
     if (ld_c_date && ld_ge_date) {
       let p_amt = calculatePenalty(ld_c_date, ld_ge_date, total_price, 0.5, 5);
-      console.log(ld_c_date, ld_ge_date, total_price, "total_price");
+      // console.log(ld_c_date, ld_ge_date, total_price, "total_price");
       setDoForm({ ...doForm, ld_amount: p_amt });
     }
   }, [doForm?.ld_c_date, doForm?.ld_ge_date]);
@@ -450,31 +450,14 @@ const BillsMaterialHybridView = () => {
                                     <tr>
                                       <td>GRN No</td>
                                       <td className="btn_value">
-                                        <b className="me-3">
-                                          {data?.grn_nos &&
-                                            JSON.parse(data?.grn_nos).map(
-                                              (item, i) => (
-                                                <span key={i} className="px-1">
-                                                  {item?.grn_no}
-                                                </span>
-                                              )
-                                            )}
-                                        </b>
+                                        <b className="me-3">{data?.grn_nos}</b>
                                       </td>
                                     </tr>
                                     <tr>
                                       <td>ICGRN No</td>
                                       <td className="btn_value">
                                         <b className="me-3">
-                                          {data?.icgrn_nos &&
-                                            JSON.parse(data?.icgrn_nos).icgrn &&
-                                            JSON.parse(
-                                              data?.icgrn_nos
-                                            ).icgrn.map((item, i) => (
-                                              <span key={i} className="px-1">
-                                                {item?.icgrn_no}
-                                              </span>
-                                            ))}
+                                          {data?.icgrn_nos}
                                         </b>
                                       </td>
                                     </tr>
@@ -482,9 +465,11 @@ const BillsMaterialHybridView = () => {
                                       <td>Total ICGRN Value</td>
                                       <td className="btn_value">
                                         <b className="me-3">
-                                          {data?.icgrn_nos &&
-                                            JSON.parse(data?.icgrn_nos)
-                                              .total_icgrn_value}
+                                          {data?.icgrn_total}
+                                          {console.log(
+                                            data?.icgrn_total,
+                                            "view"
+                                          )}
                                         </b>
                                       </td>
                                     </tr>

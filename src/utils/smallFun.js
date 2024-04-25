@@ -30,7 +30,8 @@ export const calculatePenalty = (
   if (difference < 0) return 0;
 
   // Calculate the number of weeks delayed
-  const weeksDelayed = Math.floor(difference / oneWeek);
+  const weeksDelayed = Math.ceil(difference / oneWeek);
+  console.log("fun", difference, actualTime, contractualTime, weeksDelayed);
 
   // Calculate the penalty percentage
   let penaltyPercentage = weeksDelayed * percentage;
@@ -62,14 +63,15 @@ export const calculateNetPay = (net, ld, sdbg, drg, qap, ilms, other) => {
     other = 0;
   }
   let deduct =
-    parseInt(ld) +
-    parseInt(sdbg) +
-    parseInt(drg) +
-    parseInt(qap) +
-    parseInt(ilms) +
-    parseInt(other);
+    parseFloat(ld) +
+    parseFloat(sdbg) +
+    parseFloat(drg) +
+    parseFloat(qap) +
+    parseFloat(ilms) +
+    parseFloat(other);
 
-  let net_pay = parseInt(net) - deduct;
+  let net_pay = parseFloat(net) - deduct;
+
   return {
     deduct,
     net_pay,

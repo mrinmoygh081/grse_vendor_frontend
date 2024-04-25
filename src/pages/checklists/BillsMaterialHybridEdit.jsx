@@ -13,6 +13,7 @@ import {
 } from "../../utils/smallFun";
 import { apiCallBack } from "../../utils/fetchAPIs";
 import { inputOnWheelPrevent } from "../../utils/inputOnWheelPrevent";
+import { formatDate } from "../../utils/getDateTimeNow";
 
 const BillsMaterialHybridEdit = () => {
   const navigate = useNavigate();
@@ -70,11 +71,11 @@ const BillsMaterialHybridEdit = () => {
     if (typeof credit_note !== "number") {
       credit_note = parseInt(credit_note) || 0;
     }
-    // setForm({
-    //   ...form,
-    //   net_claim_amount:
-    //     parseInt(invoice_value) + parseInt(debit_note) - parseInt(credit_note),
-    // });
+    setForm({
+      ...form,
+      net_claim_amount:
+        parseInt(invoice_value) + parseInt(debit_note) - parseInt(credit_note),
+    });
   };
 
   useEffect(() => {
@@ -117,7 +118,7 @@ const BillsMaterialHybridEdit = () => {
   };
 
   useEffect(() => {
-    let net = data?.icgrn_nos && JSON.parse(data?.icgrn_nos).total_icgrn_value;
+    let net = data?.icgrn_nos && JSON.parse(data?.icgrn_nos);
     let report = calculateNetPay(
       net,
       doForm?.ld_amount,
@@ -161,21 +162,15 @@ const BillsMaterialHybridEdit = () => {
   //   }
   // }, [doForm?.ld_c_date, doForm?.ld_ge_date, data?.icgrn_nos]);
 
+  console.log("doForm", doForm);
+
   useEffect(() => {
     const { ld_c_date, ld_ge_date } = doForm;
     if (ld_c_date && ld_ge_date && data?.icgrn_nos) {
       const icgrnData = JSON.parse(data.icgrn_nos);
 
-      const totalIcgrnValue = icgrnData.total_icgrn_value;
-
-      let p_amt = calculatePenalty(
-        ld_c_date,
-        ld_ge_date,
-        totalIcgrnValue,
-        0.5,
-        5
-      );
-      console.log("p_amt", p_amt, ld_c_date, ld_ge_date, totalIcgrnValue);
+      let p_amt = calculatePenalty(ld_c_date, ld_ge_date, icgrnData, 0.5, 5);
+      console.log("p_amt", p_amt, ld_c_date, ld_ge_date, icgrnData);
       setDoForm({ ...doForm, ld_amount: p_amt });
     }
   }, [doForm?.ld_c_date, doForm?.ld_ge_date, data?.icgrn_nos]);
@@ -197,10 +192,11 @@ const BillsMaterialHybridEdit = () => {
     let p_ilms = 0;
 
     if (data?.icgrn_nos) {
-      const icgrnData = JSON.parse(data?.icgrn_nos).total_icgrn_value;
+      const icgrnData = JSON.parse(data?.icgrn_nos);
 
       if (a_sdbg_date && c_sdbg_date && icgrnData) {
         p_sdbg = calculatePenalty(c_sdbg_date, a_sdbg_date, icgrnData, 0.25, 2);
+        console.log("p_sdbg", p_sdbg);
       }
       if (a_drawing_date && c_drawing_date && icgrnData) {
         p_drg = calculatePenalty(
@@ -245,9 +241,6 @@ const BillsMaterialHybridEdit = () => {
       });
     }
   }, [impDates, data]);
-
-  console.log("data", data);
-  console.log("doForm", doForm);
 
   return (
     <>
@@ -443,31 +436,14 @@ const BillsMaterialHybridEdit = () => {
                                     <tr>
                                       <td>GRN No</td>
                                       <td className="btn_value">
-                                        <b className="me-3">
-                                          {data?.grn_nos &&
-                                            JSON.parse(data?.grn_nos).map(
-                                              (item, i) => (
-                                                <span key={i} className="px-1">
-                                                  {item?.grn_no}
-                                                </span>
-                                              )
-                                            )}
-                                        </b>
+                                        <b className="me-3">{data?.grn_nos}</b>
                                       </td>
                                     </tr>
                                     <tr>
                                       <td>ICGRN No</td>
                                       <td className="btn_value">
                                         <b className="me-3">
-                                          {data?.icgrn_nos &&
-                                            JSON.parse(data?.icgrn_nos).icgrn &&
-                                            JSON.parse(
-                                              data?.icgrn_nos
-                                            ).icgrn.map((item, i) => (
-                                              <span key={i} className="px-1">
-                                                {item?.icgrn_no}
-                                              </span>
-                                            ))}
+                                          {data?.icgrn_nos}
                                         </b>
                                       </td>
                                     </tr>
@@ -475,9 +451,7 @@ const BillsMaterialHybridEdit = () => {
                                       <td>Total ICGRN Value</td>
                                       <td className="btn_value">
                                         <b className="me-3">
-                                          {data?.icgrn_nos &&
-                                            JSON.parse(data?.icgrn_nos)
-                                              .total_icgrn_value}
+                                          {data?.icgrn_total}
                                         </b>
                                       </td>
                                     </tr>
@@ -626,7 +600,7 @@ const BillsMaterialHybridEdit = () => {
                                         <td className="btn_value">
                                           <div className="me-3">
                                             <label htmlFor="GED">
-                                              Gate Entry Date:
+                                              Gate Entry Date: (MM/DD/YYYY)
                                             </label>
                                             <input
                                               type="date"
@@ -643,7 +617,8 @@ const BillsMaterialHybridEdit = () => {
                                           </div>
                                           <div className="me-3">
                                             <label htmlFor="CLD">
-                                              Contractual Delivery Date:
+                                              Contractual Delivery
+                                              Date:(MM/DD/YYYY)
                                             </label>
                                             <input
                                               type="date"
@@ -674,9 +649,9 @@ const BillsMaterialHybridEdit = () => {
                                             <p>
                                               <b>
                                                 {form?.a_drawing_date &&
-                                                  new Date(
+                                                  formatDate(
                                                     form?.a_drawing_date
-                                                  ).toLocaleDateString()}
+                                                  )}
                                               </b>
                                             </p>
                                           </div>
@@ -687,9 +662,9 @@ const BillsMaterialHybridEdit = () => {
                                             <p>
                                               <b>
                                                 {form?.c_drawing_date &&
-                                                  new Date(
+                                                  formatDate(
                                                     form?.c_drawing_date
-                                                  ).toLocaleDateString()}
+                                                  )}
                                               </b>
                                             </p>
                                           </div>
@@ -711,9 +686,7 @@ const BillsMaterialHybridEdit = () => {
                                             <p>
                                               <b>
                                                 {form?.a_qap_date &&
-                                                  new Date(
-                                                    form?.a_qap_date
-                                                  ).toLocaleDateString()}
+                                                  formatDate(form?.a_qap_date)}
                                               </b>
                                             </p>
                                           </div>
@@ -724,9 +697,7 @@ const BillsMaterialHybridEdit = () => {
                                             <p>
                                               <b>
                                                 {form?.c_qap_date &&
-                                                  new Date(
-                                                    form?.c_qap_date
-                                                  ).toLocaleDateString()}
+                                                  formatDate(form?.c_qap_date)}
                                               </b>
                                             </p>
                                           </div>
@@ -734,6 +705,10 @@ const BillsMaterialHybridEdit = () => {
                                             <label>Amount:</label>
                                             <p>
                                               &#8377; {doForm?.p_qap_amount}
+                                              {console.log(
+                                                doForm?.p_qap_amount,
+                                                "doForm?.p_qap_amount"
+                                              )}
                                             </p>
                                           </div>
                                         </td>
@@ -748,9 +723,7 @@ const BillsMaterialHybridEdit = () => {
                                             <p>
                                               <b>
                                                 {form?.a_ilms_date &&
-                                                  new Date(
-                                                    form?.a_ilms_date
-                                                  ).toLocaleDateString()}
+                                                  formatDate(form?.a_ilms_date)}
                                               </b>
                                             </p>
                                           </div>
@@ -761,9 +734,7 @@ const BillsMaterialHybridEdit = () => {
                                             <p>
                                               <b>
                                                 {form?.c_ilms_date &&
-                                                  new Date(
-                                                    form?.c_ilms_date
-                                                  ).toLocaleDateString()}
+                                                  formatDate(form?.c_ilms_date)}
                                               </b>
                                             </p>
                                           </div>
@@ -809,6 +780,10 @@ const BillsMaterialHybridEdit = () => {
                                         <td>Net payable amount</td>
                                         <td>
                                           <b>
+                                            {console.log(
+                                              doForm?.net_payable_amount,
+                                              "fjdlksf"
+                                            )}
                                             &#8377;{" "}
                                             {isNaN(doForm?.net_payable_amount)
                                               ? 0

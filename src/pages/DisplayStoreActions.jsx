@@ -19,6 +19,9 @@ const DisplayStoreActions = () => {
 
   const { id } = useParams();
   const { token } = useSelector((state) => state.auth);
+  const { poType } = useSelector((state) => state.selectedPO);
+
+  console.log(poType, "poTypepoTypepoTypepoTypepoTypepoTypepoTypepoTypepoType");
 
   const getIcgrnData = async () => {
     try {
@@ -56,7 +59,8 @@ const DisplayStoreActions = () => {
     try {
       const data = await apiCallBack(
         "GET",
-        `sap/store/storeActionList?poNo=${id}`,
+        // `sap/store/storeActionList?poNo=${id}`,
+        `sap/store/storeActionList`,
         null,
         token
       );
