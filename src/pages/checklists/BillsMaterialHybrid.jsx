@@ -43,6 +43,8 @@ const BillsMaterialHybrid = () => {
     c_sdbg_filename: "",
     demand_raise_filename: "",
     pbg_filename: "",
+    grn_nos: "",
+    icgrn_nos: "",
   };
   const [form, setForm] = useState(initialData);
 
@@ -112,6 +114,7 @@ const BillsMaterialHybrid = () => {
         a_drawing_date: data?.a_drawing_date || "",
         a_qap_date: data?.a_qap_date || "",
         a_ilms_date: data?.a_ilms_date || "",
+        gst_rate: data?.gst_rate || "",
       });
     }
   }, [data]);
@@ -130,13 +133,14 @@ const BillsMaterialHybrid = () => {
       );
       console.log("createInvoiceNo", response);
       if (response?.status) {
-        const { gate_entry_no, grn_no, invoice_date, total_price } =
+        const { gate_entry_no, grn_nos, icgrn_nos, invoice_date, total_price } =
           response.data;
         setForm({
           ...form,
           gate_entry_no: gate_entry_no,
           gate_entry_date: new Date(invoice_date).toLocaleDateString(),
-          grn_no: grn_no,
+          grn_nos: grn_nos,
+          icgrn_nos: icgrn_nos,
           total_price: total_price,
         });
       } else {
@@ -418,7 +422,7 @@ const BillsMaterialHybrid = () => {
                                         </p>
                                       </td> */}
                                       <td className="btn_value">
-                                        {form.grn_no}
+                                        {form.grn_nos}
                                       </td>
                                     </tr>
                                     <tr>
@@ -436,7 +440,7 @@ const BillsMaterialHybrid = () => {
                                               )
                                             )}
                                         </p> */}
-                                        {form.grn_no}
+                                        {form.icgrn_nos}
                                       </td>
                                     </tr>
                                     <tr>

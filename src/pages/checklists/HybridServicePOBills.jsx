@@ -1,14 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { useLocation, useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import SideBar from "../../components/SideBar";
 import Header from "../../components/Header";
 import Footer from "../../components/Footer";
 import { useSelector } from "react-redux";
 import { USER_VENDOR } from "../../constants/userConstants";
-import {
-  actionHandlerBTN,
-  actionHandlerserviceBTN,
-} from "../../Helpers/BTNChecklist";
+import { actionHandlerServiceBTN } from "../../Helpers/BTNChecklist";
 import {
   checkTypeArr,
   inputFileChange,
@@ -17,17 +14,20 @@ import {
 import { inputOnWheelPrevent } from "../../utils/inputOnWheelPrevent";
 import { apiCallBack } from "../../utils/fetchAPIs";
 import { formatDate } from "../../utils/getDateTimeNow";
+import Select from "react-select";
 
 const HybridServicePOBills = () => {
   const navigate = useNavigate();
   const { isDO } = useSelector((state) => state.selectedPO);
   const { user, token } = useSelector((state) => state.auth);
   const { id } = useParams();
-  const [fileData, setFileData] = useState(null);
+  // const [fileData, setFileData] = useState(null);
+  const [options, setOptions] = useState([]);
 
   const [data, setData] = useState(null);
-  console.log(user, "useruseruseruseruseruser");
+
   let initialData = {
+    assigned_to: "",
     po_no: "",
     vendor_name: "",
     vendor_code: "",
@@ -134,18 +134,10 @@ const HybridServicePOBills = () => {
     if (data) {
       setForm({
         ...form,
-        c_sdbg_date: data?.c_sdbg_date || "",
-        c_drawing_date: data?.c_drawing_date || "",
-        c_qap_date: data?.c_qap_date || "",
-        c_ilms_date: data?.c_ilms_date || "",
-        a_sdbg_date: data?.a_sdbg_date || "",
-        a_drawing_date: data?.a_drawing_date || "",
-        a_qap_date: data?.a_qap_date || "",
-        a_ilms_date: data?.a_ilms_date || "",
         vendor_name: data?.vendor?.vendor_name || "",
         vendor_code: data?.vendor?.vendor_code || "",
-        esi_compliance_certified: data?.pfEsi?.esi || "",
-        pf_compliance_certified: data?.pfEsi?.pf || "",
+        esi_compliance_certified: data.pfEsi.esi.file_path || "",
+        pf_compliance_certified: data.pfEsi.pf.file_path || "",
       });
     }
   }, [data]);
@@ -164,7 +156,6 @@ const HybridServicePOBills = () => {
         null,
         token
       );
-      console.log("createInvoiceNo", response);
       if (response?.status) {
         const { actual_start_date, actual_completion_date, total_amount } =
           response.data;
@@ -189,6 +180,42 @@ const HybridServicePOBills = () => {
       console.error("Error creating invoice number:", error);
     }
   };
+  useEffect(() => {
+    const fetchOptions = async () => {
+      try {
+        const response = await apiCallBack(
+          "GET",
+          "po/btn/getEmpList",
+          null,
+          token
+        );
+
+        if (response?.status) {
+          const data = response.data;
+          const formattedOptions = data.map((item) => ({
+            value: item.PERNR,
+            label: `${item.CNAME} | ${item.email}`,
+          }));
+          // console.log("Formatted Options:", formattedOptions);
+          return formattedOptions;
+        }
+        return [];
+      } catch (error) {
+        console.error("Error fetching options:", error);
+        return [];
+      }
+    };
+
+    fetchOptions().then((options) => {
+      setOptions(options);
+    });
+  }, [token]);
+
+  const handleChange = (selectedOption) => {
+    setForm({ ...form, assigned_to: selectedOption.value });
+  };
+
+  console.log(form.assigned_to);
 
   return (
     <>
@@ -210,6 +237,18 @@ const HybridServicePOBills = () => {
                               <div className="table-responsive">
                                 <table className="table table-striped table-bordered table_height">
                                   <tbody style={{ maxHeight: "100%" }}>
+                                    <tr>
+                                      <td>Choose GRSE Department</td>
+                                      <td className="btn_value">
+                                        <Select
+                                          options={options}
+                                          onChange={handleChange}
+                                          isSearchable={true}
+                                          placeholder="Select an option"
+                                          className="form-control"
+                                        />
+                                      </td>
+                                    </tr>
                                     <tr>
                                       <td>Invoice no:</td>
                                       <td className="btn_value">
@@ -462,17 +501,42 @@ const HybridServicePOBills = () => {
                                       </td>
                                     </tr> */}
                                     <tr>
-                                      <td>ESI Compliance Certified By HR</td>
+                                      <td>ESI Compliance File</td>
                                       <td className="btn_value">
                                         <b className="me-3">
-                                          {data?.pfEsi?.esi !== null ? (
-                                            <span>PF COMPLIANT</span>
+                                          {data?.pfEsi?.pf?.file_path ? (
+                                            <a
+                                              href={`${process.env.REACT_APP_PDF_URL}hrComplianceUpload/${data.pfEsi.pf.file_name}`}
+                                              target="_blank"
+                                              rel="noreferrer"
+                                            >
+                                              View
+                                            </a>
+                                          ) : (
+                                            <span>ESI NOT SUBMITTED</span>
+                                          )}
+                                        </b>
+                                      </td>
+                                    </tr>
+                                    <tr>
+                                      <td>PF Compliance File</td>
+                                      <td className="btn_value">
+                                        <b className="me-3">
+                                          {data?.pfEsi?.esi?.file_path ? (
+                                            <a
+                                              href={`${process.env.REACT_APP_PDF_URL}${data.pfEsi.esi.file_path}`}
+                                              target="_blank"
+                                              rel="noreferrer"
+                                            >
+                                              View
+                                            </a>
                                           ) : (
                                             <span>PF NOT SUBMITTED</span>
                                           )}
                                         </b>
                                       </td>
                                     </tr>
+
                                     {/* <tr>
                                       {console.log(data, "dataBBBBBBBBBBB")}
                                       <td>PF Compliance Certified By HR</td>
@@ -505,7 +569,7 @@ const HybridServicePOBills = () => {
                                       </td>
                                     </tr> */}
 
-                                    <tr>
+                                    {/* <tr>
                                       <td>PF Compliance Certified By HR</td>
                                       <td className="btn_value">
                                         <b className="me-3">
@@ -516,7 +580,8 @@ const HybridServicePOBills = () => {
                                           )}
                                         </b>
                                       </td>
-                                    </tr>
+                                    </tr> */}
+
                                     <tr>
                                       <td>Wage Compliance Certified By HR</td>
                                       <td className="btn_value">
@@ -535,12 +600,7 @@ const HybridServicePOBills = () => {
                                         </b>
                                       </td>
                                     </tr>
-                                    <tr>
-                                      <td>Choice GRSE Department</td>
-                                      <td className="btn_value">
-                                        <b className="me-3"></b>
-                                      </td>
-                                    </tr>
+
                                     <tr>
                                       <td colSpan="2">
                                         <div className="form-check">
@@ -577,8 +637,8 @@ const HybridServicePOBills = () => {
                                     type="button"
                                     className="btn fw-bold btn-primary me-3"
                                     onClick={() =>
-                                      actionHandlerserviceBTN(
-                                        "BillsMaterialHybrid",
+                                      actionHandlerServiceBTN(
+                                        "BillsServiceHybrid",
                                         token,
                                         user,
                                         id,

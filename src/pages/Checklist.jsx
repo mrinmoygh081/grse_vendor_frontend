@@ -117,7 +117,6 @@ const Checklist = () => {
                               <tbody style={{ maxHeight: "100%" }}>
                                 {checkTypeArr(data) &&
                                   data.map((item, i) => {
-                                    console.log(item, "loop");
                                     return (
                                       <tr key={i}>
                                         <td>{item?.btn_num}</td>
@@ -126,11 +125,6 @@ const Checklist = () => {
                                         <td>{item?.net_claim_amount}</td>
                                         <td>
                                           <div className="view-button-container">
-                                            {console.log(
-                                              "hhhhhhhh",
-                                              item.btn_type,
-                                              item.btn_num
-                                            )}
                                             <button
                                               className="btn btn-sm btn-secondary m-1"
                                               onClick={() => {

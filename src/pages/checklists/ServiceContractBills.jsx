@@ -5,10 +5,7 @@ import Header from "../../components/Header";
 import Footer from "../../components/Footer";
 import { useSelector } from "react-redux";
 import { USER_VENDOR } from "../../constants/userConstants";
-import {
-  actionHandlerBTN,
-  actionHandlerserviceBTN,
-} from "../../Helpers/BTNChecklist";
+import { actionHandlerServiceBTN } from "../../Helpers/BTNChecklist";
 import {
   checkTypeArr,
   inputFileChange,
@@ -629,7 +626,7 @@ const ServiceContractBills = () => {
                                     type="button"
                                     className="btn fw-bold btn-primary me-3"
                                     onClick={() =>
-                                      actionHandlerserviceBTN(
+                                      actionHandlerServiceBTN(
                                         "BillsMaterialHybrid",
                                         token,
                                         user,

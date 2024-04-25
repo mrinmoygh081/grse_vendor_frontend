@@ -128,6 +128,23 @@ function InspectionReport() {
                         : ""}
                     </td>
                   </tr>
+                  <tr>
+                    <td>Gate Entry Number</td>
+                    <td>:</td>
+                    {/* <td>{apiData?.purchasing_doc_date}</td> */}
+                    <td> {apiData?.gateEntryNo}</td>
+                  </tr>
+                  <tr>
+                    <td>Gate Entry Date</td>
+                    <td>:</td>
+                    {/* <td>{apiData?.purchasing_doc_date}</td> */}
+                    <td>
+                      {" "}
+                      {apiData?.gateEntryDate
+                        ? new Date(apiData?.gateEntryDate).toLocaleDateString()
+                        : ""}
+                    </td>
+                  </tr>
                 </tbody>
               </table>
             </div>
@@ -139,7 +156,7 @@ function InspectionReport() {
                 </h5>
                 <p className="m-0" style={{ fontSize: "14px" }}>
                   {apiData?.suppplier}, {apiData?.vendorName} <br />
-                  {apiData?.vendorCity} <br /> {apiData?.vendorPinCode} <br />
+                  {apiData?.vendorCity} <br /> {apiData?.vendorPinCode}
                   {apiData?.vendorCountry}
                 </p>
                 <p
@@ -168,9 +185,6 @@ function InspectionReport() {
                 <th>Base UOM</th>
                 <th>UD Code</th>
                 <th>Insp.Dt</th>
-                <th>Invoice Number</th>
-                <th>Gate Entry Number</th>
-                <th>Gate Entry Date</th>
               </tr>
             </thead>
             {isLoading ? (
@@ -191,13 +205,6 @@ function InspectionReport() {
                       {item.inspDate &&
                         new Date(item.inspDate).toLocaleDateString()}
                     </td>
-
-                    <td>{item?.invoiceNo}</td>
-                    <td>{item?.gateEntryNo}</td>
-                    <td>
-                      {item.gateEntryDate &&
-                        new Date(item.gateEntryDate).toLocaleDateString()}
-                    </td>
                   </tr>
                 ))}
               </tbody>
@@ -205,12 +212,14 @@ function InspectionReport() {
           </table>
           <div className="col-12">
             <h6 className="m-0">Remarks</h6>
-            <p
-              className="m-0 w-75"
-              style={{ wordWrap: "break-word", fontSize: "14px" }}
-            >
-              dwdugheufgefbsdhceydwishqshwidyveuhcdvewhcvwdywhdvwcvewdyvwydvssssqssqqqqqqqqqqqqqqqqqqqddddddddddddddddddddd
-            </p>
+            {apiData?.lineItems?.map((itemm, index) => (
+              <p
+                className="m-0 w-75"
+                style={{ wordWrap: "break-word", fontSize: "14px" }}
+              >
+                {itemm?.remarks}
+              </p>
+            ))}
           </div>
         </div>
       </div>

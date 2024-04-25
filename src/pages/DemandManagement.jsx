@@ -97,8 +97,6 @@ const DemandManagement = () => {
     }
   }, [data]);
 
-  console.log(data);
-
   const actionHandler = async (flag) => {
     try {
       const {

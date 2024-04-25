@@ -21,6 +21,8 @@ const POs = () => {
   const navigate = useNavigate();
   const [selectedStatus, setSelectedStatus] = useState("All");
 
+  console.log(po, "lllllllllllllllllllllllllllllllllllllll");
+
   useEffect(() => {
     (async () => {
       const data = await apiCallBack("GET", `po/poList`, null, token);

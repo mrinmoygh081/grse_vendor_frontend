@@ -56,7 +56,7 @@ const DisplayStoreActions = () => {
     try {
       const data = await apiCallBack(
         "GET",
-        `sap/store/storeActionList`,
+        `sap/store/storeActionList?poNo=${id}`,
         null,
         token
       );

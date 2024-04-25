@@ -33,6 +33,8 @@ export const actionHandlerBTN = async (
       icgrn_no_2,
       icgrn_no_3,
       icgrn_no_4,
+      grn_nos,
+      icgrn_nos,
       total_icgrn_value,
       hsn_gstn_icgrn,
       ld_gate_entry_date,
@@ -48,7 +50,7 @@ export const actionHandlerBTN = async (
     fDToSend.append("e_invoice_no", e_invoice_no);
     fDToSend.append("debit_note", debit_note);
     fDToSend.append("credit_note", credit_note);
-    fDToSend.append("credit_note", gst_rate);
+    fDToSend.append("gst_rate", gst_rate);
     fDToSend.append("net_claim_amount", net_claim_amount);
     fDToSend.append("gate_entry_no", gate_entry_no);
     fDToSend.append("gate_entry_date", gate_entry_date);
@@ -60,6 +62,8 @@ export const actionHandlerBTN = async (
     fDToSend.append("icgrn_no_2", icgrn_no_2 || "");
     fDToSend.append("icgrn_no_3", icgrn_no_3 || "");
     fDToSend.append("icgrn_no_4", icgrn_no_4 || "");
+    fDToSend.append("grn_nos", grn_nos || "");
+    fDToSend.append("icgrn_nos", icgrn_nos || "");
     fDToSend.append("total_icgrn_value", total_icgrn_value);
     fDToSend.append("hsn_gstn_icgrn", hsn_gstn_icgrn);
     fDToSend.append("ld_gate_entry_date", ld_gate_entry_date);
@@ -92,7 +96,7 @@ export const actionHandlerBTN = async (
       fDToSend,
       token
     );
-    console.log("response", response);
+
     if (response?.status) {
       toast.success(response?.message);
       setForm(initialData);
@@ -133,7 +137,7 @@ export const actionHandlerByDO = async (
   }
 };
 
-export const actionHandlerserviceBTN = async (
+export const actionHandlerServiceBTN = async (
   flag,
   token,
   user,
@@ -145,6 +149,7 @@ export const actionHandlerserviceBTN = async (
 ) => {
   try {
     const {
+      assigned_to,
       invoice_no,
       invoice_filename,
       invoice_value,
@@ -165,15 +170,14 @@ export const actionHandlerserviceBTN = async (
       pf_compliance_certified,
 
       debit_credit_filename,
-      gate_entry_no,
-      gate_entry_date,
-      get_entry_filename,
 
-      c_sdbg_filename,
-      demand_raise_filename,
       pbg_filename,
     } = form;
+    if (!assigned_to || assigned_to === "") {
+      return toast.warn("Please choose GRSE officer.");
+    }
     const fDToSend = new FormData();
+    fDToSend.append("assigned_to", assigned_to);
     fDToSend.append("purchasing_doc_no", id);
     fDToSend.append("vendor_name", vendor_name);
     fDToSend.append("vendor_code", vendor_code);
@@ -186,10 +190,6 @@ export const actionHandlerserviceBTN = async (
     fDToSend.append("credit_note", gst_rate);
     fDToSend.append("net_gross_claim_amount", net_gross_claim_amount);
     fDToSend.append("total_amount", total_amount);
-    fDToSend.append("gate_entry_no", gate_entry_no);
-    fDToSend.append("gate_entry_date", gate_entry_date);
-    fDToSend.append("contractual_work_start_date", "");
-    fDToSend.append("contractual_work_completion_date", "");
     fDToSend.append("actual_work_start_date", actual_start_date);
     fDToSend.append("actual_work_completion_date", actual_completion_date);
     fDToSend.append("esi_compliance_certified", esi_compliance_certified);
@@ -205,15 +205,6 @@ export const actionHandlerserviceBTN = async (
     if (debit_credit_filename) {
       fDToSend.append("debit_credit_filename", debit_credit_filename);
     }
-    if (get_entry_filename) {
-      fDToSend.append("get_entry_filename", get_entry_filename);
-    }
-    if (c_sdbg_filename) {
-      fDToSend.append("c_sdbg_filename", c_sdbg_filename);
-    }
-    if (demand_raise_filename) {
-      fDToSend.append("demand_raise_filename", demand_raise_filename);
-    }
     if (pbg_filename) {
       fDToSend.append("pbg", pbg_filename);
     }
@@ -223,7 +214,7 @@ export const actionHandlerserviceBTN = async (
       fDToSend,
       token
     );
-    console.log("response", response);
+
     if (response?.status) {
       toast.success(response?.message);
       setForm(initialData);
