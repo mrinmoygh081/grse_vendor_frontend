@@ -13,7 +13,7 @@ import {
 } from "../../utils/smallFun";
 import { apiCallBack } from "../../utils/fetchAPIs";
 import { inputOnWheelPrevent } from "../../utils/inputOnWheelPrevent";
-import { formatDate } from "../../utils/getDateTimeNow";
+import { convertToEpoch, formatDate } from "../../utils/getDateTimeNow";
 
 const BillsMaterialHybridEdit = () => {
   const navigate = useNavigate();
@@ -24,6 +24,7 @@ const BillsMaterialHybridEdit = () => {
 
   const [impDates, setImpDates] = useState(null);
   const [data, setData] = useState(null);
+  console.log("data", data)
   let initialData = {
     invoice_no: "",
     invoice_filename: "",
@@ -118,7 +119,7 @@ const BillsMaterialHybridEdit = () => {
   };
 
   useEffect(() => {
-    let net = data?.icgrn_nos && JSON.parse(data?.icgrn_nos);
+    let net = data?.icgrn_total;
     let report = calculateNetPay(
       net,
       doForm?.ld_amount,
@@ -162,18 +163,28 @@ const BillsMaterialHybridEdit = () => {
   //   }
   // }, [doForm?.ld_c_date, doForm?.ld_ge_date, data?.icgrn_nos]);
 
-  console.log("doForm", doForm);
+  console.log("doForm,abhinit", doForm);
 
   useEffect(() => {
     const { ld_c_date, ld_ge_date } = doForm;
-    if (ld_c_date && ld_ge_date && data?.icgrn_nos) {
-      const icgrnData = JSON.parse(data.icgrn_nos);
 
-      let p_amt = calculatePenalty(ld_c_date, ld_ge_date, icgrnData, 0.5, 5);
-      console.log("p_amt", p_amt, ld_c_date, ld_ge_date, icgrnData);
+    
+
+    console.log("HELLO", data?.icgrn_total)
+    if (ld_c_date && ld_ge_date && data?.icgrn_total) {
+      const icgrnData = data?.icgrn_total;
+const cc = convertToEpoch(new Date(ld_c_date)) * 1000;
+console.log(cc);
+console.log("cc%^&*");
+const aa = convertToEpoch(new Date(ld_ge_date)) * 1000;
+console.log(aa);
+console.log("aa%^&*");
+
+      let p_amt = calculatePenalty(cc, aa, icgrnData, 0.5, 5);
+      console.log("p_amt", p_amt, cc, aa, icgrnData);
       setDoForm({ ...doForm, ld_amount: p_amt });
     }
-  }, [doForm?.ld_c_date, doForm?.ld_ge_date, data?.icgrn_nos]);
+  }, [doForm?.ld_c_date, doForm?.ld_ge_date, data?.icgrn_total]);
 
   useEffect(() => {
     const {
@@ -190,28 +201,33 @@ const BillsMaterialHybridEdit = () => {
     let p_drg = 0;
     let p_qap = 0;
     let p_ilms = 0;
-
-    if (data?.icgrn_nos) {
-      const icgrnData = JSON.parse(data?.icgrn_nos);
+console.log("hhhhhhhhhhhhhhhhhhhhh");
+    if (data?.icgrn_total) {
+      console.log("ppppppppppp");
+      const icgrnData = data?.icgrn_total;
 
       if (a_sdbg_date && c_sdbg_date && icgrnData) {
-        p_sdbg = calculatePenalty(c_sdbg_date, a_sdbg_date, icgrnData, 0.25, 2);
+        console.log("c_sdbg_date", )
+        p_sdbg = calculatePenalty(convertToEpoch(new Date(c_sdbg_date)) * 1000, a_sdbg_date, icgrnData, 0.25, 2);
         console.log("p_sdbg", p_sdbg);
       }
       if (a_drawing_date && c_drawing_date && icgrnData) {
         p_drg = calculatePenalty(
-          c_drawing_date,
+          convertToEpoch(new Date(c_drawing_date)) * 1000,
           a_drawing_date,
           icgrnData,
           0.25,
           2
         );
+        console.log("kkkkkkkkk",p_drg);
       }
       if (a_qap_date && c_qap_date && icgrnData) {
-        p_qap = calculatePenalty(c_qap_date, a_qap_date, icgrnData, 0.25, 2);
+        p_qap = calculatePenalty(
+          convertToEpoch(new Date(c_qap_date)) * 1000, a_qap_date, icgrnData, 0.25, 2);
       }
       if (a_ilms_date && c_ilms_date && icgrnData) {
-        p_ilms = calculatePenalty(c_ilms_date, a_ilms_date, icgrnData, 0.25, 2);
+        p_ilms = calculatePenalty(
+          convertToEpoch(new Date(c_ilms_date)) * 1000, a_ilms_date, icgrnData, 0.25, 2);
       }
     }
     setDoForm({
@@ -221,7 +237,7 @@ const BillsMaterialHybridEdit = () => {
       p_qap_amount: p_qap,
       p_ilms_amount: p_ilms,
     });
-  }, [form, data?.icgrn_nos]);
+  }, [form, data?.icgrn_total]);
 
   useEffect(() => {
     if (data) {
@@ -600,7 +616,7 @@ const BillsMaterialHybridEdit = () => {
                                         <td className="btn_value">
                                           <div className="me-3">
                                             <label htmlFor="GED">
-                                              Gate Entry Date: (MM/DD/YYYY)
+                                              Gate Entry Date:
                                             </label>
                                             <input
                                               type="date"
@@ -618,7 +634,7 @@ const BillsMaterialHybridEdit = () => {
                                           <div className="me-3">
                                             <label htmlFor="CLD">
                                               Contractual Delivery
-                                              Date:(MM/DD/YYYY)
+                                              Date:
                                             </label>
                                             <input
                                               type="date"

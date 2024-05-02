@@ -19,7 +19,6 @@ const BillsMaterialHybrid = () => {
   const navigate = useNavigate();
   const { isDO, poType } = useSelector((state) => state.selectedPO);
 
-  console.log(poType, "lokinggod");
   const { user, token } = useSelector((state) => state.auth);
   const { id } = useParams();
 
@@ -51,19 +50,16 @@ const BillsMaterialHybrid = () => {
   };
   const [form, setForm] = useState(initialData);
 
-  // console.log(form, "from 0000000000000000000000");
-  // console.log(data, "datadata bikky");
-
   const calNetClaimAmount = (
     invoice_value,
     debit_note,
     credit_note,
     gst_rate
   ) => {
-    invoice_value = parseInt(invoice_value) || 0;
-    debit_note = parseInt(debit_note) || 0;
-    credit_note = parseInt(credit_note) || 0;
-    gst_rate = parseInt(gst_rate) || 0;
+    invoice_value = parseFloat(invoice_value) || 0;
+    debit_note = parseFloat(debit_note) || 0;
+    credit_note = parseFloat(credit_note) || 0;
+    gst_rate = parseFloat(gst_rate) || 0;
 
     const net_claim_amount =
       invoice_value + debit_note - credit_note + gst_rate;

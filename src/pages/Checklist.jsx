@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { Fragment, useEffect, useState } from "react";
 import Footer from "../components/Footer";
 // import SideBar from "../components/SideBar";
 // import Header from "../components/Header";
@@ -11,6 +11,7 @@ import SideBar from "../components/SideBar";
 import { apiCallBack } from "../utils/fetchAPIs";
 import { useSelector } from "react-redux";
 import { checkTypeArr } from "../utils/smallFun";
+import { formatDate } from "../utils/getDateTimeNow";
 
 const Checklist = () => {
   const { id } = useParams();
@@ -21,6 +22,7 @@ const Checklist = () => {
   const navigate = useNavigate();
   // const [isPopup, setIsPopup] = useState(false);
   const [slug, setSlug] = useState("");
+  const [paymentdata, setPaymentdata] = useState("");
 
   const NewBillHandler = () => {
     if (slug !== "") {
@@ -45,6 +47,34 @@ const Checklist = () => {
   useEffect(() => {
     getData();
   }, []);
+
+  //************************************************Payment Advice********************************************************* */
+
+  const createpayment = async () => {
+    try {
+      const payload = {
+        poNo: id,
+      };
+      const response = await apiCallBack(
+        "POST",
+        "po/download/paymentAdvice",
+        payload,
+        token
+      );
+      if (response?.status) {
+        // Set paymentdata state with the response data
+        setPaymentdata(response.data); // Assuming response.data contains the payment data
+      } else {
+        console.error("Error creating invoice number:", response.message);
+      }
+    } catch (error) {
+      console.error("Error creating invoice number:", error);
+    }
+  };
+
+  useEffect(() => {
+    createpayment();
+  }, [id, token]);
 
   return (
     <>
@@ -174,6 +204,48 @@ const Checklist = () => {
                                   })}
                               </tbody>
                             </table>
+                            <div>
+                              <div className="page_heading mt-5 mb-3">
+                                <h3>Payment Advice</h3>
+                              </div>
+                              <table className="table table-striped table-bordered table_height">
+                                <thead>
+                                  <tr className="border-0">
+                                    <th>Vendor Code</th>
+                                    <th>Date</th>
+                                    <th>Document No</th>
+                                    <th>VIEW DOCUMENT</th>
+                                  </tr>
+                                </thead>
+                                <tbody style={{ maxHeight: "100%" }}>
+                                  {checkTypeArr(paymentdata?.resustFiles) &&
+                                    paymentdata?.resustFiles.map(
+                                      (file, index) => (
+                                        <tr key={index}>
+                                          <td>{file.vendor_code}</td>
+                                          <td>
+                                            {/* {new Date(
+                                              file.docuentDate
+                                            ).toLocaleDateString()} */}
+                                            {file.docuentDate &&
+                                              formatDate(file.docuentDate)}
+                                          </td>
+                                          <td>{file.documentNo}</td>
+                                          <td>
+                                            <a
+                                              href={`${process.env.REACT_APP_ROOT_URL}sapuploads/pymtadvice/${file?.fileName}`}
+                                              target="_blank"
+                                              rel="noreferrer"
+                                            >
+                                              VIEW
+                                            </a>
+                                          </td>
+                                        </tr>
+                                      )
+                                    )}
+                                </tbody>
+                              </table>
+                            </div>
                           </div>
                         </div>
                       </div>

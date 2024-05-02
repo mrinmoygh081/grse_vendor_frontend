@@ -96,9 +96,9 @@ function StoreIssueRequisition() {
                 <th>Activity Desc.</th>
                 <th>Plant</th>
                 <th>Qty to Withdraw</th>
-                <th>Issue Unit</th>
+                {/* <th>Issue Unit</th>
                 <th>Issue Qty</th>
-                <th>Stock indtr</th>
+                <th>Stock indtr</th> */}
                 <th>PO Number</th>
               </tr>
             </thead>
@@ -119,9 +119,9 @@ function StoreIssueRequisition() {
                   <td></td>
                   <td>{item.plant}</td>
                   <td>{item.quantWithdrawal}</td>
+                  {/* <td></td>
                   <td></td>
-                  <td></td>
-                  <td></td>
+                  <td></td> */}
                   <td>{item.purchasing_doc_no}</td>
                 </tr>
               ))}

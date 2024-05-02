@@ -1,5 +1,7 @@
 // import { toast } from "react-toastify";
 
+import { convertToEpoch } from "./getDateTimeNow";
+
 export const checkTypeArr = (data) => {
   return data && Array.isArray(data) && data.length > 0;
 };
@@ -21,7 +23,7 @@ export const calculatePenalty = (
   percentage,
   maxPercentage
 ) => {
-  const oneWeek = 7 * 24 * 60 * 60 * 1000; // milliseconds in a week
+  const oneWeek = 7 * 24 * 60 * 60 * 1000; 
   const contractualTime = new Date(contractualDate).getTime();
   const actualTime = new Date(actualDate).getTime();
 
@@ -41,8 +43,11 @@ export const calculatePenalty = (
 
   // Calculate the penalty amount
   const penaltyAmount = (originalValue * penaltyPercentage) / 100;
+  console.log("penaltyAmount", penaltyAmount, contractualDate,
+  actualDate,
+  originalValue)
 
-  return penaltyAmount;
+  return Math.round(penaltyAmount);
 };
 
 export const calculateNetPay = (net, ld, sdbg, drg, qap, ilms, other) => {
@@ -63,14 +68,14 @@ export const calculateNetPay = (net, ld, sdbg, drg, qap, ilms, other) => {
     other = 0;
   }
   let deduct =
-    parseFloat(ld) +
-    parseFloat(sdbg) +
-    parseFloat(drg) +
-    parseFloat(qap) +
-    parseFloat(ilms) +
-    parseFloat(other);
+    parseInt(ld) +
+    parseInt(sdbg) +
+    parseInt(drg) +
+    parseInt(qap) +
+    parseInt(ilms) +
+    parseInt(other);
 
-  let net_pay = parseFloat(net) - deduct;
+  let net_pay = parseInt(net) - deduct;
 
   return {
     deduct,

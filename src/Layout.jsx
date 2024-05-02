@@ -137,7 +137,7 @@ function Layout() {
               path="/checklist/hybrid-bill-service/:id"
               element={<HybridServicePOBills />}
             />
-            {/* <Route
+            <Route
               exact
               path="/checklist/hybrid-bill-service/edit/:id"
               element={<HybridServicePOBillsEdit />}
@@ -146,7 +146,7 @@ function Layout() {
               exact
               path="/checklist/hybrid-bill-service/view/:id"
               element={<HybridServicePOBillsView />}
-            /> */}
+            />
             <Route
               exact
               path="/checklist/contract-bill-service/:id"

@@ -108,7 +108,7 @@ function InspectionReport() {
                   <tr>
                     <td>Invoice No</td>
                     <td className="text-start">:</td>
-                    <td></td>
+                    <td>{apiData?.invoiceNo}</td>
                   </tr>
                   <tr>
                     <td>Purchase Order No</td>

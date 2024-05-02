@@ -14,7 +14,7 @@ function GoodsReceiptSlip() {
     hour: "2-digit",
     minute: "2-digit",
   });
-
+  console.log(apiData, "LLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLL");
   const handlePrint = () => {
     window.print();
   };
@@ -26,7 +26,7 @@ function GoodsReceiptSlip() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const path = `${process.env.REACT_APP_BACKEND_API}sap/payment/ztfi_bil_deface_report`;
+        const path = `${process.env.REACT_APP_BACKEND_API}sap/document/grnReport`;
         const config = {
           method: "POST",
           headers: {
@@ -49,8 +49,6 @@ function GoodsReceiptSlip() {
     fetchData();
   }, [token]);
 
-  console.log("apiData-->>", apiData);
-
   return (
     <div className="container-fluid">
       <section className="Table-1" style={{ minHeight: "970px" }}>
@@ -61,7 +59,7 @@ function GoodsReceiptSlip() {
               style={{ width: "90%", fontFamily: "monospace" }}
             >
               <span className="goodreceptslip-font">GOODS RECEIPT SLIP </span>{" "}
-              <span>No: 123456789</span>
+              <span>No: {apiData.matDocNo}</span>
             </h3>
           </div>
         </div>
@@ -79,17 +77,17 @@ function GoodsReceiptSlip() {
                     <td className="text-start" width={"5%"}>
                       :
                     </td>
-                    <td width={"30%"}>{"07.03.2024"}</td>
+                    <td width={"30%"}>{apiData.documentDate}</td>
                   </tr>
                   <tr>
                     <td className="fw-bold">Current date</td>
                     <td className="text-start">:</td>
-                    <td>{"04.09.2024"}</td>
+                    <td>{apiData.entryDate}</td>
                   </tr>
                   <tr>
                     <td className="fw-bold">Gate Entry Number</td>
                     <td className="text-start">:</td>
-                    <td>{"10S0010007424"}</td>
+                    <td>{apiData.billOfLoading}</td>
                   </tr>
                   <tr>
                     <td className="fw-bold">Invoice No</td>

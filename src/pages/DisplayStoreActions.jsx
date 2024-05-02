@@ -45,6 +45,7 @@ const DisplayStoreActions = () => {
     icgrn_report: "ICGRN Report",
     ztfi_bil_deface: "Payment Advice",
     gate_entry: "Gate in Entry",
+    grn_report: "grn_report",
   };
 
   const doc_routes = {
@@ -53,14 +54,14 @@ const DisplayStoreActions = () => {
     icgrn_report: "/display-store-actions/icgrn-report",
     ztfi_bil_deface: "/display-store-actions/payment-advice",
     gate_entry: "/display-store-actions/goods-entry",
+    grn_report: "/display-store-actions/good-receipt-slip",
   };
 
   const getAllPdfHandler = async () => {
     try {
       const data = await apiCallBack(
         "GET",
-        // `sap/store/storeActionList?poNo=${id}`,
-        `sap/store/storeActionList`,
+        `sap/store/storeActionList?poNo=${id}`,
         null,
         token
       );
@@ -96,6 +97,12 @@ const DisplayStoreActions = () => {
     if (item.documentType === "gate_entry") {
       setPayloadData({
         gate_entry_no: item.gateEntryNo,
+      });
+    }
+    if (item.documentType === "grn_report") {
+      setPayloadData({
+        // matDocNo: item.matDocNo,
+        matDocNo: item.matDocNo,
       });
     }
   };
@@ -182,7 +189,8 @@ const DisplayStoreActions = () => {
                                                   item.btn ||
                                                   item.issueNo ||
                                                   item.reservationNumber ||
-                                                  item.gateEntryNo}
+                                                  item.gateEntryNo ||
+                                                  item.matDocNo}
                                               </td>
                                               <td>
                                                 {item.dateTime &&

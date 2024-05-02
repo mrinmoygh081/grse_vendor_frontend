@@ -25,6 +25,7 @@ const HybridServicePOBills = () => {
   const [options, setOptions] = useState([]);
 
   const [data, setData] = useState(null);
+  console.log(data, "loking display");
 
   let initialData = {
     assigned_to: "",
@@ -136,8 +137,8 @@ const HybridServicePOBills = () => {
         ...form,
         vendor_name: data?.vendor?.vendor_name || "",
         vendor_code: data?.vendor?.vendor_code || "",
-        esi_compliance_certified: data.pfEsi.esi.file_path || "",
-        pf_compliance_certified: data.pfEsi.pf.file_path || "",
+        esi_compliance_certified: data?.sdbg_filename?.file_name || "",
+        pf_compliance_certified: data?.sdbg_filename?.file_name || "",
       });
     }
   }, [data]);
@@ -504,9 +505,9 @@ const HybridServicePOBills = () => {
                                       <td>ESI Compliance File</td>
                                       <td className="btn_value">
                                         <b className="me-3">
-                                          {data?.pfEsi?.pf?.file_path ? (
+                                          {data?.sdbg_filename?.file_name ? (
                                             <a
-                                              href={`${process.env.REACT_APP_PDF_URL}hrComplianceUpload/${data.pfEsi.pf.file_name}`}
+                                              href={`${process.env.REACT_APP_PDF_URL}hrComplianceUpload/${data?.sdbg_filename?.file_name}`}
                                               target="_blank"
                                               rel="noreferrer"
                                             >
@@ -522,9 +523,9 @@ const HybridServicePOBills = () => {
                                       <td>PF Compliance File</td>
                                       <td className="btn_value">
                                         <b className="me-3">
-                                          {data?.pfEsi?.esi?.file_path ? (
+                                          {data?.sdbg_filename?.file_name ? (
                                             <a
-                                              href={`${process.env.REACT_APP_PDF_URL}${data.pfEsi.esi.file_path}`}
+                                              href={`${process.env.REACT_APP_PDF_URL}${data?.sdbg_filename?.file_name}`}
                                               target="_blank"
                                               rel="noreferrer"
                                             >
