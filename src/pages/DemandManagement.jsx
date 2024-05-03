@@ -12,7 +12,7 @@ import { convertToEpoch } from "../utils/getDateTimeNow";
 import ReactDatePicker from "react-datepicker";
 import { groupedByRefNo } from "../utils/groupedByReq";
 import { clrLegend } from "../utils/clrLegend";
-import { FaPlus } from "react-icons/fa";
+import { FaMinus, FaPlus } from "react-icons/fa";
 
 const DemandManagement = () => {
   const [isPopup, setIsPopup] = useState(false);
@@ -27,6 +27,8 @@ const DemandManagement = () => {
   const { id } = useParams();
   const [groupedData, setGroupedData] = useState([]);
   const [dynamicFields, setDynamicFields] = useState([]);
+
+  console.log(data, "groupedDatagroupedData");
 
   const { user, token } = useSelector((state) => state.auth);
   const [formData, setFormData] = useState({
@@ -235,44 +237,48 @@ const DemandManagement = () => {
 
   const actionHandlerReceiver = async (flag) => {
     try {
-      const { remarks, request_amount, recived_quantity } = formData;
+      const { recived_quantity, remarks } = formData;
 
-      if (remarks.trim() === "" || recived_quantity.trim() === "") {
-        return toast.warn("All fields are required!");
+      // Parse the JSON string into an array of objects
+      const demandArray = JSON.parse(viewData.demand);
+
+      // Check if demandArray is an array
+      if (!Array.isArray(demandArray)) {
+        console.error("viewData.demand is not a valid array:", demandArray);
+        return;
       }
-      if (request_amount > availableAmount) {
-        return toast.warn(
-          "Raised requeste quantity should be less than or equal to available quantity!"
-        );
-      }
-      let formObj = {
-        action_type: flag,
-        reference_no: viewData?.reference_no,
+
+      // Map over the demandArray to create the demand array
+      const demand = demandArray.map((item) => ({
+        line_item_no: item.line_item_no,
+        recived_quantity: item.request_amount,
+      }));
+
+      // Prepare the payload
+      const payload = {
+        reference_no: viewData.reference_no,
         purchasing_doc_no: id,
-        line_item_no: viewData?.line_item_no,
-        recived_quantity,
-        status: flag,
+        demand,
+        status: "RECEIVED",
         remarks,
       };
 
+      // Call the API with the payload
       const response = await apiCallBack(
         "POST",
         "po/demandeManagement/insert",
-        formObj,
+        payload,
         token
       );
 
       if (response?.status) {
         toast.success(response?.message);
-        setIsPopup(false);
         setIsSecPopup(false);
+        // Reset form data
         setFormData({
-          action_type: "",
-          remarks: "",
-          line_item_no: "",
-          request_amount: "",
+          ...formData,
           recived_quantity: "",
-          delivery_date: "",
+          remarks: "",
         });
         getData();
       } else {
@@ -369,6 +375,7 @@ const DemandManagement = () => {
                               <tbody style={{ maxHeight: "100%" }}>
                                 {Object.keys(groupedData).map((it, index) => {
                                   let items = groupedData[it];
+
                                   return (
                                     <Fragment key={index}>
                                       <tr>
@@ -386,10 +393,39 @@ const DemandManagement = () => {
                                                 ).toLocaleString()}
                                             </td>
                                             <td>{item?.action_type}</td>
-                                            <td>{item?.line_item_no}</td>
+                                            <td>
+                                              {" "}
+                                              {JSON.parse(item.demand).map(
+                                                (demandItem, index) => (
+                                                  <li key={index}>
+                                                    {demandItem.line_item_no}
+                                                  </li>
+                                                )
+                                              )}
+                                            </td>
                                             <td>{item.created_by_id}</td>
-                                            <td>{item.request_amount}</td>
-                                            <td>{item.recived_quantity}</td>
+                                            <td>
+                                              {" "}
+                                              {JSON.parse(item.demand).map(
+                                                (demandItem, index) => (
+                                                  <li key={index}>
+                                                    {demandItem.request_amount}
+                                                  </li>
+                                                )
+                                              )}
+                                            </td>
+                                            <td>
+                                              {" "}
+                                              {JSON.parse(item.demand).map(
+                                                (demandItem, index) => (
+                                                  <li key={index}>
+                                                    {
+                                                      demandItem.recived_quantity
+                                                    }
+                                                  </li>
+                                                )
+                                              )}
+                                            </td>
                                             <td>
                                               {item.delivery_date &&
                                                 new Date(
@@ -572,7 +608,9 @@ const DemandManagement = () => {
                   )}
                   <div className="col-md-2 flex_center">
                     <FaPlus onClick={addNewField} />
+                    {/* <FaMinus /> */}
                   </div>
+
                   {dynamicFields.map((field, index) => (
                     <Fragment key={index}>
                       <div className="col-12 col-md-2">
@@ -643,6 +681,7 @@ const DemandManagement = () => {
                       </div>
                       <div className="col-md-2 flex_center">
                         <FaPlus onClick={addNewField} />
+                        {/* <FaMinus /> */}
                       </div>
                     </Fragment>
                   ))}
@@ -720,40 +759,50 @@ const DemandManagement = () => {
               </div>
               <form>
                 <div className="row">
-                  <div className="col-12 col-md-6">
-                    <div className="mb-3">
-                      <label className="form-label">
-                        PO Line Item <span className="red">*</span>{" "}
-                      </label>
-                      <p>{viewData?.line_item_no}</p>
-                    </div>
-                  </div>
-                  <div className="col-12 col-md-6">
-                    <div className="mb-3">
-                      <label className="form-label">
-                        Requested Quantity <span className="red">*</span>{" "}
-                      </label>
-                      <p>{viewData?.request_amount}</p>
-                    </div>
-                  </div>
-                  <div className="col-12 col-md-6">
-                    <div className="mb-3">
-                      <label className="form-label">
-                        Received Quantitty <span className="red">*</span>{" "}
-                      </label>
-                      <input
-                        type="number"
-                        className="form-control"
-                        value={formData?.recived_quantity}
-                        onChange={(e) =>
-                          setFormData({
-                            ...formData,
-                            recived_quantity: e.target.value,
-                          })
-                        }
-                      />
-                    </div>
-                  </div>
+                  {viewData?.demand &&
+                    JSON.parse(viewData.demand).map((item, i) => (
+                      <div className="row" key={i}>
+                        <div className="col-12 col-md-4">
+                          <div className="mb-3">
+                            <label className="form-label">
+                              PO Line Item <span className="red">*</span>{" "}
+                            </label>
+                            <p>{item?.line_item_no}</p>
+                          </div>
+                        </div>
+                        <div className="col-12 col-md-4">
+                          <div className="mb-3">
+                            <label className="form-label">
+                              Requested Quantity <span className="red">*</span>{" "}
+                            </label>
+                            <p>{item?.request_amount}</p>
+                          </div>
+                        </div>
+                        <div className="col-12 col-md-4">
+                          <div className="mb-3">
+                            <label className="form-label">
+                              Received Quantity <span className="red">*</span>{" "}
+                            </label>
+                            <input
+                              type="number"
+                              className="form-control"
+                              value={formData?.recived_quantity[i] || ""}
+                              onChange={(e) => {
+                                const newReceivedQuantities = [
+                                  ...formData.recived_quantity,
+                                ];
+                                newReceivedQuantities[i] = e.target.value;
+                                setFormData({
+                                  ...formData,
+                                  recived_quantity: newReceivedQuantities,
+                                });
+                              }}
+                            />
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+
                   <div className="col-12">
                     <div className="mb-3">
                       <label className="form-label">Remarks</label>&nbsp;&nbsp;

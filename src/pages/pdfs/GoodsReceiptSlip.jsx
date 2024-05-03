@@ -38,7 +38,7 @@ function GoodsReceiptSlip() {
         setIsLoading(true);
         const response = await fetch(path, config);
         const data = await response.json();
-        setApiData(data.data[0] || {});
+        setApiData(data.data || {});
         setIsLoading(false);
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -92,7 +92,7 @@ function GoodsReceiptSlip() {
                   <tr>
                     <td className="fw-bold">Invoice No</td>
                     <td className="text-start">:</td>
-                    <td>{"10S0010007424"}</td>
+                    <td>{apiData.invoiceNo}</td>
                   </tr>
                 </tbody>
               </table>
@@ -116,11 +116,11 @@ function GoodsReceiptSlip() {
                     </td>
                     <td width={"30%"}>{apiData?.plant}</td>
                   </tr>
-                  <tr>
+                  {/* <tr>
                     <td className="fw-bold">Description</td>
                     <td className="text-start">:</td>
                     <td>Plant ship Building</td>
-                  </tr>
+                  </tr> */}
                   <tr>
                     <td className="fw-bold">Vendor</td>
                     <td className="text-start">:</td>
@@ -159,7 +159,7 @@ function GoodsReceiptSlip() {
                   <tr>
                     <td className="fw-bold">Bill Location</td>
                     <td className="text-start">:</td>
-                    <td>test</td>
+                    <td>{apiData?.headerText}</td>
                   </tr>
                   {/* <tr>
                     <td className="fw-bold">Telephone</td>
@@ -184,20 +184,26 @@ function GoodsReceiptSlip() {
                 <thead>
                   <tr>
                     <th>Item</th>
-                    <th>Material Mpn</th>
+                    <th>Material </th>
                     <th>Description</th>
-                    <th>Recipient</th>
+                    {/* <th>Recipient</th> */}
                     <th>Accounting Assignment</th>
                     <th>Quantity</th>
+                    <th>UOM</th>
                   </tr>
                 </thead>
                 <tbody>
-                  <tr>
-                    <td>{apiData?.quantity}</td>
-                    <td>fffffffffffff</td>
-                    <td></td>
-                    <td></td>
-                  </tr>
+                  {apiData?.lineItem &&
+                    apiData?.lineItem.map((item, index) => (
+                      <tr key={index}>
+                        <td>{item.matDocNoLineItem}</td>
+                        <td>{item.materialNumber}</td>
+                        <td>{item.materialDesc}</td>
+                        <td>{item.accountingAssegnment}</td>
+                        <td>{item.quantity}</td>
+                        <td>{item.unit}</td>
+                      </tr>
+                    ))}
                 </tbody>
               </table>
             </div>
