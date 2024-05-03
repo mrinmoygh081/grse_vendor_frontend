@@ -77,7 +77,7 @@ function GoodsReceiptSlip() {
                     <td className="text-start" width={"5%"}>
                       :
                     </td>
-                    <td width={"30%"}>{apiData.documentDate}</td>
+                    <td width={"30%"}>{apiData?.documentDate}</td>
                   </tr>
                   <tr>
                     <td className="fw-bold">Current date</td>
@@ -87,7 +87,7 @@ function GoodsReceiptSlip() {
                   <tr>
                     <td className="fw-bold">Gate Entry Number</td>
                     <td className="text-start">:</td>
-                    <td>{apiData.billOfLoading}</td>
+                    <td>{apiData?.gateEntryNo}</td>
                   </tr>
                   <tr>
                     <td className="fw-bold">Invoice No</td>
@@ -114,7 +114,7 @@ function GoodsReceiptSlip() {
                     <td className="text-start" width={"5%"}>
                       :
                     </td>
-                    <td width={"30%"}>0100</td>
+                    <td width={"30%"}>{apiData?.plant}</td>
                   </tr>
                   <tr>
                     <td className="fw-bold">Description</td>
@@ -124,22 +124,22 @@ function GoodsReceiptSlip() {
                   <tr>
                     <td className="fw-bold">Vendor</td>
                     <td className="text-start">:</td>
-                    <td>0050007545</td>
+                    <td>{apiData?.vendor_code}</td>
                   </tr>
                   <tr>
                     <td className="fw-bold">Name</td>
                     <td>:</td>
-                    <td>DCG Data-Core Systems India Pvt Ltd</td>
+                    <td>{apiData?.vendor_name}</td>
                   </tr>
                   <tr>
                     <td className="fw-bold">PO</td>
                     <td>:</td>
-                    <td>0050007545</td>
+                    <td>{apiData?.purchasing_doc_no}</td>
                   </tr>
                   <tr>
                     <td className="fw-bold">Pur. group</td>
                     <td>:</td>
-                    <td>PUR</td>
+                    <td>{apiData?.purchaseGroup}</td>
                   </tr>
                 </tbody>
               </table>
@@ -154,18 +154,18 @@ function GoodsReceiptSlip() {
                     <td className="text-start" width={"5%"}>
                       :
                     </td>
-                    <td width={"30%"}>3456789876</td>
+                    <td width={"30%"}>{apiData?.chalanNo}</td>
                   </tr>
                   <tr>
                     <td className="fw-bold">Bill Location</td>
                     <td className="text-start">:</td>
                     <td>test</td>
                   </tr>
-                  <tr>
+                  {/* <tr>
                     <td className="fw-bold">Telephone</td>
                     <td className="text-start">:</td>
                     <td>07.03.2024</td>
-                  </tr>
+                  </tr> */}
                 </tbody>
               </table>
             </div>
@@ -177,32 +177,33 @@ function GoodsReceiptSlip() {
         <div className="section-container">
           <div className="row mt-4">
             <div className="col-6 d-flex justify-content-end top_info_table">
-              <table className="h-75 w-100" style={{ fontSize: "14px" }}>
+              <table
+                className="h-75 w-100 custom-table"
+                style={{ fontSize: "14px" }}
+              >
+                <thead>
+                  <tr>
+                    <th>Item</th>
+                    <th>Material Mpn</th>
+                    <th>Description</th>
+                    <th>Recipient</th>
+                    <th>Accounting Assignment</th>
+                    <th>Quantity</th>
+                  </tr>
+                </thead>
                 <tbody>
                   <tr>
-                    <td width={"30%"} className="fw-bold">
-                      Item Material MPN Acct.assgt
-                    </td>
-                    <td className="text-start" width={"5%"}>
-                      :
-                    </td>
-                    <td width={"30%"}>0001 341021000009</td>
-                  </tr>
-                  <tr>
-                    <td className="fw-bold">Description Recipient</td>
-                    <td className="text-start">:</td>
-                    <td>SIKAFLEX-292, BINDING MATERIAL_200_300gm</td>
-                  </tr>
-                  <tr>
-                    <td className="fw-bold">Qty.</td>
-                    <td className="text-start">:</td>
-                    <td>UN</td>
+                    <td>{apiData?.quantity}</td>
+                    <td>fffffffffffff</td>
+                    <td></td>
+                    <td></td>
                   </tr>
                 </tbody>
               </table>
             </div>
           </div>
         </div>
+
         <hr className="section-divider" />
       </section>
 

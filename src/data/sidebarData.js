@@ -44,6 +44,10 @@ export const sidebarData = [
     link: "/display-store-actions",
   },
   {
+    title: "Manage Vendor Activities",
+    link: "/manage-vendor-activities",
+  },
+  {
     title: "WDC - JCC",
     link: "/wdc",
   },
@@ -55,14 +59,10 @@ export const sidebarData = [
     title: "Invoice And Payment Process",
     link: "/invoice-and-payment-process",
   },
-  {
-    title: "Upload Claim",
-    link: "/claim-letter",
-  },
-  {
-    title: "Manage Vendor Activities",
-    link: "/manage-vendor-activities",
-  },
+  // {
+  //   title: "Upload Claim",
+  //   link: "/claim-letter",
+  // },
 
   // {
   //   title: "Gate In Entry / GR / ICGRN",

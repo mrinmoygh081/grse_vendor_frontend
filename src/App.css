@@ -70,6 +70,16 @@ input[type="number"] {
   margin-top: 120px;
 } */
 
+.custom-table {
+  border-collapse: collapse;
+}
+
+.custom-table td,
+.custom-table th {
+  border: none;
+  padding: 8px; /* adjust padding as needed */
+}
+
 .card_pos {
   margin-top: 100px;
   width: 99%;

@@ -6,6 +6,7 @@ import Footer from "../../components/Footer";
 import { useSelector } from "react-redux";
 import { USER_VENDOR } from "../../constants/userConstants";
 import { actionHandlerBTN } from "../../Helpers/BTNChecklist";
+import { FaPlus } from "react-icons/fa";
 import {
   checkTypeArr,
   inputFileChange,
@@ -47,6 +48,11 @@ const BillsMaterialHybrid = () => {
     pbg_filename: "",
     grn_nos: "",
     icgrn_nos: "",
+    associated_po: [
+      {
+        a_po: "",
+      },
+    ],
   };
   const [form, setForm] = useState(initialData);
 
@@ -370,16 +376,6 @@ const BillsMaterialHybrid = () => {
                                     </tr>
                                     <tr>
                                       <td>Gate Entry Acknowledgement no.</td>
-                                      {/* <td className="btn_value">
-                                        <p>
-                                          {checkTypeArr(data?.gate_entry) &&
-                                            data?.gate_entry.map((item, i) => (
-                                              <b key={i} className="mx-2">
-                                                {item?.acc_no}
-                                              </b>
-                                            ))}
-                                        </p>
-                                      </td> */}
                                       <td className="btn_value">
                                         {form.gate_entry_no}
                                       </td>
@@ -387,24 +383,6 @@ const BillsMaterialHybrid = () => {
                                     <tr>
                                       <td>Gate Entry Date</td>
                                       <td className="btn_value">
-                                        {/* <p>
-                                          {checkTypeArr(data?.gate_entry) &&
-                                            data?.gate_entry.map((item, i) => (
-                                              <b key={i} className="mx-2">
-                                                {item?.gate_date}
-                                              </b>
-                                            ))}
-                                        </p>
-                                        <input
-                                          type="file"
-                                          className="form-control"
-                                          name="get_entry_filename"
-                                          onChange={(e) =>
-                                            inputFileChange(e, form, setForm)
-                                          }
-                                          accept=".pdf"
-                                        /> */}
-
                                         {form.gate_entry_date}
                                       </td>
                                     </tr>
@@ -445,14 +423,7 @@ const BillsMaterialHybrid = () => {
                                     <tr>
                                       <td>Total ICGRN Value</td>
                                       <td className="btn_value">
-                                        <b>
-                                          {form.total_price}
-                                          {/* {data?.icgrn_nos?.total_icgrn_value} */}
-                                        </b>
-                                        {console.log(
-                                          form.total_price,
-                                          "total_price normal"
-                                        )}
+                                        <b>{form.total_price}</b>
                                       </td>
                                     </tr>
                                     <tr>
@@ -540,6 +511,39 @@ const BillsMaterialHybrid = () => {
                                               }
                                             )
                                           : "PBG NOT SUBMITTED"}
+                                      </td>
+                                    </tr>
+                                    <tr>
+                                      <td>Associated PO:</td>
+                                      <td className="btn_value">
+                                        {checkTypeArr(form?.associated_po) &&
+                                          form.associated_po.map((item, i) => (
+                                            <input
+                                              type="text"
+                                              className="form-control"
+                                              name="associated_po"
+                                              value={item?.a_po}
+                                              key={i}
+                                            />
+                                          ))}
+                                        <button
+                                          className="btn btn-sm btn-primary d-flex align-items-center ms-2"
+                                          style={{ fontSize: "16px" }}
+                                          type="button"
+                                          onClick={() =>
+                                            setForm({
+                                              ...form,
+                                              associated_po: [
+                                                ...form?.associated_po,
+                                                {
+                                                  a_po: "",
+                                                },
+                                              ],
+                                            })
+                                          }
+                                        >
+                                          <FaPlus />
+                                        </button>
                                       </td>
                                     </tr>
                                     <tr>

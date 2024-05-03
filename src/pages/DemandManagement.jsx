@@ -20,6 +20,9 @@ const DemandManagement = () => {
   const [data, setData] = useState([]);
   const [lineItemData, setLineItemData] = useState([]);
   const [availableAmount, setAvailableAmount] = useState(null);
+  const [description, setDescription] = useState("");
+  const [materialCode, setMaterialCode] = useState("");
+  const [unit, setUnit] = useState("");
   const [viewData, setViewData] = useState(null);
   const { id } = useParams();
   const [groupedData, setGroupedData] = useState([]);
@@ -73,6 +76,9 @@ const DemandManagement = () => {
       );
       if (data?.status) {
         setAvailableAmount(data?.data?.rest_amount);
+        setDescription(data?.data?.description);
+        setMaterialCode(data?.data?.matarial_code);
+        setUnit(data?.data?.unit);
       }
     } catch (error) {
       console.error("Error fetching WDC list:", error);
@@ -99,58 +105,26 @@ const DemandManagement = () => {
 
   const actionHandler = async (flag) => {
     try {
-      const {
-        action_type,
-        remarks,
-        line_item_no,
-        request_amount,
-        recived_quantity,
-        delivery_date,
-      } = formData;
+      const { action_type, remarks, delivery_date } = formData;
 
       if (action_type.trim() === "") {
-        return toast.warn("Action Type are required!");
+        return toast.warn("Action Type is required!");
       }
-      if (
-        action_type.trim() === "Service Engineer Requirement" &&
-        (remarks.trim() === "" || line_item_no.trim() === "")
-      ) {
-        return toast.warn("All fields are required!");
-      } else if (
-        action_type.trim() === "Material Requirement" &&
-        (remarks.trim() === "" ||
-          line_item_no.trim() === "" ||
-          request_amount.trim() === "" ||
-          delivery_date === "")
-      ) {
-        return toast.warn("All fields are required!");
-      }
-      if (request_amount > availableAmount) {
-        return toast.warn(
-          "Raised requeste quantity should be less than or equal to available quantity!"
-        );
-      }
-      let formObj = {
-        action_type: action_type,
-        purchasing_doc_no: id,
-        line_item_no: line_item_no,
-        request_amount: request_amount,
-        delivery_date: convertToEpoch(delivery_date),
-        remarks,
-        status: flag,
-      };
 
-      if (flag === "RECEIVED") {
-        formObj = {
-          action_type: flag,
-          reference_no: viewData?.reference_no,
-          purchasing_doc_no: id,
-          line_item_no: viewData?.line_item_no,
-          recived_quantity,
-          status: flag,
-          remarks,
-        };
-      }
+      // Prepare demand array
+      const demand = dynamicFields.map((field) => ({
+        line_item_no: field.line_item_no,
+        request_amount: field.request_amount,
+      }));
+
+      const formObj = {
+        purchasing_doc_no: id,
+        demand,
+        delivery_date: convertToEpoch(delivery_date),
+        status: flag,
+        action_type,
+        remarks,
+      };
 
       const response = await apiCallBack(
         "POST",
@@ -177,6 +151,87 @@ const DemandManagement = () => {
       console.error("Error uploading:", error);
     }
   };
+
+  // const actionHandler = async (flag) => {
+  //   try {
+  //     const {
+  //       action_type,
+  //       remarks,
+  //       line_item_no,
+  //       request_amount,
+  //       recived_quantity,
+  //       delivery_date,
+  //     } = formData;
+
+  //     if (action_type.trim() === "") {
+  //       return toast.warn("Action Type are required!");
+  //     }
+  //     if (
+  //       action_type.trim() === "Service Engineer Requirement" &&
+  //       (remarks.trim() === "" || line_item_no.trim() === "")
+  //     ) {
+  //       return toast.warn("All fields are required!");
+  //     } else if (
+  //       action_type.trim() === "Material Requirement" &&
+  //       (remarks.trim() === "" ||
+  //         line_item_no.trim() === "" ||
+  //         request_amount.trim() === "" ||
+  //         delivery_date === "")
+  //     ) {
+  //       return toast.warn("All fields are required!");
+  //     }
+  //     if (request_amount > availableAmount) {
+  //       return toast.warn(
+  //         "Raised requeste quantity should be less than or equal to available quantity!"
+  //       );
+  //     }
+  //     let formObj = {
+  //       action_type: action_type,
+  //       purchasing_doc_no: id,
+  //       line_item_no: line_item_no,
+  //       request_amount: request_amount,
+  //       delivery_date: convertToEpoch(delivery_date),
+  //       remarks,
+  //       status: flag,
+  //     };
+
+  //     if (flag === "RECEIVED") {
+  //       formObj = {
+  //         action_type: flag,
+  //         reference_no: viewData?.reference_no,
+  //         purchasing_doc_no: id,
+  //         line_item_no: viewData?.line_item_no,
+  //         recived_quantity,
+  //         status: flag,
+  //         remarks,
+  //       };
+  //     }
+
+  //     const response = await apiCallBack(
+  //       "POST",
+  //       "po/demandeManagement/insert",
+  //       formObj,
+  //       token
+  //     );
+
+  //     if (response?.status) {
+  //       toast.success(response?.message);
+  //       setIsPopup(false);
+  //       setFormData({
+  //         action_type: "",
+  //         remarks: "",
+  //         line_item_no: "",
+  //         request_amount: "",
+  //         delivery_date: "",
+  //       });
+  //       getData();
+  //     } else {
+  //       toast.error(response?.message);
+  //     }
+  //   } catch (error) {
+  //     console.error("Error uploading:", error);
+  //   }
+  // };
 
   const actionHandlerReceiver = async (flag) => {
     try {
@@ -231,8 +286,37 @@ const DemandManagement = () => {
   const addNewField = () => {
     setDynamicFields([
       ...dynamicFields,
-      { line_item_no: "", request_amount: "" },
+      {
+        line_item_no: "",
+        request_amount: "",
+        availableAmount: "",
+        description: "",
+        materialCode: "",
+        unit: "",
+      },
     ]);
+  };
+
+  // Function to fetch and set values for Available Amount, Description, Material Code, and Unit
+  const setDynamicValues = async (index, line_item_no) => {
+    try {
+      const data = await apiCallBack(
+        "GET",
+        `po/demandeManagement/getRestAmount?po_no=${id}&line_item_no=${line_item_no}`,
+        null,
+        token
+      );
+      if (data?.status) {
+        const updatedFields = [...dynamicFields];
+        updatedFields[index].availableAmount = data?.data?.rest_amount;
+        updatedFields[index].description = data?.data?.description;
+        updatedFields[index].materialCode = data?.data?.matarial_code;
+        updatedFields[index].unit = data?.data?.unit;
+        setDynamicFields(updatedFields);
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
   };
 
   return (
@@ -404,7 +488,7 @@ const DemandManagement = () => {
                       </select>
                     </div>
                   </div>
-                  <div className="col-12 col-md-3">
+                  <div className="col-12 col-md-2">
                     <div className="mb-3">
                       <label className="form-label">
                         PO Line Item <span className="red">*</span>{" "}
@@ -438,13 +522,35 @@ const DemandManagement = () => {
                   </div>
                   {formData?.action_type !== "Service Engineer Requirement" && (
                     <>
-                      <div className="col-12 col-md-3">
+                      <div className="col-12 col-md-2">
                         <div className="mb-3">
-                          <label className="form-label">Available Amount</label>
-                          <p>{availableAmount}</p>
+                          <label className="form-label">Available</label>
+                          <p>
+                            {availableAmount}
+                            {unit}
+                          </p>
                         </div>
                       </div>
-                      <div className="col-12 col-md-4">
+                      <div className="col-12 col-md-2">
+                        <div className="mb-3">
+                          <label className="form-label">Description</label>
+                          <p>{description}</p>
+                        </div>
+                      </div>
+                      <div className="col-12 col-md-2">
+                        <div className="mb-3">
+                          <label className="form-label">Material Code</label>
+
+                          <p>{materialCode}</p>
+                        </div>
+                      </div>
+                      {/* <div className="col-12 col-md-2">
+                        <div className="mb-3">
+                          <label className="form-label">Unit</label>
+                          <p>{unit}</p>
+                        </div>
+                      </div> */}
+                      <div className="col-12 col-md-2">
                         <div className="mb-3">
                           <label className="form-label">
                             Demand Quantity <span className="red">*</span>{" "}
@@ -469,52 +575,69 @@ const DemandManagement = () => {
                   </div>
                   {dynamicFields.map((field, index) => (
                     <Fragment key={index}>
-                      <div className="col-12 col-md-3">
+                      <div className="col-12 col-md-2">
                         <div className="mb-3">
                           <select
-                            name=""
-                            id=""
+                            name={`line_item_${index}`}
+                            id={`line_item_${index}`}
                             className="form-select"
-                            value={formData?.line_item_no}
-                            onChange={(e) =>
-                              setFormData({
-                                ...formData,
-                                line_item_no: e.target.value,
-                              })
-                            }
+                            value={field.line_item_no}
+                            onChange={(e) => {
+                              const updatedFields = [...dynamicFields];
+                              updatedFields[index].line_item_no =
+                                e.target.value;
+                              setDynamicFields(updatedFields);
+                              setDynamicValues(index, e.target.value); // Fetch and set dynamic values
+                            }}
                           >
                             <option value="">Choose PO Line Item</option>
                             {checkTypeArr(lineItemData) &&
-                              lineItemData.map((item, i) => {
-                                return (
-                                  <option
-                                    value={item?.material_item_number}
-                                    key={i}
-                                  >
-                                    {item?.material_item_number}
-                                  </option>
-                                );
-                              })}
+                              lineItemData.map((item, i) => (
+                                <option
+                                  value={item?.material_item_number}
+                                  key={i}
+                                >
+                                  {item?.material_item_number}
+                                </option>
+                              ))}
                           </select>
                         </div>
                       </div>
-                      <div className="col-12 col-md-3">
+                      <div className="col-12 col-md-2">
                         <div className="mb-3">
-                          <p>{availableAmount}</p>
+                          <p>
+                            {field.availableAmount}
+                            {field.unit}
+                          </p>
                         </div>
                       </div>
-                      <div className="col-12 col-md-4">
+                      <div className="col-12 col-md-2">
+                        <div className="mb-3">
+                          <p>{field.description}</p>
+                        </div>
+                      </div>
+                      <div className="col-12 col-md-2">
+                        <div className="mb-3">
+                          <p>{field.materialCode}</p>
+                        </div>
+                      </div>
+                      {/* <div className="col-12 col-md-2">
+                        <div className="mb-3">
+                          <p>{field.unit}</p>
+                        </div>
+                      </div> */}
+                      <div className="col-12 col-md-2">
                         <div className="mb-3">
                           <input
                             type="number"
                             className="form-control"
-                            value={formData?.request_amount}
-                            onChange={(e) =>
-                              setFormData({
-                                ...formData,
-                                request_amount: e.target.value,
-                              })
-                            }
+                            value={field.request_amount}
+                            onChange={(e) => {
+                              const updatedFields = [...dynamicFields];
+                              updatedFields[index].request_amount =
+                                e.target.value;
+                              setDynamicFields(updatedFields);
+                            }}
                           />
                         </div>
                       </div>
