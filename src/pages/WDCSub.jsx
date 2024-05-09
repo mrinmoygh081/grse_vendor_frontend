@@ -5,18 +5,53 @@ import Header from "../components/Header";
 import { Link, useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { apiCallBack } from "../utils/fetchAPIs";
+import Select from "react-select";
 import { toast } from "react-toastify";
 import { reConfirm } from "../utils/reConfirm";
 import ReactDatePicker from "react-datepicker";
-import { convertToEpoch } from "../utils/getDateTimeNow";
+import {
+  calDatesDiff,
+  convertToEpoch,
+  formatDate,
+} from "../utils/getDateTimeNow";
 import { clrLegend } from "../utils/clrLegend";
 import { checkTypeArr } from "../utils/smallFun";
 import { USER_PPNC_DEPARTMENT, USER_VENDOR } from "../constants/userConstants";
 import { APPROVED, REJECTED, SUBMITTED } from "../constants/BGconstants";
 import { groupedByRefNo } from "../utils/groupedByReq";
 import { inputOnWheelPrevent } from "../utils/inputOnWheelPrevent";
+import { FaPlus } from "react-icons/fa";
 
 const WDCSub = () => {
+  let line_item_fields = {
+    claim_qty: "",
+    line_item_no: "",
+    contractual_start_date: "",
+    Contractual_completion_date: "",
+    actual_start_date: "",
+    actual_completion_date: "",
+    hinderance_in_days: "",
+  };
+
+  let initialFormData = {
+    certifying_authority: "",
+    action_type: "",
+    remarks: "",
+    job_location: "",
+    yard_no: "",
+    unit: "",
+    stage_details: "",
+    work_title: "",
+    work_done_by: "",
+    inspection_note_ref_no: "",
+    file_inspection_note_ref_no: null,
+    hinderence_report_cerified_by_berth: "",
+    file_hinderence_report_cerified_by_berth: null,
+    attendance_report: "",
+    file_attendance_report: null,
+    line_item_array: [line_item_fields],
+  };
+
   const [isPopup, setIsPopup] = useState(false);
   const [isPopupView, setIsPopupView] = useState(false);
   const [isSecPopup, setIsSecPopup] = useState(false);
@@ -24,34 +59,25 @@ const WDCSub = () => {
   const [lineItemData, setLineItemData] = useState([]);
   const [groupedData, setGroupedData] = useState([]);
   const [viewData, setViewData] = useState(null);
-
-  // const [pncFormData, setPncFormData] = useState({
-  //   purchasing_doc_no: "",
-  //   remarks: "",
-  //   status: "",
-  //   reference_no: "",
-  // });
-
-  const [formData, setFormData] = useState({
-    action_type: "",
-    file: null,
-    remarks: "",
-    po_line_iten_no: "",
-    job_location: "",
-    yard_no: "",
-    actual_start_date: "",
-    actual_completion_date: "",
-    unit: "",
-    messurment: "",
-    quantity: "",
-    // entry_by_production: "",
-    stage_datiels: "",
-    actual_payable_amount: "",
+  const [emp, setEmp] = useState(null);
+  const [delay, setDelay] = useState("");
+  const [doForm, setDoForm] = useState({
+    contractual_start_date: "",
+    Contractual_completion_date: "",
   });
+  console.log(viewData, "viewData,,,,,,,,,,,,,,,");
+
+  const [dynamicFields, setDynamicFields] = useState([line_item_fields]);
+  console.log(dynamicFields, "dynamicFieldsdynamicFields");
+
+  const [formData, setFormData] = useState(initialFormData);
   const { id } = useParams();
   const { user, token } = useSelector((state) => state.auth);
 
-  const fileInputRef = useRef(null);
+  const fileoneInputRef = useRef(null);
+  const filetwoInputRef = useRef(null);
+  const filethreeInputRef = useRef(null);
+  console.log(formData, "formDataabhinit");
 
   const getData = async () => {
     try {
@@ -62,7 +88,7 @@ const WDCSub = () => {
         token
       );
       if (data?.status) {
-        setAllData(data?.data);
+        setAllData(JSON.parse(data?.data));
       }
     } catch (error) {
       console.error("Error fetching WDC/JCC list:", error);
@@ -81,8 +107,26 @@ const WDCSub = () => {
     }
   };
 
+  const getEmp = async () => {
+    try {
+      const data = await apiCallBack("GET", `po/wdc/grseEmpList`, null, token);
+      if (data?.status) {
+        let options = data.data.map((item, index) => {
+          return {
+            value: item.code,
+            label: `${item.name} (${item.code})`,
+          };
+        });
+        setEmp(options);
+      }
+    } catch (error) {
+      console.error("Error fetching Employee list:", error);
+    }
+  };
+
   useEffect(() => {
     getData();
+    getEmp();
     getPOLineItemData();
   }, [id, token]);
 
@@ -95,118 +139,256 @@ const WDCSub = () => {
 
   const submitHandler = async (flag, ref_no) => {
     try {
-      const {
-        file,
-        action_type,
-        remarks,
-        po_line_iten_no,
-        job_location,
-        yard_no,
-        actual_start_date,
-        actual_completion_date,
-        unit,
-        messurment,
-        quantity,
-        // entry_by_production,
-        stage_datiels,
-        actual_payable_amount,
-      } = formData;
-      if (
-        flag === APPROVED ||
-        flag === REJECTED ||
-        (file &&
-          id !== "" &&
-          action_type !== "" &&
-          remarks !== "" &&
-          po_line_iten_no !== "" &&
-          job_location !== "" &&
-          yard_no !== "" &&
-          actual_start_date !== "" &&
-          actual_completion_date !== "" &&
-          unit !== "" &&
-          messurment !== "" &&
-          quantity !== "")
-      ) {
-        const fdToSend = new FormData();
-        if (flag === SUBMITTED) {
-          fdToSend.append("file", file);
-          fdToSend.append("action_type", action_type);
-          fdToSend.append("wdc_date", convertToEpoch(new Date()));
-          fdToSend.append("po_line_iten_no", po_line_iten_no);
-          fdToSend.append("job_location", job_location);
-          fdToSend.append("yard_no", yard_no);
-          fdToSend.append(
-            "actual_start_date",
-            convertToEpoch(actual_start_date)
-          );
-          fdToSend.append(
-            "actual_completion_date",
-            convertToEpoch(actual_completion_date)
-          );
-          fdToSend.append("unit", unit);
-          fdToSend.append("messurment", messurment);
-          fdToSend.append("quantity", quantity);
-          fdToSend.append("remarks", remarks);
-        }
-        fdToSend.append("status", flag);
-        fdToSend.append("purchasing_doc_no", id);
-        if (flag === APPROVED || flag === REJECTED) {
-          // fdToSend.append("action_type", action_type);
-          fdToSend.append("reference_no", ref_no);
-          // fdToSend.append("entry_by_production", entry_by_production);
-          fdToSend.append("stage_datiels", stage_datiels);
-          fdToSend.append("actual_payable_amount", actual_payable_amount);
-        }
-        if (flag === APPROVED) {
-          fdToSend.append("remarks", "File Approved!");
-        }
-        if (flag === REJECTED) {
-          fdToSend.append("remarks", "File Rejected!");
-        }
+      const formDataCopy = { ...formData }; // Create a copy of formData
 
-        const response = await apiCallBack(
-          "POST",
-          "po/wdc/submitWdc",
-          fdToSend,
-          token
+      // Check if all required fields are filled
+      if (
+        formDataCopy.action_type &&
+        formDataCopy.remarks &&
+        formDataCopy.line_item_array &&
+        formDataCopy.line_item_array.length > 0
+      ) {
+        const fD = new FormData();
+
+        // Append other fields to FormData
+        fD.append("action_type", formDataCopy.action_type);
+        fD.append("purchasing_doc_no", id);
+        fD.append("remarks", formDataCopy.remarks);
+        fD.append("status", flag);
+        fD.append("work_done_by", formDataCopy.work_done_by);
+        fD.append("work_title", formDataCopy.work_title);
+        fD.append("job_location", formDataCopy.job_location);
+        fD.append("yard_no", formDataCopy.yard_no);
+        fD.append(
+          "inspection_note_ref_no",
+          formDataCopy.inspection_note_ref_no
+        );
+        fD.append(
+          "file_inspection_note_ref_no",
+          formDataCopy.file_inspection_note_ref_no
+        );
+        fD.append(
+          "hinderence_report_cerified_by_berth",
+          formDataCopy.hinderence_report_cerified_by_berth
+        );
+        fD.append(
+          "file_hinderence_report_cerified_by_berth",
+          formDataCopy.file_hinderence_report_cerified_by_berth
+        );
+        fD.append("attendance_report", formDataCopy.attendance_report);
+        fD.append(
+          "file_attendance_report",
+          formDataCopy.file_attendance_report
+        );
+        fD.append("unit", formDataCopy.unit);
+        fD.append("stage_details", formDataCopy.stage_details);
+        fD.append("assigned_to", formDataCopy.certifying_authority);
+
+        // Convert line_item_array to JSON string and append to FormData
+        formDataCopy.line_item_array = dynamicFields;
+        fD.append(
+          "line_item_array",
+          JSON.stringify(formDataCopy.line_item_array)
         );
 
-        if (response?.status) {
-          toast.success(response?.message);
+        console.log("fd", fD);
+
+        const res = await apiCallBack("POST", "po/wdc/submitWdc", fD, token);
+
+        if (res.status) {
+          toast.success(res.message);
           setIsPopup(false);
           setIsSecPopup(false);
-          setFormData({
-            file: null,
-            action_type: "",
-            remarks: "",
-            wdc_date: "",
-            po_line_iten_no: "",
-            job_location: "",
-            yard_no: "",
-            actual_start_date: "",
-            actual_completion_date: "",
-            unit: "",
-            messurment: "",
-            quantity: "",
-            // entry_by_production: "",
-            stage_datiels: "",
-            actual_payable_amount: "",
-          });
+          setFormData(initialFormData);
           getData();
-          if (flag === SUBMITTED) {
-            fileInputRef.current.value = null;
-          }
         } else {
-          toast.warn(response?.message);
+          toast.warn(res.message);
         }
       } else {
-        toast.warn("Please fill up the required fields!");
+        toast.warn("Please fill up all the required fields!");
       }
     } catch (error) {
-      toast.error("Error uploading File:", error);
-      console.error("error", error);
+      toast.error("Error uploading file: " + error.message);
+      console.error("Error uploading file:", error);
     }
   };
+
+  const submitHandlerAction = async (flag, reference_no) => {
+    try {
+      const formDataCopy = { ...formData }; // Create a copy of formData
+
+      // Check if all required fields are filled
+      {
+        const fD = new FormData();
+
+        // Append other fields to FormData
+
+        fD.append("purchasing_doc_no", viewData?.purchasing_doc_no || ""); // Use viewData instead of id
+        fD.append("reference_no", reference_no || viewData.reference_no || "");
+
+        // Append status from parameters
+        fD.append("status", flag);
+
+        // Construct line_item_array from multiple objects
+        const lineItemArray = viewData.line_item_array.map((item) => ({
+          contractual_start_date: doForm.contractual_start_date,
+          Contractual_completion_date: doForm.Contractual_completion_date,
+          delay: delay,
+          line_item_no: item.line_item_no || "", // Use the line_item_no from viewData, if available
+        }));
+
+        fD.append("line_item_array", JSON.stringify(lineItemArray));
+
+        console.log("fd", fD);
+
+        console.log("fd", fD);
+
+        const res = await apiCallBack("POST", "po/wdc/submitWdc", fD, token);
+
+        if (res.status) {
+          toast.success(res.message);
+          setIsPopup(false);
+          setIsSecPopup(false);
+          setFormData(initialFormData);
+          getData();
+        } else {
+          toast.warn(res.message);
+        }
+      }
+    } catch (error) {
+      toast.error("Error uploading file: " + error.message);
+      console.error("Error uploading file:", error);
+    }
+  };
+
+  // const submitHandlerAction = async (flag, ref_no) => {
+  //   try {
+  //     const { action_type, line_item_array } = formData;
+
+  //     if (action_type && line_item_array && line_item_array.length > 0) {
+  //       const fD = new FormData();
+
+  //       fD.append("action_type", action_type);
+  //       Object.keys(viewData).forEach((key) => {
+  //         if (key !== "line_item_array") {
+  //           fD.append(key, viewData[key]);
+  //         }
+  //       });
+
+  //       const updatedLineItemArray = line_item_array.map((item) => ({
+  //         ...item,
+  //         contractual_start_date: doForm.contractual_start_date,
+  //         Contractual_completion_date: doForm.Contractual_completion_date,
+  //       }));
+  //       fD.append("line_item_array", JSON.stringify(updatedLineItemArray));
+
+  //       const res = await apiCallBack("POST", "po/wdc/submitWdc", fD, token);
+
+  //       if (res.status) {
+  //         toast.success(res.message);
+  //         setIsPopup(false);
+  //         setIsSecPopup(false);
+  //         setFormData(initialFormData);
+  //         getData();
+  //       } else {
+  //         toast.warn(res.message);
+  //       }
+  //     } else {
+  //       // No need for this warning since all required fields are displayed in viewData
+  //       // toast.warn("Please fill up all the required fields!");
+  //     }
+  //   } catch (error) {
+  //     toast.error("Error uploading file: " + error.message);
+  //     console.error("Error uploading file:", error);
+  //   }
+  // };
+
+  const getAvailableAmount = async (item) => {
+    try {
+      const res = await apiCallBack(
+        "GET",
+        `po/demandeManagement/getRestAmount?po_no=${id}&line_item_no=${item}`,
+        null,
+        token
+      );
+      if (res?.status) {
+        return {
+          description: res?.data?.description,
+          rest_amount: res?.data?.rest_amount,
+          unit: res?.data?.unit,
+        };
+      }
+    } catch (error) {
+      console.error("Error fetching WDC list:", error);
+      return null;
+    }
+  };
+
+  const handleFieldChange = async (index, fieldName, value) => {
+    const updatedFields = [...dynamicFields];
+    updatedFields[index][fieldName] = value;
+
+    // Fetch and update Description, Open PO Qty, and UOM when Line Item No changes
+    if (fieldName === "line_item_no") {
+      const lineItemNo = value;
+      // Fetch corresponding data for the selected Line Item No
+      let getRestData = await getAvailableAmount(lineItemNo);
+      // Update the corresponding fields in the state
+      updatedFields[index].description = getRestData?.description;
+      updatedFields[index].rest_amount = getRestData?.rest_amount;
+      updatedFields[index].unit = getRestData?.unit;
+
+      // Update the state with the modified dynamic fields
+      setDynamicFields(updatedFields);
+    } else {
+      // Update the state with the modified dynamic fields
+      setDynamicFields(updatedFields);
+    }
+  };
+
+  const handleDateChange = (index, fieldName, date) => {
+    const updatedFields = [...dynamicFields];
+    updatedFields[index][fieldName] = date;
+    setDynamicFields(updatedFields);
+  };
+
+  // useEffect(() => {
+  //   console.log("viewData2", doForm?.contractual_completion_date);
+  //   let dateDelay;
+  //   if(doForm?.contractual_completion_date){
+  //     dateDelay = parseInt(calDatesDiff(new Date(viewData?.line_item_array[0]?.actual_completion_date), new Date(doForm?.contractual_completion_date))) + parseInt(viewData?.line_item_array[0]?.hinderance_in_days)
+  //   } else {
+  //     dateDelay = parseInt(viewData?.line_item_array[0]?.hinderance_in_days)
+
+  //   }
+  //   setDelay(dateDelay)
+  // }, [doForm?.contractual_completion_date, viewData])
+
+  useEffect(() => {
+    // console.log("viewData2", doForm?.contractual_completion_date);
+
+    let dateDelay = 0; // Initialize delay to a default value
+
+    if (viewData?.line_item_array && viewData.line_item_array.length > 0) {
+      // Check if viewData.line_item_array exists and has at least one element
+      if (doForm?.Contractual_completion_date) {
+        // Calculate delay based on actual completion date and contractual completion date
+        dateDelay =
+          parseInt(
+            calDatesDiff(
+              new Date(viewData.line_item_array[0].actual_completion_date),
+              new Date(doForm.Contractual_completion_date)
+            )
+          ) + parseInt(viewData.line_item_array[0].hinderance_in_days);
+      } else {
+        // If contractual completion date is not available, use only hinderance in days
+        dateDelay = parseInt(viewData.line_item_array[0].hinderance_in_days);
+      }
+    }
+
+    // Set the delay state
+    setDelay(dateDelay);
+  }, [doForm?.Contractual_completion_date, viewData]);
 
   return (
     <>
@@ -241,7 +423,6 @@ const WDCSub = () => {
                                   {/* <th className="min-w-150px">Reference No</th> */}
                                   <th>Action Type</th>
                                   <th className="min-w-150px">DateTime </th>
-                                  <th className="min-w-150px">File</th>
                                   <th className="min-w-150px">Action By</th>
                                   <th className="min-w-150px">Date</th>
                                   <th>PO LineItem</th>
@@ -262,24 +443,10 @@ const WDCSub = () => {
                                       {checkTypeArr(items) &&
                                         items.map((item, index) => (
                                           <tr key={index}>
-                                            {/* <td>{item.reference_no}</td> */}
                                             <td>{item?.action_type}</td>
                                             <td>
                                               {item?.created_at &&
-                                                new Date(
-                                                  item.created_at
-                                                ).toLocaleString()}
-                                            </td>
-                                            <td>
-                                              {item.file_name && (
-                                                <a
-                                                  href={`${process.env.REACT_APP_PDF_URL}submitWdc/${item.file_name}`}
-                                                  target="_blank"
-                                                  rel="noreferrer"
-                                                >
-                                                  Click Here
-                                                </a>
-                                              )}
+                                                formatDate(item?.created_at)}
                                             </td>
                                             <td>{item.created_by_id}</td>
                                             <td>
@@ -288,13 +455,13 @@ const WDCSub = () => {
                                                   item.wdc_date * 1000
                                                 ).toLocaleDateString()}
                                             </td>
-                                            <td>{item.po_line_iten_no}</td>
+                                            <td>{item?.line_item_no}</td>
                                             <td
                                               className={`${clrLegend(
                                                 item?.status
                                               )} bold`}
                                             >
-                                              {item.status}
+                                              {item?.status}
                                             </td>
                                             <td className="d-flex">
                                               <button
@@ -345,7 +512,7 @@ const WDCSub = () => {
       </div>
 
       {user?.user_type === USER_VENDOR && (
-        <div className={isPopup ? "popup active" : "popup"}>
+        <div className={isPopup ? "popup popup_lg active" : "popup popup_lg"}>
           <div className="card card-xxl-stretch mb-5 mb-xxl-8">
             <div className="card-header border-0 pt-5 pb-3">
               <h3 className="card-title align-items-start flex-column">
@@ -362,7 +529,7 @@ const WDCSub = () => {
             </div>
             <form>
               <div className="row">
-                <div className="col-12 col-md-6">
+                <div className="col-12 col-md-3">
                   <div className="mb-3">
                     <label className="form-label">
                       Action <span className="red">*</span>{" "}
@@ -385,59 +552,43 @@ const WDCSub = () => {
                     </select>
                   </div>
                 </div>
-                <div className="col-12 col-md-6">
+
+                <div className="col-12 col-md-3">
                   <div className="mb-3">
-                    <label className="form-label">
-                      File Info <span className="red">*</span>{" "}
-                    </label>
+                    <label className="form-label">Work Done By</label>
                     <input
-                      type="file"
+                      type="text"
                       className="form-control"
+                      value={formData?.work_done_by}
                       onChange={(e) =>
                         setFormData({
                           ...formData,
-                          file: e.target.files[0],
+                          work_done_by: e.target.value,
                         })
                       }
-                      ref={fileInputRef}
-                      accept=".pdf"
                     />
                   </div>
                 </div>
-                <div className="col-12 col-md-6">
+                <div className="col-12 col-md-3">
                   <div className="mb-3">
-                    <label className="form-label">
-                      PO Line Item No <span className="red">*</span>{" "}
-                    </label>
-                    <select
-                      name=""
-                      id=""
-                      className="form-select"
-                      value={formData?.po_line_iten_no}
+                    <label className="form-label">Work Title</label>
+                    <input
+                      type="text"
+                      className="form-control"
+                      value={formData?.work_title}
                       onChange={(e) =>
                         setFormData({
                           ...formData,
-                          po_line_iten_no: e.target.value,
+                          work_title: e.target.value,
                         })
                       }
-                    >
-                      <option value="">Choose PO Line Item</option>
-                      {checkTypeArr(lineItemData) &&
-                        lineItemData.map((item, i) => {
-                          return (
-                            <option value={item?.material_item_number} key={i}>
-                              {item?.material_item_number}
-                            </option>
-                          );
-                        })}
-                    </select>
+                    />
                   </div>
                 </div>
-                <div className="col-12 col-md-6">
+
+                <div className="col-12 col-md-3">
                   <div className="mb-3">
-                    <label className="form-label">
-                      JOB Location <span className="red">*</span>{" "}
-                    </label>
+                    <label className="form-label">JOB Location</label>
                     <input
                       type="text"
                       className="form-control"
@@ -451,11 +602,25 @@ const WDCSub = () => {
                     />
                   </div>
                 </div>
-                <div className="col-12 col-md-6">
+                <div className="col-12 col-md-4">
                   <div className="mb-3">
-                    <label className="form-label">
-                      Yard No <span className="red">*</span>{" "}
-                    </label>
+                    <label className="form-label">Unit</label>
+                    <input
+                      type="text"
+                      className="form-control"
+                      value={formData?.unit}
+                      onChange={(e) =>
+                        setFormData({
+                          ...formData,
+                          unit: e.target.value,
+                        })
+                      }
+                    />
+                  </div>
+                </div>
+                <div className="col-12 col-md-4">
+                  <div className="mb-3">
+                    <label className="form-label">Yard No</label>
                     <input
                       type="text"
                       className="form-control"
@@ -466,95 +631,275 @@ const WDCSub = () => {
                     />
                   </div>
                 </div>
-                <div className="col-12 col-md-6">
+                <div className="col-12 col-md-4">
                   <div className="mb-3">
                     <label className="form-label">
-                      Actual Start Date <span className="red">*</span>{" "}
+                      Inspection Note Ref. No.
                     </label>
-                    <ReactDatePicker
-                      selected={formData?.actual_start_date}
-                      value={formData?.actual_start_date}
-                      onChange={(date) =>
-                        setFormData({
-                          ...formData,
-                          actual_start_date: date,
-                        })
-                      }
-                      dateFormat="dd/MM/yyyy"
-                      className="form-control"
-                      placeholderText="DD/MM/YYYY"
-                      maxDate={new Date()}
-                    />
+                    <div className="d-flex">
+                      <input
+                        type="text"
+                        className="form-control me-2"
+                        value={formData?.inspection_note_ref_no}
+                        onChange={(e) =>
+                          setFormData({
+                            ...formData,
+                            inspection_note_ref_no: e.target.value,
+                          })
+                        }
+                      />
+                      <input
+                        type="file"
+                        className="form-control"
+                        onChange={(e) =>
+                          setFormData({
+                            ...formData,
+                            file_inspection_note_ref_no: e.target.files[0],
+                          })
+                        }
+                        ref={fileoneInputRef}
+                        accept=".pdf"
+                      />
+                    </div>
                   </div>
                 </div>
-                <div className="col-12 col-md-6">
+                <div className="col-12 col-md-4">
                   <div className="mb-3">
                     <label className="form-label">
-                      Actual Completion Date <span className="red">*</span>{" "}
+                      Hinderence report cerified By Berth.{" "}
                     </label>
-                    <ReactDatePicker
-                      selected={formData?.actual_completion_date}
-                      value={formData?.actual_completion_date}
-                      onChange={(date) =>
-                        setFormData({
-                          ...formData,
-                          actual_completion_date: date,
-                        })
-                      }
-                      dateFormat="dd/MM/yyyy"
-                      className="form-control"
-                      placeholderText="DD/MM/YYYY"
-                      minDate={new Date()}
-                    />
+                    <div className="d-flex">
+                      <input
+                        type="text"
+                        className="form-control me-2"
+                        value={formData?.hinderence_report_cerified_by_berth}
+                        onChange={(e) =>
+                          setFormData({
+                            ...formData,
+                            hinderence_report_cerified_by_berth: e.target.value,
+                          })
+                        }
+                      />
+                      <input
+                        type="file"
+                        className="form-control"
+                        onChange={(e) =>
+                          setFormData({
+                            ...formData,
+                            file_hinderence_report_cerified_by_berth:
+                              e.target.files[0],
+                          })
+                        }
+                        ref={filetwoInputRef}
+                        accept=".pdf"
+                      />
+                    </div>
                   </div>
                 </div>
-                <div className="col-12 col-md-6">
+                <div className="col-12 col-md-4">
                   <div className="mb-3">
-                    <label className="form-label">
-                      Unit <span className="red">*</span>{" "}
-                    </label>
+                    <label className="form-label">Attendance Report</label>
+                    <div className="d-flex">
+                      <input
+                        type="text"
+                        className="form-control me-2"
+                        value={formData?.attendance_report}
+                        onChange={(e) =>
+                          setFormData({
+                            ...formData,
+                            attendance_report: e.target.value,
+                          })
+                        }
+                      />
+                      <input
+                        type="file"
+                        className="form-control"
+                        onChange={(e) =>
+                          setFormData({
+                            ...formData,
+                            file_attendance_report: e.target.files[0],
+                          })
+                        }
+                        ref={filethreeInputRef}
+                        accept=".pdf"
+                      />
+                    </div>
+                  </div>
+                </div>
+                <div className="col-12 col-md-4">
+                  <div className="mb-3">
+                    <label className="form-label">Stage Details</label>
                     <input
                       type="text"
                       className="form-control"
-                      value={formData?.unit}
+                      value={formData?.stage_details}
                       onChange={(e) =>
-                        setFormData({ ...formData, unit: e.target.value })
+                        setFormData({
+                          ...formData,
+                          stage_details: e.target.value,
+                        })
                       }
                     />
                   </div>
                 </div>
+
+                <table className="table table-bordered table-striped">
+                  <thead>
+                    <tr>
+                      <th>PO LineItem</th>
+                      <th>Description</th>
+                      <th>Open Quantity</th>
+                      <th>Claim Quantity</th>
+                      <th>Actual Start</th>
+                      <th>Actual Completion</th>
+                      <th>Hinderance in Days</th>
+                      <th>Action</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {dynamicFields.map((field, index) => (
+                      <Fragment key={index}>
+                        <tr>
+                          <td>
+                            <select
+                              name={`line_item_${index}`}
+                              id={`line_item_${index}`}
+                              className="form-select"
+                              value={field.line_item_no}
+                              onChange={(e) => {
+                                handleFieldChange(
+                                  index,
+                                  "line_item_no",
+                                  e.target.value
+                                );
+                                // getAvailableAmount(e.target.value, index);
+                              }}
+                            >
+                              <option value="">Choose PO Line Item</option>
+                              {checkTypeArr(lineItemData) &&
+                                lineItemData.map((item, i) => (
+                                  <option
+                                    value={item?.material_item_number}
+                                    key={i}
+                                  >
+                                    {item?.material_item_number}
+                                  </option>
+                                ))}
+                            </select>
+                          </td>
+                          <td>{field.description}</td>
+                          <td>
+                            {field.rest_amount} {field.unit}
+                          </td>
+                          <td>
+                            <input
+                              type="number"
+                              className="form-control"
+                              value={field.claim_qty}
+                              onChange={(e) =>
+                                handleFieldChange(
+                                  index,
+                                  "claim_qty",
+                                  e.target.value
+                                )
+                              }
+                            />
+                          </td>
+                          <td>
+                            {" "}
+                            <ReactDatePicker
+                              selected={field.actual_start_date}
+                              onChange={(date) =>
+                                handleDateChange(
+                                  index,
+                                  "actual_start_date",
+                                  date
+                                )
+                              }
+                              dateFormat="dd/MM/yyyy"
+                              className="form-control"
+                              placeholderText="DD/MM/YYYY"
+                            />
+                          </td>
+                          <td>
+                            <ReactDatePicker
+                              selected={field.actual_completion_date}
+                              onChange={(date) =>
+                                handleDateChange(
+                                  index,
+                                  "actual_completion_date",
+                                  date
+                                )
+                              }
+                              dateFormat="dd/MM/yyyy"
+                              className="form-control"
+                              placeholderText="DD/MM/YYYY"
+                            />
+                          </td>
+                          <td>
+                            <input
+                              type="text"
+                              className="form-control"
+                              value={field.hinderance_in_days}
+                              onChange={(e) =>
+                                handleFieldChange(
+                                  index,
+                                  "hinderance_in_days",
+                                  e.target.value
+                                )
+                              }
+                            />
+                          </td>
+                          <td>
+                            {index === dynamicFields.length - 1 && (
+                              <FaPlus
+                                onClick={() =>
+                                  setDynamicFields([
+                                    ...dynamicFields,
+                                    line_item_fields,
+                                  ])
+                                }
+                              />
+                            )}
+                          </td>
+                        </tr>
+                      </Fragment>
+                    ))}
+                  </tbody>
+                </table>
+
                 <div className="col-12 col-md-6">
                   <div className="mb-3">
                     <label className="form-label">
-                      Measurement <span className="red">*</span>{" "}
+                      Certifying Authority <span className="red">*</span>{" "}
                     </label>
-                    <input
-                      type="text"
-                      className="form-control"
-                      value={formData?.messurment}
-                      onChange={(e) =>
-                        setFormData({ ...formData, messurment: e.target.value })
+
+                    <Select
+                      className="basic-single"
+                      classNamePrefix="select"
+                      isClearable={true}
+                      isSearchable={true}
+                      name="emp"
+                      id="emp"
+                      options={emp}
+                      value={
+                        emp &&
+                        emp.filter(
+                          (item) =>
+                            item.value === formData?.certifying_authority
+                        )[0]
+                      }
+                      onChange={(val) =>
+                        setFormData({
+                          ...formData,
+                          certifying_authority: val.value,
+                        })
                       }
                     />
                   </div>
                 </div>
+
                 <div className="col-12 col-md-6">
-                  <div className="mb-3">
-                    <label className="form-label">
-                      Quantity <span className="red">*</span>{" "}
-                    </label>
-                    <input
-                      type="number"
-                      className="form-control"
-                      value={formData?.quantity}
-                      onChange={(e) =>
-                        setFormData({ ...formData, quantity: e.target.value })
-                      }
-                      onWheel={inputOnWheelPrevent}
-                    />
-                  </div>
-                </div>
-                <div className="col-12">
                   <div className="mb-3">
                     <label className="form-label">
                       Remarks <span className="red">*</span>{" "}
@@ -589,12 +934,14 @@ const WDCSub = () => {
       )}
 
       {user.department_id === USER_PPNC_DEPARTMENT && (
-        <div className={isSecPopup ? "popup active" : "popup"}>
+        <div
+          className={isSecPopup ? "popup popup_lg active" : "popup popup_lg"}
+        >
           <div className="card card-xxl-stretch mb-5 mb-xxl-8">
             <div className="card-header border-0 pt-5 pb-3">
               <h3 className="card-title align-items-start flex-column">
                 <span className="card-label fw-bold fs-3 mb-1">
-                  Take Your Action{" "}
+                  All Data for{" "}
                   {viewData?.reference_no && `for ${viewData?.reference_no}`}
                 </span>
               </h3>
@@ -612,195 +959,198 @@ const WDCSub = () => {
               <div className="row">
                 <div className="col-12 col-md-6">
                   <div className="mb-3">
-                    <label className="form-label">
-                      Action <span className="red">*</span>{" "}
-                    </label>
+                    <label className="form-label">Action</label>
                     <p>{viewData?.action_type}</p>
                   </div>
                 </div>
                 <div className="col-12 col-md-6">
                   <div className="mb-3">
-                    <label className="form-label">
-                      File Info <span className="red">*</span>{" "}
-                    </label>
-                    <p>
-                      <Link
-                        to={`${process.env.REACT_APP_PDF_URL}submitWDC/${viewData?.file_name}`}
-                        target="_blank"
-                      >
-                        Click here
-                      </Link>
-                    </p>
+                    <label className="form-label">Work Title</label>
+                    <p>{viewData?.work_title}</p>
                   </div>
                 </div>
                 <div className="col-12 col-md-6">
                   <div className="mb-3">
-                    <label className="form-label">
-                      PO Line Item No <span className="red">*</span>{" "}
-                    </label>
-                    <p>{viewData?.po_line_iten_no}</p>
+                    <label className="form-label">Work Done By</label>
+                    <p>{viewData?.work_done_by}</p>
                   </div>
                 </div>
                 <div className="col-12 col-md-6">
                   <div className="mb-3">
-                    <label className="form-label">
-                      JOB Location <span className="red">*</span>{" "}
-                    </label>
+                    <label className="form-label">JOB Location</label>
                     <p>{viewData?.job_location}</p>
                   </div>
                 </div>
                 <div className="col-12 col-md-6">
                   <div className="mb-3">
-                    <label className="form-label">
-                      Yard No <span className="red">*</span>{" "}
-                    </label>
+                    <label className="form-label">Yard No</label>
                     <p>{viewData?.yard_no}</p>
                   </div>
                 </div>
                 <div className="col-12 col-md-6">
                   <div className="mb-3">
-                    <label className="form-label">
-                      Actual Start Date <span className="red">*</span>{" "}
-                    </label>
-                    <p>
-                      {viewData?.actual_start_date &&
-                        new Date(
-                          viewData?.actual_start_date * 1000
-                        ).toLocaleDateString()}
-                    </p>
-                  </div>
-                </div>
-                <div className="col-12 col-md-6">
-                  <div className="mb-3">
-                    <label className="form-label">
-                      Actual Completion Date <span className="red">*</span>{" "}
-                    </label>
-                    <p>
-                      {viewData?.actual_completion_date &&
-                        new Date(
-                          viewData?.actual_completion_date * 1000
-                        ).toLocaleDateString()}
-                    </p>
-                  </div>
-                </div>
-                <div className="col-12 col-md-6">
-                  <div className="mb-3">
-                    <label className="form-label">
-                      Unit <span className="red">*</span>{" "}
-                    </label>
+                    <label className="form-label">Unit</label>
                     <p>{viewData?.unit}</p>
                   </div>
                 </div>
                 <div className="col-12 col-md-6">
                   <div className="mb-3">
                     <label className="form-label">
-                      Measurement <span className="red">*</span>{" "}
+                      Inspecttion Note Ref No
                     </label>
-                    <p>{viewData?.messurment}</p>
+                    <p>
+                      <span>{viewData?.inspection_note_ref_no}</span>
+                      {viewData?.file_inspection_note_ref_no && (
+                        <Link
+                          to={`${process.env.REACT_APP_PDF_URL}wdcs/${viewData?.file_inspection_note_ref_no}`}
+                          target="_blank"
+                        >
+                          Click here
+                        </Link>
+                      )}
+                    </p>
                   </div>
                 </div>
                 <div className="col-12 col-md-6">
                   <div className="mb-3">
                     <label className="form-label">
-                      Quantity <span className="red">*</span>{" "}
+                      Hinderence Report Certified by Berth
                     </label>
-                    <p>{viewData?.quantity}</p>
+                    <p>
+                      <span>
+                        {viewData?.hinderence_report_cerified_by_berth}
+                      </span>
+                      {viewData?.file_hinderence_report_cerified_by_berth && (
+                        <Link
+                          to={`${process.env.REACT_APP_PDF_URL}wdcs/${viewData?.file_hinderence_report_cerified_by_berth}`}
+                          target="_blank"
+                        >
+                          Click here
+                        </Link>
+                      )}
+                    </p>
                   </div>
                 </div>
                 <div className="col-12">
                   <div className="mb-3">
-                    <label className="form-label">
-                      Remarks <span className="red">*</span>{" "}
-                    </label>
+                    <label className="form-label">Attendance Report</label>
+                    <p>
+                      <span>{viewData?.attendance_report}</span>
+                      {viewData?.file_attendance_report && (
+                        <Link
+                          to={`${process.env.REACT_APP_PDF_URL}wdcs/${viewData?.file_attendance_report}`}
+                          target="_blank"
+                        >
+                          Click here
+                        </Link>
+                      )}
+                    </p>
+                  </div>
+                </div>
+                <div className="col-12 col-md-6">
+                  <div className="mb-3">
+                    <label className="form-label">line_item_no</label>
+                    <p>{viewData?.line_item_no}</p>
+                  </div>
+                </div>
+
+                <table className="table table-bordered table-striped">
+                  <thead>
+                    <tr>
+                      <th>PO LineItem</th>
+                      <th>Description</th>
+                      <th>Open Quantity</th>
+                      <th>Claim Quantity</th>
+                      <th>Contractual Start</th>
+                      <th>Contractual Completion</th>
+                      <th>Actual Start</th>
+                      <th>Actual Completion</th>
+                      <th>Hinderance in Days</th>
+                      <th>Delay</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {checkTypeArr(viewData?.line_item_array) &&
+                      viewData?.line_item_array.map((field, index) => (
+                        <Fragment key={index}>
+                          <tr>
+                            <td>
+                              <span>{field?.line_item_no}</span>
+                            </td>
+                            <td>{field?.description}</td>
+                            <td>
+                              {field?.rest_amount} {field?.unit}
+                            </td>
+                            <td>{field?.claim_qty}</td>
+                            <td>
+                              <input
+                                type="date"
+                                onChange={(e) =>
+                                  setDoForm({
+                                    ...doForm,
+                                    contractual_start_date: e.target.value,
+                                  })
+                                }
+                                className="form-control"
+                                placeholderText="DD/MM/YYYY"
+                              />
+                            </td>
+                            <td>
+                              <input
+                                type="date"
+                                onChange={(e) =>
+                                  setDoForm({
+                                    ...doForm,
+                                    Contractual_completion_date: e.target.value,
+                                  })
+                                }
+                                className="form-control"
+                                placeholderText="DD/MM/YYYY"
+                              />
+                            </td>
+                            <td>
+                              {field?.actual_start_date &&
+                                formatDate(field?.actual_start_date)}
+                            </td>
+                            <td>
+                              {field?.actual_completion_date &&
+                                formatDate(field?.actual_completion_date)}
+                            </td>
+                            <td>{field?.hinderance_in_days}</td>
+                            <td>{delay}</td>
+                          </tr>
+                        </Fragment>
+                      ))}
+                  </tbody>
+                </table>
+
+                <div className="col-12 col-md-6">
+                  <div className="mb-3">
+                    <label className="form-label">Stage Details</label>
+                    <p>{viewData?.stage_details}</p>
+                  </div>
+                </div>
+                <div className="col-12">
+                  <div className="mb-3">
+                    <label className="form-label">Remarks</label>
                     <p>{viewData?.remarks}</p>
                   </div>
                 </div>
-                {/* <div className="col-12 col-md-6">
-                  <div className="mb-3">
-                    <label className="form-label">
-                      Entry By Production <span className="red">*</span>{" "}
-                    </label>
-                    <input
-                      type="text"
-                      className="form-control"
-                      value={formData?.entry_by_production}
-                      onChange={(e) =>
-                        setFormData({
-                          ...formData,
-                          entry_by_production: e.target.value,
-                        })
-                      }
-                    />
-                  </div>
-                </div> */}
-                <div className="col-12 col-md-6">
-                  <div className="mb-3">
-                    <label className="form-label">
-                      Stage Details <span className="red">*</span>{" "}
-                    </label>
-                    <input
-                      type="text"
-                      className="form-control"
-                      value={formData?.stage_datiels}
-                      onChange={(e) =>
-                        setFormData({
-                          ...formData,
-                          stage_datiels: e.target.value,
-                        })
-                      }
-                    />
-                  </div>
-                </div>
-                <div className="col-12 col-md-6">
-                  <div className="mb-3">
-                    <label className="form-label">
-                      Actual Payable Amount <span className="red">*</span>{" "}
-                    </label>
-                    <input
-                      type="number"
-                      className="form-control"
-                      value={formData?.actual_payable_amount}
-                      onChange={(e) =>
-                        setFormData({
-                          ...formData,
-                          actual_payable_amount: e.target.value,
-                        })
-                      }
-                      onWheel={inputOnWheelPrevent}
-                    />
-                  </div>
-                </div>
                 <div className="col-12">
-                  <div className="mb-3 d-flex justify-content-between">
-                    <button
-                      onClick={() =>
-                        reConfirm(
-                          { file: true },
-                          () =>
-                            submitHandler("APPROVED", viewData?.reference_no),
-                          "You're approving the File. Please confirm!"
-                        )
-                      }
-                      className="btn fw-bold btn-success"
-                      type="button"
-                    >
-                      APPROVED
-                    </button>
-                    <button
-                      onClick={() =>
-                        reConfirm(
-                          { file: true },
-                          () =>
-                            submitHandler("REJECTED", viewData?.reference_no),
-                          "You're rejecting the File. Please confirm!"
-                        )
-                      }
-                      className="btn fw-bold btn-danger me-2"
-                      type="button"
-                    >
-                      REJECTED
-                    </button>
-                  </div>
+                  {/* <button
+                    className="btn btn-primary"
+                    type="button"
+                    onClick={() => toast.warn("SAP is not conntected!")}
+                  >
+                    SUBMIT
+                  </button> */}
+                  <button
+                    onClick={() => submitHandlerAction("APPROVED", null)}
+                    className="btn fw-bold btn-primary"
+                    type="button"
+                  >
+                    SUBMIT
+                  </button>
                 </div>
               </div>
             </form>
@@ -808,7 +1158,7 @@ const WDCSub = () => {
         </div>
       )}
 
-      <div className={isPopupView ? "popup active" : "popup"}>
+      <div className={isPopupView ? "popup popup_lg active" : "popup popup_lg"}>
         <div className="card card-xxl-stretch mb-5 mb-xxl-8">
           <div className="card-header border-0 pt-5 pb-3">
             <h3 className="card-title align-items-start flex-column">
@@ -831,40 +1181,25 @@ const WDCSub = () => {
             <div className="row">
               <div className="col-12 col-md-6">
                 <div className="mb-3">
-                  <label className="form-label">
-                    Action <span className="red">*</span>{" "}
-                  </label>
+                  <label className="form-label">Action</label>
                   <p>{viewData?.action_type}</p>
                 </div>
               </div>
               <div className="col-12 col-md-6">
                 <div className="mb-3">
-                  <label className="form-label">
-                    File Info <span className="red">*</span>{" "}
-                  </label>
-                  <p>
-                    <Link
-                      to={`${process.env.REACT_APP_PDF_URL}submitWDC/${viewData?.file_name}`}
-                      target="_blank"
-                    >
-                      Click here
-                    </Link>
-                  </p>
+                  <label className="form-label">Work Title</label>
+                  <p>{viewData?.work_title}</p>
                 </div>
               </div>
               <div className="col-12 col-md-6">
                 <div className="mb-3">
-                  <label className="form-label">
-                    PO Line Item No <span className="red">*</span>{" "}
-                  </label>
-                  <p>{viewData?.po_line_iten_no}</p>
+                  <label className="form-label">Work Done By</label>
+                  <p>{viewData?.work_done_by}</p>
                 </div>
               </div>
               <div className="col-12 col-md-6">
                 <div className="mb-3">
-                  <label className="form-label">
-                    JOB Location <span className="red">*</span>{" "}
-                  </label>
+                  <label className="form-label">JOB Location</label>
                   <p>{viewData?.job_location}</p>
                 </div>
               </div>
@@ -876,83 +1211,116 @@ const WDCSub = () => {
               </div>
               <div className="col-12 col-md-6">
                 <div className="mb-3">
-                  <label className="form-label">
-                    Actual Start Date <span className="red">*</span>{" "}
-                  </label>
-                  <p>
-                    {viewData?.actual_start_date &&
-                      new Date(
-                        viewData?.actual_start_date * 1000
-                      ).toLocaleDateString()}
-                  </p>
-                </div>
-              </div>
-              <div className="col-12 col-md-6">
-                <div className="mb-3">
-                  <label className="form-label">
-                    Actual Completion Date <span className="red">*</span>{" "}
-                  </label>
-                  <p>
-                    {viewData?.actual_completion_date &&
-                      new Date(
-                        viewData?.actual_completion_date * 1000
-                      ).toLocaleDateString()}
-                  </p>
-                </div>
-              </div>
-              <div className="col-12 col-md-6">
-                <div className="mb-3">
-                  <label className="form-label">
-                    Unit <span className="red">*</span>{" "}
-                  </label>
+                  <label className="form-label">Unit</label>
                   <p>{viewData?.unit}</p>
                 </div>
               </div>
               <div className="col-12 col-md-6">
                 <div className="mb-3">
-                  <label className="form-label">
-                    Measurement <span className="red">*</span>{" "}
-                  </label>
-                  <p>{viewData?.messurment}</p>
+                  <label className="form-label">Inspecttion Note Ref No</label>
+                  <p>
+                    <span>{viewData?.inspection_note_ref_no}</span>
+                    {viewData?.file_inspection_note_ref_no && (
+                      <Link
+                        to={`${process.env.REACT_APP_PDF_URL}wdcs/${viewData?.file_inspection_note_ref_no}`}
+                        target="_blank"
+                      >
+                        Click here
+                      </Link>
+                    )}
+                  </p>
                 </div>
               </div>
               <div className="col-12 col-md-6">
                 <div className="mb-3">
                   <label className="form-label">
-                    Quantity <span className="red">*</span>{" "}
+                    Hinderence Report Certified by Berth
                   </label>
-                  <p>{viewData?.quantity}</p>
-                </div>
-              </div>
-              {/* <div className="col-12 col-md-6">
-                <div className="mb-3">
-                  <label className="form-label">
-                    Entry By Production <span className="red">*</span>{" "}
-                  </label>
-                  <p>{viewData?.entry_by_production}</p>
-                </div>
-              </div> */}
-              <div className="col-12 col-md-6">
-                <div className="mb-3">
-                  <label className="form-label">
-                    Stage Details <span className="red">*</span>{" "}
-                  </label>
-                  <p>{viewData?.stage_datiels}</p>
-                </div>
-              </div>
-              <div className="col-12 col-md-6">
-                <div className="mb-3">
-                  <label className="form-label">
-                    Actual Payable Amount <span className="red">*</span>{" "}
-                  </label>
-                  <p>{viewData?.actual_payable_amount}</p>
+                  <p>
+                    <span>{viewData?.hinderence_report_cerified_by_berth}</span>
+                    {viewData?.file_hinderence_report_cerified_by_berth && (
+                      <Link
+                        to={`${process.env.REACT_APP_PDF_URL}wdcs/${viewData?.file_hinderence_report_cerified_by_berth}`}
+                        target="_blank"
+                      >
+                        Click here
+                      </Link>
+                    )}
+                  </p>
                 </div>
               </div>
               <div className="col-12">
                 <div className="mb-3">
-                  <label className="form-label">
-                    Remarks <span className="red">*</span>{" "}
-                  </label>
+                  <label className="form-label">Attendance Report</label>
+                  <p>
+                    <span>{viewData?.attendance_report}</span>
+                    {viewData?.file_attendance_report && (
+                      <Link
+                        to={`${process.env.REACT_APP_PDF_URL}wdcs/${viewData?.file_attendance_report}`}
+                        target="_blank"
+                      >
+                        Click here
+                      </Link>
+                    )}
+                  </p>
+                </div>
+              </div>
+              <div className="col-12 col-md-6">
+                <div className="mb-3">
+                  <label className="form-label">line_item_no</label>
+                  <p>{viewData?.line_item_no}</p>
+                </div>
+              </div>
+
+              <table className="table table-bordered table-striped">
+                <thead>
+                  <tr>
+                    <th>PO LineItem</th>
+                    <th>Description</th>
+                    <th>Open Quantity</th>
+                    <th>Claim Quantity</th>
+                    <th>Actual Start</th>
+                    <th>Actual Completion</th>
+                    <th>Hinderance in Days</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {checkTypeArr(viewData?.line_item_array) &&
+                    viewData?.line_item_array.map((field, index) => (
+                      <Fragment key={index}>
+                        <tr>
+                          <td>
+                            <span>{field?.line_item_no}</span>
+                          </td>
+                          <td>{field?.description}</td>
+                          <td>
+                            {field?.rest_amount} {field?.unit}
+                          </td>
+                          <td>{field?.claim_qty}</td>
+                          <td>
+                            {field?.actual_start_date &&
+                              formatDate(field?.actual_start_date)}
+                          </td>
+                          <td>
+                            {field?.actual_completion_date &&
+                              formatDate(field?.actual_completion_date)}
+                          </td>
+                          <td>{field?.hinderance_in_days}</td>
+                        </tr>
+                      </Fragment>
+                    ))}
+                </tbody>
+              </table>
+
+              <div className="col-12 col-md-6">
+                <div className="mb-3">
+                  <label className="form-label">Stage Details</label>
+                  <p>{viewData?.stage_details}</p>
+                </div>
+              </div>
+              <div className="col-12">
+                <div className="mb-3">
+                  <label className="form-label">Remarks</label>
                   <p>{viewData?.remarks}</p>
                 </div>
               </div>

@@ -8,8 +8,6 @@ import { Link, useLocation } from "react-router-dom";
 export default function Header({ title, id }) {
   const user = useSelector((state) => state.auth);
 
-  console.log(user, "user");
-
   const dispatch = useDispatch();
   const location = useLocation();
   const logOutFun = () => {

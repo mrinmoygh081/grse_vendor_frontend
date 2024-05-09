@@ -8,7 +8,7 @@ import { apiCallBack } from "../utils/fetchAPIs";
 import { toast } from "react-toastify";
 import { USER_PPNC_DEPARTMENT } from "../constants/userConstants";
 import { checkTypeArr } from "../utils/smallFun";
-import { convertToEpoch } from "../utils/getDateTimeNow";
+import { convertToEpoch, formatDate } from "../utils/getDateTimeNow";
 import ReactDatePicker from "react-datepicker";
 import { groupedByRefNo } from "../utils/groupedByReq";
 import { clrLegend } from "../utils/clrLegend";
@@ -107,10 +107,16 @@ const DemandManagement = () => {
 
   const actionHandler = async (flag) => {
     try {
-      const { action_type, remarks, delivery_date } = formData;
+      const { action_type, remarks, delivery_date, request_amount } = formData;
 
       if (action_type.trim() === "") {
         return toast.warn("Action Type is required!");
+      }
+
+      if (parseInt(request_amount) > parseInt(availableAmount)) {
+        return toast.warn(
+          "Demand quantity should be less than or equal to available quantity!"
+        );
       }
 
       // Prepare demand array
@@ -154,87 +160,6 @@ const DemandManagement = () => {
     }
   };
 
-  // const actionHandler = async (flag) => {
-  //   try {
-  //     const {
-  //       action_type,
-  //       remarks,
-  //       line_item_no,
-  //       request_amount,
-  //       recived_quantity,
-  //       delivery_date,
-  //     } = formData;
-
-  //     if (action_type.trim() === "") {
-  //       return toast.warn("Action Type are required!");
-  //     }
-  //     if (
-  //       action_type.trim() === "Service Engineer Requirement" &&
-  //       (remarks.trim() === "" || line_item_no.trim() === "")
-  //     ) {
-  //       return toast.warn("All fields are required!");
-  //     } else if (
-  //       action_type.trim() === "Material Requirement" &&
-  //       (remarks.trim() === "" ||
-  //         line_item_no.trim() === "" ||
-  //         request_amount.trim() === "" ||
-  //         delivery_date === "")
-  //     ) {
-  //       return toast.warn("All fields are required!");
-  //     }
-  //     if (request_amount > availableAmount) {
-  //       return toast.warn(
-  //         "Raised requeste quantity should be less than or equal to available quantity!"
-  //       );
-  //     }
-  //     let formObj = {
-  //       action_type: action_type,
-  //       purchasing_doc_no: id,
-  //       line_item_no: line_item_no,
-  //       request_amount: request_amount,
-  //       delivery_date: convertToEpoch(delivery_date),
-  //       remarks,
-  //       status: flag,
-  //     };
-
-  //     if (flag === "RECEIVED") {
-  //       formObj = {
-  //         action_type: flag,
-  //         reference_no: viewData?.reference_no,
-  //         purchasing_doc_no: id,
-  //         line_item_no: viewData?.line_item_no,
-  //         recived_quantity,
-  //         status: flag,
-  //         remarks,
-  //       };
-  //     }
-
-  //     const response = await apiCallBack(
-  //       "POST",
-  //       "po/demandeManagement/insert",
-  //       formObj,
-  //       token
-  //     );
-
-  //     if (response?.status) {
-  //       toast.success(response?.message);
-  //       setIsPopup(false);
-  //       setFormData({
-  //         action_type: "",
-  //         remarks: "",
-  //         line_item_no: "",
-  //         request_amount: "",
-  //         delivery_date: "",
-  //       });
-  //       getData();
-  //     } else {
-  //       toast.error(response?.message);
-  //     }
-  //   } catch (error) {
-  //     console.error("Error uploading:", error);
-  //   }
-  // };
-
   const actionHandlerReceiver = async (flag) => {
     try {
       const { recived_quantity, remarks } = formData;
@@ -261,6 +186,7 @@ const DemandManagement = () => {
         demand,
         status: "RECEIVED",
         remarks,
+        recived_quantity: recived_quantity,
       };
 
       // Call the API with the payload
@@ -301,6 +227,12 @@ const DemandManagement = () => {
         unit: "",
       },
     ]);
+
+    // Also call setFormData to check if the new request_amount is valid
+    setFormData({
+      ...formData,
+      request_amount: "", // Clear request_amount in formData
+    });
   };
 
   // Function to fetch and set values for Available Amount, Description, Material Code, and Unit
@@ -340,9 +272,9 @@ const DemandManagement = () => {
                       <div className="screen_header">
                         {user?.department_id === USER_PPNC_DEPARTMENT && (
                           <>
-                            <button className="btn fw-bold btn-primary me-2">
+                            {/* <button className="btn fw-bold btn-primary me-2">
                               Print
-                            </button>
+                            </button> */}
                             <button
                               onClick={() => setIsPopup(true)}
                               className="btn fw-bold btn-primary"
@@ -369,7 +301,7 @@ const DemandManagement = () => {
                                   <th>Delivery Date</th>
                                   <th className="min-w-150px">Remarks</th>
                                   <th>Status</th>
-                                  <th>Action</th>
+                                  {/* <th>Action</th> */}
                                 </tr>
                               </thead>
                               <tbody style={{ maxHeight: "100%" }}>
@@ -427,10 +359,16 @@ const DemandManagement = () => {
                                               )}
                                             </td>
                                             <td>
-                                              {item.delivery_date &&
+                                              {/* {item.delivery_date &&
                                                 new Date(
                                                   item.delivery_date
-                                                ).toLocaleDateString()}
+                                                ).toLocaleDateString()} */}
+                                              {/* {item?.delivery_date &&
+                                                formatDate(item?.delivery_date)} */}
+                                              {item.delivery_date &&
+                                                new Date(
+                                                  item.delivery_date * 1000
+                                                ).toLocaleDateString("en-GB")}
                                             </td>
                                             <td>{item.remarks}</td>
                                             <td
@@ -440,7 +378,7 @@ const DemandManagement = () => {
                                             >
                                               {item.status}
                                             </td>
-                                            <td>
+                                            {/* <td>
                                               {item.status === "SUBMITTED" && (
                                                 <>
                                                   <button
@@ -455,7 +393,7 @@ const DemandManagement = () => {
                                                   </button>
                                                 </>
                                               )}
-                                            </td>
+                                            </td> */}
                                           </tr>
                                         ))}
                                     </Fragment>
@@ -483,7 +421,6 @@ const DemandManagement = () => {
                 <h3 className="card-title align-items-start flex-column">
                   <span className="card-label fw-bold fs-3 mb-1">
                     Take Your Action{" "}
-                    {console.log("viewData", viewData?.reference_no)}
                     {viewData?.reference_no && `for ${viewData?.reference_no}`}
                   </span>
                 </h3>
@@ -495,7 +432,7 @@ const DemandManagement = () => {
                 </button>
               </div>
               <form>
-                <div className="row">
+                <div className="row align-items-center">
                   <div className="col-12">
                     <div className="mb-3">
                       <label className="form-label">
@@ -580,12 +517,6 @@ const DemandManagement = () => {
                           <p>{materialCode}</p>
                         </div>
                       </div>
-                      {/* <div className="col-12 col-md-2">
-                        <div className="mb-3">
-                          <label className="form-label">Unit</label>
-                          <p>{unit}</p>
-                        </div>
-                      </div> */}
                       <div className="col-12 col-md-2">
                         <div className="mb-3">
                           <label className="form-label">
@@ -608,7 +539,6 @@ const DemandManagement = () => {
                   )}
                   <div className="col-md-2 flex_center">
                     <FaPlus onClick={addNewField} />
-                    {/* <FaMinus /> */}
                   </div>
 
                   {dynamicFields.map((field, index) => (
@@ -641,44 +571,45 @@ const DemandManagement = () => {
                           </select>
                         </div>
                       </div>
-                      <div className="col-12 col-md-2">
-                        <div className="mb-3">
-                          <p>
-                            {field.availableAmount}
-                            {field.unit}
-                          </p>
-                        </div>
-                      </div>
-                      <div className="col-12 col-md-2">
-                        <div className="mb-3">
-                          <p>{field.description}</p>
-                        </div>
-                      </div>
-                      <div className="col-12 col-md-2">
-                        <div className="mb-3">
-                          <p>{field.materialCode}</p>
-                        </div>
-                      </div>
-                      {/* <div className="col-12 col-md-2">
-                        <div className="mb-3">
-                          <p>{field.unit}</p>
-                        </div>
-                      </div> */}
-                      <div className="col-12 col-md-2">
-                        <div className="mb-3">
-                          <input
-                            type="number"
-                            className="form-control"
-                            value={field.request_amount}
-                            onChange={(e) => {
-                              const updatedFields = [...dynamicFields];
-                              updatedFields[index].request_amount =
-                                e.target.value;
-                              setDynamicFields(updatedFields);
-                            }}
-                          />
-                        </div>
-                      </div>
+                      {formData?.action_type !==
+                        "Service Engineer Requirement" && (
+                        <>
+                          <div className="col-12 col-md-2">
+                            <div className="mb-3">
+                              <p>
+                                {field.availableAmount}
+                                {field.unit}
+                              </p>
+                            </div>
+                          </div>
+                          <div className="col-12 col-md-2">
+                            <div className="mb-3">
+                              <p>{field.description}</p>
+                            </div>
+                          </div>
+                          <div className="col-12 col-md-2">
+                            <div className="mb-3">
+                              <p>{field.materialCode}</p>
+                            </div>
+                          </div>
+
+                          <div className="col-12 col-md-2">
+                            <div className="mb-3">
+                              <input
+                                type="number"
+                                className="form-control"
+                                value={field.request_amount}
+                                onChange={(e) => {
+                                  const updatedFields = [...dynamicFields];
+                                  updatedFields[index].request_amount =
+                                    e.target.value;
+                                  setDynamicFields(updatedFields);
+                                }}
+                              />
+                            </div>
+                          </div>
+                        </>
+                      )}
                       <div className="col-md-2 flex_center">
                         <FaPlus onClick={addNewField} />
                         {/* <FaMinus /> */}

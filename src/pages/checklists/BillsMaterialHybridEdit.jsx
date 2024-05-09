@@ -129,6 +129,7 @@ const BillsMaterialHybridEdit = () => {
       doForm?.p_ilms_amount,
       doForm?.o_deduction
     );
+    console.log(report?.net_pay)
     setDoForm({
       ...doForm,
       total_deduction: report?.deduct,
@@ -796,10 +797,6 @@ console.log("hhhhhhhhhhhhhhhhhhhhh");
                                         <td>Net payable amount</td>
                                         <td>
                                           <b>
-                                            {console.log(
-                                              doForm?.net_payable_amount,
-                                              "fjdlksf"
-                                            )}
                                             &#8377;{" "}
                                             {isNaN(doForm?.net_payable_amount)
                                               ? 0

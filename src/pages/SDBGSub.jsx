@@ -1291,6 +1291,7 @@ const SDBGSub = () => {
                   >
                     APPROVED
                   </button>
+                  <button type="button" onClick={() => toast.warn("SAP is not conntected!")}>HOLD</button>
                   <button
                     onClick={() =>
                       reConfirm(

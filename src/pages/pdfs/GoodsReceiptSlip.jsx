@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import logo from "../../images/logo.png";
 import { useSelector } from "react-redux";
 import { useLocation, useParams } from "react-router-dom";
+import { formatDate } from "../../utils/getDateTimeNow";
 
 function GoodsReceiptSlip() {
   const location = useLocation();
@@ -77,12 +78,37 @@ function GoodsReceiptSlip() {
                     <td className="text-start" width={"5%"}>
                       :
                     </td>
-                    <td width={"30%"}>{apiData?.documentDate}</td>
+                    {/* <td width={"30%"}>{apiData?.documentDate}</td> */}
+                    <td width={"30%"}>
+                      {/* {apiData?.documentDate &&
+                        formatDate(apiData?.documentDate)} */}
+                      {apiData.documentDate &&
+                        new Date(apiData.documentDate).toLocaleDateString(
+                          "en-GB",
+                          {
+                            day: "2-digit",
+                            month: "2-digit",
+                            year: "numeric",
+                          }
+                        )}
+                    </td>
                   </tr>
                   <tr>
                     <td className="fw-bold">Current date</td>
                     <td className="text-start">:</td>
-                    <td>{apiData.entryDate}</td>
+                    {/* <td>{apiData.entryDate}</td> */}
+                    <td>
+                      {" "}
+                      {apiData.entryDate &&
+                        new Date(apiData.entryDate).toLocaleDateString(
+                          "en-GB",
+                          {
+                            day: "2-digit",
+                            month: "2-digit",
+                            year: "numeric",
+                          }
+                        )}
+                    </td>
                   </tr>
                   <tr>
                     <td className="fw-bold">Gate Entry Number</td>

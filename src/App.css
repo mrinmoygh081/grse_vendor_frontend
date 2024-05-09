@@ -324,10 +324,55 @@ input[type="number"] {
 .square-box {
   border: 1px solid #000;
   padding: 20px;
+  width: 625px;
+  margin-bottom: 62px;
+  /* align-items: center; */
+  /* display: flex; */
+  /* align-items: center; */
+  height: 261px;
 }
+.entrysheetpdf {
+  background-color: #a5a5b8;
+  /* margin-left: 130px; */
+  color: azure;
+  text-size-adjust: 59px;
+  justify-content: center;
+  height: 45px;
+  width: 625px;
+  text-align: center;
+  /* justify-content: center; */
+  font-size: large;
+  font-family: cursive;
+}
+/* .entrysheetpdf {
+  margin-bottom: 0px;
+  background-color: #a5a5b8;
+  margin-left: 130px;
+  color: azure;
+  text-size-adjust: 59px;
+  justify-content: center;
+  height: 43px;
+  width: 625px;
+  text-align: center;
+  justify-content: center;
+  font-size: large;
+  font-family: cursive;
+} */
 
 .print-button-container {
   position: fixed;
   top: 30px;
   right: 50px;
+}
+.print-button-containerone {
+  position: fixed;
+  top: 30px;
+  right: 50px;
+}
+.popup.popup_lg {
+  width: max(90%, 300px);
+}
+
+.mbv-2 {
+  margin-bottom: 5.5rem !important;
 }

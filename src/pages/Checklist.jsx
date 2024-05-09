@@ -140,7 +140,7 @@ const Checklist = () => {
                                   <th>BTN Num </th>
                                   <th>Invoice Number </th>
                                   <th>Invoice Value</th>
-                                  <th>Net Claim Amount</th>
+                                  {/* <th>Associated POs</th> */}
                                   <th>Action</th>
                                 </tr>
                               </thead>
@@ -149,14 +149,10 @@ const Checklist = () => {
                                   data.map((item, i) => {
                                     return (
                                       <tr key={i}>
-                                        {console.log(
-                                          item,
-                                          "itemitemitemitemitem"
-                                        )}
                                         <td>{item?.btn_num}</td>
                                         <td>{item?.invoice_no}</td>
                                         <td>{item?.invoice_value}</td>
-                                        <td>{item?.net_claim_amount}</td>
+                                        {/* <td></td> */}
                                         <td>
                                           <div className="view-button-container">
                                             <button

@@ -100,9 +100,15 @@ function InspectionReport() {
                     {/* <td>{apiData?.docdate}</td> */}
                     <td>
                       {" "}
-                      {apiData?.docdate
+                      {/* {apiData?.docdate
                         ? new Date(apiData?.docdate).toLocaleDateString()
-                        : ""}
+                        : ""} */}
+                      {apiData.docdate &&
+                        new Date(apiData.docdate).toLocaleDateString("en-GB", {
+                          day: "2-digit",
+                          month: "2-digit",
+                          year: "numeric",
+                        })}
                     </td>
                   </tr>
                   <tr>
@@ -121,11 +127,19 @@ function InspectionReport() {
                     {/* <td>{apiData?.purchasing_doc_date}</td> */}
                     <td>
                       {" "}
-                      {apiData?.purchasing_doc_date
+                      {/* {apiData?.purchasing_doc_date
                         ? new Date(
                             apiData?.purchasing_doc_date
                           ).toLocaleDateString()
-                        : ""}
+                        : ""} */}
+                      {apiData.purchasing_doc_date &&
+                        new Date(
+                          apiData.purchasing_doc_date
+                        ).toLocaleDateString("en-GB", {
+                          day: "2-digit",
+                          month: "2-digit",
+                          year: "numeric",
+                        })}
                     </td>
                   </tr>
                   <tr>
@@ -140,9 +154,18 @@ function InspectionReport() {
                     {/* <td>{apiData?.purchasing_doc_date}</td> */}
                     <td>
                       {" "}
-                      {apiData?.gateEntryDate
+                      {/* {apiData?.gateEntryDate
                         ? new Date(apiData?.gateEntryDate).toLocaleDateString()
-                        : ""}
+                        : ""} */}
+                      {apiData.gateEntryDate &&
+                        new Date(apiData.gateEntryDate).toLocaleDateString(
+                          "en-GB",
+                          {
+                            day: "2-digit",
+                            month: "2-digit",
+                            year: "numeric",
+                          }
+                        )}
                     </td>
                   </tr>
                 </tbody>
@@ -201,9 +224,17 @@ function InspectionReport() {
                     <td>{item.rejectedQty}</td>
                     <td>{item.baseUnit}</td>
                     <td>{item.udCode}</td>
-                    <td>
+                    {/* <td>
                       {item.inspDate &&
                         new Date(item.inspDate).toLocaleDateString()}
+                    </td> */}
+                    <td>
+                      {item.inspDate &&
+                        new Date(item.inspDate).toLocaleDateString("en-GB", {
+                          day: "2-digit",
+                          month: "2-digit",
+                          year: "numeric",
+                        })}
                     </td>
                   </tr>
                 ))}

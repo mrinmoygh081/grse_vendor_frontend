@@ -15,6 +15,7 @@ import {
 import { inputOnWheelPrevent } from "../../utils/inputOnWheelPrevent";
 import { apiCallBack } from "../../utils/fetchAPIs";
 import { formatDate } from "../../utils/getDateTimeNow";
+import { toast } from "react-toastify";
 
 const BillsMaterialHybrid = () => {
   const navigate = useNavigate();
@@ -33,7 +34,6 @@ const BillsMaterialHybrid = () => {
     e_invoice_filename: "",
     debit_note: "",
     credit_note: "",
-    gst_rate: "",
     net_claim_amount: 0,
     debit_credit_filename: "",
     gate_entry_no: "",
@@ -59,16 +59,14 @@ const BillsMaterialHybrid = () => {
   const calNetClaimAmount = (
     invoice_value,
     debit_note,
-    credit_note,
-    gst_rate
+    credit_note
   ) => {
     invoice_value = parseFloat(invoice_value) || 0;
     debit_note = parseFloat(debit_note) || 0;
     credit_note = parseFloat(credit_note) || 0;
-    gst_rate = parseFloat(gst_rate) || 0;
 
     const net_claim_amount =
-      invoice_value + debit_note - credit_note + gst_rate;
+      invoice_value + debit_note - credit_note;
 
     setForm((prevForm) => ({
       ...prevForm,
@@ -76,15 +74,14 @@ const BillsMaterialHybrid = () => {
     }));
   };
   useEffect(() => {
-    const { invoice_value, debit_note, credit_note, gst_rate } = form;
-    if (invoice_value || debit_note || credit_note || gst_rate) {
-      calNetClaimAmount(invoice_value, debit_note, credit_note, gst_rate);
+    const { invoice_value, debit_note, credit_note } = form;
+    if (invoice_value || debit_note || credit_note) {
+      calNetClaimAmount(invoice_value, debit_note, credit_note);
     }
   }, [
     form?.invoice_value,
     form?.debit_note,
     form?.credit_note,
-    form?.gst_rate,
   ]);
 
   const getData = async () => {
@@ -119,7 +116,6 @@ const BillsMaterialHybrid = () => {
         a_drawing_date: data?.a_drawing_date || "",
         a_qap_date: data?.a_qap_date || "",
         a_ilms_date: data?.a_ilms_date || "",
-        gst_rate: data?.gst_rate || "",
       });
     }
   }, [data]);
@@ -136,7 +132,7 @@ const BillsMaterialHybrid = () => {
         payload,
         token
       );
-      // console.log("createInvoiceNo", response);
+      console.log("createInvoiceNo", response);
       if (response?.status) {
         const { gate_entry_no, grn_nos, icgrn_nos, invoice_date, total_price } =
           response.data;
@@ -149,6 +145,7 @@ const BillsMaterialHybrid = () => {
           total_price: total_price,
         });
       } else {
+        toast.warn(response.message);
         console.error("Error creating invoice number:", response.message);
       }
     } catch (error) {
@@ -239,6 +236,46 @@ const BillsMaterialHybrid = () => {
                                         </button> */}
                                       </td>
                                     </tr>
+
+{console.log(form)}
+                                    <tr>
+                                      <td>Associated PO:</td>
+                                      <td className="btn_value">
+                                        {checkTypeArr(form?.associated_po) &&
+                                          form.associated_po.map((item, i) => (
+                                            <input
+                                              type="text"
+                                              className="form-control"
+                                              name="associated_po"
+                                              value={item?.a_po}
+                                              onChange={(e) => {
+                                                item.a_po = e.target.value;
+                                                // console.log(form.associated_po)
+                                                setForm({...form, associated_po: form.associated_po})
+                                              }}
+                                              key={i}
+                                            />
+                                          ))}
+                                        <button
+                                          className="btn btn-sm btn-primary d-flex align-items-center ms-2"
+                                          style={{ fontSize: "16px" }}
+                                          type="button"
+                                          onClick={() =>
+                                            setForm({
+                                              ...form,
+                                              associated_po: [
+                                                ...form?.associated_po,
+                                                {
+                                                  a_po: "",
+                                                },
+                                              ],
+                                            })
+                                          }
+                                        >
+                                          <FaPlus />
+                                        </button>
+                                      </td>
+                                    </tr>
                                     <tr>
                                       <td>Invoice value:</td>
                                       <td className="btn_value">
@@ -296,21 +333,6 @@ const BillsMaterialHybrid = () => {
                                           onChange={(e) => {
                                             inputTypeChange(e, form, setForm);
                                           }}
-                                        />
-                                      </td>
-                                    </tr>
-                                    <tr>
-                                      <td>GST Rate:</td>
-                                      <td className="btn_value">
-                                        <input
-                                          type="number"
-                                          className="form-control"
-                                          onWheel={inputOnWheelPrevent}
-                                          name="gst_rate"
-                                          value={form?.gst_rate}
-                                          onChange={(e) =>
-                                            inputTypeChange(e, form, setForm)
-                                          }
                                         />
                                       </td>
                                     </tr>
@@ -511,39 +533,6 @@ const BillsMaterialHybrid = () => {
                                               }
                                             )
                                           : "PBG NOT SUBMITTED"}
-                                      </td>
-                                    </tr>
-                                    <tr>
-                                      <td>Associated PO:</td>
-                                      <td className="btn_value">
-                                        {checkTypeArr(form?.associated_po) &&
-                                          form.associated_po.map((item, i) => (
-                                            <input
-                                              type="text"
-                                              className="form-control"
-                                              name="associated_po"
-                                              value={item?.a_po}
-                                              key={i}
-                                            />
-                                          ))}
-                                        <button
-                                          className="btn btn-sm btn-primary d-flex align-items-center ms-2"
-                                          style={{ fontSize: "16px" }}
-                                          type="button"
-                                          onClick={() =>
-                                            setForm({
-                                              ...form,
-                                              associated_po: [
-                                                ...form?.associated_po,
-                                                {
-                                                  a_po: "",
-                                                },
-                                              ],
-                                            })
-                                          }
-                                        >
-                                          <FaPlus />
-                                        </button>
                                       </td>
                                     </tr>
                                     <tr>

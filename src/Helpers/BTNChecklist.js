@@ -43,7 +43,14 @@ export const actionHandlerBTN = async (
       c_sdbg_filename,
       demand_raise_filename,
       pbg_filename,
+      associated_po
     } = form;
+    console.log("associated_po1", associated_po)
+
+    if (!hsn_gstn_icgrn) {
+      toast.warning("Please check the HSN code, GSTIN, Tax rate is as per PO!");
+      return;
+    }
     if (total_price !== net_claim_amount) {
       toast.warning("Total price and net claim amount should be equal!");
       return;
@@ -72,9 +79,7 @@ export const actionHandlerBTN = async (
     fDToSend.append("total_icgrn_value", total_icgrn_value);
     fDToSend.append("total_price", total_price);
     fDToSend.append("hsn_gstn_icgrn", hsn_gstn_icgrn);
-    fDToSend.append("ld_gate_entry_date", ld_gate_entry_date);
-    fDToSend.append("ld_contractual_date", ld_contractual_date);
-    fDToSend.append("ld_gate_entry_date", ld_gate_entry_date);
+    fDToSend.append("associated_po", associated_po);
     if (invoice_filename) {
       fDToSend.append("invoice_filename", invoice_filename);
     }
@@ -96,6 +101,7 @@ export const actionHandlerBTN = async (
     if (pbg_filename) {
       fDToSend.append("pbg_filename", pbg_filename);
     }
+    console.log("fDToSend", fDToSend)
     const response = await apiCallBack(
       "POST",
       "po/btn/BillsMaterialHybrid",
@@ -124,6 +130,7 @@ export const actionHandlerByDO = async (
   id,
   token
 ) => {
+  console.log(doForm)
   try {
     const response = await apiCallBack(
       "POST",

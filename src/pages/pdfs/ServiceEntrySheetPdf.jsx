@@ -26,7 +26,7 @@ function ServiceEntrySheetPdf() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const path = `${process.env.REACT_APP_BACKEND_API}sap/payment/ztfi_bil_deface_report`;
+        const path = `${process.env.REACT_APP_BACKEND_API}sap/document/serviceEntryReport`;
         const config = {
           method: "POST",
           headers: {
@@ -62,36 +62,51 @@ function ServiceEntrySheetPdf() {
             <div className="row mt-4">
               <div className="col-6">
                 <p>
-                  Company <br />
-                  HIND CONSTRUCTION CO <br />
-                  3, Bhukailash Road , Kani House <br />
-                  700023 KOLKATA <br />
+                  {apiData?.vendorName}, <br />
+                  {apiData?.vendor_code}, <br />
+                  {apiData?.vendorCity} , {apiData?.vendorDistrict} <br />
+                  {apiData?.vendorPinCode}
+                  <br />
                 </p>
               </div>
-              <div className="col-6 d-flex justify-content-end top_info_table">
-                <div className="square-box">
-                  <h1>Entry Sheet for services Performed</h1>
-                  <table className="h-75 w-100" style={{ fontSize: "14px" }}>
-                    <tbody>
-                      <tr>
-                        <td className="fw-bold">NumberDate</td>
-                        <td className="text-start" width={"5%"}>
-                          :
-                        </td>
-                        <td>1000071731 / 15.02.2018</td>
-                      </tr>
-                      <tr>
-                        <td className="fw-bold">Purchase Order itemDate</td>
-                        <td className="text-start">:</td>
-                        <td>4800014048/10 / 7.01.2018</td>
-                      </tr>
-                      <tr>
-                        <td className="fw-bold">Your vender number us</td>
-                        <td className="text-start">:</td>
-                        <td>50000211</td>
-                      </tr>
-                    </tbody>
-                  </table>
+              <div className="row">
+                <div className="col-6"></div> {/* Empty column */}
+                <div className="col-6 d-flex flex-column justify-content-start align-items-end top_info_table">
+                  <div className="entrysheetpdf">
+                    Entry Sheet for services Performed
+                  </div>
+                  <div className="square-box">
+                    <table className="h-75 w-100" style={{ fontSize: "14px" }}>
+                      <tbody>
+                        <tr>
+                          <td className="fw-bold">NumberDate</td>
+                          <td className="text-start" width={"5%"}>
+                            :
+                          </td>
+                          <td>
+                            {apiData?.completionDate &&
+                              new Date(
+                                apiData?.completionDate
+                              ).toLocaleDateString("en-GB", {
+                                day: "2-digit",
+                                month: "2-digit",
+                                year: "numeric",
+                              })}
+                          </td>
+                        </tr>
+                        <tr>
+                          <td className="fw-bold">Purchase Order itemDate</td>
+                          <td className="text-start">:</td>
+                          <td>{apiData?.purchising_doc_no}</td>
+                        </tr>
+                        <tr>
+                          <td className="fw-bold">Your vender number us</td>
+                          <td className="text-start">:</td>
+                          <td>{apiData?.vendor_code}</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
                 </div>
               </div>
             </div>
@@ -105,7 +120,7 @@ function ServiceEntrySheetPdf() {
                   <thead>
                     <tr>
                       <th>Line</th>
-                      <th className="text-center">Service</th>
+                      <th>Service</th>
                       <th>Qty</th>
                       <th>Desscription Unit</th>
                       <th>Unit price INR</th>
@@ -117,12 +132,13 @@ function ServiceEntrySheetPdf() {
                   <tbody>
                     <tr className="section-divider">
                       <td width={"15%"} className="p-1">
-                        10
+                        {apiData?.po_lineitem}
                       </td>
-                      <td className="text-center p-1">Plan.line 10</td>
+                      <td>Plan.line 10</td>
                       <td className="p-1">1</td>
-                      <td className="p-1">MISC ARTIST SET</td>
-                      <td className="p-1">PAINTINGS JOBS -YD2094</td>
+                      <td className="p-1">{apiData?.unitPriceINR}</td>
+                      <td className="p-1">{""}</td>
+                      <td className="p-1">{apiData?.netValueINR}</td>
                       <td className="p-1">37,000.00</td>
                     </tr>
 
@@ -134,7 +150,9 @@ function ServiceEntrySheetPdf() {
                       }}
                     >
                       <td className="pt-2">Total . Value excl . tax INR</td>
-                      <td className="fw-bold pt-2 text-center">37,000.00</td>
+                      <td className="fw-bold pt-2 text-center">
+                        {apiData?.sortText}
+                      </td>
                     </tr>
                   </tbody>
                 </table>
@@ -144,7 +162,7 @@ function ServiceEntrySheetPdf() {
         )}
       </section>
 
-      <div className="print-button-container">
+      <div className="print-button-containerone">
         <button className="print_btn" onClick={handlePrint}>
           Print
         </button>

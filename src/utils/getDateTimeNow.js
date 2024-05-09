@@ -52,3 +52,14 @@ export const formatDate = (epochTime) => {
 
   return day + "/" + month + "/" + year;
 };
+
+export const calDatesDiff = (date1, date2) => {
+  let differenceInTime = date1.getTime() - date2.getTime();
+
+  let differenceInDays = differenceInTime / (1000 * 3600 * 24);
+  if(differenceInDays < 0){
+    return 0;
+  }
+
+  return Math.round(differenceInDays);
+}

@@ -7,6 +7,7 @@ import { apiCallBack } from "../utils/fetchAPIs";
 import { useSelector } from "react-redux";
 import { groupByDocumentType } from "../utils/groupedByReq";
 import moment from "moment";
+import { formatDate } from "../utils/getDateTimeNow";
 
 const DisplayStoreActions = () => {
   const navigate = useNavigate();
@@ -21,7 +22,10 @@ const DisplayStoreActions = () => {
   const { token } = useSelector((state) => state.auth);
   const { poType } = useSelector((state) => state.selectedPO);
 
-  console.log(poType, "poTypepoTypepoTypepoTypepoTypepoTypepoTypepoTypepoType");
+  console.log(
+    allPdfData,
+    "poTypepoTypepoTypepoTypepoTypepoTypepoTypepoTypepoType"
+  );
 
   const getIcgrnData = async () => {
     try {
@@ -45,7 +49,8 @@ const DisplayStoreActions = () => {
     icgrn_report: "ICGRN Report",
     ztfi_bil_deface: "Payment Advice",
     gate_entry: "Gate in Entry",
-    grn_report: "grn_report",
+    grn_report: "Grn Report",
+    service_entry_report: "Service Entry Number",
   };
 
   const doc_routes = {
@@ -55,6 +60,7 @@ const DisplayStoreActions = () => {
     ztfi_bil_deface: "/display-store-actions/payment-advice",
     gate_entry: "/display-store-actions/goods-entry",
     grn_report: "/display-store-actions/good-receipt-slip",
+    service_entry_report: "/display-store-actions/service-entry-sheet",
   };
 
   const getAllPdfHandler = async () => {
@@ -103,6 +109,11 @@ const DisplayStoreActions = () => {
       setPayloadData({
         // matDocNo: item.matDocNo,
         matDocNo: item.matDocNo,
+      });
+    }
+    if (item.documentType === "service_entry_report") {
+      setPayloadData({
+        serviceEntryNumber: item.serviceEntryNumber,
       });
     }
   };
@@ -190,13 +201,28 @@ const DisplayStoreActions = () => {
                                                   item.issueNo ||
                                                   item.reservationNumber ||
                                                   item.gateEntryNo ||
-                                                  item.matDocNo}
+                                                  item.matDocNo ||
+                                                  item.serviceEntryNumber}
                                               </td>
                                               <td>
+                                                {/* {item.dateTime &&
+                                                  new Date(
+                                                    item.dateTime
+                                                  ).toLocaleDateString()} */}
                                                 {item.dateTime &&
                                                   new Date(
                                                     item.dateTime
-                                                  ).toLocaleDateString()}
+                                                  ).toLocaleDateString(
+                                                    "en-GB",
+                                                    {
+                                                      day: "2-digit",
+                                                      month: "2-digit",
+                                                      year: "numeric",
+                                                    }
+                                                  )}
+
+                                                {/* {item?.dateTime &&
+                                                  formatDate(item?.dateTime)} */}
                                               </td>
                                               <td>
                                                 <a

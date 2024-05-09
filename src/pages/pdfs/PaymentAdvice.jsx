@@ -17,11 +17,11 @@ function PaymentAdvice() {
 
   const handlePrint = () => {
     window.print();
-  }; 
+  };
   // let payloadData = location.state;
-  const {payload} = useParams();
-  const payloadData = JSON.parse(payload) 
-  console.log("payloadData",payloadData)
+  const { payload } = useParams();
+  const payloadData = JSON.parse(payload);
+  console.log("payloadData", payloadData);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -260,7 +260,18 @@ function PaymentAdvice() {
                     <tr>
                       <td>BTN Date</td>
                       <td className="text-start">:</td>
-                      <td>{apiData?.btnDate}</td>
+                      {/* <td>{apiData?.btnDate}</td> */}
+                      <td>
+                        {apiData.btnDate &&
+                          new Date(apiData.btnDate).toLocaleDateString(
+                            "en-GB",
+                            {
+                              day: "2-digit",
+                              month: "2-digit",
+                              year: "numeric",
+                            }
+                          )}
+                      </td>
                     </tr>
                     <tr>
                       <td>PO</td>

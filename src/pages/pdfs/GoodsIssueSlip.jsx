@@ -19,10 +19,10 @@ function GoodsIssueSlip() {
   };
 
   // let payloadData = location.state;
-  const {payload} = useParams();
-  const payloadData = JSON.parse(payload) 
+  const { payload } = useParams();
+  const payloadData = JSON.parse(payload);
   // console.log("payloadData",payloadData)
-  
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -97,7 +97,16 @@ function GoodsIssueSlip() {
               <tr>
                 <td>Issue Date</td>
                 <td className="text-start">:</td>
-                <td>{apiData.issuDate}</td>
+                {/* <td>{apiData.issuDate}</td> */}
+                <td>
+                  {" "}
+                  {apiData.issuDate &&
+                    new Date(apiData.issuDate).toLocaleDateString("en-GB", {
+                      day: "2-digit",
+                      month: "2-digit",
+                      year: "numeric",
+                    })}
+                </td>
               </tr>
               <tr>
                 <td>Reservation No</td>
