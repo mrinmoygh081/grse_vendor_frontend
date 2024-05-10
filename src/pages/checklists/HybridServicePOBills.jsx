@@ -239,7 +239,7 @@ const HybridServicePOBills = () => {
                                 <table className="table table-striped table-bordered table_height">
                                   <tbody style={{ maxHeight: "100%" }}>
                                     <tr>
-                                      <td>Choose GRSE Department</td>
+                                      <td>WDC Certifying Authority</td>
                                       <td className="btn_value">
                                         <Select
                                           options={options}

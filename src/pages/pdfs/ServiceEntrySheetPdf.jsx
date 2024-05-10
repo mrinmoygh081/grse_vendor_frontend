@@ -122,9 +122,9 @@ function ServiceEntrySheetPdf() {
                       <th>Line</th>
                       <th>Service</th>
                       <th>Qty</th>
-                      <th>Desscription Unit</th>
+                      <th>Desscription</th>
+                      <th>Unit</th>
                       <th>Unit price INR</th>
-                      <th>Net Value INR</th>
                       <th>Net Value INR</th>
                     </tr>
                   </thead>

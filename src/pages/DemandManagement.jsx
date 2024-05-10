@@ -251,6 +251,14 @@ const DemandManagement = () => {
         updatedFields[index].materialCode = data?.data?.matarial_code;
         updatedFields[index].unit = data?.data?.unit;
         setDynamicFields(updatedFields);
+      } else {
+        // If data is not available or API call fails, set availableAmount to null
+        const updatedFields = [...dynamicFields];
+        updatedFields[index].availableAmount = null;
+        updatedFields[index].description = "";
+        updatedFields[index].materialCode = "";
+        updatedFields[index].unit = "";
+        setDynamicFields(updatedFields);
       }
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -577,7 +585,10 @@ const DemandManagement = () => {
                           <div className="col-12 col-md-2">
                             <div className="mb-3">
                               <p>
-                                {field.availableAmount}
+                                {field.availableAmount !== null
+                                  ? `${field.availableAmount} ${field.unit}`
+                                  : "N/A"}{" "}
+                                {/* Display N/A if availableAmount is null */}
                                 {field.unit}
                               </p>
                             </div>
