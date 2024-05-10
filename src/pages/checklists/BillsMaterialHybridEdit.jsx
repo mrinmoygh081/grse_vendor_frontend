@@ -24,7 +24,7 @@ const BillsMaterialHybridEdit = () => {
 
   const [impDates, setImpDates] = useState(null);
   const [data, setData] = useState(null);
-  console.log("data", data)
+
   let initialData = {
     invoice_no: "",
     invoice_filename: "",
@@ -34,6 +34,9 @@ const BillsMaterialHybridEdit = () => {
     debit_note: "",
     credit_note: "",
     net_claim_amount: 0,
+    cgst: null,
+    sgst: null,
+    igst: null,
     debit_credit_filename: "",
     gate_entry_no: "",
     gate_entry_date: "",
@@ -58,6 +61,7 @@ const BillsMaterialHybridEdit = () => {
     o_deduction: "",
     total_deduction: "",
     net_payable_amount: "",
+    assigned_to: "",
   };
   const [form, setForm] = useState(initialData);
   const [doForm, setDoForm] = useState(inititalDOData);
@@ -129,7 +133,7 @@ const BillsMaterialHybridEdit = () => {
       doForm?.p_ilms_amount,
       doForm?.o_deduction
     );
-    console.log(report?.net_pay)
+    console.log(report?.net_pay);
     setDoForm({
       ...doForm,
       total_deduction: report?.deduct,
@@ -164,23 +168,13 @@ const BillsMaterialHybridEdit = () => {
   //   }
   // }, [doForm?.ld_c_date, doForm?.ld_ge_date, data?.icgrn_nos]);
 
-  console.log("doForm,abhinit", doForm);
-
   useEffect(() => {
     const { ld_c_date, ld_ge_date } = doForm;
 
-    
-
-    console.log("HELLO", data?.icgrn_total)
     if (ld_c_date && ld_ge_date && data?.icgrn_total) {
       const icgrnData = data?.icgrn_total;
-const cc = convertToEpoch(new Date(ld_c_date)) * 1000;
-console.log(cc);
-console.log("cc%^&*");
-const aa = convertToEpoch(new Date(ld_ge_date)) * 1000;
-console.log(aa);
-console.log("aa%^&*");
-
+      const cc = convertToEpoch(new Date(ld_c_date)) * 1000;
+      const aa = convertToEpoch(new Date(ld_ge_date)) * 1000;
       let p_amt = calculatePenalty(cc, aa, icgrnData, 0.5, 5);
       console.log("p_amt", p_amt, cc, aa, icgrnData);
       setDoForm({ ...doForm, ld_amount: p_amt });
@@ -202,15 +196,18 @@ console.log("aa%^&*");
     let p_drg = 0;
     let p_qap = 0;
     let p_ilms = 0;
-console.log("hhhhhhhhhhhhhhhhhhhhh");
+
     if (data?.icgrn_total) {
-      console.log("ppppppppppp");
       const icgrnData = data?.icgrn_total;
 
       if (a_sdbg_date && c_sdbg_date && icgrnData) {
-        console.log("c_sdbg_date", )
-        p_sdbg = calculatePenalty(convertToEpoch(new Date(c_sdbg_date)) * 1000, a_sdbg_date, icgrnData, 0.25, 2);
-        console.log("p_sdbg", p_sdbg);
+        p_sdbg = calculatePenalty(
+          convertToEpoch(new Date(c_sdbg_date)) * 1000,
+          a_sdbg_date,
+          icgrnData,
+          0.25,
+          2
+        );
       }
       if (a_drawing_date && c_drawing_date && icgrnData) {
         p_drg = calculatePenalty(
@@ -220,15 +217,24 @@ console.log("hhhhhhhhhhhhhhhhhhhhh");
           0.25,
           2
         );
-        console.log("kkkkkkkkk",p_drg);
       }
       if (a_qap_date && c_qap_date && icgrnData) {
         p_qap = calculatePenalty(
-          convertToEpoch(new Date(c_qap_date)) * 1000, a_qap_date, icgrnData, 0.25, 2);
+          convertToEpoch(new Date(c_qap_date)) * 1000,
+          a_qap_date,
+          icgrnData,
+          0.25,
+          2
+        );
       }
       if (a_ilms_date && c_ilms_date && icgrnData) {
         p_ilms = calculatePenalty(
-          convertToEpoch(new Date(c_ilms_date)) * 1000, a_ilms_date, icgrnData, 0.25, 2);
+          convertToEpoch(new Date(c_ilms_date)) * 1000,
+          a_ilms_date,
+          icgrnData,
+          0.25,
+          2
+        );
       }
     }
     setDoForm({
@@ -634,8 +640,7 @@ console.log("hhhhhhhhhhhhhhhhhhhhh");
                                           </div>
                                           <div className="me-3">
                                             <label htmlFor="CLD">
-                                              Contractual Delivery
-                                              Date:
+                                              Contractual Delivery Date:
                                             </label>
                                             <input
                                               type="date"
