@@ -54,6 +54,7 @@ const BillsMaterialHybridView = () => {
     p_drg_amount: "",
     p_qap_amount: "",
     p_ilms_amount: "",
+    p_estimate_amount: "",
     o_deduction: "",
     total_deduction: "",
     net_payable_amount: "",
@@ -138,7 +139,7 @@ const BillsMaterialHybridView = () => {
   };
 
   useEffect(() => {
-    let net = data?.icgrn_nos && JSON.parse(data?.icgrn_nos).total_icgrn_value;
+    let net = data?.icgrn_total;
     let report = calculateNetPay(
       net,
       doForm?.ld_amount,
@@ -146,21 +147,16 @@ const BillsMaterialHybridView = () => {
       doForm?.p_drg_amount,
       doForm?.p_qap_amount,
       doForm?.p_ilms_amount,
-      doForm?.o_deduction
+      doForm?.o_deduction,
+      doForm?.p_estimate_amount
     );
+    console.log(report?.net_pay);
     setDoForm({
       ...doForm,
       total_deduction: report?.deduct,
       net_payable_amount: report?.net_pay,
     });
-  }, [
-    doForm?.ld_amount,
-    doForm?.p_sdbg_amount,
-    doForm?.p_drg_amount,
-    doForm?.p_qap_amount,
-    doForm?.p_ilms_amount,
-    doForm?.o_deduction,
-  ]);
+  }, [doForm?.ld_amount, doForm?.o_deduction, doForm?.p_estimate_amount]);
 
   useEffect(() => {
     getBTNData();
@@ -783,6 +779,15 @@ const BillsMaterialHybridView = () => {
                                               &#8377; {doForm?.p_ilms_amount}
                                             </p>
                                           </div>
+                                        </td>
+                                      </tr>
+                                      <tr>
+                                        <td>Estimated Penalty </td>
+                                        <td className="btn_value">
+                                          <p>
+                                            {" "}
+                                            &#8377; {doForm?.p_estimate_amount}
+                                          </p>
                                         </td>
                                       </tr>
                                       <tr>

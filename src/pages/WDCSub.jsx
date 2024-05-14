@@ -52,6 +52,29 @@ const WDCSub = () => {
     line_item_array: [line_item_fields],
   };
 
+  //wdc*****************************************************************************************************************
+
+  let line_item_fieldswdc = {
+    claim_qty: "",
+    line_item_no: "",
+    actual_start_date: "",
+    actual_completion_date: "",
+    delay_in_work_execution: "",
+  };
+
+  let initialFormDatawdc = {
+    action_type: "",
+    remarks: "",
+    job_location: "",
+    yard_no: "",
+    status: "",
+    work_title: "",
+    work_done_by: "",
+    guarantee_defect_liability_start_date: "",
+    guarantee_defect_liability_end_date: "",
+    line_item_array: [line_item_fieldswdc],
+  };
+
   const [isPopup, setIsPopup] = useState(false);
   const [isPopupView, setIsPopupView] = useState(false);
   const [isSecPopup, setIsSecPopup] = useState(false);
@@ -68,16 +91,25 @@ const WDCSub = () => {
   console.log(viewData, "viewData,,,,,,,,,,,,,,,");
 
   const [dynamicFields, setDynamicFields] = useState([line_item_fields]);
-  console.log(dynamicFields, "dynamicFieldsdynamicFields");
+  const [dynamicFieldsWdc, setDynamicFieldsWdc] = useState([
+    line_item_fieldswdc,
+  ]);
+  // console.log(dynamicFieldsWdc, "dynamicFieldsWdc mmmmmmmmmmmmm");
 
   const [formData, setFormData] = useState(initialFormData);
+  const [formDataWdc, setFormDataWdc] = useState(initialFormDatawdc);
   const { id } = useParams();
   const { user, token } = useSelector((state) => state.auth);
+
+  // console.log(
+  //   formDataWdc,
+  //   "formDataWdcformDataWdcformDataWdcformDataWdc zzzzzzzzzzzzzzzzzzzzzz"
+  // );
 
   const fileoneInputRef = useRef(null);
   const filetwoInputRef = useRef(null);
   const filethreeInputRef = useRef(null);
-  console.log(formData, "formDataabhinit");
+  // console.log(formData, "formDataabhinit");
 
   const getData = async () => {
     try {
@@ -213,6 +245,77 @@ const WDCSub = () => {
     }
   };
 
+  //JCC *****************************************************
+
+  const submitHandlerWdc = async (flag, ref_no) => {
+    try {
+      // Create copies of formData and formDataWdc
+      const formDataCopy = { ...formData };
+      const formDataWdcCopy = { ...formDataWdc };
+
+      // Check if all required fields are filled
+      if (
+        formDataCopy.action_type &&
+        formDataWdcCopy.remarks &&
+        formDataWdcCopy.line_item_array &&
+        formDataWdcCopy.line_item_array.length > 0
+      ) {
+        const formDataToSend = new FormData();
+
+        // Append data to formDataToSend
+        formDataToSend.append("action_type", formDataCopy.action_type);
+        formDataToSend.append("purchasing_doc_no", id);
+        formDataToSend.append("remarks", formDataWdcCopy.remarks);
+        formDataToSend.append("status", flag);
+        formDataToSend.append("work_done_by", formDataWdcCopy.work_done_by);
+        formDataToSend.append("work_title", formDataWdcCopy.work_title);
+        formDataToSend.append("job_location", formDataWdcCopy.job_location);
+        formDataToSend.append("yard_no", formDataWdcCopy.yard_no);
+        formDataToSend.append("assigned_to", formDataCopy.certifying_authority);
+        formDataToSend.append(
+          "guarantee_defect_liability_start_date",
+          convertToEpoch(formDataWdcCopy.guarantee_defect_liability_start_date)
+        );
+        formDataToSend.append(
+          "guarantee_defect_liability_end_date",
+          convertToEpoch(formDataWdcCopy.guarantee_defect_liability_end_date)
+        );
+        // convertToEpoch(delivery_date),
+        // Convert line_item_array to JSON string and append to FormData
+        formDataWdcCopy.line_item_array = dynamicFieldsWdc;
+        formDataToSend.append(
+          "line_item_array",
+          JSON.stringify(formDataWdcCopy.line_item_array)
+        );
+
+        // Perform API call
+        const res = await apiCallBack(
+          "POST",
+          "po/wdc/submitWdc",
+          formDataToSend,
+          token
+        );
+
+        // Handle response
+        if (res.status) {
+          toast.success(res.message);
+          setIsPopup(false);
+          setIsSecPopup(false);
+          setFormData(initialFormData);
+          setFormDataWdc(initialFormDatawdc);
+          getData();
+        } else {
+          toast.warn(res.message);
+        }
+      } else {
+        toast.warn("Please fill up all the required fields!");
+      }
+    } catch (error) {
+      toast.error("Error uploading file: " + error.message);
+      console.error("Error uploading file:", error);
+    }
+  };
+
   const submitHandlerAction = async (flag, reference_no) => {
     try {
       const formDataCopy = { ...formData }; // Create a copy of formData
@@ -324,6 +427,30 @@ const WDCSub = () => {
     }
   };
 
+  const getAvailableAmountWdc = async (item) => {
+    try {
+      const res = await apiCallBack(
+        "GET",
+        `po/demandeManagement/getRestAmount?po_no=${id}&line_item_no=${item}`,
+        null,
+        token
+      );
+      if (res?.status) {
+        return {
+          description: res?.data?.description,
+          rest_amount: res?.data?.rest_amount,
+          unit: res?.data?.unit,
+          matarial_code: res?.data?.matarial_code,
+          target_amount: res?.data?.target_amount,
+          po_rate: res?.data?.po_rate,
+        };
+      }
+    } catch (error) {
+      console.error("Error fetching WDC list:", error);
+      return null;
+    }
+  };
+
   const handleFieldChange = async (index, fieldName, value) => {
     const updatedFields = [...dynamicFields];
     updatedFields[index][fieldName] = value;
@@ -346,10 +473,40 @@ const WDCSub = () => {
     }
   };
 
+  const handleFieldChangeWdc = async (index, fieldName, value) => {
+    const updatedFields = [...dynamicFieldsWdc];
+    updatedFields[index][fieldName] = value;
+
+    // Fetch and update Description, Open PO Qty, and UOM when Line Item No changes
+    if (fieldName === "line_item_no") {
+      const lineItemNo = value;
+      // Fetch corresponding data for the selected Line Item No
+      let getRestData = await getAvailableAmountWdc(lineItemNo);
+      // Update the corresponding fields in the state
+      updatedFields[index].description = getRestData?.description;
+      updatedFields[index].rest_amount = getRestData?.rest_amount;
+      updatedFields[index].unit = getRestData?.unit;
+      updatedFields[index].matarial_code = getRestData?.matarial_code;
+      updatedFields[index].target_amount = getRestData?.target_amount;
+      updatedFields[index].po_rate = getRestData?.po_rate;
+
+      // Update the state with the modified dynamic fields
+      setDynamicFieldsWdc(updatedFields);
+    } else {
+      // Update the state with the modified dynamic fields
+      setDynamicFieldsWdc(updatedFields);
+    }
+  };
+
   const handleDateChange = (index, fieldName, date) => {
     const updatedFields = [...dynamicFields];
     updatedFields[index][fieldName] = date;
     setDynamicFields(updatedFields);
+  };
+  const handleDateChangeWdc = (index, fieldName, date) => {
+    const updatedFields = [...dynamicFieldsWdc];
+    updatedFields[index][fieldName] = date;
+    setDynamicFieldsWdc(updatedFields);
   };
 
   // useEffect(() => {
@@ -517,7 +674,8 @@ const WDCSub = () => {
             <div className="card-header border-0 pt-5 pb-3">
               <h3 className="card-title align-items-start flex-column">
                 <span className="card-label fw-bold fs-3 mb-1">
-                  Take Your Action
+                  Take Your Action{" "}
+                  {formData?.action_type === "WDC" ? "(WDC)" : "(JCC)"}
                 </span>
               </h3>
               <button
@@ -552,381 +710,718 @@ const WDCSub = () => {
                     </select>
                   </div>
                 </div>
-
-                <div className="col-12 col-md-3">
-                  <div className="mb-3">
-                    <label className="form-label">Work Done By</label>
-                    <input
-                      type="text"
-                      className="form-control"
-                      value={formData?.work_done_by}
-                      onChange={(e) =>
-                        setFormData({
-                          ...formData,
-                          work_done_by: e.target.value,
-                        })
-                      }
-                    />
-                  </div>
-                </div>
-                <div className="col-12 col-md-3">
-                  <div className="mb-3">
-                    <label className="form-label">Work Title</label>
-                    <input
-                      type="text"
-                      className="form-control"
-                      value={formData?.work_title}
-                      onChange={(e) =>
-                        setFormData({
-                          ...formData,
-                          work_title: e.target.value,
-                        })
-                      }
-                    />
-                  </div>
-                </div>
-
-                <div className="col-12 col-md-3">
-                  <div className="mb-3">
-                    <label className="form-label">JOB Location</label>
-                    <input
-                      type="text"
-                      className="form-control"
-                      value={formData?.job_location}
-                      onChange={(e) =>
-                        setFormData({
-                          ...formData,
-                          job_location: e.target.value,
-                        })
-                      }
-                    />
-                  </div>
-                </div>
-                <div className="col-12 col-md-4">
-                  <div className="mb-3">
-                    <label className="form-label">Unit</label>
-                    <input
-                      type="text"
-                      className="form-control"
-                      value={formData?.unit}
-                      onChange={(e) =>
-                        setFormData({
-                          ...formData,
-                          unit: e.target.value,
-                        })
-                      }
-                    />
-                  </div>
-                </div>
-                <div className="col-12 col-md-4">
-                  <div className="mb-3">
-                    <label className="form-label">Yard No</label>
-                    <input
-                      type="text"
-                      className="form-control"
-                      value={formData?.yard_no}
-                      onChange={(e) =>
-                        setFormData({ ...formData, yard_no: e.target.value })
-                      }
-                    />
-                  </div>
-                </div>
-                <div className="col-12 col-md-4">
-                  <div className="mb-3">
-                    <label className="form-label">
-                      Inspection Note Ref. No.
-                    </label>
-                    <div className="d-flex">
-                      <input
-                        type="text"
-                        className="form-control me-2"
-                        value={formData?.inspection_note_ref_no}
-                        onChange={(e) =>
-                          setFormData({
-                            ...formData,
-                            inspection_note_ref_no: e.target.value,
-                          })
-                        }
-                      />
-                      <input
-                        type="file"
-                        className="form-control"
-                        onChange={(e) =>
-                          setFormData({
-                            ...formData,
-                            file_inspection_note_ref_no: e.target.files[0],
-                          })
-                        }
-                        ref={fileoneInputRef}
-                        accept=".pdf"
-                      />
+                {formData?.action_type === "WDC" && (
+                  <>
+                    <div className="col-12 col-md-3">
+                      <div className="mb-3">
+                        <label className="form-label">Work Done By</label>
+                        <input
+                          type="text"
+                          className="form-control"
+                          value={formData?.work_done_by}
+                          onChange={(e) =>
+                            setFormData({
+                              ...formData,
+                              work_done_by: e.target.value,
+                            })
+                          }
+                        />
+                      </div>
                     </div>
-                  </div>
-                </div>
-                <div className="col-12 col-md-4">
-                  <div className="mb-3">
-                    <label className="form-label">
-                      Hinderence report cerified By Berth.{" "}
-                    </label>
-                    <div className="d-flex">
-                      <input
-                        type="text"
-                        className="form-control me-2"
-                        value={formData?.hinderence_report_cerified_by_berth}
-                        onChange={(e) =>
-                          setFormData({
-                            ...formData,
-                            hinderence_report_cerified_by_berth: e.target.value,
-                          })
-                        }
-                      />
-                      <input
-                        type="file"
-                        className="form-control"
-                        onChange={(e) =>
-                          setFormData({
-                            ...formData,
-                            file_hinderence_report_cerified_by_berth:
-                              e.target.files[0],
-                          })
-                        }
-                        ref={filetwoInputRef}
-                        accept=".pdf"
-                      />
+                    <div className="col-12 col-md-3">
+                      <div className="mb-3">
+                        <label className="form-label">Work Title</label>
+                        <input
+                          type="text"
+                          className="form-control"
+                          value={formData?.work_title}
+                          onChange={(e) =>
+                            setFormData({
+                              ...formData,
+                              work_title: e.target.value,
+                            })
+                          }
+                        />
+                      </div>
                     </div>
-                  </div>
-                </div>
-                <div className="col-12 col-md-4">
-                  <div className="mb-3">
-                    <label className="form-label">Attendance Report</label>
-                    <div className="d-flex">
-                      <input
-                        type="text"
-                        className="form-control me-2"
-                        value={formData?.attendance_report}
-                        onChange={(e) =>
-                          setFormData({
-                            ...formData,
-                            attendance_report: e.target.value,
-                          })
-                        }
-                      />
-                      <input
-                        type="file"
-                        className="form-control"
-                        onChange={(e) =>
-                          setFormData({
-                            ...formData,
-                            file_attendance_report: e.target.files[0],
-                          })
-                        }
-                        ref={filethreeInputRef}
-                        accept=".pdf"
-                      />
-                    </div>
-                  </div>
-                </div>
-                <div className="col-12 col-md-4">
-                  <div className="mb-3">
-                    <label className="form-label">Stage Details</label>
-                    <input
-                      type="text"
-                      className="form-control"
-                      value={formData?.stage_details}
-                      onChange={(e) =>
-                        setFormData({
-                          ...formData,
-                          stage_details: e.target.value,
-                        })
-                      }
-                    />
-                  </div>
-                </div>
 
-                <table className="table table-bordered table-striped">
-                  <thead>
-                    <tr>
-                      <th>PO LineItem</th>
-                      <th>Description</th>
-                      <th>Open Quantity</th>
-                      <th>Claim Quantity</th>
-                      <th>Actual Start</th>
-                      <th>Actual Completion</th>
-                      <th>Hinderance in Days</th>
-                      <th>Action</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {dynamicFields.map((field, index) => (
-                      <Fragment key={index}>
+                    <div className="col-12 col-md-3">
+                      <div className="mb-3">
+                        <label className="form-label">JOB Location</label>
+                        <input
+                          type="text"
+                          className="form-control"
+                          value={formData?.job_location}
+                          onChange={(e) =>
+                            setFormData({
+                              ...formData,
+                              job_location: e.target.value,
+                            })
+                          }
+                        />
+                      </div>
+                    </div>
+                    <div className="col-12 col-md-4">
+                      <div className="mb-3">
+                        <label className="form-label">Unit</label>
+                        <input
+                          type="text"
+                          className="form-control"
+                          value={formData?.unit}
+                          onChange={(e) =>
+                            setFormData({
+                              ...formData,
+                              unit: e.target.value,
+                            })
+                          }
+                        />
+                      </div>
+                    </div>
+                    <div className="col-12 col-md-4">
+                      <div className="mb-3">
+                        <label className="form-label">Yard No</label>
+                        <input
+                          type="text"
+                          className="form-control"
+                          value={formData?.yard_no}
+                          onChange={(e) =>
+                            setFormData({
+                              ...formData,
+                              yard_no: e.target.value,
+                            })
+                          }
+                        />
+                      </div>
+                    </div>
+                    <div className="col-12 col-md-4">
+                      <div className="mb-3">
+                        <label className="form-label">
+                          Inspection Note Ref. No.
+                        </label>
+                        <div className="d-flex">
+                          <input
+                            type="text"
+                            className="form-control me-2"
+                            value={formData?.inspection_note_ref_no}
+                            onChange={(e) =>
+                              setFormData({
+                                ...formData,
+                                inspection_note_ref_no: e.target.value,
+                              })
+                            }
+                          />
+                          <input
+                            type="file"
+                            className="form-control"
+                            onChange={(e) =>
+                              setFormData({
+                                ...formData,
+                                file_inspection_note_ref_no: e.target.files[0],
+                              })
+                            }
+                            ref={fileoneInputRef}
+                            accept=".pdf"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                    <div className="col-12 col-md-4">
+                      <div className="mb-3">
+                        <label className="form-label">
+                          Hinderence report cerified By Berth.{" "}
+                        </label>
+                        <div className="d-flex">
+                          <input
+                            type="text"
+                            className="form-control me-2"
+                            value={
+                              formData?.hinderence_report_cerified_by_berth
+                            }
+                            onChange={(e) =>
+                              setFormData({
+                                ...formData,
+                                hinderence_report_cerified_by_berth:
+                                  e.target.value,
+                              })
+                            }
+                          />
+                          <input
+                            type="file"
+                            className="form-control"
+                            onChange={(e) =>
+                              setFormData({
+                                ...formData,
+                                file_hinderence_report_cerified_by_berth:
+                                  e.target.files[0],
+                              })
+                            }
+                            ref={filetwoInputRef}
+                            accept=".pdf"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                    <div className="col-12 col-md-4">
+                      <div className="mb-3">
+                        <label className="form-label">Attendance Report</label>
+                        <div className="d-flex">
+                          <input
+                            type="text"
+                            className="form-control me-2"
+                            value={formData?.attendance_report}
+                            onChange={(e) =>
+                              setFormData({
+                                ...formData,
+                                attendance_report: e.target.value,
+                              })
+                            }
+                          />
+                          <input
+                            type="file"
+                            className="form-control"
+                            onChange={(e) =>
+                              setFormData({
+                                ...formData,
+                                file_attendance_report: e.target.files[0],
+                              })
+                            }
+                            ref={filethreeInputRef}
+                            accept=".pdf"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                    <div className="col-12 col-md-4">
+                      <div className="mb-3">
+                        <label className="form-label">Stage Details</label>
+                        <input
+                          type="text"
+                          className="form-control"
+                          value={formData?.stage_details}
+                          onChange={(e) =>
+                            setFormData({
+                              ...formData,
+                              stage_details: e.target.value,
+                            })
+                          }
+                        />
+                      </div>
+                    </div>
+
+                    <table className="table table-bordered table-striped">
+                      <thead>
                         <tr>
-                          <td>
-                            <select
-                              name={`line_item_${index}`}
-                              id={`line_item_${index}`}
-                              className="form-select"
-                              value={field.line_item_no}
-                              onChange={(e) => {
-                                handleFieldChange(
-                                  index,
-                                  "line_item_no",
-                                  e.target.value
-                                );
-                                // getAvailableAmount(e.target.value, index);
-                              }}
-                            >
-                              <option value="">Choose PO Line Item</option>
-                              {checkTypeArr(lineItemData) &&
-                                lineItemData.map((item, i) => (
-                                  <option
-                                    value={item?.material_item_number}
-                                    key={i}
-                                  >
-                                    {item?.material_item_number}
-                                  </option>
-                                ))}
-                            </select>
-                          </td>
-                          <td>{field.description}</td>
-                          <td>
-                            {field.rest_amount} {field.unit}
-                          </td>
-                          <td>
-                            <input
-                              type="number"
-                              className="form-control"
-                              value={field.claim_qty}
-                              onChange={(e) =>
-                                handleFieldChange(
-                                  index,
-                                  "claim_qty",
-                                  e.target.value
-                                )
-                              }
-                            />
-                          </td>
-                          <td>
-                            {" "}
-                            <ReactDatePicker
-                              selected={field.actual_start_date}
-                              onChange={(date) =>
-                                handleDateChange(
-                                  index,
-                                  "actual_start_date",
-                                  date
-                                )
-                              }
-                              dateFormat="dd/MM/yyyy"
-                              className="form-control"
-                              placeholderText="DD/MM/YYYY"
-                            />
-                          </td>
-                          <td>
-                            <ReactDatePicker
-                              selected={field.actual_completion_date}
-                              onChange={(date) =>
-                                handleDateChange(
-                                  index,
-                                  "actual_completion_date",
-                                  date
-                                )
-                              }
-                              dateFormat="dd/MM/yyyy"
-                              className="form-control"
-                              placeholderText="DD/MM/YYYY"
-                            />
-                          </td>
-                          <td>
-                            <input
-                              type="text"
-                              className="form-control"
-                              value={field.hinderance_in_days}
-                              onChange={(e) =>
-                                handleFieldChange(
-                                  index,
-                                  "hinderance_in_days",
-                                  e.target.value
-                                )
-                              }
-                            />
-                          </td>
-                          <td>
-                            {index === dynamicFields.length - 1 && (
-                              <FaPlus
-                                onClick={() =>
-                                  setDynamicFields([
-                                    ...dynamicFields,
-                                    line_item_fields,
-                                  ])
-                                }
-                              />
-                            )}
-                          </td>
+                          <th>PO LineItem</th>
+                          <th>Description</th>
+                          <th>Open Quantity</th>
+                          <th>Claim Quantity</th>
+                          <th>Actual Start</th>
+                          <th>Actual Completion</th>
+                          <th>Hinderance in Days</th>
+                          <th>Action</th>
                         </tr>
-                      </Fragment>
-                    ))}
-                  </tbody>
-                </table>
+                      </thead>
+                      <tbody>
+                        {dynamicFields.map((field, index) => (
+                          <Fragment key={index}>
+                            <tr>
+                              <td>
+                                <select
+                                  name={`line_item_${index}`}
+                                  id={`line_item_${index}`}
+                                  className="form-select"
+                                  value={field.line_item_no}
+                                  onChange={(e) => {
+                                    handleFieldChange(
+                                      index,
+                                      "line_item_no",
+                                      e.target.value
+                                    );
+                                    // getAvailableAmount(e.target.value, index);
+                                  }}
+                                >
+                                  <option value="">Choose PO Line Item</option>
+                                  {checkTypeArr(lineItemData) &&
+                                    lineItemData.map((item, i) => (
+                                      <option
+                                        value={item?.material_item_number}
+                                        key={i}
+                                      >
+                                        {item?.material_item_number}
+                                      </option>
+                                    ))}
+                                </select>
+                              </td>
+                              <td>{field.description}</td>
+                              <td>
+                                {field.rest_amount} {field.unit}
+                              </td>
+                              <td>
+                                <input
+                                  type="number"
+                                  className="form-control"
+                                  value={field.claim_qty}
+                                  onChange={(e) =>
+                                    handleFieldChange(
+                                      index,
+                                      "claim_qty",
+                                      e.target.value
+                                    )
+                                  }
+                                />
+                              </td>
+                              <td>
+                                {" "}
+                                <ReactDatePicker
+                                  selected={field.actual_start_date}
+                                  onChange={(date) =>
+                                    handleDateChange(
+                                      index,
+                                      "actual_start_date",
+                                      date
+                                    )
+                                  }
+                                  dateFormat="dd/MM/yyyy"
+                                  className="form-control"
+                                  placeholderText="DD/MM/YYYY"
+                                />
+                              </td>
+                              <td>
+                                <ReactDatePicker
+                                  selected={field.actual_completion_date}
+                                  onChange={(date) =>
+                                    handleDateChange(
+                                      index,
+                                      "actual_completion_date",
+                                      date
+                                    )
+                                  }
+                                  dateFormat="dd/MM/yyyy"
+                                  className="form-control"
+                                  placeholderText="DD/MM/YYYY"
+                                />
+                              </td>
+                              <td>
+                                <input
+                                  type="text"
+                                  className="form-control"
+                                  value={field.hinderance_in_days}
+                                  onChange={(e) =>
+                                    handleFieldChange(
+                                      index,
+                                      "hinderance_in_days",
+                                      e.target.value
+                                    )
+                                  }
+                                />
+                              </td>
+                              <td>
+                                {index === dynamicFields.length - 1 && (
+                                  <FaPlus
+                                    onClick={() =>
+                                      setDynamicFields([
+                                        ...dynamicFields,
+                                        line_item_fields,
+                                      ])
+                                    }
+                                  />
+                                )}
+                              </td>
+                            </tr>
+                          </Fragment>
+                        ))}
+                      </tbody>
+                    </table>
 
-                <div className="col-12 col-md-6">
-                  <div className="mb-3">
-                    <label className="form-label">
-                      Certifying Authority <span className="red">*</span>{" "}
-                    </label>
+                    <div className="col-12 col-md-6">
+                      <div className="mb-3">
+                        <label className="form-label">
+                          Certifying Authority <span className="red">*</span>{" "}
+                        </label>
 
-                    <Select
-                      className="basic-single"
-                      classNamePrefix="select"
-                      isClearable={true}
-                      isSearchable={true}
-                      name="emp"
-                      id="emp"
-                      options={emp}
-                      value={
-                        emp &&
-                        emp.filter(
-                          (item) =>
-                            item.value === formData?.certifying_authority
-                        )[0]
-                      }
-                      onChange={(val) =>
-                        setFormData({
-                          ...formData,
-                          certifying_authority: val.value,
-                        })
-                      }
-                    />
-                  </div>
-                </div>
+                        <Select
+                          className="basic-single"
+                          classNamePrefix="select"
+                          isClearable={true}
+                          isSearchable={true}
+                          name="emp"
+                          id="emp"
+                          options={emp}
+                          value={
+                            emp &&
+                            emp.filter(
+                              (item) =>
+                                item.value === formData?.certifying_authority
+                            )[0]
+                          }
+                          onChange={(val) =>
+                            setFormData({
+                              ...formData,
+                              certifying_authority: val.value,
+                            })
+                          }
+                        />
+                      </div>
+                    </div>
 
-                <div className="col-12 col-md-6">
-                  <div className="mb-3">
-                    <label className="form-label">
-                      Remarks <span className="red">*</span>{" "}
-                    </label>
-                    <textarea
-                      name=""
-                      id=""
-                      rows="4"
-                      className="form-control"
-                      value={formData?.remarks}
-                      onChange={(e) =>
-                        setFormData({ ...formData, remarks: e.target.value })
-                      }
-                    ></textarea>
-                  </div>
-                </div>
-                <div className="col-12">
-                  <div className="mb-3 d-flex justify-content-between">
-                    <button
-                      onClick={() => submitHandler("SUBMITTED", null)}
-                      className="btn fw-bold btn-primary"
-                      type="button"
-                    >
-                      SUBMIT
-                    </button>
-                  </div>
-                </div>
+                    <div className="col-12 col-md-6">
+                      <div className="mb-3">
+                        <label className="form-label">
+                          Remarks <span className="red">*</span>{" "}
+                        </label>
+                        <textarea
+                          name=""
+                          id=""
+                          rows="4"
+                          className="form-control"
+                          value={formData?.remarks}
+                          onChange={(e) =>
+                            setFormData({
+                              ...formData,
+                              remarks: e.target.value,
+                            })
+                          }
+                        ></textarea>
+                      </div>
+                    </div>
+                    <div className="col-12">
+                      <div className="mb-3 d-flex justify-content-between">
+                        <button
+                          onClick={() => submitHandler("SUBMITTED", null)}
+                          className="btn fw-bold btn-primary"
+                          type="button"
+                        >
+                          SUBMIT
+                        </button>
+                      </div>
+                    </div>
+                  </>
+                )}
+                {formData?.action_type === "JCC" && (
+                  <>
+                    <div className="col-12 col-md-3">
+                      <div className="mb-3">
+                        <label className="form-label">Work Done By</label>
+                        <input
+                          type="text"
+                          className="form-control"
+                          value={formDataWdc?.work_done_by}
+                          onChange={(e) =>
+                            setFormDataWdc({
+                              ...formDataWdc,
+                              work_done_by: e.target.value,
+                            })
+                          }
+                        />
+                      </div>
+                    </div>
+                    <div className="col-12 col-md-3">
+                      <div className="mb-3">
+                        <label className="form-label">Work Title</label>
+                        <input
+                          type="text"
+                          className="form-control"
+                          value={formDataWdc?.work_title}
+                          onChange={(e) =>
+                            setFormDataWdc({
+                              ...formDataWdc,
+                              work_title: e.target.value,
+                            })
+                          }
+                        />
+                      </div>
+                    </div>
+
+                    <div className="col-12 col-md-3">
+                      <div className="mb-3">
+                        <label className="form-label">JOB Location</label>
+                        <input
+                          type="text"
+                          className="form-control"
+                          value={formDataWdc?.job_location}
+                          onChange={(e) =>
+                            setFormDataWdc({
+                              ...formDataWdc,
+                              job_location: e.target.value,
+                            })
+                          }
+                        />
+                      </div>
+                    </div>
+
+                    <div className="col-12 col-md-3">
+                      <div className="mb-3">
+                        <label className="form-label">Yard No</label>
+                        <input
+                          type="text"
+                          className="form-control"
+                          value={formDataWdc?.yard_no}
+                          onChange={(e) =>
+                            setFormDataWdc({
+                              ...formDataWdc,
+                              yard_no: e.target.value,
+                            })
+                          }
+                        />
+                      </div>
+                    </div>
+                    {/* guarantee_defect_liability_start_date: "",
+    guarantee_defect_liability_end_date: "", */}
+                    <div className="col-12 col-md-3">
+                      <div className="mb-3">
+                        <label className="form-label">
+                          Guarantee Defect Start Date
+                        </label>
+                        <ReactDatePicker
+                          selected={
+                            formDataWdc?.guarantee_defect_liability_start_date
+                          }
+                          onChange={(date) =>
+                            setFormDataWdc({
+                              ...formDataWdc,
+                              guarantee_defect_liability_start_date: date,
+                            })
+                          }
+                          dateFormat="dd/MM/yyyy"
+                          className="form-control"
+                          placeholderText="DD/MM/YYYY"
+                        />
+                      </div>
+                    </div>
+                    <div className="col-12 col-md-3">
+                      <div className="mb-3">
+                        <label className="form-label">
+                          Guarantee Defect End Date
+                        </label>
+                        <ReactDatePicker
+                          selected={
+                            formDataWdc?.guarantee_defect_liability_end_date
+                          }
+                          onChange={(date) =>
+                            setFormDataWdc({
+                              ...formDataWdc,
+                              guarantee_defect_liability_end_date: date,
+                            })
+                          }
+                          dateFormat="dd/MM/yyyy"
+                          className="form-control"
+                          placeholderText="DD/MM/YYYY"
+                        />
+                      </div>
+                    </div>
+
+                    <table className="table table-bordered table-striped">
+                      <thead>
+                        <tr>
+                          <th>PO LineItem</th>
+                          <th>Service Code</th>
+                          <th>Description</th>
+                          <th>PO Quantity</th>
+                          <th>Claim Quantity</th>
+                          <th>PO Rate</th>
+                          <th>Total</th>
+                          <th>Actual Start Date</th>
+                          <th>Actual Completion date</th>
+                          <th>Delay in work execution</th>
+                          <th>Action</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {dynamicFieldsWdc.map((field, index) => (
+                          <Fragment key={index}>
+                            <tr>
+                              <td>
+                                <select
+                                  name={`line_item_${index}`}
+                                  id={`line_item_${index}`}
+                                  className="form-select"
+                                  value={field.line_item_no}
+                                  onChange={(e) => {
+                                    handleFieldChangeWdc(
+                                      index,
+                                      "line_item_no",
+                                      e.target.value
+                                    );
+                                    // getAvailableAmount(e.target.value, index);
+                                  }}
+                                >
+                                  <option value="">Choose PO Line Item</option>
+                                  {checkTypeArr(lineItemData) &&
+                                    lineItemData.map((item, i) => (
+                                      <option
+                                        value={item?.material_item_number}
+                                        key={i}
+                                      >
+                                        {item?.material_item_number}
+                                      </option>
+                                    ))}
+                                </select>
+                              </td>
+                              <td>{field.matarial_code}</td>
+                              <td>{field.description}</td>
+                              {/* <td>{field.po_qty}</td> */}
+                              <td>{field.target_amount}</td>
+                              <td>
+                                <input
+                                  type="number"
+                                  className="form-control"
+                                  value={field.claim_qty}
+                                  onChange={(e) =>
+                                    handleFieldChangeWdc(
+                                      index,
+                                      "claim_qty",
+                                      e.target.value
+                                    )
+                                  }
+                                />
+                              </td>
+                              <td>{field.po_rate}</td>
+                              <td>{field.total}</td>
+                              {/* <td>
+                                {field.rest_amount} {field.unit}
+                              </td> */}
+
+                              <td>
+                                {" "}
+                                <ReactDatePicker
+                                  selected={field.actual_start_date}
+                                  onChange={(date) =>
+                                    handleDateChangeWdc(
+                                      index,
+                                      "actual_start_date",
+                                      date
+                                    )
+                                  }
+                                  dateFormat="dd/MM/yyyy"
+                                  className="form-control"
+                                  placeholderText="DD/MM/YYYY"
+                                />
+                              </td>
+                              <td>
+                                <ReactDatePicker
+                                  selected={field.actual_completion_date}
+                                  onChange={(date) =>
+                                    handleDateChangeWdc(
+                                      index,
+                                      "actual_completion_date",
+                                      date
+                                    )
+                                  }
+                                  dateFormat="dd/MM/yyyy"
+                                  className="form-control"
+                                  placeholderText="DD/MM/YYYY"
+                                />
+                              </td>
+                              <td>
+                                <input
+                                  type="number"
+                                  className="form-control"
+                                  value={field.delay_in_work_execution}
+                                  onChange={(e) =>
+                                    handleFieldChangeWdc(
+                                      index,
+                                      "delay_in_work_execution",
+                                      e.target.value
+                                    )
+                                  }
+                                />
+                              </td>
+                              {/* <td>
+                                <input
+                                  type="text"
+                                  className="form-control"
+                                  value={field.hinderance_in_days}
+                                  onChange={(e) =>
+                                    handleFieldChange(
+                                      index,
+                                      "hinderance_in_days",
+                                      e.target.value
+                                    )
+                                  }
+                                />
+                              </td> */}
+                              <td>
+                                {index === dynamicFieldsWdc.length - 1 && (
+                                  <FaPlus
+                                    onClick={() =>
+                                      setDynamicFieldsWdc([
+                                        ...dynamicFieldsWdc,
+                                        line_item_fieldswdc,
+                                      ])
+                                    }
+                                  />
+                                )}
+                              </td>
+                            </tr>
+                          </Fragment>
+                        ))}
+                      </tbody>
+                    </table>
+
+                    <div className="col-12 col-md-6">
+                      <div className="mb-3">
+                        <label className="form-label">
+                          Certifying Authority <span className="red">*</span>{" "}
+                        </label>
+
+                        <Select
+                          className="basic-single"
+                          classNamePrefix="select"
+                          isClearable={true}
+                          isSearchable={true}
+                          name="emp"
+                          id="emp"
+                          options={emp}
+                          value={
+                            emp &&
+                            emp.filter(
+                              (item) =>
+                                item.value === formData?.certifying_authority
+                            )[0]
+                          }
+                          onChange={(val) =>
+                            setFormData({
+                              ...formData,
+                              certifying_authority: val.value,
+                            })
+                          }
+                        />
+                      </div>
+                    </div>
+
+                    <div className="col-12 col-md-6">
+                      <div className="mb-3">
+                        <label className="form-label">
+                          Remarks <span className="red">*</span>{" "}
+                        </label>
+                        <textarea
+                          name=""
+                          id=""
+                          rows="4"
+                          className="form-control"
+                          value={formDataWdc?.remarks}
+                          onChange={(e) =>
+                            setFormDataWdc({
+                              ...formDataWdc,
+                              remarks: e.target.value,
+                            })
+                          }
+                        ></textarea>
+                      </div>
+                    </div>
+                    <div className="col-12">
+                      <div className="mb-3 d-flex justify-content-between">
+                        <button
+                          onClick={() => submitHandlerWdc("SUBMITTED", null)}
+                          className="btn fw-bold btn-primary"
+                          type="button"
+                        >
+                          SUBMIT
+                        </button>
+                      </div>
+                    </div>
+                  </>
+                )}
               </div>
             </form>
           </div>
@@ -1159,174 +1654,311 @@ const WDCSub = () => {
       )}
 
       <div className={isPopupView ? "popup popup_lg active" : "popup popup_lg"}>
-        <div className="card card-xxl-stretch mb-5 mb-xxl-8">
-          <div className="card-header border-0 pt-5 pb-3">
-            <h3 className="card-title align-items-start flex-column">
-              <span className="card-label fw-bold fs-3 mb-1">
-                All Data for{" "}
-                {viewData?.reference_no && `for ${viewData?.reference_no}`}
-              </span>
-            </h3>
-            <button
-              className="btn fw-bold btn-danger"
-              onClick={() => {
-                setViewData(null);
-                setIsPopupView(false);
-              }}
-            >
-              Close
-            </button>
-          </div>
-          <form>
-            <div className="row">
-              <div className="col-12 col-md-6">
-                <div className="mb-3">
-                  <label className="form-label">Action</label>
-                  <p>{viewData?.action_type}</p>
-                </div>
-              </div>
-              <div className="col-12 col-md-6">
-                <div className="mb-3">
-                  <label className="form-label">Work Title</label>
-                  <p>{viewData?.work_title}</p>
-                </div>
-              </div>
-              <div className="col-12 col-md-6">
-                <div className="mb-3">
-                  <label className="form-label">Work Done By</label>
-                  <p>{viewData?.work_done_by}</p>
-                </div>
-              </div>
-              <div className="col-12 col-md-6">
-                <div className="mb-3">
-                  <label className="form-label">JOB Location</label>
-                  <p>{viewData?.job_location}</p>
-                </div>
-              </div>
-              <div className="col-12 col-md-6">
-                <div className="mb-3">
-                  <label className="form-label">Yard No</label>
-                  <p>{viewData?.yard_no}</p>
-                </div>
-              </div>
-              <div className="col-12 col-md-6">
-                <div className="mb-3">
-                  <label className="form-label">Unit</label>
-                  <p>{viewData?.unit}</p>
-                </div>
-              </div>
-              <div className="col-12 col-md-6">
-                <div className="mb-3">
-                  <label className="form-label">Inspecttion Note Ref No</label>
-                  <p>
-                    <span>{viewData?.inspection_note_ref_no}</span>
-                    {viewData?.file_inspection_note_ref_no && (
-                      <Link
-                        to={`${process.env.REACT_APP_PDF_URL}wdcs/${viewData?.file_inspection_note_ref_no}`}
-                        target="_blank"
-                      >
-                        Click here
-                      </Link>
-                    )}
-                  </p>
-                </div>
-              </div>
-              <div className="col-12 col-md-6">
-                <div className="mb-3">
-                  <label className="form-label">
-                    Hinderence Report Certified by Berth
-                  </label>
-                  <p>
-                    <span>{viewData?.hinderence_report_cerified_by_berth}</span>
-                    {viewData?.file_hinderence_report_cerified_by_berth && (
-                      <Link
-                        to={`${process.env.REACT_APP_PDF_URL}wdcs/${viewData?.file_hinderence_report_cerified_by_berth}`}
-                        target="_blank"
-                      >
-                        Click here
-                      </Link>
-                    )}
-                  </p>
-                </div>
-              </div>
-              <div className="col-12">
-                <div className="mb-3">
-                  <label className="form-label">Attendance Report</label>
-                  <p>
-                    <span>{viewData?.attendance_report}</span>
-                    {viewData?.file_attendance_report && (
-                      <Link
-                        to={`${process.env.REACT_APP_PDF_URL}wdcs/${viewData?.file_attendance_report}`}
-                        target="_blank"
-                      >
-                        Click here
-                      </Link>
-                    )}
-                  </p>
-                </div>
-              </div>
-              <div className="col-12 col-md-6">
-                <div className="mb-3">
-                  <label className="form-label">line_item_no</label>
-                  <p>{viewData?.line_item_no}</p>
-                </div>
-              </div>
-
-              <table className="table table-bordered table-striped">
-                <thead>
-                  <tr>
-                    <th>PO LineItem</th>
-                    <th>Description</th>
-                    <th>Open Quantity</th>
-                    <th>Claim Quantity</th>
-                    <th>Actual Start</th>
-                    <th>Actual Completion</th>
-                    <th>Hinderance in Days</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {checkTypeArr(viewData?.line_item_array) &&
-                    viewData?.line_item_array.map((field, index) => (
-                      <Fragment key={index}>
-                        <tr>
-                          <td>
-                            <span>{field?.line_item_no}</span>
-                          </td>
-                          <td>{field?.description}</td>
-                          <td>
-                            {field?.rest_amount} {field?.unit}
-                          </td>
-                          <td>{field?.claim_qty}</td>
-                          <td>
-                            {field?.actual_start_date &&
-                              formatDate(field?.actual_start_date)}
-                          </td>
-                          <td>
-                            {field?.actual_completion_date &&
-                              formatDate(field?.actual_completion_date)}
-                          </td>
-                          <td>{field?.hinderance_in_days}</td>
-                        </tr>
-                      </Fragment>
-                    ))}
-                </tbody>
-              </table>
-
-              <div className="col-12 col-md-6">
-                <div className="mb-3">
-                  <label className="form-label">Stage Details</label>
-                  <p>{viewData?.stage_details}</p>
-                </div>
-              </div>
-              <div className="col-12">
-                <div className="mb-3">
-                  <label className="form-label">Remarks</label>
-                  <p>{viewData?.remarks}</p>
-                </div>
-              </div>
+        {formData?.action_type === "WDC" && (
+          <div className="card card-xxl-stretch mb-5 mb-xxl-8">
+            <div className="card-header border-0 pt-5 pb-3">
+              <h3 className="card-title align-items-start flex-column">
+                <span className="card-label fw-bold fs-3 mb-1">
+                  All Data for{" "}
+                  {viewData?.reference_no && `for ${viewData?.reference_no}`}
+                </span>
+              </h3>
+              <button
+                className="btn fw-bold btn-danger"
+                onClick={() => {
+                  setViewData(null);
+                  setIsPopupView(false);
+                }}
+              >
+                Close
+              </button>
             </div>
-          </form>
-        </div>
+            <form>
+              <div className="row">
+                <div className="col-12 col-md-6">
+                  <div className="mb-3">
+                    <label className="form-label">Action</label>
+                    <p>{viewData?.action_type}</p>
+                  </div>
+                </div>
+                <div className="col-12 col-md-6">
+                  <div className="mb-3">
+                    <label className="form-label">Work Title</label>
+                    <p>{viewData?.work_title}</p>
+                  </div>
+                </div>
+                <div className="col-12 col-md-6">
+                  <div className="mb-3">
+                    <label className="form-label">Work Done By</label>
+                    <p>{viewData?.work_done_by}</p>
+                  </div>
+                </div>
+                <div className="col-12 col-md-6">
+                  <div className="mb-3">
+                    <label className="form-label">JOB Location</label>
+                    <p>{viewData?.job_location}</p>
+                  </div>
+                </div>
+                <div className="col-12 col-md-6">
+                  <div className="mb-3">
+                    <label className="form-label">Yard No</label>
+                    <p>{viewData?.yard_no}</p>
+                  </div>
+                </div>
+                <div className="col-12 col-md-6">
+                  <div className="mb-3">
+                    <label className="form-label">Unit</label>
+                    <p>{viewData?.unit}</p>
+                  </div>
+                </div>
+                <div className="col-12 col-md-6">
+                  <div className="mb-3">
+                    <label className="form-label">
+                      Inspecttion Note Ref No
+                    </label>
+                    <p>
+                      <span>{viewData?.inspection_note_ref_no}</span>
+                      {viewData?.file_inspection_note_ref_no && (
+                        <Link
+                          to={`${process.env.REACT_APP_PDF_URL}wdcs/${viewData?.file_inspection_note_ref_no}`}
+                          target="_blank"
+                        >
+                          Click here
+                        </Link>
+                      )}
+                    </p>
+                  </div>
+                </div>
+                <div className="col-12 col-md-6">
+                  <div className="mb-3">
+                    <label className="form-label">
+                      Hinderence Report Certified by Berth
+                    </label>
+                    <p>
+                      <span>
+                        {viewData?.hinderence_report_cerified_by_berth}
+                      </span>
+                      {viewData?.file_hinderence_report_cerified_by_berth && (
+                        <Link
+                          to={`${process.env.REACT_APP_PDF_URL}wdcs/${viewData?.file_hinderence_report_cerified_by_berth}`}
+                          target="_blank"
+                        >
+                          Click here
+                        </Link>
+                      )}
+                    </p>
+                  </div>
+                </div>
+                <div className="col-12">
+                  <div className="mb-3">
+                    <label className="form-label">Attendance Report</label>
+                    <p>
+                      <span>{viewData?.attendance_report}</span>
+                      {viewData?.file_attendance_report && (
+                        <Link
+                          to={`${process.env.REACT_APP_PDF_URL}wdcs/${viewData?.file_attendance_report}`}
+                          target="_blank"
+                        >
+                          Click here
+                        </Link>
+                      )}
+                    </p>
+                  </div>
+                </div>
+                <div className="col-12 col-md-6">
+                  <div className="mb-3">
+                    <label className="form-label">line_item_no</label>
+                    <p>{viewData?.line_item_no}</p>
+                  </div>
+                </div>
+
+                <table className="table table-bordered table-striped">
+                  <thead>
+                    <tr>
+                      <th>PO LineItem</th>
+                      <th>Description</th>
+                      <th>Open Quantity</th>
+                      <th>Claim Quantity</th>
+                      <th>Actual Start</th>
+                      <th>Actual Completion</th>
+                      <th>Hinderance in Days</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {checkTypeArr(viewData?.line_item_array) &&
+                      viewData?.line_item_array.map((field, index) => (
+                        <Fragment key={index}>
+                          <tr>
+                            <td>
+                              <span>{field?.line_item_no}</span>
+                            </td>
+                            <td>{field?.description}</td>
+                            <td>
+                              {field?.rest_amount} {field?.unit}
+                            </td>
+                            <td>{field?.claim_qty}</td>
+                            <td>
+                              {field?.actual_start_date &&
+                                formatDate(field?.actual_start_date)}
+                            </td>
+                            <td>
+                              {field?.actual_completion_date &&
+                                formatDate(field?.actual_completion_date)}
+                            </td>
+                            <td>{field?.hinderance_in_days}</td>
+                          </tr>
+                        </Fragment>
+                      ))}
+                  </tbody>
+                </table>
+
+                <div className="col-12 col-md-6">
+                  <div className="mb-3">
+                    <label className="form-label">Stage Details</label>
+                    <p>{viewData?.stage_details}</p>
+                  </div>
+                </div>
+                <div className="col-12">
+                  <div className="mb-3">
+                    <label className="form-label">Remarks</label>
+                    <p>{viewData?.remarks}</p>
+                  </div>
+                </div>
+              </div>
+            </form>
+          </div>
+        )}
+
+        {formData?.action_type === "JCC" && (
+          <div className="card card-xxl-stretch mb-5 mb-xxl-8">
+            <div className="card-header border-0 pt-5 pb-3">
+              <h3 className="card-title align-items-start flex-column">
+                <span className="card-label fw-bold fs-3 mb-1">
+                  All Data for{" "}
+                  {viewData?.reference_no && `for ${viewData?.reference_no}`}
+                </span>
+              </h3>
+              <button
+                className="btn fw-bold btn-danger"
+                onClick={() => {
+                  setViewData(null);
+                  setIsPopupView(false);
+                }}
+              >
+                Close
+              </button>
+            </div>
+            <form>
+              <div className="row">
+                <div className="col-12 col-md-6">
+                  <div className="mb-3">
+                    <label className="form-label">Action</label>
+                    <p>{viewData?.action_type}</p>
+                  </div>
+                </div>
+                <div className="col-12 col-md-6">
+                  <div className="mb-3">
+                    <label className="form-label">Work Title</label>
+                    <p>{viewData?.work_title}</p>
+                  </div>
+                </div>
+                <div className="col-12 col-md-6">
+                  <div className="mb-3">
+                    <label className="form-label">Work Done By</label>
+                    <p>{viewData?.work_done_by}</p>
+                  </div>
+                </div>
+                <div className="col-12 col-md-6">
+                  <div className="mb-3">
+                    <label className="form-label">JOB Location</label>
+                    <p>{viewData?.job_location}</p>
+                  </div>
+                </div>
+                <div className="col-12 col-md-6">
+                  <div className="mb-3">
+                    <label className="form-label">Yard No</label>
+                    <p>{viewData?.yard_no}</p>
+                  </div>
+                </div>
+                <div className="col-12 col-md-6">
+                  <div className="mb-3">
+                    <label className="form-label">Attendance Report</label>
+                    <p>
+                      <span>{viewData?.attendance_report}</span>
+                      {viewData?.file_attendance_report && (
+                        <Link
+                          to={`${process.env.REACT_APP_PDF_URL}wdcs/${viewData?.file_attendance_report}`}
+                          target="_blank"
+                        >
+                          Click here
+                        </Link>
+                      )}
+                    </p>
+                  </div>
+                </div>
+                <div className="col-12 col-md-6">
+                  <div className="mb-3">
+                    <label className="form-label">line_item_no</label>
+                    <p>{viewData?.line_item_no}</p>
+                  </div>
+                </div>
+
+                <table className="table table-bordered table-striped">
+                  <thead>
+                    <tr>
+                      <th>PO LineItem</th>
+                      <th>Description</th>
+                      <th>Open Quantity</th>
+                      <th>Claim Quantity</th>
+                      <th>Actual Start</th>
+                      <th>Actual Completion</th>
+                      <th>Hinderance in Days</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {checkTypeArr(viewData?.line_item_array) &&
+                      viewData?.line_item_array.map((field, index) => (
+                        <Fragment key={index}>
+                          <tr>
+                            <td>
+                              <span>{field?.line_item_no}</span>
+                            </td>
+                            <td>{field?.description}</td>
+                            <td>
+                              {field?.rest_amount} {field?.unit}
+                            </td>
+                            <td>{field?.claim_qty}</td>
+                            <td>
+                              {field?.actual_start_date &&
+                                formatDate(field?.actual_start_date)}
+                            </td>
+                            <td>
+                              {field?.actual_completion_date &&
+                                formatDate(field?.actual_completion_date)}
+                            </td>
+                            <td>{field?.hinderance_in_days}</td>
+                          </tr>
+                        </Fragment>
+                      ))}
+                  </tbody>
+                </table>
+
+                <div className="col-12 col-md-6">
+                  <div className="mb-3">
+                    <label className="form-label">Stage Details</label>
+                    <p>{viewData?.stage_details}</p>
+                  </div>
+                </div>
+                <div className="col-12">
+                  <div className="mb-3">
+                    <label className="form-label">Remarks</label>
+                    <p>{viewData?.remarks}</p>
+                  </div>
+                </div>
+              </div>
+            </form>
+          </div>
+        )}
       </div>
     </>
   );

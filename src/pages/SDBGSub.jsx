@@ -933,6 +933,12 @@ const SDBGSub = () => {
                     FORWARD TO FINANCE
                   </button>
                   <button
+                    className="btn fw-bold btn-success btn-sm"
+                    onClick={handleDownloadPDF}
+                  >
+                    Download BG Entry
+                  </button>
+                  <button
                     onClick={() =>
                       reConfirm(
                         { file: true },
@@ -962,12 +968,12 @@ const SDBGSub = () => {
                   Check BG Entry
                 </span>
               </h3>
-              <button
+              {/* <button
                 className="btn fw-bold btn-success btn-sm"
                 onClick={handleDownloadPDF}
               >
                 Download BG Entry
-              </button>
+              </button> */}
               <button
                 className="btn fw-bold btn-danger"
                 onClick={() => setIsCheckEntryPopup(false)}
@@ -1291,7 +1297,12 @@ const SDBGSub = () => {
                   >
                     APPROVED
                   </button>
-                  <button type="button" onClick={() => toast.warn("SAP is not conntected!")}>HOLD</button>
+                  <button
+                    type="button"
+                    onClick={() => toast.warn("SAP is not conntected!")}
+                  >
+                    HOLD
+                  </button>
                   <button
                     onClick={() =>
                       reConfirm(

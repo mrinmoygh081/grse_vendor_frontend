@@ -43,9 +43,9 @@ export const actionHandlerBTN = async (
       c_sdbg_filename,
       demand_raise_filename,
       pbg_filename,
-      associated_po
+      associated_po,
     } = form;
-    console.log("associated_po1", associated_po)
+    console.log("associated_po1", associated_po);
 
     if (!hsn_gstn_icgrn) {
       toast.warning("Please check the HSN code, GSTIN, Tax rate is as per PO!");
@@ -101,7 +101,7 @@ export const actionHandlerBTN = async (
     if (pbg_filename) {
       fDToSend.append("pbg_filename", pbg_filename);
     }
-    console.log("fDToSend", fDToSend)
+    console.log("fDToSend", fDToSend);
     const response = await apiCallBack(
       "POST",
       "po/btn/BillsMaterialHybrid",
@@ -130,7 +130,7 @@ export const actionHandlerByDO = async (
   id,
   token
 ) => {
-  console.log(doForm)
+  doForm.assigned_to = doForm?.certifying_authority;
   try {
     const response = await apiCallBack(
       "POST",

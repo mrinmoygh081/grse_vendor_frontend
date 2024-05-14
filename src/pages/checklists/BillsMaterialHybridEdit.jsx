@@ -14,6 +14,7 @@ import {
 import { apiCallBack } from "../../utils/fetchAPIs";
 import { inputOnWheelPrevent } from "../../utils/inputOnWheelPrevent";
 import { convertToEpoch, formatDate } from "../../utils/getDateTimeNow";
+import Select from "react-select";
 
 const BillsMaterialHybridEdit = () => {
   const navigate = useNavigate();
@@ -24,7 +25,7 @@ const BillsMaterialHybridEdit = () => {
 
   const [impDates, setImpDates] = useState(null);
   const [data, setData] = useState(null);
-  console.log("data", data)
+
   let initialData = {
     invoice_no: "",
     invoice_filename: "",
@@ -48,6 +49,7 @@ const BillsMaterialHybridEdit = () => {
   };
   let inititalDOData = {
     btn_num: state,
+    certifying_authority: "",
     ld_ge_date: "",
     ld_c_date: "",
     ld_amount: "",
@@ -55,12 +57,15 @@ const BillsMaterialHybridEdit = () => {
     p_drg_amount: "",
     p_qap_amount: "",
     p_ilms_amount: "",
+    p_estimate_amount: "",
     o_deduction: "",
     total_deduction: "",
     net_payable_amount: "",
   };
   const [form, setForm] = useState(initialData);
   const [doForm, setDoForm] = useState(inititalDOData);
+  const [options, setOptions] = useState([]);
+  const [emp, setEmp] = useState(null);
 
   const calNetClaimAmount = (invoice_value, debit_note, credit_note) => {
     if (typeof invoice_value !== "number") {
@@ -127,26 +132,38 @@ const BillsMaterialHybridEdit = () => {
       doForm?.p_drg_amount,
       doForm?.p_qap_amount,
       doForm?.p_ilms_amount,
-      doForm?.o_deduction
+      doForm?.o_deduction,
+      doForm?.p_estimate_amount
     );
-    console.log(report?.net_pay)
+    console.log(report?.net_pay);
     setDoForm({
       ...doForm,
       total_deduction: report?.deduct,
       net_payable_amount: report?.net_pay,
     });
-  }, [
-    doForm?.ld_amount,
-    doForm?.p_sdbg_amount,
-    doForm?.p_drg_amount,
-    doForm?.p_qap_amount,
-    doForm?.p_ilms_amount,
-    doForm?.o_deduction,
-  ]);
+  }, [doForm?.ld_amount, doForm?.o_deduction, doForm?.p_estimate_amount]);
+
+  const getEmp = async () => {
+    try {
+      const data = await apiCallBack("GET", `po/wdc/grseEmpList`, null, token);
+      if (data?.status) {
+        let options = data.data.map((item, index) => {
+          return {
+            value: item.code,
+            label: `${item.name} (${item.code})`,
+          };
+        });
+        setEmp(options);
+      }
+    } catch (error) {
+      console.error("Error fetching Employee list:", error);
+    }
+  };
 
   useEffect(() => {
     getBTNData();
     getDataByBTN();
+    getEmp();
   }, []);
 
   // useEffect(() => {
@@ -169,17 +186,12 @@ const BillsMaterialHybridEdit = () => {
   useEffect(() => {
     const { ld_c_date, ld_ge_date } = doForm;
 
-    
-
-    console.log("HELLO", data?.icgrn_total)
+    console.log("HELLO", data?.icgrn_total);
     if (ld_c_date && ld_ge_date && data?.icgrn_total) {
       const icgrnData = data?.icgrn_total;
-const cc = convertToEpoch(new Date(ld_c_date)) * 1000;
-console.log(cc);
-console.log("cc%^&*");
-const aa = convertToEpoch(new Date(ld_ge_date)) * 1000;
-console.log(aa);
-console.log("aa%^&*");
+      const cc = convertToEpoch(new Date(ld_c_date)) * 1000;
+
+      const aa = convertToEpoch(new Date(ld_ge_date)) * 1000;
 
       let p_amt = calculatePenalty(cc, aa, icgrnData, 0.5, 5);
       console.log("p_amt", p_amt, cc, aa, icgrnData);
@@ -202,14 +214,19 @@ console.log("aa%^&*");
     let p_drg = 0;
     let p_qap = 0;
     let p_ilms = 0;
-console.log("hhhhhhhhhhhhhhhhhhhhh");
+    let p_estimate = 0;
+
     if (data?.icgrn_total) {
-      console.log("ppppppppppp");
       const icgrnData = data?.icgrn_total;
 
       if (a_sdbg_date && c_sdbg_date && icgrnData) {
-        console.log("c_sdbg_date", )
-        p_sdbg = calculatePenalty(convertToEpoch(new Date(c_sdbg_date)) * 1000, a_sdbg_date, icgrnData, 0.25, 2);
+        p_sdbg = calculatePenalty(
+          convertToEpoch(new Date(c_sdbg_date)) * 1000,
+          a_sdbg_date,
+          icgrnData,
+          0.25,
+          1
+        );
         console.log("p_sdbg", p_sdbg);
       }
       if (a_drawing_date && c_drawing_date && icgrnData) {
@@ -218,18 +235,31 @@ console.log("hhhhhhhhhhhhhhhhhhhhh");
           a_drawing_date,
           icgrnData,
           0.25,
-          2
+          1
         );
-        console.log("kkkkkkkkk",p_drg);
+        console.log("p_drg", p_drg);
       }
       if (a_qap_date && c_qap_date && icgrnData) {
         p_qap = calculatePenalty(
-          convertToEpoch(new Date(c_qap_date)) * 1000, a_qap_date, icgrnData, 0.25, 2);
+          convertToEpoch(new Date(c_qap_date)) * 1000,
+          a_qap_date,
+          icgrnData,
+          0.25,
+          1
+        );
+        console.log("p_qap", p_qap);
       }
       if (a_ilms_date && c_ilms_date && icgrnData) {
         p_ilms = calculatePenalty(
-          convertToEpoch(new Date(c_ilms_date)) * 1000, a_ilms_date, icgrnData, 0.25, 2);
+          convertToEpoch(new Date(c_ilms_date)) * 1000,
+          a_ilms_date,
+          icgrnData,
+          0.25,
+          1
+        );
+        console.log("p_ilms", p_ilms);
       }
+      p_estimate = Math.max(p_drg, p_qap, p_ilms);
     }
     setDoForm({
       ...doForm,
@@ -237,6 +267,7 @@ console.log("hhhhhhhhhhhhhhhhhhhhh");
       p_drg_amount: p_drg,
       p_qap_amount: p_qap,
       p_ilms_amount: p_ilms,
+      p_estimate_amount: p_estimate,
     });
   }, [form, data?.icgrn_total]);
 
@@ -359,7 +390,31 @@ console.log("hhhhhhhhhhhhhhhhhhhhh");
                                       <td className="btn_value">
                                         <b>{data?.net_claim_amount}</b>
                                       </td>
-                                    </tr>{" "}
+                                    </tr>
+                                    <tr>
+                                      <td>CGST:</td>
+                                      <td className="btn_value">
+                                        <b>{data?.cgst}</b>
+                                      </td>
+                                    </tr>
+                                    <tr>
+                                      <td>SGST:</td>
+                                      <td className="btn_value">
+                                        <b>{data?.sgst}</b>
+                                      </td>
+                                    </tr>
+                                    <tr>
+                                      <td>IGST:</td>
+                                      <td className="btn_value">
+                                        <b>{data?.igst}</b>
+                                      </td>
+                                    </tr>
+                                    <tr>
+                                      <td>Net Claim Amount with GST:</td>
+                                      <td className="btn_value">
+                                        <b></b>
+                                      </td>
+                                    </tr>
                                     <tr>
                                       <td>Contractual SDBG Submission Date</td>
                                       <td className="btn_value">
@@ -607,6 +662,34 @@ console.log("hhhhhhhhhhhhhhhhhhhhh");
                                   <table className="table table-striped table-bordered table_height">
                                     <tbody style={{ maxHeight: "100%" }}>
                                       <tr>
+                                        <td>Finance Authority</td>
+                                        <td className="btn_value">
+                                          <Select
+                                            className="basic-single w-100"
+                                            classNamePrefix="select"
+                                            isClearable={true}
+                                            isSearchable={true}
+                                            name="emp"
+                                            id="emp"
+                                            options={emp}
+                                            value={
+                                              emp &&
+                                              emp.filter(
+                                                (item) =>
+                                                  item.value ===
+                                                  doForm?.certifying_authority
+                                              )[0]
+                                            }
+                                            onChange={(val) =>
+                                              setDoForm({
+                                                ...doForm,
+                                                certifying_authority: val.value,
+                                              })
+                                            }
+                                          />
+                                        </td>
+                                      </tr>
+                                      <tr>
                                         <td>BTN Number:</td>
                                         <td className="btn_value">
                                           <b>{state}</b>
@@ -634,8 +717,7 @@ console.log("hhhhhhhhhhhhhhhhhhhhh");
                                           </div>
                                           <div className="me-3">
                                             <label htmlFor="CLD">
-                                              Contractual Delivery
-                                              Date:
+                                              Contractual Delivery Date:
                                             </label>
                                             <input
                                               type="date"
@@ -764,6 +846,15 @@ console.log("hhhhhhhhhhhhhhhhhhhhh");
                                         </td>
                                       </tr>
                                       <tr>
+                                        <td>Estimated Penalty </td>
+                                        <td className="btn_value">
+                                          <p>
+                                            {" "}
+                                            &#8377; {doForm?.p_estimate_amount}
+                                          </p>
+                                        </td>
+                                      </tr>
+                                      <tr>
                                         <td>Other deduction if any </td>
                                         <td className="btn_value">
                                           <input
@@ -807,6 +898,11 @@ console.log("hhhhhhhhhhhhhhhhhhhhh");
                                     </tbody>
                                   </table>
                                 </div>
+                                <p>
+                                  Certified that Invoice has been verified w.r.t
+                                  PO and recommanded for release of payment
+                                  subject to satutatory deduction
+                                </p>
                                 <div className="text-center">
                                   <button
                                     type="button"

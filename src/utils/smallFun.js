@@ -23,7 +23,7 @@ export const calculatePenalty = (
   percentage,
   maxPercentage
 ) => {
-  const oneWeek = 7 * 24 * 60 * 60 * 1000; 
+  const oneWeek = 7 * 24 * 60 * 60 * 1000;
   const contractualTime = new Date(contractualDate).getTime();
   const actualTime = new Date(actualDate).getTime();
 
@@ -43,14 +43,27 @@ export const calculatePenalty = (
 
   // Calculate the penalty amount
   const penaltyAmount = (originalValue * penaltyPercentage) / 100;
-  console.log("penaltyAmount", penaltyAmount, contractualDate,
-  actualDate,
-  originalValue)
+  console.log(
+    "penaltyAmount",
+    penaltyAmount,
+    contractualDate,
+    actualDate,
+    originalValue
+  );
 
   return Math.round(penaltyAmount);
 };
 
-export const calculateNetPay = (net, ld, sdbg, drg, qap, ilms, other) => {
+export const calculateNetPay = (
+  net,
+  ld,
+  sdbg,
+  drg,
+  qap,
+  ilms,
+  other,
+  estimate
+) => {
   // if (!net || net === "") {
   //   toast.warn("ICGRN Value is missing");
   // }
@@ -66,14 +79,10 @@ export const calculateNetPay = (net, ld, sdbg, drg, qap, ilms, other) => {
     ilms = 0;
   } else if (!other && other === "") {
     other = 0;
+  } else if (!estimate && estimate === "") {
+    estimate = 0;
   }
-  let deduct =
-    parseInt(ld) +
-    parseInt(sdbg) +
-    parseInt(drg) +
-    parseInt(qap) +
-    parseInt(ilms) +
-    parseInt(other);
+  let deduct = parseInt(ld) + parseInt(other) + parseInt(estimate);
 
   let net_pay = parseInt(net) - deduct;
 
