@@ -389,6 +389,12 @@ const BillsMaterialHybrid = () => {
                                       </td>
                                     </tr>
                                     <tr>
+                                      <td>Net claim amount with GST:</td>
+                                      <td className="btn_value">
+                                        <b></b>
+                                      </td>
+                                    </tr>
+                                    <tr>
                                       <td>Contractual SDBG Submission Date</td>
                                       <td className="btn_value">
                                         <b className="me-3">

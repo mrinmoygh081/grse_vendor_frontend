@@ -219,7 +219,8 @@ const BillsMaterialHybridEdit = () => {
     let p_drg = 0;
     let p_qap = 0;
     let p_ilms = 0;
-    console.log("hhhhhhhhhhhhhhhhhhhhh");
+    let p_estimate = 0;
+
     if (data?.icgrn_total) {
       const icgrnData = data?.icgrn_total;
 
