@@ -35,6 +35,9 @@ const BillsMaterialHybrid = () => {
     debit_note: "",
     credit_note: "",
     net_claim_amount: 0,
+    cgst: null,
+    sgst: null,
+    igst: null,
     debit_credit_filename: "",
     gate_entry_no: "",
     gate_entry_date: "",
@@ -56,17 +59,12 @@ const BillsMaterialHybrid = () => {
   };
   const [form, setForm] = useState(initialData);
 
-  const calNetClaimAmount = (
-    invoice_value,
-    debit_note,
-    credit_note
-  ) => {
+  const calNetClaimAmount = (invoice_value, debit_note, credit_note) => {
     invoice_value = parseFloat(invoice_value) || 0;
     debit_note = parseFloat(debit_note) || 0;
     credit_note = parseFloat(credit_note) || 0;
 
-    const net_claim_amount =
-      invoice_value + debit_note - credit_note;
+    const net_claim_amount = invoice_value + debit_note - credit_note;
 
     setForm((prevForm) => ({
       ...prevForm,
@@ -78,11 +76,7 @@ const BillsMaterialHybrid = () => {
     if (invoice_value || debit_note || credit_note) {
       calNetClaimAmount(invoice_value, debit_note, credit_note);
     }
-  }, [
-    form?.invoice_value,
-    form?.debit_note,
-    form?.credit_note,
-  ]);
+  }, [form?.invoice_value, form?.debit_note, form?.credit_note]);
 
   const getData = async () => {
     try {
@@ -237,7 +231,7 @@ const BillsMaterialHybrid = () => {
                                       </td>
                                     </tr>
 
-{console.log(form)}
+                                    {console.log(form)}
                                     <tr>
                                       <td>Associated PO:</td>
                                       <td className="btn_value">
@@ -251,7 +245,11 @@ const BillsMaterialHybrid = () => {
                                               onChange={(e) => {
                                                 item.a_po = e.target.value;
                                                 // console.log(form.associated_po)
-                                                setForm({...form, associated_po: form.associated_po})
+                                                setForm({
+                                                  ...form,
+                                                  associated_po:
+                                                    form.associated_po,
+                                                });
                                               }}
                                               key={i}
                                             />
@@ -340,6 +338,54 @@ const BillsMaterialHybrid = () => {
                                       <td>Net claim amount:</td>
                                       <td className="btn_value">
                                         <b>{form?.net_claim_amount}</b>
+                                      </td>
+                                    </tr>
+                                    <tr>
+                                      <td>CGST:</td>
+                                      <td className="btn_value">
+                                        <input
+                                          type="number"
+                                          className="form-control"
+                                          onWheel={inputOnWheelPrevent}
+                                          name="cgst"
+                                          value={form?.cgst}
+                                          onChange={(e) => {
+                                            inputTypeChange(e, form, setForm);
+                                          }}
+                                        />
+                                        <span className="ms-1">%</span>
+                                      </td>
+                                    </tr>
+                                    <tr>
+                                      <td>SGST:</td>
+                                      <td className="btn_value">
+                                        <input
+                                          type="number"
+                                          className="form-control"
+                                          onWheel={inputOnWheelPrevent}
+                                          name="sgst"
+                                          value={form?.sgst}
+                                          onChange={(e) => {
+                                            inputTypeChange(e, form, setForm);
+                                          }}
+                                        />
+                                        <span className="ms-1">%</span>
+                                      </td>
+                                    </tr>
+                                    <tr>
+                                      <td>IGST:</td>
+                                      <td className="btn_value">
+                                        <input
+                                          type="number"
+                                          className="form-control"
+                                          onWheel={inputOnWheelPrevent}
+                                          name="igst"
+                                          value={form?.igst}
+                                          onChange={(e) => {
+                                            inputTypeChange(e, form, setForm);
+                                          }}
+                                        />
+                                        <span className="ms-1">%</span>
                                       </td>
                                     </tr>
                                     <tr>

@@ -5,10 +5,8 @@ import { apiCallBack } from "../utils/fetchAPIs";
 import { poHandler, poRemoveHandler } from "../redux/slices/poSlice";
 import { FiSearch } from "react-icons/fi";
 import MainHeader from "../components/MainHeader";
-import WBS from "./WBS";
 import { logOutFun } from "../utils/logOutFun";
 import { logoutHandler } from "../redux/slices/loginSlice";
-import { jsPDF } from "jspdf";
 import "jspdf-autotable";
 import * as XLSX from "xlsx";
 
@@ -20,7 +18,7 @@ const POs = () => {
   const { po } = useSelector((state) => state.selectedPO);
   const navigate = useNavigate();
   const [selectedStatus, setSelectedStatus] = useState("All");
-  console.log(polist?.poType, "polist%%%%%%%%%%%%%%%%%%%%%%%%");
+
   useEffect(() => {
     (async () => {
       const data = await apiCallBack("GET", `po/poList`, null, token);
@@ -64,20 +62,6 @@ const POs = () => {
     return matchesSearchQuery && matchesSelectedStatus;
   });
 
-  // useEffect(() => {
-  //   // Dummy data for demonstration
-  //   setPolist([
-  //     {
-  //       poNumber: "4800008195",
-  //       poType: "Hybrid",
-  //       drawings: "P1",
-  //       qap: "",
-  //       ilms: "50005041 (PriceWaterhouseCoopers Pvt Ltd)",
-  //       currentStatus: "Not Started",
-  //     },
-  //     // Add more data as needed
-  //   ]);
-  // }, []);
   const generateExcel = () => {
     const table = document.querySelector(".table");
 

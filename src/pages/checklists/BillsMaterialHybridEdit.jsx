@@ -35,6 +35,9 @@ const BillsMaterialHybridEdit = () => {
     debit_note: "",
     credit_note: "",
     net_claim_amount: 0,
+    cgst: null,
+    sgst: null,
+    igst: null,
     debit_credit_filename: "",
     gate_entry_no: "",
     gate_entry_date: "",
@@ -61,6 +64,7 @@ const BillsMaterialHybridEdit = () => {
     o_deduction: "",
     total_deduction: "",
     net_payable_amount: "",
+    assigned_to: "",
   };
   const [form, setForm] = useState(initialData);
   const [doForm, setDoForm] = useState(inititalDOData);
@@ -181,8 +185,6 @@ const BillsMaterialHybridEdit = () => {
   //   }
   // }, [doForm?.ld_c_date, doForm?.ld_ge_date, data?.icgrn_nos]);
 
-  console.log("doForm,abhinit", doForm);
-
   useEffect(() => {
     const { ld_c_date, ld_ge_date } = doForm;
 
@@ -190,8 +192,11 @@ const BillsMaterialHybridEdit = () => {
     if (ld_c_date && ld_ge_date && data?.icgrn_total) {
       const icgrnData = data?.icgrn_total;
       const cc = convertToEpoch(new Date(ld_c_date)) * 1000;
-
+      console.log(cc);
+      console.log("cc%^&*");
       const aa = convertToEpoch(new Date(ld_ge_date)) * 1000;
+      console.log(aa);
+      console.log("aa%^&*");
 
       let p_amt = calculatePenalty(cc, aa, icgrnData, 0.5, 5);
       console.log("p_amt", p_amt, cc, aa, icgrnData);
@@ -214,18 +219,18 @@ const BillsMaterialHybridEdit = () => {
     let p_drg = 0;
     let p_qap = 0;
     let p_ilms = 0;
-    let p_estimate = 0;
-
+    console.log("hhhhhhhhhhhhhhhhhhhhh");
     if (data?.icgrn_total) {
       const icgrnData = data?.icgrn_total;
 
       if (a_sdbg_date && c_sdbg_date && icgrnData) {
+        console.log("c_sdbg_date");
         p_sdbg = calculatePenalty(
           convertToEpoch(new Date(c_sdbg_date)) * 1000,
           a_sdbg_date,
           icgrnData,
           0.25,
-          1
+          2
         );
         console.log("p_sdbg", p_sdbg);
       }
@@ -237,7 +242,7 @@ const BillsMaterialHybridEdit = () => {
           0.25,
           1
         );
-        console.log("p_drg", p_drg);
+        console.log("kkkkkkkkk", p_drg);
       }
       if (a_qap_date && c_qap_date && icgrnData) {
         p_qap = calculatePenalty(
@@ -245,9 +250,8 @@ const BillsMaterialHybridEdit = () => {
           a_qap_date,
           icgrnData,
           0.25,
-          1
+          2
         );
-        console.log("p_qap", p_qap);
       }
       if (a_ilms_date && c_ilms_date && icgrnData) {
         p_ilms = calculatePenalty(
@@ -255,9 +259,8 @@ const BillsMaterialHybridEdit = () => {
           a_ilms_date,
           icgrnData,
           0.25,
-          1
+          2
         );
-        console.log("p_ilms", p_ilms);
       }
       p_estimate = Math.max(p_drg, p_qap, p_ilms);
     }
