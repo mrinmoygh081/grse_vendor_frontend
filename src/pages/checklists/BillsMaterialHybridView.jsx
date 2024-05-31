@@ -20,6 +20,7 @@ const BillsMaterialHybridView = () => {
   const { user, token } = useSelector((state) => state.auth);
   const { id } = useParams();
   const { state } = useLocation();
+  console.log(state, "statestatestatestatestate");
 
   const [impDates, setImpDates] = useState(null);
   const [data, setData] = useState(null);

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { Fragment, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import SideBar from "../../components/SideBar";
 import Header from "../../components/Header";
@@ -23,9 +23,31 @@ const HybridServicePOBills = () => {
   const { id } = useParams();
   // const [fileData, setFileData] = useState(null);
   const [options, setOptions] = useState([]);
+  const [wdcnomerlist, setWdcnomerlist] = useState([
+    {
+      line_item_no: "20",
+      description: "acde dd",
+      matarial_code: "SER08205",
+      unit: "AU",
+      claim_qty: "4",
+      po_rate: "15633.00",
+      delay_in_work_execution: "3",
+      total: "923456.00",
+    },
+    {
+      line_item_no: "40",
+      description: "4. Testing",
+      matarial_code: "SER08205",
+      unit: "AU",
+      claim_qty: "6",
+      po_rate: "1233.00",
+      delay_in_work_execution: "2",
+      total: "980256.00",
+    },
+  ]);
 
   const [data, setData] = useState(null);
-  console.log(data, "loking display");
+  console.log(wdcnomerlist, "wdcnomerlist");
 
   let initialData = {
     assigned_to: "",
@@ -39,10 +61,14 @@ const HybridServicePOBills = () => {
     e_invoice_no: "",
     e_invoice_filename: "",
     debit_note: "",
-    gst_rate: "",
+    // gst_rate: "",
     credit_note: "",
     total_amount: "",
-    net_gross_claim_amount: 0,
+    // net_gross_claim_amount: 0,
+    net_claim_amount: 0,
+    cgst: null,
+    sgst: null,
+    igst: null,
     pbg: "",
     debit_credit_filename: "",
     gate_entry_no: "",
@@ -90,12 +116,12 @@ const HybridServicePOBills = () => {
     credit_note = parseInt(credit_note) || 0;
     gst_rate = parseInt(gst_rate) || 0;
 
-    const net_gross_claim_amount =
+    const net_claim_amount =
       invoice_value + debit_note - credit_note + gst_rate;
 
     setForm((prevForm) => ({
       ...prevForm,
-      net_gross_claim_amount: net_gross_claim_amount,
+      net_claim_amount: net_claim_amount,
     }));
   };
 
@@ -356,24 +382,63 @@ const HybridServicePOBills = () => {
                                       </td>
                                     </tr>
                                     <tr>
-                                      <td>GST Rate:</td>
+                                      <td>Net claim amount:</td>
+                                      <td className="btn_value">
+                                        <b>{form?.net_claim_amount}</b>
+                                      </td>
+                                    </tr>
+                                    <tr>
+                                      <td>CGST:</td>
                                       <td className="btn_value">
                                         <input
                                           type="number"
                                           className="form-control"
                                           onWheel={inputOnWheelPrevent}
-                                          name="gst_rate"
-                                          value={form?.gst_rate}
-                                          onChange={(e) =>
-                                            inputTypeChange(e, form, setForm)
-                                          }
+                                          name="cgst"
+                                          value={form?.cgst}
+                                          onChange={(e) => {
+                                            inputTypeChange(e, form, setForm);
+                                          }}
                                         />
+                                        <span className="ms-1">%</span>
                                       </td>
                                     </tr>
                                     <tr>
-                                      <td>Net claim amount:</td>
+                                      <td>SGST:</td>
                                       <td className="btn_value">
-                                        <b>{form?.net_gross_claim_amount}</b>
+                                        <input
+                                          type="number"
+                                          className="form-control"
+                                          onWheel={inputOnWheelPrevent}
+                                          name="sgst"
+                                          value={form?.sgst}
+                                          onChange={(e) => {
+                                            inputTypeChange(e, form, setForm);
+                                          }}
+                                        />
+                                        <span className="ms-1">%</span>
+                                      </td>
+                                    </tr>
+                                    <tr>
+                                      <td>IGST:</td>
+                                      <td className="btn_value">
+                                        <input
+                                          type="number"
+                                          className="form-control"
+                                          onWheel={inputOnWheelPrevent}
+                                          name="igst"
+                                          value={form?.igst}
+                                          onChange={(e) => {
+                                            inputTypeChange(e, form, setForm);
+                                          }}
+                                        />
+                                        <span className="ms-1">%</span>
+                                      </td>
+                                    </tr>
+                                    <tr>
+                                      <td>Net claim amount with GST:</td>
+                                      <td className="btn_value">
+                                        <b></b>
                                       </td>
                                     </tr>
                                     <tr>
@@ -439,50 +504,64 @@ const HybridServicePOBills = () => {
                                       </td>
                                     </tr>
                                     <tr>
-                                      <td>Contractual work start date</td>
-                                      <td className="btn_value">
-                                        <b className="me-3">
-                                          {form?.a_sdbg_date &&
-                                            new Date(
-                                              form?.a_sdbg_date
-                                            ).toLocaleDateString()}
-                                        </b>
+                                      <td>
+                                        <div className="col-12">
+                                          <table className="table table-bordered table-striped">
+                                            <thead>
+                                              <tr>
+                                                <th>PO LineItem</th>
+                                                <th>Description</th>
+                                                <th>Matarial Code</th>
+                                                <th>Unit</th>
+                                                <th>Claim Qty</th>
+                                                <th>PO Rate</th>
+                                                <th>Delay In Work Execution</th>
+                                                <th>Total</th>
+                                              </tr>
+                                            </thead>
+                                            <tbody>
+                                              {checkTypeArr(wdcnomerlist) &&
+                                                wdcnomerlist.map(
+                                                  (field, index) => (
+                                                    <Fragment key={index}>
+                                                      <tr>
+                                                        <td>
+                                                          <span>
+                                                            {
+                                                              field?.line_item_no
+                                                            }
+                                                          </span>
+                                                        </td>
+
+                                                        <td>
+                                                          {field?.description}
+                                                        </td>
+                                                        <td>
+                                                          {field?.matarial_code}
+                                                        </td>
+                                                        <td>{field?.unit}</td>
+                                                        <td>
+                                                          {field?.claim_qty}
+                                                        </td>
+                                                        <td>
+                                                          {field?.po_rate}
+                                                        </td>
+                                                        <td>
+                                                          {
+                                                            field?.delay_in_work_execution
+                                                          }
+                                                        </td>
+                                                        <td>{field?.total}</td>
+                                                      </tr>
+                                                    </Fragment>
+                                                  )
+                                                )}
+                                            </tbody>
+                                          </table>
+                                        </div>
                                       </td>
                                     </tr>
-                                    <tr>
-                                      <td>Contractual work completion date</td>
-                                      <td className="btn_value">
-                                        <b className="me-3">
-                                          {form?.a_sdbg_date &&
-                                            new Date(
-                                              form?.a_sdbg_date
-                                            ).toLocaleDateString()}
-                                        </b>
-                                      </td>
-                                    </tr>
-                                    <tr>
-                                      <td>Actual work start date</td>
-                                      <td className="btn_value">
-                                        <b className="me-3">
-                                          {form?.actual_start_date &&
-                                            new Date(
-                                              form?.actual_start_date * 1000
-                                            ).toLocaleDateString()}
-                                        </b>
-                                      </td>
-                                    </tr>
-                                    <tr>
-                                      <td>Actual work completion date</td>
-                                      <td className="btn_value">
-                                        <b className="me-3">
-                                          {form?.actual_completion_date &&
-                                            formatDate(
-                                              form?.actual_completion_date *
-                                                1000
-                                            )}
-                                        </b>
-                                      </td>
-                                    </tr>
+
                                     {/* <tr>
                                       <td>ESI Compliance Certified By HR</td>
                                       <td className="btn_value">

@@ -46,6 +46,15 @@ const MainHeader = ({ title }) => {
                 </li>
               </>
             )}
+            {user?.user_type !== 1 && (
+              <>
+                <li className="nav-item">
+                  <Link className="nav-link text-black" to={`/bg-extension`}>
+                    BG EXTENSION
+                  </Link>
+                </li>
+              </>
+            )}
             {/* <li className="nav-item">
               <Link className="nav-link text-black" to="/bg-extension">
                 BG Extension

@@ -298,6 +298,7 @@ input[type="number"] {
 }
 .table_height td {
   min-height: 35px;
+  vertical-align: middle;
 }
 .searchui {
   outline: none;

@@ -57,6 +57,8 @@ import GoodsReceiptSlip from "./pages/pdfs/GoodsReceiptSlip";
 import ServiceEntrySheetPdf from "./pages/pdfs/ServiceEntrySheetPdf";
 import HybridServicePOBillsEdit from "./pages/checklists/HybridServicePOBillsEdit";
 import HybridServicePOBillsView from "./pages/checklists/HybridServicePOBillsView";
+import AdvanceBillHybridEdit from "./pages/checklists/AdvanceBillHybridEdit";
+import AdvanceBillHybridView from "./pages/checklists/AdvanceBillHybridView";
 
 function Layout() {
   const { token, isLoggedIn, userType } = useSelector((state) => state.auth);
@@ -127,6 +129,7 @@ function Layout() {
               path="/checklist/hybrid-bill-material/edit/:id"
               element={<BillsMaterialHybridEdit />}
             />
+
             <Route
               exact
               path="/checklist/hybrid-bill-material/view/:id"
@@ -159,8 +162,18 @@ function Layout() {
             />
             <Route
               exact
-              path="/checklist/bill-advance-payment/:id"
+              path="/checklist/advance-bill-hybrid/:id"
               element={<AdvanceBillHybrid />}
+            />
+            <Route
+              exact
+              path="/checklist/advance-bill-hybrid/view/:id"
+              element={<AdvanceBillHybridView />}
+            />
+            <Route
+              exact
+              path="/checklist/advance-bill-hybrid/edit/:id"
+              element={<AdvanceBillHybridEdit />}
             />
             <Route
               exact

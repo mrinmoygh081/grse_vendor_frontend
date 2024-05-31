@@ -36,6 +36,14 @@ export const convertToEpoch = (date) => {
   }
 };
 
+export const formatEpochToDate = (epochTimestamp) => {
+  const date = new Date(epochTimestamp * 1000); // Convert epoch to milliseconds
+  const day = date.getDate().toString().padStart(2, "0");
+  const month = (date.getMonth() + 1).toString().padStart(2, "0"); // Month is zero-based
+  const year = date.getFullYear();
+  return `${day}/${month}/${year}`;
+};
+
 export const formatDate = (epochTime) => {
   let date = new Date(epochTime);
 
@@ -57,9 +65,9 @@ export const calDatesDiff = (date1, date2) => {
   let differenceInTime = date1.getTime() - date2.getTime();
 
   let differenceInDays = differenceInTime / (1000 * 3600 * 24);
-  if(differenceInDays < 0){
+  if (differenceInDays < 0) {
     return 0;
   }
 
   return Math.round(differenceInDays);
-}
+};

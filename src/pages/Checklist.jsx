@@ -165,9 +165,18 @@ const Checklist = () => {
                                                   "hybrid-bill-material"
                                                 ) {
                                                   type = "hybrid-bill-material";
-                                                } else {
+                                                } else if (
+                                                  item.btn_type ===
+                                                  "hybrid-bill-service"
+                                                ) {
                                                   type = "hybrid-bill-service";
+                                                } else if (
+                                                  item.btn_type ===
+                                                  "advance-bill-hybrid"
+                                                ) {
+                                                  type = "advance-bill-hybrid";
                                                 }
+
                                                 navigate(
                                                   `/checklist/${type}/view/${id}`,
                                                   { state: `${item?.btn_num}` }
@@ -181,8 +190,30 @@ const Checklist = () => {
                                                 <button
                                                   className="btn btn-sm btn-primary m-1"
                                                   onClick={() => {
+                                                    let type = "";
+
+                                                    if (
+                                                      item.btn_type ===
+                                                      "hybrid-bill-material"
+                                                    ) {
+                                                      type =
+                                                        "hybrid-bill-material";
+                                                    } else if (
+                                                      item.btn_type ===
+                                                      "hybrid-bill-service"
+                                                    ) {
+                                                      type =
+                                                        "hybrid-bill-service";
+                                                    } else if (
+                                                      item.btn_type ===
+                                                      "advance-bill-hybrid"
+                                                    ) {
+                                                      type =
+                                                        "advance-bill-hybrid";
+                                                    }
+
                                                     navigate(
-                                                      `/checklist/hybrid-bill-material/edit/${id}`,
+                                                      `/checklist/${type}/edit/${id}`,
                                                       {
                                                         state: `${item?.btn_num}`,
                                                       }

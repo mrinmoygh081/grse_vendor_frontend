@@ -231,7 +231,6 @@ const BillsMaterialHybrid = () => {
                                       </td>
                                     </tr>
 
-                                    {console.log(form)}
                                     <tr>
                                       <td>Associated PO:</td>
                                       <td className="btn_value">
@@ -399,9 +398,7 @@ const BillsMaterialHybrid = () => {
                                       <td className="btn_value">
                                         <b className="me-3">
                                           {form?.c_sdbg_date &&
-                                            new Date(
-                                              form?.c_sdbg_date
-                                            ).toDateString()}
+                                            formatDate(form?.c_sdbg_date)}
                                         </b>
                                         {checkTypeArr(data?.sdbg_filename)
                                           ? data?.sdbg_filename.map(
@@ -426,9 +423,7 @@ const BillsMaterialHybrid = () => {
                                       <td className="btn_value">
                                         <b className="me-3">
                                           {form?.a_sdbg_date &&
-                                            new Date(
-                                              form?.a_sdbg_date
-                                            ).toDateString()}
+                                            formatDate(form?.a_sdbg_date)}
                                         </b>
                                       </td>
                                     </tr>
@@ -516,9 +511,7 @@ const BillsMaterialHybrid = () => {
                                       <td className="btn_value">
                                         <b>
                                           {form?.a_drawing_date &&
-                                            new Date(
-                                              form?.a_drawing_date
-                                            ).toDateString()}
+                                            formatDate(form?.a_drawing_date)}
                                         </b>
                                       </td>
                                     </tr>
@@ -527,9 +520,7 @@ const BillsMaterialHybrid = () => {
                                       <td className="btn_value">
                                         <b>
                                           {form?.c_qap_date &&
-                                            new Date(
-                                              form?.c_qap_date
-                                            ).toDateString()}
+                                            formatDate(form?.c_qap_date)}
                                         </b>
                                       </td>
                                     </tr>
@@ -538,9 +529,7 @@ const BillsMaterialHybrid = () => {
                                       <td className="btn_value">
                                         <b>
                                           {form?.a_qap_date &&
-                                            new Date(
-                                              form?.a_qap_date
-                                            ).toDateString()}
+                                            formatDate(form?.a_qap_date)}
                                         </b>
                                       </td>
                                     </tr>
@@ -549,9 +538,7 @@ const BillsMaterialHybrid = () => {
                                       <td className="btn_value">
                                         <b>
                                           {form?.c_ilms_date &&
-                                            new Date(
-                                              form?.c_ilms_date
-                                            ).toDateString()}
+                                            formatDate(form?.c_ilms_date)}
                                         </b>
                                       </td>
                                     </tr>
@@ -560,9 +547,7 @@ const BillsMaterialHybrid = () => {
                                       <td className="btn_value">
                                         <b>
                                           {form?.a_ilms_date &&
-                                            new Date(
-                                              form?.a_ilms_date
-                                            ).toDateString()}
+                                            formatDate(form?.a_ilms_date)}
                                         </b>
                                       </td>
                                     </tr>

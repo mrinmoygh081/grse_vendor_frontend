@@ -13,6 +13,7 @@ import {
   calDatesDiff,
   convertToEpoch,
   formatDate,
+  formatEpochToDate,
 } from "../utils/getDateTimeNow";
 import { clrLegend } from "../utils/clrLegend";
 import { checkTypeArr } from "../utils/smallFun";
@@ -77,7 +78,9 @@ const WDCSub = () => {
 
   const [isPopup, setIsPopup] = useState(false);
   const [isPopupView, setIsPopupView] = useState(false);
+  const [isPopupJccView, setIsPopupJccView] = useState(false);
   const [isSecPopup, setIsSecPopup] = useState(false);
+  const [isSecjccActionPopup, setIsjccActionSecPopup] = useState(false);
   const [allData, setAllData] = useState([]);
   const [lineItemData, setLineItemData] = useState([]);
   const [groupedData, setGroupedData] = useState([]);
@@ -320,27 +323,63 @@ const WDCSub = () => {
     try {
       const formDataCopy = { ...formData }; // Create a copy of formData
 
-      // Check if all required fields are filled
       {
         const fD = new FormData();
 
-        // Append other fields to FormData
-
-        fD.append("purchasing_doc_no", viewData?.purchasing_doc_no || ""); // Use viewData instead of id
+        fD.append("purchasing_doc_no", viewData?.purchasing_doc_no || "");
         fD.append("reference_no", reference_no || viewData.reference_no || "");
 
-        // Append status from parameters
         fD.append("status", flag);
 
-        // Construct line_item_array from multiple objects
         const lineItemArray = viewData.line_item_array.map((item) => ({
           contractual_start_date: doForm.contractual_start_date,
           Contractual_completion_date: doForm.Contractual_completion_date,
           delay: delay,
-          line_item_no: item.line_item_no || "", // Use the line_item_no from viewData, if available
+          line_item_no: item.line_item_no || "",
         }));
 
         fD.append("line_item_array", JSON.stringify(lineItemArray));
+
+        const res = await apiCallBack("POST", "po/wdc/submitWdc", fD, token);
+
+        if (res.status) {
+          toast.success(res.message);
+          setIsPopup(false);
+          setIsSecPopup(false);
+          setFormData(initialFormData);
+          getData();
+        } else {
+          toast.warn(res.message);
+        }
+      }
+    } catch (error) {
+      toast.error("Error uploading file: " + error.message);
+      console.error("Error uploading file:", error);
+    }
+  };
+
+  //jcc action submit fuction
+
+  const submitHandlerActionJcc = async (flag, reference_no) => {
+    try {
+      const formDataCopy = { ...formData };
+
+      {
+        const fD = new FormData();
+
+        fD.append("purchasing_doc_no", viewData?.purchasing_doc_no || "");
+        fD.append("reference_no", reference_no || viewData.reference_no || "");
+        fD.append("action_type", viewData?.action_type || "");
+        fD.append("remarks", viewData?.remarks || "");
+
+        fD.append("status", flag);
+
+        const lineItemArray = viewData.line_item_array.map((item) => ({
+          line_item_no: item.line_item_no || "",
+        }));
+
+        fD.append("line_item_array", JSON.stringify(lineItemArray));
+        fD.append("total_amount_status", "APPROVED");
 
         console.log("fd", fD);
 
@@ -350,9 +389,9 @@ const WDCSub = () => {
 
         if (res.status) {
           toast.success(res.message);
-          setIsPopup(false);
-          setIsSecPopup(false);
-          setFormData(initialFormData);
+          setIsPopupJccView(false);
+          setIsjccActionSecPopup(false);
+          setFormDataWdc(initialFormDatawdc);
           getData();
         } else {
           toast.warn(res.message);
@@ -581,7 +620,7 @@ const WDCSub = () => {
                                   <th>Action Type</th>
                                   <th className="min-w-150px">DateTime </th>
                                   <th className="min-w-150px">Action By</th>
-                                  <th className="min-w-150px">Date</th>
+                                  {/* <th className="min-w-150px">Date</th> */}
                                   <th>PO LineItem</th>
                                   <th className="min-w-150px">Status</th>
                                   <th className="min-w-150px">Action</th>
@@ -606,13 +645,21 @@ const WDCSub = () => {
                                                 formatDate(item?.created_at)}
                                             </td>
                                             <td>{item.created_by_id}</td>
-                                            <td>
+                                            {/* <td>
                                               {item?.wdc_date &&
                                                 new Date(
                                                   item.wdc_date * 1000
                                                 ).toLocaleDateString()}
+                                            </td> */}
+                                            <td>
+                                              {item?.line_item_array &&
+                                                item?.line_item_array
+                                                  .map(
+                                                    (lineItem) =>
+                                                      lineItem?.line_item_no
+                                                  )
+                                                  .join(", ")}
                                             </td>
-                                            <td>{item?.line_item_no}</td>
                                             <td
                                               className={`${clrLegend(
                                                 item?.status
@@ -621,30 +668,63 @@ const WDCSub = () => {
                                               {item?.status}
                                             </td>
                                             <td className="d-flex">
-                                              <button
-                                                onClick={() => {
-                                                  setViewData(item);
-                                                  setIsPopupView(true);
-                                                }}
-                                                className="btn btn-sm fw-bold btn-secondary m-1"
-                                                type="button"
-                                              >
-                                                View
-                                              </button>
+                                              {item?.action_type === "WDC" && (
+                                                <button
+                                                  onClick={() => {
+                                                    setViewData(item);
+                                                    setIsPopupView(true);
+                                                  }}
+                                                  className="btn btn-sm fw-bold btn-secondary m-1"
+                                                  type="button"
+                                                >
+                                                  View
+                                                </button>
+                                              )}
+                                              {item?.action_type === "JCC" && (
+                                                <button
+                                                  onClick={() => {
+                                                    setViewData(item);
+                                                    setIsPopupJccView(true);
+                                                  }}
+                                                  className="btn btn-sm fw-bold btn-secondary m-1"
+                                                  type="button"
+                                                >
+                                                  View
+                                                </button>
+                                              )}
+
                                               {item.status === "SUBMITTED" &&
                                                 user.department_id ===
                                                   USER_PPNC_DEPARTMENT && (
                                                   <>
-                                                    <button
-                                                      onClick={() => {
-                                                        setViewData(item);
-                                                        setIsSecPopup(true);
-                                                      }}
-                                                      className="btn btn-sm fw-bold btn-primary m-1"
-                                                      type="button"
-                                                    >
-                                                      Action
-                                                    </button>
+                                                    {item?.action_type ===
+                                                      "WDC" && (
+                                                      <button
+                                                        onClick={() => {
+                                                          setViewData(item);
+                                                          setIsSecPopup(true);
+                                                        }}
+                                                        className="btn btn-sm fw-bold btn-primary m-1"
+                                                        type="button"
+                                                      >
+                                                        Action
+                                                      </button>
+                                                    )}
+                                                    {item?.action_type ===
+                                                      "JCC" && (
+                                                      <button
+                                                        onClick={() => {
+                                                          setViewData(item);
+                                                          setIsjccActionSecPopup(
+                                                            true
+                                                          );
+                                                        }}
+                                                        className="btn btn-sm fw-bold btn-primary m-1"
+                                                        type="button"
+                                                      >
+                                                        Action
+                                                      </button>
+                                                    )}
                                                   </>
                                                 )}
                                             </td>
@@ -1276,7 +1356,11 @@ const WDCSub = () => {
                                 />
                               </td>
                               <td>{field.po_rate}</td>
-                              <td>{field.total}</td>
+                              <td>
+                                {isNaN(field.claim_qty) || isNaN(field.po_rate)
+                                  ? 0
+                                  : field.claim_qty * field.po_rate}
+                              </td>
                               {/* <td>
                                 {field.rest_amount} {field.unit}
                               </td> */}
@@ -1429,536 +1513,717 @@ const WDCSub = () => {
       )}
 
       {user.department_id === USER_PPNC_DEPARTMENT && (
-        <div
-          className={isSecPopup ? "popup popup_lg active" : "popup popup_lg"}
-        >
-          <div className="card card-xxl-stretch mb-5 mb-xxl-8">
-            <div className="card-header border-0 pt-5 pb-3">
-              <h3 className="card-title align-items-start flex-column">
-                <span className="card-label fw-bold fs-3 mb-1">
-                  All Data for{" "}
-                  {viewData?.reference_no && `for ${viewData?.reference_no}`}
-                </span>
-              </h3>
-              <button
-                className="btn fw-bold btn-danger"
-                onClick={() => {
-                  setViewData(null);
-                  setIsSecPopup(false);
-                }}
-              >
-                Close
-              </button>
-            </div>
-            <form>
-              <div className="row">
-                <div className="col-12 col-md-6">
-                  <div className="mb-3">
-                    <label className="form-label">Action</label>
-                    <p>{viewData?.action_type}</p>
+        <>
+          <div
+            className={isSecPopup ? "popup popup_lg active" : "popup popup_lg"}
+          >
+            <div className="card card-xxl-stretch mb-5 mb-xxl-8">
+              <div className="card-header border-0 pt-5 pb-3">
+                <h3 className="card-title align-items-start flex-column">
+                  <span className="card-label fw-bold fs-3 mb-1">
+                    All Data for{" "}
+                    {viewData?.reference_no && `for ${viewData?.reference_no}`}
+                  </span>
+                </h3>
+                <button
+                  className="btn fw-bold btn-danger"
+                  onClick={() => {
+                    setViewData(null);
+                    setIsSecPopup(false);
+                  }}
+                >
+                  Close
+                </button>
+              </div>
+              <form>
+                <div className="row">
+                  <div className="col-12 col-md-6">
+                    <div className="mb-3">
+                      <label className="form-label">Action</label>
+                      <p>{viewData?.action_type}</p>
+                    </div>
                   </div>
-                </div>
-                <div className="col-12 col-md-6">
-                  <div className="mb-3">
-                    <label className="form-label">Work Title</label>
-                    <p>{viewData?.work_title}</p>
+                  <div className="col-12 col-md-6">
+                    <div className="mb-3">
+                      <label className="form-label">Work Title</label>
+                      <p>{viewData?.work_title}</p>
+                    </div>
                   </div>
-                </div>
-                <div className="col-12 col-md-6">
-                  <div className="mb-3">
-                    <label className="form-label">Work Done By</label>
-                    <p>{viewData?.work_done_by}</p>
+                  <div className="col-12 col-md-6">
+                    <div className="mb-3">
+                      <label className="form-label">Work Done By</label>
+                      <p>{viewData?.work_done_by}</p>
+                    </div>
                   </div>
-                </div>
-                <div className="col-12 col-md-6">
-                  <div className="mb-3">
-                    <label className="form-label">JOB Location</label>
-                    <p>{viewData?.job_location}</p>
+                  <div className="col-12 col-md-6">
+                    <div className="mb-3">
+                      <label className="form-label">JOB Location</label>
+                      <p>{viewData?.job_location}</p>
+                    </div>
                   </div>
-                </div>
-                <div className="col-12 col-md-6">
-                  <div className="mb-3">
-                    <label className="form-label">Yard No</label>
-                    <p>{viewData?.yard_no}</p>
+                  <div className="col-12 col-md-6">
+                    <div className="mb-3">
+                      <label className="form-label">Yard No</label>
+                      <p>{viewData?.yard_no}</p>
+                    </div>
                   </div>
-                </div>
-                <div className="col-12 col-md-6">
-                  <div className="mb-3">
-                    <label className="form-label">Unit</label>
-                    <p>{viewData?.unit}</p>
+                  <div className="col-12 col-md-6">
+                    <div className="mb-3">
+                      <label className="form-label">Unit</label>
+                      <p>{viewData?.unit}</p>
+                    </div>
                   </div>
-                </div>
-                <div className="col-12 col-md-6">
-                  <div className="mb-3">
-                    <label className="form-label">
-                      Inspecttion Note Ref No
-                    </label>
-                    <p>
-                      <span>{viewData?.inspection_note_ref_no}</span>
-                      {viewData?.file_inspection_note_ref_no && (
-                        <Link
-                          to={`${process.env.REACT_APP_PDF_URL}wdcs/${viewData?.file_inspection_note_ref_no}`}
-                          target="_blank"
-                        >
-                          Click here
-                        </Link>
-                      )}
-                    </p>
+                  <div className="col-12 col-md-6">
+                    <div className="mb-3">
+                      <label className="form-label">
+                        Inspecttion Note Ref No
+                      </label>
+                      <p>
+                        <span>{viewData?.inspection_note_ref_no}</span>
+                        {viewData?.file_inspection_note_ref_no && (
+                          <Link
+                            to={`${process.env.REACT_APP_PDF_URL}wdcs/${viewData?.file_inspection_note_ref_no}`}
+                            target="_blank"
+                          >
+                            Click here
+                          </Link>
+                        )}
+                      </p>
+                    </div>
                   </div>
-                </div>
-                <div className="col-12 col-md-6">
-                  <div className="mb-3">
-                    <label className="form-label">
-                      Hinderence Report Certified by Berth
-                    </label>
-                    <p>
-                      <span>
-                        {viewData?.hinderence_report_cerified_by_berth}
-                      </span>
-                      {viewData?.file_hinderence_report_cerified_by_berth && (
-                        <Link
-                          to={`${process.env.REACT_APP_PDF_URL}wdcs/${viewData?.file_hinderence_report_cerified_by_berth}`}
-                          target="_blank"
-                        >
-                          Click here
-                        </Link>
-                      )}
-                    </p>
+                  <div className="col-12 col-md-6">
+                    <div className="mb-3">
+                      <label className="form-label">
+                        Hinderence Report Certified by Berth
+                      </label>
+                      <p>
+                        <span>
+                          {viewData?.hinderence_report_cerified_by_berth}
+                        </span>
+                        {viewData?.file_hinderence_report_cerified_by_berth && (
+                          <Link
+                            to={`${process.env.REACT_APP_PDF_URL}wdcs/${viewData?.file_hinderence_report_cerified_by_berth}`}
+                            target="_blank"
+                          >
+                            Click here
+                          </Link>
+                        )}
+                      </p>
+                    </div>
                   </div>
-                </div>
-                <div className="col-12">
-                  <div className="mb-3">
-                    <label className="form-label">Attendance Report</label>
-                    <p>
-                      <span>{viewData?.attendance_report}</span>
-                      {viewData?.file_attendance_report && (
-                        <Link
-                          to={`${process.env.REACT_APP_PDF_URL}wdcs/${viewData?.file_attendance_report}`}
-                          target="_blank"
-                        >
-                          Click here
-                        </Link>
-                      )}
-                    </p>
+                  <div className="col-12">
+                    <div className="mb-3">
+                      <label className="form-label">Attendance Report</label>
+                      <p>
+                        <span>{viewData?.attendance_report}</span>
+                        {viewData?.file_attendance_report && (
+                          <Link
+                            to={`${process.env.REACT_APP_PDF_URL}wdcs/${viewData?.file_attendance_report}`}
+                            target="_blank"
+                          >
+                            Click here
+                          </Link>
+                        )}
+                      </p>
+                    </div>
                   </div>
-                </div>
-                <div className="col-12 col-md-6">
-                  <div className="mb-3">
-                    <label className="form-label">line_item_no</label>
-                    <p>{viewData?.line_item_no}</p>
+                  <div className="col-12 col-md-6">
+                    <div className="mb-3">
+                      <label className="form-label">line_item_no</label>
+                      <p>{viewData?.line_item_no}</p>
+                    </div>
                   </div>
-                </div>
 
-                <table className="table table-bordered table-striped">
-                  <thead>
-                    <tr>
-                      <th>PO LineItem</th>
-                      <th>Description</th>
-                      <th>Open Quantity</th>
-                      <th>Claim Quantity</th>
-                      <th>Contractual Start</th>
-                      <th>Contractual Completion</th>
-                      <th>Actual Start</th>
-                      <th>Actual Completion</th>
-                      <th>Hinderance in Days</th>
-                      <th>Delay</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {checkTypeArr(viewData?.line_item_array) &&
-                      viewData?.line_item_array.map((field, index) => (
-                        <Fragment key={index}>
-                          <tr>
-                            <td>
-                              <span>{field?.line_item_no}</span>
-                            </td>
-                            <td>{field?.description}</td>
-                            <td>
-                              {field?.rest_amount} {field?.unit}
-                            </td>
-                            <td>{field?.claim_qty}</td>
-                            <td>
-                              <input
-                                type="date"
-                                onChange={(e) =>
-                                  setDoForm({
-                                    ...doForm,
-                                    contractual_start_date: e.target.value,
-                                  })
-                                }
-                                className="form-control"
-                                placeholderText="DD/MM/YYYY"
-                              />
-                            </td>
-                            <td>
-                              <input
-                                type="date"
-                                onChange={(e) =>
-                                  setDoForm({
-                                    ...doForm,
-                                    Contractual_completion_date: e.target.value,
-                                  })
-                                }
-                                className="form-control"
-                                placeholderText="DD/MM/YYYY"
-                              />
-                            </td>
-                            <td>
-                              {field?.actual_start_date &&
-                                formatDate(field?.actual_start_date)}
-                            </td>
-                            <td>
-                              {field?.actual_completion_date &&
-                                formatDate(field?.actual_completion_date)}
-                            </td>
-                            <td>{field?.hinderance_in_days}</td>
-                            <td>{delay}</td>
-                          </tr>
-                        </Fragment>
-                      ))}
-                  </tbody>
-                </table>
+                  <table className="table table-bordered table-striped">
+                    <thead>
+                      <tr>
+                        <th>PO LineItem</th>
+                        <th>Description</th>
+                        <th>Open Quantity</th>
+                        <th>Claim Quantity</th>
+                        <th>Contractual Start</th>
+                        <th>Contractual Completion</th>
+                        <th>Actual Start</th>
+                        <th>Actual Completion</th>
+                        <th>Hinderance in Days</th>
+                        <th>Delay</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {checkTypeArr(viewData?.line_item_array) &&
+                        viewData?.line_item_array.map((field, index) => (
+                          <Fragment key={index}>
+                            <tr>
+                              <td>
+                                <span>{field?.line_item_no}</span>
+                              </td>
+                              <td>{field?.description}</td>
+                              <td>
+                                {field?.rest_amount} {field?.unit}
+                              </td>
+                              <td>{field?.claim_qty}</td>
+                              <td>
+                                <input
+                                  type="date"
+                                  onChange={(e) =>
+                                    setDoForm({
+                                      ...doForm,
+                                      contractual_start_date: e.target.value,
+                                    })
+                                  }
+                                  className="form-control"
+                                  placeholderText="DD/MM/YYYY"
+                                />
+                              </td>
+                              <td>
+                                <input
+                                  type="date"
+                                  onChange={(e) =>
+                                    setDoForm({
+                                      ...doForm,
+                                      Contractual_completion_date:
+                                        e.target.value,
+                                    })
+                                  }
+                                  className="form-control"
+                                  placeholderText="DD/MM/YYYY"
+                                />
+                              </td>
+                              <td>
+                                {field?.actual_start_date &&
+                                  formatDate(field?.actual_start_date)}
+                              </td>
+                              <td>
+                                {field?.actual_completion_date &&
+                                  formatDate(field?.actual_completion_date)}
+                              </td>
+                              <td>{field?.hinderance_in_days}</td>
+                              <td>{delay}</td>
+                            </tr>
+                          </Fragment>
+                        ))}
+                    </tbody>
+                  </table>
 
-                <div className="col-12 col-md-6">
-                  <div className="mb-3">
-                    <label className="form-label">Stage Details</label>
-                    <p>{viewData?.stage_details}</p>
+                  <div className="col-12 col-md-6">
+                    <div className="mb-3">
+                      <label className="form-label">Stage Details</label>
+                      <p>{viewData?.stage_details}</p>
+                    </div>
                   </div>
-                </div>
-                <div className="col-12">
-                  <div className="mb-3">
-                    <label className="form-label">Remarks</label>
-                    <p>{viewData?.remarks}</p>
+                  <div className="col-12">
+                    <div className="mb-3">
+                      <label className="form-label">Remarks</label>
+                      <p>{viewData?.remarks}</p>
+                    </div>
                   </div>
-                </div>
-                <div className="col-12">
-                  {/* <button
+                  <div className="col-12">
+                    {/* <button
                     className="btn btn-primary"
                     type="button"
                     onClick={() => toast.warn("SAP is not conntected!")}
                   >
                     SUBMIT
                   </button> */}
-                  <button
-                    onClick={() => submitHandlerAction("APPROVED", null)}
-                    className="btn fw-bold btn-primary"
-                    type="button"
-                  >
-                    SUBMIT
-                  </button>
+                    <button
+                      onClick={() => submitHandlerAction("APPROVED", null)}
+                      className="btn fw-bold btn-primary"
+                      type="button"
+                    >
+                      SUBMIT
+                    </button>
+                  </div>
                 </div>
-              </div>
-            </form>
+              </form>
+            </div>
           </div>
-        </div>
+          {/* ////////jccc action popup */}
+
+          <div
+            className={
+              isSecjccActionPopup ? "popup popup_lg active" : "popup popup_lg"
+            }
+          >
+            <div className="card card-xxl-stretch mb-5 mb-xxl-8">
+              <div className="card-header border-0 pt-5 pb-3">
+                <h3 className="card-title align-items-start flex-column">
+                  <span className="card-label fw-bold fs-3 mb-1">
+                    All Data for{" "}
+                    {viewData?.reference_no && `for ${viewData?.reference_no}`}
+                  </span>
+                </h3>
+                <button
+                  className="btn fw-bold btn-danger"
+                  onClick={() => {
+                    setViewData(null);
+                    setIsjccActionSecPopup(false);
+                  }}
+                >
+                  Close
+                </button>
+              </div>
+              <form>
+                <div className="row">
+                  <div className="col-12 col-md-6">
+                    <div className="mb-3">
+                      <label className="form-label">Action</label>
+                      <p>{viewData?.action_type}</p>
+                    </div>
+                  </div>
+                  <div className="col-12 col-md-6">
+                    <div className="mb-3">
+                      <label className="form-label">Work Title</label>
+                      <p>{viewData?.work_title}</p>
+                    </div>
+                  </div>
+                  <div className="col-12 col-md-6">
+                    <div className="mb-3">
+                      <label className="form-label">Work Done By</label>
+                      <p>{viewData?.work_done_by}</p>
+                    </div>
+                  </div>
+                  <div className="col-12 col-md-6">
+                    <div className="mb-3">
+                      <label className="form-label">JOB Location</label>
+                      <p>{viewData?.job_location}</p>
+                    </div>
+                  </div>
+                  <div className="col-12 col-md-6">
+                    <div className="mb-3">
+                      <label className="form-label">Yard No</label>
+                      <p>{viewData?.yard_no}</p>
+                    </div>
+                  </div>
+                  <div className="col-12 col-md-6">
+                    <div className="mb-3">
+                      <label className="form-label">
+                        Guarantee Defect Start Date
+                      </label>
+                      {/* <p>{viewData?.guarantee_defect_liability_start_date}</p> */}
+                      <p>
+                        {" "}
+                        {viewData?.guarantee_defect_liability_start_date &&
+                          formatDate(
+                            viewData?.guarantee_defect_liability_start_date
+                          )}
+                      </p>
+                    </div>
+                  </div>
+                  <div className="col-12 col-md-6">
+                    <div className="mb-3">
+                      <label className="form-label">
+                        Guarantee Defect End Date
+                      </label>
+                      <p>
+                        {" "}
+                        {viewData?.guarantee_defect_liability_end_date &&
+                          formatDate(
+                            viewData?.guarantee_defect_liability_end_date
+                          )}
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* <div className="col-12 col-md-6">
+                <div className="mb-3">
+                  <label className="form-label">line_item_no</label>
+                  <p>{viewData?.line_item_no}</p>
+                </div>
+              </div> */}
+
+                  <table className="table table-bordered table-striped">
+                    <thead>
+                      <tr>
+                        <th>PO LineItem</th>
+                        <th>Service Code</th>
+                        <th>Description</th>
+                        <th>PO Quantity</th>
+                        <th>Claim Quantity</th>
+                        <th>PO Rate</th>
+                        <th>Total</th>
+                        <th>Actual Start Date</th>
+                        <th>Actual Completion date</th>
+                        <th>Delay in work execution</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {checkTypeArr(viewData?.line_item_array) &&
+                        viewData?.line_item_array.map((field, index) => (
+                          <Fragment key={index}>
+                            <tr>
+                              <td>
+                                <span>{field?.line_item_no}</span>
+                              </td>
+
+                              <td>{field?.matarial_code}</td>
+                              <td>{field?.description}</td>
+                              <td>{field?.target_amount}</td>
+                              <td>{field?.claim_qty}</td>
+                              <td>{field?.po_rate}</td>
+                              <td>{field?.claim_qty * field?.po_rate}</td>
+                              <td>
+                                {field?.actual_start_date &&
+                                  formatDate(field?.actual_start_date)}
+                              </td>
+                              <td>
+                                {field?.actual_completion_date &&
+                                  formatDate(field?.actual_completion_date)}
+                              </td>
+                              <td>{field?.delay_in_work_execution}</td>
+                            </tr>
+                          </Fragment>
+                        ))}
+                    </tbody>
+                  </table>
+
+                  {/* <div className="col-12 col-md-6">
+                <div className="mb-3">
+                  <label className="form-label">Stage Details</label>
+                  <p>{viewData?.stage_details}</p>
+                </div>
+              </div> */}
+                  <div className="col-12">
+                    <div className="mb-3">
+                      <label className="form-label">Remarks</label>
+                      <p>{viewData?.remarks}</p>
+                    </div>
+                    <button
+                      onClick={() => submitHandlerActionJcc("APPROVED", null)}
+                      className="btn fw-bold btn-primary"
+                      type="button"
+                    >
+                      SUBMIT
+                    </button>
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div>
+        </>
       )}
 
       <div className={isPopupView ? "popup popup_lg active" : "popup popup_lg"}>
-        {formData?.action_type === "WDC" && (
-          <div className="card card-xxl-stretch mb-5 mb-xxl-8">
-            <div className="card-header border-0 pt-5 pb-3">
-              <h3 className="card-title align-items-start flex-column">
-                <span className="card-label fw-bold fs-3 mb-1">
-                  All Data for{" "}
-                  {viewData?.reference_no && `for ${viewData?.reference_no}`}
-                </span>
-              </h3>
-              <button
-                className="btn fw-bold btn-danger"
-                onClick={() => {
-                  setViewData(null);
-                  setIsPopupView(false);
-                }}
-              >
-                Close
-              </button>
-            </div>
-            <form>
-              <div className="row">
-                <div className="col-12 col-md-6">
-                  <div className="mb-3">
-                    <label className="form-label">Action</label>
-                    <p>{viewData?.action_type}</p>
-                  </div>
-                </div>
-                <div className="col-12 col-md-6">
-                  <div className="mb-3">
-                    <label className="form-label">Work Title</label>
-                    <p>{viewData?.work_title}</p>
-                  </div>
-                </div>
-                <div className="col-12 col-md-6">
-                  <div className="mb-3">
-                    <label className="form-label">Work Done By</label>
-                    <p>{viewData?.work_done_by}</p>
-                  </div>
-                </div>
-                <div className="col-12 col-md-6">
-                  <div className="mb-3">
-                    <label className="form-label">JOB Location</label>
-                    <p>{viewData?.job_location}</p>
-                  </div>
-                </div>
-                <div className="col-12 col-md-6">
-                  <div className="mb-3">
-                    <label className="form-label">Yard No</label>
-                    <p>{viewData?.yard_no}</p>
-                  </div>
-                </div>
-                <div className="col-12 col-md-6">
-                  <div className="mb-3">
-                    <label className="form-label">Unit</label>
-                    <p>{viewData?.unit}</p>
-                  </div>
-                </div>
-                <div className="col-12 col-md-6">
-                  <div className="mb-3">
-                    <label className="form-label">
-                      Inspecttion Note Ref No
-                    </label>
-                    <p>
-                      <span>{viewData?.inspection_note_ref_no}</span>
-                      {viewData?.file_inspection_note_ref_no && (
-                        <Link
-                          to={`${process.env.REACT_APP_PDF_URL}wdcs/${viewData?.file_inspection_note_ref_no}`}
-                          target="_blank"
-                        >
-                          Click here
-                        </Link>
-                      )}
-                    </p>
-                  </div>
-                </div>
-                <div className="col-12 col-md-6">
-                  <div className="mb-3">
-                    <label className="form-label">
-                      Hinderence Report Certified by Berth
-                    </label>
-                    <p>
-                      <span>
-                        {viewData?.hinderence_report_cerified_by_berth}
-                      </span>
-                      {viewData?.file_hinderence_report_cerified_by_berth && (
-                        <Link
-                          to={`${process.env.REACT_APP_PDF_URL}wdcs/${viewData?.file_hinderence_report_cerified_by_berth}`}
-                          target="_blank"
-                        >
-                          Click here
-                        </Link>
-                      )}
-                    </p>
-                  </div>
-                </div>
-                <div className="col-12">
-                  <div className="mb-3">
-                    <label className="form-label">Attendance Report</label>
-                    <p>
-                      <span>{viewData?.attendance_report}</span>
-                      {viewData?.file_attendance_report && (
-                        <Link
-                          to={`${process.env.REACT_APP_PDF_URL}wdcs/${viewData?.file_attendance_report}`}
-                          target="_blank"
-                        >
-                          Click here
-                        </Link>
-                      )}
-                    </p>
-                  </div>
-                </div>
-                <div className="col-12 col-md-6">
-                  <div className="mb-3">
-                    <label className="form-label">line_item_no</label>
-                    <p>{viewData?.line_item_no}</p>
-                  </div>
-                </div>
-
-                <table className="table table-bordered table-striped">
-                  <thead>
-                    <tr>
-                      <th>PO LineItem</th>
-                      <th>Description</th>
-                      <th>Open Quantity</th>
-                      <th>Claim Quantity</th>
-                      <th>Actual Start</th>
-                      <th>Actual Completion</th>
-                      <th>Hinderance in Days</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {checkTypeArr(viewData?.line_item_array) &&
-                      viewData?.line_item_array.map((field, index) => (
-                        <Fragment key={index}>
-                          <tr>
-                            <td>
-                              <span>{field?.line_item_no}</span>
-                            </td>
-                            <td>{field?.description}</td>
-                            <td>
-                              {field?.rest_amount} {field?.unit}
-                            </td>
-                            <td>{field?.claim_qty}</td>
-                            <td>
-                              {field?.actual_start_date &&
-                                formatDate(field?.actual_start_date)}
-                            </td>
-                            <td>
-                              {field?.actual_completion_date &&
-                                formatDate(field?.actual_completion_date)}
-                            </td>
-                            <td>{field?.hinderance_in_days}</td>
-                          </tr>
-                        </Fragment>
-                      ))}
-                  </tbody>
-                </table>
-
-                <div className="col-12 col-md-6">
-                  <div className="mb-3">
-                    <label className="form-label">Stage Details</label>
-                    <p>{viewData?.stage_details}</p>
-                  </div>
-                </div>
-                <div className="col-12">
-                  <div className="mb-3">
-                    <label className="form-label">Remarks</label>
-                    <p>{viewData?.remarks}</p>
-                  </div>
+        <div className="card card-xxl-stretch mb-5 mb-xxl-8">
+          <div className="card-header border-0 pt-5 pb-3">
+            <h3 className="card-title align-items-start flex-column">
+              <span className="card-label fw-bold fs-3 mb-1">
+                All Data for{" "}
+                {viewData?.reference_no && `for ${viewData?.reference_no}`}
+              </span>
+            </h3>
+            <button
+              className="btn fw-bold btn-danger"
+              onClick={() => {
+                setViewData(null);
+                setIsPopupView(false);
+              }}
+            >
+              Close
+            </button>
+          </div>
+          <form>
+            <div className="row">
+              <div className="col-12 col-md-6">
+                <div className="mb-3">
+                  <label className="form-label">Action</label>
+                  <p>{viewData?.action_type}</p>
                 </div>
               </div>
-            </form>
-          </div>
-        )}
-
-        {formData?.action_type === "JCC" && (
-          <div className="card card-xxl-stretch mb-5 mb-xxl-8">
-            <div className="card-header border-0 pt-5 pb-3">
-              <h3 className="card-title align-items-start flex-column">
-                <span className="card-label fw-bold fs-3 mb-1">
-                  All Data for{" "}
-                  {viewData?.reference_no && `for ${viewData?.reference_no}`}
-                </span>
-              </h3>
-              <button
-                className="btn fw-bold btn-danger"
-                onClick={() => {
-                  setViewData(null);
-                  setIsPopupView(false);
-                }}
-              >
-                Close
-              </button>
-            </div>
-            <form>
-              <div className="row">
-                <div className="col-12 col-md-6">
-                  <div className="mb-3">
-                    <label className="form-label">Action</label>
-                    <p>{viewData?.action_type}</p>
-                  </div>
-                </div>
-                <div className="col-12 col-md-6">
-                  <div className="mb-3">
-                    <label className="form-label">Work Title</label>
-                    <p>{viewData?.work_title}</p>
-                  </div>
-                </div>
-                <div className="col-12 col-md-6">
-                  <div className="mb-3">
-                    <label className="form-label">Work Done By</label>
-                    <p>{viewData?.work_done_by}</p>
-                  </div>
-                </div>
-                <div className="col-12 col-md-6">
-                  <div className="mb-3">
-                    <label className="form-label">JOB Location</label>
-                    <p>{viewData?.job_location}</p>
-                  </div>
-                </div>
-                <div className="col-12 col-md-6">
-                  <div className="mb-3">
-                    <label className="form-label">Yard No</label>
-                    <p>{viewData?.yard_no}</p>
-                  </div>
-                </div>
-                <div className="col-12 col-md-6">
-                  <div className="mb-3">
-                    <label className="form-label">Attendance Report</label>
-                    <p>
-                      <span>{viewData?.attendance_report}</span>
-                      {viewData?.file_attendance_report && (
-                        <Link
-                          to={`${process.env.REACT_APP_PDF_URL}wdcs/${viewData?.file_attendance_report}`}
-                          target="_blank"
-                        >
-                          Click here
-                        </Link>
-                      )}
-                    </p>
-                  </div>
-                </div>
-                <div className="col-12 col-md-6">
-                  <div className="mb-3">
-                    <label className="form-label">line_item_no</label>
-                    <p>{viewData?.line_item_no}</p>
-                  </div>
-                </div>
-
-                <table className="table table-bordered table-striped">
-                  <thead>
-                    <tr>
-                      <th>PO LineItem</th>
-                      <th>Description</th>
-                      <th>Open Quantity</th>
-                      <th>Claim Quantity</th>
-                      <th>Actual Start</th>
-                      <th>Actual Completion</th>
-                      <th>Hinderance in Days</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {checkTypeArr(viewData?.line_item_array) &&
-                      viewData?.line_item_array.map((field, index) => (
-                        <Fragment key={index}>
-                          <tr>
-                            <td>
-                              <span>{field?.line_item_no}</span>
-                            </td>
-                            <td>{field?.description}</td>
-                            <td>
-                              {field?.rest_amount} {field?.unit}
-                            </td>
-                            <td>{field?.claim_qty}</td>
-                            <td>
-                              {field?.actual_start_date &&
-                                formatDate(field?.actual_start_date)}
-                            </td>
-                            <td>
-                              {field?.actual_completion_date &&
-                                formatDate(field?.actual_completion_date)}
-                            </td>
-                            <td>{field?.hinderance_in_days}</td>
-                          </tr>
-                        </Fragment>
-                      ))}
-                  </tbody>
-                </table>
-
-                <div className="col-12 col-md-6">
-                  <div className="mb-3">
-                    <label className="form-label">Stage Details</label>
-                    <p>{viewData?.stage_details}</p>
-                  </div>
-                </div>
-                <div className="col-12">
-                  <div className="mb-3">
-                    <label className="form-label">Remarks</label>
-                    <p>{viewData?.remarks}</p>
-                  </div>
+              <div className="col-12 col-md-6">
+                <div className="mb-3">
+                  <label className="form-label">Work Title</label>
+                  <p>{viewData?.work_title}</p>
                 </div>
               </div>
-            </form>
+              <div className="col-12 col-md-6">
+                <div className="mb-3">
+                  <label className="form-label">Work Done By</label>
+                  <p>{viewData?.work_done_by}</p>
+                </div>
+              </div>
+              <div className="col-12 col-md-6">
+                <div className="mb-3">
+                  <label className="form-label">JOB Location</label>
+                  <p>{viewData?.job_location}</p>
+                </div>
+              </div>
+              <div className="col-12 col-md-6">
+                <div className="mb-3">
+                  <label className="form-label">Yard No</label>
+                  <p>{viewData?.yard_no}</p>
+                </div>
+              </div>
+              <div className="col-12 col-md-6">
+                <div className="mb-3">
+                  <label className="form-label">Unit</label>
+                  <p>{viewData?.unit}</p>
+                </div>
+              </div>
+              <div className="col-12 col-md-6">
+                <div className="mb-3">
+                  <label className="form-label">Inspecttion Note Ref No</label>
+                  <p>
+                    <span>{viewData?.inspection_note_ref_no}</span>
+                    {viewData?.file_inspection_note_ref_no && (
+                      <Link
+                        to={`${process.env.REACT_APP_PDF_URL}wdcs/${viewData?.file_inspection_note_ref_no}`}
+                        target="_blank"
+                      >
+                        Click here
+                      </Link>
+                    )}
+                  </p>
+                </div>
+              </div>
+              <div className="col-12 col-md-6">
+                <div className="mb-3">
+                  <label className="form-label">
+                    Hinderence Report Certified by Berth
+                  </label>
+                  <p>
+                    <span>{viewData?.hinderence_report_cerified_by_berth}</span>
+                    {viewData?.file_hinderence_report_cerified_by_berth && (
+                      <Link
+                        to={`${process.env.REACT_APP_PDF_URL}wdcs/${viewData?.file_hinderence_report_cerified_by_berth}`}
+                        target="_blank"
+                      >
+                        Click here
+                      </Link>
+                    )}
+                  </p>
+                </div>
+              </div>
+              <div className="col-12">
+                <div className="mb-3">
+                  <label className="form-label">Attendance Report</label>
+                  <p>
+                    <span>{viewData?.attendance_report}</span>
+                    {viewData?.file_attendance_report && (
+                      <Link
+                        to={`${process.env.REACT_APP_PDF_URL}wdcs/${viewData?.file_attendance_report}`}
+                        target="_blank"
+                      >
+                        Click here
+                      </Link>
+                    )}
+                  </p>
+                </div>
+              </div>
+              <div className="col-12 col-md-6">
+                <div className="mb-3">
+                  <label className="form-label">line_item_no</label>
+                  <p>{viewData?.line_item_no}</p>
+                </div>
+              </div>
+
+              <table className="table table-bordered table-striped">
+                <thead>
+                  <tr>
+                    <th>PO LineItem</th>
+                    <th>Description</th>
+                    <th>Open Quantity</th>
+                    <th>Claim Quantity</th>
+                    <th>Actual Start</th>
+                    <th>Actual Completion</th>
+                    <th>Hinderance in Days</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {checkTypeArr(viewData?.line_item_array) &&
+                    viewData?.line_item_array.map((field, index) => (
+                      <Fragment key={index}>
+                        <tr>
+                          <td>
+                            <span>{field?.line_item_no}</span>
+                          </td>
+                          <td>{field?.description}</td>
+                          <td>
+                            {field?.rest_amount} {field?.unit}
+                          </td>
+                          <td>{field?.claim_qty}</td>
+                          <td>
+                            {field?.actual_start_date &&
+                              formatDate(field?.actual_start_date)}
+                          </td>
+                          <td>
+                            {field?.actual_completion_date &&
+                              formatDate(field?.actual_completion_date)}
+                          </td>
+                          <td>{field?.hinderance_in_days}</td>
+                        </tr>
+                      </Fragment>
+                    ))}
+                </tbody>
+              </table>
+
+              <div className="col-12 col-md-6">
+                <div className="mb-3">
+                  <label className="form-label">Stage Details</label>
+                  <p>{viewData?.stage_details}</p>
+                </div>
+              </div>
+              <div className="col-12">
+                <div className="mb-3">
+                  <label className="form-label">Remarks</label>
+                  <p>{viewData?.remarks}</p>
+                </div>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+      {/* // jcc popup*/}
+      <div
+        className={isPopupJccView ? "popup popup_lg active" : "popup popup_lg"}
+      >
+        <div className="card card-xxl-stretch mb-5 mb-xxl-8">
+          <div className="card-header border-0 pt-5 pb-3">
+            <h3 className="card-title align-items-start flex-column">
+              <span className="card-label fw-bold fs-3 mb-1">
+                All Data for{" "}
+                {viewData?.reference_no && `for ${viewData?.reference_no}`}
+              </span>
+            </h3>
+            <button
+              className="btn fw-bold btn-danger"
+              onClick={() => {
+                setViewData(null);
+                setIsPopupJccView(false);
+              }}
+            >
+              Close
+            </button>
           </div>
-        )}
+          <form>
+            <div className="row">
+              <div className="col-12 col-md-6">
+                <div className="mb-3">
+                  <label className="form-label">Action</label>
+                  <p>{viewData?.action_type}</p>
+                </div>
+              </div>
+              <div className="col-12 col-md-6">
+                <div className="mb-3">
+                  <label className="form-label">Work Title</label>
+                  <p>{viewData?.work_title}</p>
+                </div>
+              </div>
+              <div className="col-12 col-md-6">
+                <div className="mb-3">
+                  <label className="form-label">Work Done By</label>
+                  <p>{viewData?.work_done_by}</p>
+                </div>
+              </div>
+              <div className="col-12 col-md-6">
+                <div className="mb-3">
+                  <label className="form-label">JOB Location</label>
+                  <p>{viewData?.job_location}</p>
+                </div>
+              </div>
+              <div className="col-12 col-md-6">
+                <div className="mb-3">
+                  <label className="form-label">Yard No</label>
+                  <p>{viewData?.yard_no}</p>
+                </div>
+              </div>
+              <div className="col-12 col-md-6">
+                <div className="mb-3">
+                  <label className="form-label">
+                    Guarantee Defect Start Date
+                  </label>
+                  {/* <p>{viewData?.guarantee_defect_liability_start_date}</p> */}
+                  <p>
+                    {" "}
+                    {viewData?.guarantee_defect_liability_start_date &&
+                      formatEpochToDate(
+                        viewData?.guarantee_defect_liability_start_date
+                      )}
+                  </p>
+                </div>
+              </div>
+              <div className="col-12 col-md-6">
+                <div className="mb-3">
+                  <label className="form-label">
+                    Guarantee Defect End Date
+                  </label>
+
+                  <p>
+                    {" "}
+                    {viewData?.guarantee_defect_liability_end_date &&
+                      formatEpochToDate(
+                        viewData?.guarantee_defect_liability_end_date
+                      )}
+                  </p>
+                </div>
+              </div>
+
+              {/* <div className="col-12 col-md-6">
+                <div className="mb-3">
+                  <label className="form-label">line_item_no</label>
+                  <p>{viewData?.line_item_no}</p>
+                </div>
+              </div> */}
+
+              <table className="table table-bordered table-striped">
+                <thead>
+                  <tr>
+                    <th>PO LineItem</th>
+                    <th>Service Code</th>
+                    <th>Description</th>
+                    <th>PO Quantity</th>
+                    <th>Claim Quantity</th>
+                    <th>PO Rate</th>
+                    <th>Total</th>
+                    <th>Actual Start Date</th>
+                    <th>Actual Completion date</th>
+                    <th>Delay in work execution</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {checkTypeArr(viewData?.line_item_array) &&
+                    viewData?.line_item_array.map((field, index) => (
+                      <Fragment key={index}>
+                        <tr>
+                          <td>
+                            <span>{field?.line_item_no}</span>
+                          </td>
+
+                          <td>{field?.matarial_code}</td>
+                          <td>{field?.description}</td>
+                          <td>{field?.target_amount}</td>
+                          <td>{field?.claim_qty}</td>
+                          <td>{field?.po_rate}</td>
+                          <td>{field?.claim_qty * field?.po_rate}</td>
+                          <td>
+                            {field?.actual_start_date &&
+                              formatDate(field?.actual_start_date)}
+                          </td>
+                          <td>
+                            {field?.actual_completion_date &&
+                              formatDate(field?.actual_completion_date)}
+                          </td>
+                          <td>{field?.delay_in_work_execution}</td>
+                        </tr>
+                      </Fragment>
+                    ))}
+                </tbody>
+              </table>
+
+              {/* <div className="col-12 col-md-6">
+                <div className="mb-3">
+                  <label className="form-label">Stage Details</label>
+                  <p>{viewData?.stage_details}</p>
+                </div>
+              </div> */}
+              <div className="col-12">
+                <div className="mb-3">
+                  <label className="form-label">Remarks</label>
+                  <p>{viewData?.remarks}</p>
+                </div>
+              </div>
+            </div>
+          </form>
+        </div>
       </div>
     </>
   );

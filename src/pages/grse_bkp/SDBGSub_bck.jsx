@@ -28,8 +28,6 @@ import { logoutHandler } from "../redux/slices/loginSlice";
 import { poRemoveHandler } from "../redux/slices/poSlice";
 import { groupedByActionType, groupedByRefNo } from "../utils/groupedByReq";
 import jsPDF from "jspdf";
-import { checkTypeArr } from "../utils/smallFun";
-import { convertToEpoch } from "../utils/getDateTimeNow";
 
 const SDBGSub = () => {
   const dispatch = useDispatch();
@@ -43,7 +41,6 @@ const SDBGSub = () => {
   const [groupedBG, setGroupedBG] = useState([]);
   const [sdbgEntry, setSdbgEntry] = useState([]);
   const [selectedActionType, setSelectedActionType] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
   const [formData, setFormData] = useState({
     sdbgFile: null,
     remarks: "",
@@ -61,18 +58,6 @@ const SDBGSub = () => {
     remarks: "Assigned to Finance Employee",
     status: "ASSIGNED",
   });
-  const convertToEpochh = (date) => {
-    if (date instanceof Date && !isNaN(date)) {
-      return Math.floor(date.getTime() / 1000);
-    } else if (typeof date === "string" || typeof date === "number") {
-      const parsedDate = new Date(date);
-      if (parsedDate instanceof Date && !isNaN(parsedDate)) {
-        return Math.floor(parsedDate.getTime() / 1000);
-      }
-    }
-    console.error("Invalid date:", date); // Logging to check invalid date values
-    return null; // Return null if the date is invalid
-  };
 
   const getSDBG = async () => {
     const data = await apiCallBack(
@@ -270,32 +255,6 @@ const SDBGSub = () => {
     }
   };
 
-  const SdbgEntryUpdate = async (referenceNo) => {
-    setIsLoading(true);
-    let payload = {
-      purchasing_doc_no: id,
-      reference_no: referenceNo,
-    };
-
-    const data = await apiCallBack(
-      "POST",
-      `/po/sdbg/getspecificbg`,
-      payload,
-      token
-    );
-    console.log("TES", data?.data);
-    if (data?.status && checkTypeArr(data?.data)) {
-      setFormDatainput(data?.data[data?.data.length - 1]);
-      console.log(data?.message);
-      setIsLoading(false);
-    } else {
-      setIsLoading(false);
-      toast.warn(data?.message);
-    }
-  };
-
-  console.log(formDatainput, "formDatainputformDatainput");
-
   useEffect(() => {
     if (allsdbg && allsdbg.length > 0) {
       const gData = groupedByActionType(allsdbg);
@@ -308,7 +267,7 @@ const SDBGSub = () => {
     const pdf = generatePDFFromSDBGEntry(sdbgEntry);
 
     // Trigger download
-    pdf.save(`sdbg_entry_${id}.pdf`);
+    pdf.save("sdbg_entry.pdf");
   };
 
   const generatePDFFromSDBGEntry = (entry) => {
@@ -507,38 +466,13 @@ const SDBGSub = () => {
                                             return (
                                               <Fragment key={ind}>
                                                 <tr>
-                                                  <td colSpan={5}>
+                                                  <td colSpan={10}>
                                                     <b>{item}</b>
-                                                  </td>
-                                                  <td>
-                                                    {isDO && (
-                                                      <span>
-                                                        <button
-                                                          onClick={() => {
-                                                            setIsEntryPopup(
-                                                              true
-                                                            );
-                                                            console.log(items);
-                                                            setFormDatainput({
-                                                              ...formDatainput,
-                                                              reference_no:
-                                                                item,
-                                                            });
-                                                            SdbgEntryUpdate(
-                                                              item
-                                                            );
-                                                          }}
-                                                          className="btn fw-bold btn-primary btn-sm"
-                                                        >
-                                                          ACTION
-                                                        </button>
-                                                      </span>
-                                                    )}
                                                   </td>
                                                 </tr>
                                                 {ite &&
                                                   ite.map((data, dex) => (
-                                                    <tr key={dex}>
+                                                    <tr>
                                                       {/* <td className="table_center">
                                                         {data?.action_type}
                                                       </td> */}
@@ -570,7 +504,7 @@ const SDBGSub = () => {
                                                         {data?.status}
                                                       </td>
                                                       <td>
-                                                        {/* {isDO &&
+                                                        {isDO &&
                                                           data?.status ===
                                                             SUBMITTED &&
                                                           (data?.action_type ===
@@ -600,7 +534,7 @@ const SDBGSub = () => {
                                                                 ACTION
                                                               </button>
                                                             </>
-                                                          )} */}
+                                                          )}
                                                         {data?.status ===
                                                           FORWARD_TO_FINANCE && (
                                                           <>
@@ -775,304 +709,251 @@ const SDBGSub = () => {
                 Close
               </button>
             </div>
-            {isLoading ? (
-              <>Loading...</>
-            ) : (
-              <div className="row">
-                <div className="col-md-6 col-12">
-                  <div className="mb-3">
-                    <label className="form-label">Ref No</label>
-                    <input
-                      type="text"
-                      className="form-control"
-                      name="reference_no"
-                      value={formDatainput?.reference_no || ""}
-                      disabled
-                    />
-                  </div>
-                </div>
-                <div className="col-md-6 col-12">
-                  <div className="mb-3">
-                    <label className="form-label">Bankers Name</label>
-                    &nbsp;&nbsp;
-                    <span className="mandatorystart">*</span>
-                    <input
-                      type="text"
-                      className="form-control"
-                      name="bank_name"
-                      value={formDatainput?.bank_name || ""}
-                      onChange={handleInputChange2}
-                    />
-                  </div>
-                </div>
-                <div className="col-md-6 col-12">
-                  <div className="mb-3">
-                    <label className="form-label">Bankers Branch</label>
-                    &nbsp;&nbsp;
-                    <span className="mandatorystart">*</span>
-                    <input
-                      type="text"
-                      className="form-control"
-                      name="branch_name"
-                      value={formDatainput?.branch_name || ""}
-                      onChange={handleInputChange2}
-                    />
-                  </div>
-                </div>
-                <div className="col-md-6 col-12">
-                  <div className="mb-3">
-                    <label className="form-label">Bankers Address1</label>
-                    &nbsp;&nbsp;
-                    <span className="mandatorystart">*</span>
-                    <input
-                      type="text"
-                      className="form-control"
-                      name="bank_addr1"
-                      value={formDatainput?.bank_addr1 || ""}
-                      onChange={handleInputChange2}
-                    />
-                  </div>
-                </div>
-                <div className="col-md-6 col-12">
-                  <div className="mb-3">
-                    <label className="form-label">Bankers Address2</label>
-                    <input
-                      type="text"
-                      className="form-control"
-                      name="bank_addr2"
-                      value={formDatainput?.bank_addr2 || ""}
-                      onChange={handleInputChange2}
-                    />
-                  </div>
-                </div>
-                <div className="col-md-6 col-12">
-                  <div className="mb-3">
-                    <label className="form-label">Bankers Address3</label>
-                    <input
-                      type="text"
-                      className="form-control"
-                      name="bank_addr3"
-                      value={formDatainput?.bank_addr3 || ""}
-                      onChange={handleInputChange2}
-                    />
-                  </div>
-                </div>
-                <div className="col-md-6 col-12">
-                  <div className="mb-3">
-                    <label className="form-label">Bankers City</label>
-                    &nbsp;&nbsp;
-                    <span className="mandatorystart">*</span>
-                    <input
-                      type="text"
-                      className="form-control"
-                      name="bank_city"
-                      value={formDatainput?.bank_city || ""}
-                      onChange={handleInputChange2}
-                    />
-                  </div>
-                </div>
-                <div className="col-md-6 col-12">
-                  <div className="mb-3">
-                    <label className="form-label">Bank Pincode</label>
-                    &nbsp;&nbsp;
-                    <span className="mandatorystart">*</span>
-                    <input
-                      type="number"
-                      className="form-control"
-                      name="bank_pin_code"
-                      value={formDatainput?.bank_pin_code || ""}
-                      onChange={handleInputChange2}
-                      onWheel={(e) => inputOnWheelPrevent(e)}
-                    />
-                  </div>
-                </div>
-                <div className="col-md-6 col-12">
-                  <div className="mb-3">
-                    <label className="form-label">Bank Guarantee No</label>
-                    &nbsp;&nbsp;
-                    <span className="mandatorystart">*</span>
-                    <input
-                      type="text"
-                      className="form-control"
-                      name="bg_no"
-                      value={formDatainput?.bg_no || ""}
-                      onChange={handleInputChange2}
-                    />
-                  </div>
-                </div>
-                <div className="col-md-6 col-12">
-                  <div className="mb-3">
-                    <label className="form-label">BG Date</label>&nbsp;&nbsp;
-                    <span className="mandatorystart">*</span>
-                    {/* <DatePicker
-                      selected={new Date(formDatainput?.bg_date) || ""}
-                      onChange={(date) =>
-                        setFormDatainput({ ...formDatainput, bg_date: date })
-                      }
-                      dateFormat="dd/MM/yyyy"
-                      className="form-control"
-                    /> */}
-                    <DatePicker
-                      selected={
-                        formDatainput.bg_date
-                          ? new Date(formDatainput.bg_date * 1000)
-                          : null
-                      }
-                      onChange={(date) =>
-                        setFormDatainput((prevData) => ({
-                          ...prevData,
-                          bg_date: convertToEpoch(date),
-                        }))
-                      }
-                      dateFormat="dd/MM/yyyy"
-                      className="form-control"
-                    />
-                  </div>
-                </div>
-                <div className="col-md-6 col-12">
-                  <div className="mb-3">
-                    <label className="form-label">BG Amount</label>&nbsp;&nbsp;
-                    <span className="mandatorystart">*</span>
-                    <input
-                      type="number"
-                      className="form-control"
-                      name="bg_ammount"
-                      value={formDatainput?.bg_ammount || ""}
-                      onChange={handleInputChange2}
-                      onWheel={(e) => inputOnWheelPrevent(e)}
-                    />
-                  </div>
-                </div>
-                <div className="col-md-6 col-12">
-                  <div className="mb-3">
-                    <label className="form-label">Yard No</label>
-                    <input
-                      type="text"
-                      className="form-control"
-                      name="yard_no"
-                      value={formDatainput?.yard_no || ""}
-                      onChange={handleInputChange2}
-                    />
-                  </div>
-                </div>
-                <div className="col-md-6 col-12">
-                  <div className="mb-3">
-                    <label className="form-label">Validity Date</label>
-                    &nbsp;&nbsp;
-                    <span className="mandatorystart">*</span>
-                    {/* <DatePicker
-                      selected={new Date(formDatainput?.validity_date) || ""}
-                      onChange={(date) =>
-                        setFormDatainput({
-                          ...formDatainput,
-                          validity_date: date,
-                        })
-                      }
-                      dateFormat="dd/MM/yyyy"
-                      className="form-control"
-                    /> */}
-                    <DatePicker
-                      selected={
-                        formDatainput.validity_date
-                          ? new Date(formDatainput.validity_date * 1000)
-                          : null
-                      }
-                      onChange={(date) =>
-                        setFormDatainput((prevData) => ({
-                          ...prevData,
-                          validity_date: convertToEpoch(date),
-                        }))
-                      }
-                      dateFormat="dd/MM/yyyy"
-                      className="form-control"
-                    />
-                  </div>
-                </div>
-                <div className="col-md-6 col-12">
-                  <div className="mb-3">
-                    <label className="form-label">Claim Period</label>
-                    &nbsp;&nbsp;
-                    <span className="mandatorystart">*</span>
-                    {/* <DatePicker
-                      selected={new Date(formDatainput?.claim_priod) || ""}
-                      onChange={(date) =>
-                        setFormDatainput({
-                          ...formDatainput,
-                          claim_priod: date,
-                        })
-                      }
-                      dateFormat="dd/MM/yyyy"
-                      className="form-control"
-                    /> */}
-                    <DatePicker
-                      selected={
-                        formDatainput.claim_priod
-                          ? new Date(formDatainput.claim_priod * 1000)
-                          : null
-                      }
-                      onChange={(date) =>
-                        setFormDatainput((prevData) => ({
-                          ...prevData,
-                          claim_priod: convertToEpoch(date),
-                        }))
-                      }
-                      dateFormat="dd/MM/yyyy"
-                      className="form-control"
-                    />
-                  </div>
-                </div>
-                <div className="col-md-6 col-12">
-                  <div className="mb-3">
-                    <label className="form-label">BG Type</label>&nbsp;&nbsp;
-                    <span className="mandatorystart">*</span>
-                    <select
-                      className="form-select"
-                      name=""
-                      id=""
-                      value={formData?.bg_type}
-                      onChange={(e) =>
-                        setFormData({ ...formData, bg_type: e.target.value })
-                      }
-                    >
-                      <option value="SDBG">SDBG</option>
-                      <option value="PBG">PBG</option>
-                      <option value="ADVANCED BG">ADVANCED BG</option>
-                    </select>
-                  </div>
-                </div>
-
-                <div className="col-12">
-                  <div className="mb-3 d-flex justify-content-between">
-                    <button
-                      onClick={() => uploadSDBGEntry("FORWARD_TO_FINANCE")}
-                      className="btn fw-bold btn-primary"
-                      type="submit"
-                    >
-                      FORWARD TO FINANCE
-                    </button>
-                    <button
-                      className="btn fw-bold btn-success"
-                      onClick={handleDownloadPDF}
-                    >
-                      Download BG Entry
-                    </button>
-                    <button
-                      onClick={() =>
-                        reConfirm(
-                          { file: true },
-                          () => rejectSDBG("REJECTED"),
-                          "You're going to Reject the SDBG. Please confirm!"
-                        )
-                      }
-                      className="btn fw-bold btn-danger"
-                      type="submit"
-                    >
-                      REJECTED
-                    </button>
-                  </div>
+            <div className="row">
+              <div className="col-md-6 col-12">
+                <div className="mb-3">
+                  <label className="form-label">Ref No</label>
+                  <input
+                    type="text"
+                    className="form-control"
+                    name="reference_no"
+                    value={formDatainput?.reference_no || ""}
+                    disabled
+                  />
                 </div>
               </div>
-            )}
+              <div className="col-md-6 col-12">
+                <div className="mb-3">
+                  <label className="form-label">Bankers Name</label>&nbsp;&nbsp;
+                  <span className="mandatorystart">*</span>
+                  <input
+                    type="text"
+                    className="form-control"
+                    name="bank_name"
+                    value={formDatainput?.bank_name || ""}
+                    onChange={handleInputChange2}
+                  />
+                </div>
+              </div>
+              <div className="col-md-6 col-12">
+                <div className="mb-3">
+                  <label className="form-label">Bankers Branch</label>
+                  &nbsp;&nbsp;
+                  <span className="mandatorystart">*</span>
+                  <input
+                    type="text"
+                    className="form-control"
+                    name="branch_name"
+                    value={formDatainput?.branch_name || ""}
+                    onChange={handleInputChange2}
+                  />
+                </div>
+              </div>
+              <div className="col-md-6 col-12">
+                <div className="mb-3">
+                  <label className="form-label">Bankers Address1</label>
+                  &nbsp;&nbsp;
+                  <span className="mandatorystart">*</span>
+                  <input
+                    type="text"
+                    className="form-control"
+                    name="bank_addr1"
+                    value={formDatainput?.bank_addr1 || ""}
+                    onChange={handleInputChange2}
+                  />
+                </div>
+              </div>
+              <div className="col-md-6 col-12">
+                <div className="mb-3">
+                  <label className="form-label">Bankers Address2</label>
+                  <input
+                    type="text"
+                    className="form-control"
+                    name="bank_addr2"
+                    value={formDatainput?.bank_addr2 || ""}
+                    onChange={handleInputChange2}
+                  />
+                </div>
+              </div>
+              <div className="col-md-6 col-12">
+                <div className="mb-3">
+                  <label className="form-label">Bankers Address3</label>
+                  <input
+                    type="text"
+                    className="form-control"
+                    name="bank_addr3"
+                    value={formDatainput?.bank_addr3 || ""}
+                    onChange={handleInputChange2}
+                  />
+                </div>
+              </div>
+              <div className="col-md-6 col-12">
+                <div className="mb-3">
+                  <label className="form-label">Bankers City</label>&nbsp;&nbsp;
+                  <span className="mandatorystart">*</span>
+                  <input
+                    type="text"
+                    className="form-control"
+                    name="bank_city"
+                    value={formDatainput?.bank_city || ""}
+                    onChange={handleInputChange2}
+                  />
+                </div>
+              </div>
+              <div className="col-md-6 col-12">
+                <div className="mb-3">
+                  <label className="form-label">Bank Pincode</label>&nbsp;&nbsp;
+                  <span className="mandatorystart">*</span>
+                  <input
+                    type="number"
+                    className="form-control"
+                    name="bank_pin_code"
+                    value={formDatainput?.bank_pin_code || ""}
+                    onChange={handleInputChange2}
+                    onWheel={(e) => inputOnWheelPrevent(e)}
+                  />
+                </div>
+              </div>
+              <div className="col-md-6 col-12">
+                <div className="mb-3">
+                  <label className="form-label">Bank Guarantee No</label>
+                  &nbsp;&nbsp;
+                  <span className="mandatorystart">*</span>
+                  <input
+                    type="text"
+                    className="form-control"
+                    name="bg_no"
+                    value={formDatainput?.bg_no || ""}
+                    onChange={handleInputChange2}
+                  />
+                </div>
+              </div>
+              <div className="col-md-6 col-12">
+                <div className="mb-3">
+                  <label className="form-label">BG Date</label>&nbsp;&nbsp;
+                  <span className="mandatorystart">*</span>
+                  <DatePicker
+                    selected={formDatainput?.bg_date}
+                    onChange={(date) =>
+                      setFormDatainput({ ...formDatainput, bg_date: date })
+                    }
+                    dateFormat="dd/MM/yyyy"
+                    className="form-control"
+                  />
+                </div>
+              </div>
+              <div className="col-md-6 col-12">
+                <div className="mb-3">
+                  <label className="form-label">BG Amount</label>&nbsp;&nbsp;
+                  <span className="mandatorystart">*</span>
+                  <input
+                    type="number"
+                    className="form-control"
+                    name="bg_ammount"
+                    value={formDatainput?.bg_ammount || ""}
+                    onChange={handleInputChange2}
+                    onWheel={(e) => inputOnWheelPrevent(e)}
+                  />
+                </div>
+              </div>
+              <div className="col-md-6 col-12">
+                <div className="mb-3">
+                  <label className="form-label">Yard No</label>
+                  <input
+                    type="text"
+                    className="form-control"
+                    name="yard_no"
+                    value={formDatainput?.yard_no || ""}
+                    onChange={handleInputChange2}
+                  />
+                </div>
+              </div>
+              <div className="col-md-6 col-12">
+                <div className="mb-3">
+                  <label className="form-label">Validity Date</label>
+                  &nbsp;&nbsp;
+                  <span className="mandatorystart">*</span>
+                  <DatePicker
+                    selected={formDatainput?.validity_date}
+                    onChange={(date) =>
+                      setFormDatainput({
+                        ...formDatainput,
+                        validity_date: date,
+                      })
+                    }
+                    dateFormat="dd/MM/yyyy"
+                    className="form-control"
+                  />
+                </div>
+              </div>
+              <div className="col-md-6 col-12">
+                <div className="mb-3">
+                  <label className="form-label">Claim Period</label>&nbsp;&nbsp;
+                  <span className="mandatorystart">*</span>
+                  <DatePicker
+                    selected={formDatainput?.claim_priod || ""}
+                    onChange={(date) =>
+                      setFormDatainput({
+                        ...formDatainput,
+                        claim_priod: date,
+                      })
+                    }
+                    dateFormat="dd/MM/yyyy"
+                    className="form-control"
+                  />
+                </div>
+              </div>
+              <div className="col-md-6 col-12">
+                <div className="mb-3">
+                  <label className="form-label">BG Type</label>&nbsp;&nbsp;
+                  <span className="mandatorystart">*</span>
+                  <select
+                    className="form-select"
+                    name=""
+                    id=""
+                    value={formData?.bg_type}
+                    onChange={(e) =>
+                      setFormData({ ...formData, bg_type: e.target.value })
+                    }
+                  >
+                    <option value="SDBG">SDBG</option>
+                    <option value="PBG">PBG</option>
+                    <option value="ADVANCED BG">ADVANCED BG</option>
+                  </select>
+                </div>
+              </div>
+
+              <div className="col-12">
+                <div className="mb-3 d-flex justify-content-between">
+                  <button
+                    onClick={() => uploadSDBGEntry("FORWARD_TO_FINANCE")}
+                    className="btn fw-bold btn-primary"
+                    type="submit"
+                  >
+                    FORWARD TO FINANCE
+                  </button>
+                  <button
+                    className="btn fw-bold btn-success btn-sm"
+                    onClick={handleDownloadPDF}
+                  >
+                    Download BG Entry
+                  </button>
+                  <button
+                    onClick={() =>
+                      reConfirm(
+                        { file: true },
+                        () => rejectSDBG("REJECTED"),
+                        "You're going to Reject the SDBG. Please confirm!"
+                      )
+                    }
+                    className="btn fw-bold btn-danger"
+                    type="submit"
+                  >
+                    REJECTED
+                  </button>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       )}
@@ -1295,7 +1176,112 @@ const SDBGSub = () => {
                   <p>{sdbgEntry?.vendor_pin_code}</p>
                 </div>
               </div>
-
+              {/* <div className="col-md-6 col-12">
+                <div className="mb-3">
+                  <label className="form-label">Checklist Reference</label>
+                  <p>{sdbgEntry?.check_list_reference}</p>
+                </div>
+              </div>
+              <div className="col-md-6 col-12">
+                <div className="mb-3">
+                  <label className="form-label">Checklist Date</label>
+                  <p>
+                    {sdbgEntry?.check_list_date
+                      ? new Date(sdbgEntry?.validity_date).toLocaleDateString()
+                      : ""}
+                  </p>
+                </div>
+              </div> */}
+              {/* <div className="col-md-6 col-12">
+                <div className="mb-3">
+                  <label className="form-label">Vendor Name</label>
+                  <p>{sdbgEntry?.vendor_name}</p>
+                </div>
+              </div>
+              <div className="col-md-6 col-12">
+                <div className="mb-3">
+                  <label className="form-label">Vendor Address1</label>
+                  <p>{sdbgEntry?.vendor_address1}</p>
+                </div>
+              </div>
+              <div className="col-md-6 col-12">
+                <div className="mb-3">
+                  <label className="form-label">Vendor Address2</label>
+                  <p>{sdbgEntry?.vendor_address2}</p>
+                </div>
+              </div>
+              <div className="col-md-6 col-12">
+                <div className="mb-3">
+                  <label className="form-label">Vendor Address3</label>
+                  <p>{sdbgEntry?.vendor_address3}</p>
+                </div>
+              </div>
+              <div className="col-md-6 col-12">
+                <div className="mb-3">
+                  <label className="form-label">Vendor City</label>
+                  <p>{sdbgEntry?.vendor_city}</p>
+                </div>
+              </div>
+              <div className="col-md-6 col-12">
+                <div className="mb-3">
+                  <label className="form-label">Vendor Pincode</label>
+                  <p>{sdbgEntry?.vendor_pin_code}</p>
+                </div>
+              </div> */}
+              {/* <div className="col-md-6 col-12">
+                <div className="mb-3">
+                  <label className="form-label">Extension Date1</label>
+                  <p>{sdbgEntry?.extension_date1}</p>
+                </div>
+              </div>
+              <div className="col-md-6 col-12">
+                <div className="mb-3">
+                  <label className="form-label">Extension Date2</label>
+                  <p>{sdbgEntry?.extension_date2}</p>
+                </div>
+              </div>
+              <div className="col-md-6 col-12">
+                <div className="mb-3">
+                  <label className="form-label">Extension Date3</label>
+                  <p>{sdbgEntry?.extension_date3}</p>
+                </div>
+              </div>
+              <div className="col-md-6 col-12">
+                <div className="mb-3">
+                  <label className="form-label">Extension Date4</label>
+                  <p>{sdbgEntry?.extension_date4}</p>
+                </div>
+              </div>
+              <div className="col-md-6 col-12">
+                <div className="mb-3">
+                  <label className="form-label">Extension Date5</label>
+                  <p>{sdbgEntry?.extension_date5}</p>
+                </div>
+              </div>
+              <div className="col-md-6 col-12">
+                <div className="mb-3">
+                  <label className="form-label">Extension Date6</label>
+                  <p>{sdbgEntry?.extension_date6}</p>
+                </div>
+              </div>
+              <div className="col-md-6 col-12">
+                <div className="mb-3">
+                  <label className="form-label">Release Date</label>
+                  <p>{sdbgEntry?.release_date}</p>
+                </div>
+              </div>
+              <div className="col-md-6 col-12">
+                <div className="mb-3">
+                  <label className="form-label">Demand Notice Date</label>
+                  <p>{sdbgEntry?.demand_notice_date}</p>
+                </div>
+              </div>
+              <div className="col-md-6 col-12">
+                <div className="mb-3">
+                  <label className="form-label">Entension Letter Date</label>
+                  <p>{sdbgEntry?.entension_letter_date}</p>
+                </div>
+              </div> */}
               <div className="col-12">
                 <div className="mb-3 d-flex justify-content-between">
                   <button

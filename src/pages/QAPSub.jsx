@@ -9,23 +9,29 @@ import { toast } from "react-toastify";
 import Select from "react-select";
 import { reConfirm } from "../utils/reConfirm";
 import { clrLegend } from "../utils/clrLegend";
-import { SUBMITTED } from "../constants/BGconstants";
+import { SUBMITTED, ACCEPTED } from "../constants/BGconstants";
 import { groupedByRefNo } from "../utils/groupedByReq";
 
 const QAPSub = () => {
   const inputRef = useRef(null);
+  const { id } = useParams();
+  const { user, token, userType } = useSelector((state) => state.auth);
+
   const [isPopup, setIsPopup] = useState(false);
   const [isPopupAssign, setIsPopupAssign] = useState(false);
   const [allqap, setAllqap] = useState([]);
-  const { id } = useParams();
-  const { user, token, userType } = useSelector((state) => state.auth);
+  const [groupedData, setGroupedData] = useState([]);
+
+  console.log(allqap, "allqap");
+  console.log(groupedData, "groupedData");
+
   const [formData, setFormData] = useState({
     action_type: "",
     QapFile: null,
     remarks: "",
     reference_no: null,
+    supporting_doc: [],
   });
-  const [groupedData, setGroupedData] = useState([]);
 
   const [assign, setAssign] = useState({
     purchasing_doc_no: id,
@@ -33,10 +39,12 @@ const QAPSub = () => {
     assigned_to: null,
     remarksallqap: "",
   });
+
   const [empOption, setEmpOption] = useState({
     depts: [],
     emps: [],
   });
+
   const [selectedDept, setSelectedDept] = useState(null);
 
   const getDepts = async () => {
@@ -47,10 +55,11 @@ const QAPSub = () => {
       token
     );
     if (res?.status) {
-      let options = res.data.map((item, index) => {
-        return { value: item.id, label: item.name };
-      });
-      setEmpOption({ ...empOption, depts: options });
+      const options = res.data.map((item) => ({
+        value: item.id,
+        label: item.name,
+      }));
+      setEmpOption((prev) => ({ ...prev, depts: options }));
     } else {
       toast.error(res?.message);
     }
@@ -64,14 +73,11 @@ const QAPSub = () => {
       token
     );
     if (res?.status) {
-      let options = res.data.map((item, index) => {
-        return {
-          value: item.emp_id,
-          label: `${item.empName} (${item.emp_id})`,
-        };
-      });
-      console.log(options);
-      setEmpOption({ ...empOption, emps: options });
+      const options = res.data.map((item) => ({
+        value: item.emp_id,
+        label: `${item.empName} (${item.emp_id})`,
+      }));
+      setEmpOption((prev) => ({ ...prev, emps: options }));
     } else {
       toast.error(res?.message);
     }
@@ -120,11 +126,7 @@ const QAPSub = () => {
       );
       if (status && data) {
         const { remarks } = data[0];
-        let f = {
-          ...formData,
-          remarks: remarks,
-        };
-        setFormData(f);
+        setFormData((prev) => ({ ...prev, remarks }));
       }
     } catch (error) {
       console.error("Error fetching drawing list:", error);
@@ -141,14 +143,14 @@ const QAPSub = () => {
       );
       if (data?.status) {
         setFormData({
-          ...formData,
           action_type: "",
           QapFile: null,
           remarks: "",
+          supporting_doc: [],
         });
       }
     } catch (error) {
-      console.error("Error fetching drawing list:", error);
+      console.error("Error deleting saved QAP:", error);
     }
   };
 
@@ -158,39 +160,43 @@ const QAPSub = () => {
   }, [id, token]);
 
   const updateQAP = async (flag) => {
-    const { action_type, QapFile, remarks } = formData;
+    const { action_type, QapFile, remarks, supporting_doc, reference_no } =
+      formData;
+
     if (
-      flag === SUBMITTED &&
+      flag === "SUBMITTED" &&
       (action_type.trim() === "" || remarks.trim() === "")
     ) {
       return toast.warn("Action type, remarks are mandatory fields!");
     }
+
     if (remarks.trim() === "") {
       return toast.warn("Remarks are mandatory fields!");
     }
+
     try {
       await deleteSavedQAP();
-      let uType;
-      let mailSendTo;
-      if (userType === 1) {
-        uType = "VENDOR";
-        mailSendTo = "mrinmoygh081@gmail.com";
-      } else {
-        uType = "GRSE";
-        mailSendTo = "aabhinit96@gmail.com";
-      }
       const formDataToSend = new FormData();
       formDataToSend.append("purchasing_doc_no", id);
-      formDataToSend.append("reference_no", formData?.reference_no);
+      if (reference_no) {
+        formDataToSend.append("reference_no", reference_no);
+      }
       formDataToSend.append("file", QapFile);
       formDataToSend.append("remarks", remarks);
       formDataToSend.append("status", flag);
-      formDataToSend.append("updated_by", uType);
+      formDataToSend.append("updated_by", userType === 1 ? "VENDOR" : "GRSE");
       formDataToSend.append("vendor_code", user.vendor_code);
-      formDataToSend.append("mailSendTo", mailSendTo);
+      formDataToSend.append(
+        "mailSendTo",
+        userType === 1 ? "mrinmoygh081@gmail.com" : "aabhinit96@gmail.com"
+      );
       formDataToSend.append("action_by_name", user.name);
       formDataToSend.append("action_by_id", user.email);
       formDataToSend.append("action_type", action_type);
+
+      supporting_doc.forEach((file) => {
+        formDataToSend.append("supporting_doc", file);
+      });
 
       const response = await apiCallBack(
         "POST",
@@ -207,8 +213,10 @@ const QAPSub = () => {
           action_type: "",
           QapFile: null,
           remarks: "",
+          supporting_doc: [],
         });
         inputRef.current.value = null;
+        document.getElementById("supporting-doc-input").value = null;
         getData();
       } else {
         toast.warn(response?.message);
@@ -222,7 +230,6 @@ const QAPSub = () => {
     const { purchasing_doc_no, assigned_from, assigned_to, remarksallqap } =
       assign;
 
-    // Validate all required fields
     if (
       !purchasing_doc_no ||
       !assigned_from ||
@@ -263,9 +270,8 @@ const QAPSub = () => {
 
   const savedQAPHandler = async () => {
     await deleteSavedQAP();
-    const { remarks } = formData;
+    const { remarks, QapFile, supporting_doc } = formData;
 
-    // Validate all required fields
     if (!id) {
       toast.error("PO Number is required!");
       return;
@@ -273,15 +279,18 @@ const QAPSub = () => {
 
     const formDataToSend = new FormData();
     formDataToSend.append("purchasing_doc_no", id);
-    if (formData?.QapFile) {
-      formDataToSend.append("file", formData?.QapFile);
+    if (QapFile) {
+      formDataToSend.append("file", QapFile);
     }
     formDataToSend.append("remarks", remarks);
+    supporting_doc.forEach((file) => {
+      formDataToSend.append("supporting_doc", file);
+    });
 
     try {
       const res = await apiCallBack(
         "POST",
-        `po/insertQapSave`,
+        "po/insertQapSave",
         formDataToSend,
         token
       );
@@ -298,7 +307,21 @@ const QAPSub = () => {
       toast.error("Error saving QAP");
     }
   };
+  const handleFileChange = (e) => {
+    const filesArray = Array.from(e.target.files);
+    setFormData({
+      ...formData,
+      supporting_doc: [...formData.supporting_doc, ...filesArray],
+    });
+  };
 
+  const removeFile = (index) => {
+    const updatedFiles = formData.supporting_doc.filter((_, i) => i !== index);
+    setFormData({
+      ...formData,
+      supporting_doc: updatedFiles,
+    });
+  };
   return (
     <>
       <div className="d-flex flex-column flex-root">
@@ -335,7 +358,10 @@ const QAPSub = () => {
                           )}
                         {userType === 1 && (
                           <button
-                            onClick={() => setIsPopup(true)}
+                            onClick={() => {
+                              setFormData({ ...formData, reference_no: null });
+                              setIsPopup(true);
+                            }}
                             className="btn fw-bold btn-primary"
                           >
                             ACTION
@@ -350,14 +376,14 @@ const QAPSub = () => {
                             <table className="table table-striped table-bordered table_height">
                               <thead>
                                 <tr className="border-0">
-                                  {/* <th>Reference No. </th> */}
                                   <th>DateTime </th>
                                   <th>Action Type </th>
                                   <th>File Info</th>
                                   <th>Action By</th>
                                   <th className="min-w-150px">Remarks</th>
                                   <th>Status</th>
-                                  {user?.department_id === 3 && (
+                                  {(user?.department_id === 3 ||
+                                    userType === 1) && (
                                     <th className="min-w-150px">Action</th>
                                   )}
                                 </tr>
@@ -368,8 +394,27 @@ const QAPSub = () => {
                                   return (
                                     <Fragment key={index}>
                                       <tr>
-                                        <td colSpan={10}>
+                                        <td colSpan={6}>
                                           <b>{it}</b>
+                                        </td>
+                                        <td>
+                                          {(userType === 1 ||
+                                            user?.department_id === 3) && (
+                                            <td className="border-0">
+                                              <button
+                                                onClick={() => {
+                                                  setIsPopup(true);
+                                                  setFormData({
+                                                    ...formData,
+                                                    reference_no: it,
+                                                  });
+                                                }}
+                                                className="btn fw-bold btn-sm btn-primary me-3"
+                                              >
+                                                ACTION
+                                              </button>
+                                            </td>
+                                          )}
                                         </td>
                                       </tr>
                                       {items &&
@@ -405,17 +450,14 @@ const QAPSub = () => {
                                             >
                                               {qap.status}
                                             </td>
-                                            {user?.department_id === 3 && (
+                                            <td></td>
+                                            {/* { && (
                                               <td>
                                                 {qap?.status === SUBMITTED && (
                                                   <button
                                                     onClick={() => {
                                                       setIsPopup(true);
-                                                      setFormData({
-                                                        ...formData,
-                                                        reference_no:
-                                                          qap?.reference_no,
-                                                      });
+                                                      
                                                     }}
                                                     className="btn fw-bold btn-primary me-3"
                                                   >
@@ -423,7 +465,7 @@ const QAPSub = () => {
                                                   </button>
                                                 )}
                                               </td>
-                                            )}
+                                            )} */}
                                           </tr>
                                         ))}
                                     </Fragment>
@@ -497,6 +539,34 @@ const QAPSub = () => {
                       }
                       accept=".pdf"
                     />
+                  </div>
+                  <div className="mb-3">
+                    <label className="form-label">Supporting Documents</label>
+                    <input
+                      type="file"
+                      id="supporting-doc-input"
+                      className="form-control"
+                      multiple
+                      onChange={handleFileChange}
+                      accept=".pdf"
+                    />
+                    <div className="mt-2">
+                      {formData.supporting_doc.map((file, index) => (
+                        <div
+                          key={index}
+                          className="d-flex justify-content-between align-items-center mt-1"
+                        >
+                          <div>{file.name}</div>
+                          <button
+                            className="btn btn-danger btn-sm"
+                            type="button"
+                            onClick={() => removeFile(index)}
+                          >
+                            Remove
+                          </button>
+                        </div>
+                      ))}
+                    </div>
                   </div>
                 </div>
                 <div className="col-12">
@@ -600,6 +670,7 @@ const QAPSub = () => {
           </div>
         </div>
       )}
+
       {userType !== 1 &&
         user.department_id === 3 &&
         user.internal_role_id === 1 && (

@@ -25,7 +25,8 @@ const BillsMaterialHybridEdit = () => {
 
   const [impDates, setImpDates] = useState(null);
   const [data, setData] = useState(null);
-
+  console.log(impDates, "impDates");
+  console.log(data, "data");
   let initialData = {
     invoice_no: "",
     invoice_filename: "",
@@ -424,9 +425,7 @@ const BillsMaterialHybridEdit = () => {
                                       <td className="btn_value">
                                         <b className="me-3">
                                           {form?.c_sdbg_date &&
-                                            new Date(
-                                              form?.c_sdbg_date
-                                            ).toLocaleDateString()}
+                                            formatDate(form?.c_sdbg_date)}
                                         </b>
                                         {data?.c_sdbg_filename &&
                                           data?.c_sdbg_filename !== "" && (
@@ -445,9 +444,7 @@ const BillsMaterialHybridEdit = () => {
                                       <td className="btn_value">
                                         <b className="me-3">
                                           {form?.a_sdbg_date &&
-                                            new Date(
-                                              form?.a_sdbg_date
-                                            ).toLocaleDateString()}
+                                            formatDate(form?.a_sdbg_date)}
                                         </b>
                                       </td>
                                     </tr>
@@ -538,9 +535,7 @@ const BillsMaterialHybridEdit = () => {
                                       <td className="btn_value">
                                         <b>
                                           {form?.c_drawing_date &&
-                                            new Date(
-                                              form?.c_drawing_date
-                                            ).toLocaleDateString()}
+                                            formatDate(form?.c_drawing_date)}
                                         </b>
                                       </td>
                                     </tr>
@@ -549,9 +544,7 @@ const BillsMaterialHybridEdit = () => {
                                       <td className="btn_value">
                                         <b>
                                           {form?.a_drawing_date &&
-                                            new Date(
-                                              form?.a_drawing_date
-                                            ).toLocaleDateString()}
+                                            formatDate(form?.a_drawing_date)}
                                         </b>
                                       </td>
                                     </tr>
@@ -560,9 +553,7 @@ const BillsMaterialHybridEdit = () => {
                                       <td className="btn_value">
                                         <b>
                                           {form?.c_qap_date &&
-                                            new Date(
-                                              form?.c_qap_date
-                                            ).toLocaleDateString()}
+                                            formatDate(form?.c_qap_date)}
                                         </b>
                                       </td>
                                     </tr>
@@ -571,9 +562,7 @@ const BillsMaterialHybridEdit = () => {
                                       <td className="btn_value">
                                         <b>
                                           {form?.a_qap_date &&
-                                            new Date(
-                                              form?.a_qap_date
-                                            ).toLocaleDateString()}
+                                            formatDate(form?.a_qap_date)}
                                         </b>
                                       </td>
                                     </tr>
@@ -582,9 +571,7 @@ const BillsMaterialHybridEdit = () => {
                                       <td className="btn_value">
                                         <b>
                                           {form?.c_ilms_date &&
-                                            new Date(
-                                              form?.c_ilms_date
-                                            ).toDateString()}
+                                            formatDate(form?.c_ilms_date)}
                                         </b>
                                       </td>
                                     </tr>
@@ -593,9 +580,7 @@ const BillsMaterialHybridEdit = () => {
                                       <td className="btn_value">
                                         <b>
                                           {form?.a_ilms_date &&
-                                            new Date(
-                                              form?.a_ilms_date
-                                            ).toDateString()}
+                                            formatDate(form?.a_ilms_date)}
                                         </b>
                                       </td>
                                     </tr>

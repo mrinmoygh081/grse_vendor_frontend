@@ -348,6 +348,21 @@ const PODetails = () => {
                                                       </span>
                                                     </div>
                                                   )}
+
+                                                {item?.acknowledgementnt_date && (
+                                                  <div className="card_header_data">
+                                                    <span className="label">
+                                                      RECEIVED DATE :
+                                                    </span>
+                                                    <span className="label_data">
+                                                      {item?.acknowledgementnt_date
+                                                        ? new Date(
+                                                            item?.acknowledgementnt_date
+                                                          ).toLocaleDateString()
+                                                        : "Not Updated"}
+                                                    </span>
+                                                  </div>
+                                                )}
                                               </Fragment>
                                             ))}
                                         </div>
