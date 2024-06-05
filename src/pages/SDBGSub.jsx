@@ -29,7 +29,7 @@ import { poRemoveHandler } from "../redux/slices/poSlice";
 import { groupedByActionType, groupedByRefNo } from "../utils/groupedByReq";
 import jsPDF from "jspdf";
 import { checkTypeArr } from "../utils/smallFun";
-import { convertToEpoch } from "../utils/getDateTimeNow";
+import { convertToEpoch, formatDate } from "../utils/getDateTimeNow";
 
 const SDBGSub = () => {
   const dispatch = useDispatch();
@@ -62,16 +62,8 @@ const SDBGSub = () => {
     status: "ASSIGNED",
   });
   const convertToEpochh = (date) => {
-    if (date instanceof Date && !isNaN(date)) {
-      return Math.floor(date.getTime() / 1000);
-    } else if (typeof date === "string" || typeof date === "number") {
-      const parsedDate = new Date(date);
-      if (parsedDate instanceof Date && !isNaN(parsedDate)) {
-        return Math.floor(parsedDate.getTime() / 1000);
-      }
-    }
-    console.error("Invalid date:", date); // Logging to check invalid date values
-    return null; // Return null if the date is invalid
+    console.log("Dateabhinit:", date);
+    return date instanceof Date ? Math.floor(date.getTime() / 1000) : null;
   };
 
   const getSDBG = async () => {
@@ -543,10 +535,14 @@ const SDBGSub = () => {
                                                         {data?.action_type}
                                                       </td> */}
                                                       <td className="table_center">
-                                                        {data?.created_at &&
+                                                        {/* {data?.created_at &&
                                                           new Date(
                                                             data?.created_at
-                                                          ).toLocaleString()}
+                                                          ).toLocaleString()} */}
+                                                        {data?.created_at &&
+                                                          formatDate(
+                                                            data?.created_at
+                                                          )}
                                                       </td>
                                                       <td>
                                                         <a
@@ -918,12 +914,13 @@ const SDBGSub = () => {
                           ? new Date(formDatainput.bg_date * 1000)
                           : null
                       }
-                      onChange={(date) =>
+                      onChange={(date) => {
+                        console.log("Selected BG Date:", date);
                         setFormDatainput((prevData) => ({
                           ...prevData,
-                          bg_date: convertToEpoch(date),
-                        }))
-                      }
+                          bg_date: convertToEpochh(date),
+                        }));
+                      }}
                       dateFormat="dd/MM/yyyy"
                       className="form-control"
                     />
@@ -977,12 +974,13 @@ const SDBGSub = () => {
                           ? new Date(formDatainput.validity_date * 1000)
                           : null
                       }
-                      onChange={(date) =>
+                      onChange={(date) => {
+                        console.log("Selected Validity Date:", date);
                         setFormDatainput((prevData) => ({
                           ...prevData,
-                          validity_date: convertToEpoch(date),
-                        }))
-                      }
+                          validity_date: convertToEpochh(date),
+                        }));
+                      }}
                       dateFormat="dd/MM/yyyy"
                       className="form-control"
                     />
@@ -1010,12 +1008,13 @@ const SDBGSub = () => {
                           ? new Date(formDatainput.claim_priod * 1000)
                           : null
                       }
-                      onChange={(date) =>
+                      onChange={(date) => {
+                        console.log("Selected Claim Period Date:", date);
                         setFormDatainput((prevData) => ({
                           ...prevData,
-                          claim_priod: convertToEpoch(date),
-                        }))
-                      }
+                          claim_priod: convertToEpochh(date),
+                        }));
+                      }}
                       dateFormat="dd/MM/yyyy"
                       className="form-control"
                     />

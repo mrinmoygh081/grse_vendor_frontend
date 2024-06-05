@@ -238,8 +238,8 @@ const Checklist = () => {
                               <table className="table table-striped table-bordered table_height">
                                 <thead>
                                   <tr className="border-0">
-                                    <th>Vendor Code</th>
                                     <th>Date</th>
+                                    <th>Vendor Code</th>
                                     <th>Document No</th>
                                     <th>VIEW DOCUMENT</th>
                                   </tr>
@@ -249,7 +249,6 @@ const Checklist = () => {
                                     paymentdata?.resustFiles.map(
                                       (file, index) => (
                                         <tr key={index}>
-                                          <td>{file.vendor_code}</td>
                                           <td>
                                             {/* {new Date(
                                               file.docuentDate
@@ -257,6 +256,7 @@ const Checklist = () => {
                                             {file.docuentDate &&
                                               formatDate(file.docuentDate)}
                                           </td>
+                                          <td>{file.vendor_code}</td>
                                           <td>{file.documentNo}</td>
                                           <td>
                                             <a

@@ -156,7 +156,7 @@ const BGExtensionSub = () => {
                                       <div className="d-flex">
                                         <select
                                           name="action"
-                                          className="form-control me-2"
+                                          className="form-select me-2"
                                         >
                                           <option value="Extension">
                                             Extension

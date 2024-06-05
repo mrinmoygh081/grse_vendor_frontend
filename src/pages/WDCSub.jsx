@@ -90,8 +90,14 @@ const WDCSub = () => {
   const [doForm, setDoForm] = useState({
     contractual_start_date: "",
     Contractual_completion_date: "",
+    status: "",
   });
-  console.log(viewData, "viewData,,,,,,,,,,,,,,,");
+  const [doFormJcc, setDoFormJcc] = useState({
+    status: "",
+  });
+  const [isSubmitted, setIsSubmitted] = useState(false);
+
+  console.log(allData, "allData,,,,,,,,,,,,,,,");
 
   const [dynamicFields, setDynamicFields] = useState([line_item_fields]);
   const [dynamicFieldsWdc, setDynamicFieldsWdc] = useState([
@@ -334,6 +340,7 @@ const WDCSub = () => {
         const lineItemArray = viewData.line_item_array.map((item) => ({
           contractual_start_date: doForm.contractual_start_date,
           Contractual_completion_date: doForm.Contractual_completion_date,
+          status: doForm.status,
           delay: delay,
           line_item_no: item.line_item_no || "",
         }));
@@ -376,6 +383,7 @@ const WDCSub = () => {
 
         const lineItemArray = viewData.line_item_array.map((item) => ({
           line_item_no: item.line_item_no || "",
+          status: doFormJcc.status,
         }));
 
         fD.append("line_item_array", JSON.stringify(lineItemArray));
@@ -640,6 +648,10 @@ const WDCSub = () => {
                                         items.map((item, index) => (
                                           <tr key={index}>
                                             <td>{item?.action_type}</td>
+                                            {console.log(
+                                              item,
+                                              "ccccccccccccccccccccccccc"
+                                            )}
                                             <td>
                                               {item?.created_at &&
                                                 formatDate(item?.created_at)}
@@ -694,8 +706,8 @@ const WDCSub = () => {
                                               )}
 
                                               {item.status === "SUBMITTED" &&
-                                                user.department_id ===
-                                                  USER_PPNC_DEPARTMENT && (
+                                                user.vendor_code ===
+                                                  item.assigned_to && (
                                                   <>
                                                     {item?.action_type ===
                                                       "WDC" && (
@@ -1119,28 +1131,30 @@ const WDCSub = () => {
                           Certifying Authority <span className="red">*</span>{" "}
                         </label>
 
-                        <Select
-                          className="basic-single"
-                          classNamePrefix="select"
-                          isClearable={true}
-                          isSearchable={true}
-                          name="emp"
-                          id="emp"
-                          options={emp}
-                          value={
-                            emp &&
-                            emp.filter(
-                              (item) =>
-                                item.value === formData?.certifying_authority
-                            )[0]
-                          }
-                          onChange={(val) =>
-                            setFormData({
-                              ...formData,
-                              certifying_authority: val.value,
-                            })
-                          }
-                        />
+                        {checkTypeArr(emp) && (
+                          <Select
+                            className="basic-single"
+                            classNamePrefix="select"
+                            isClearable={true}
+                            isSearchable={true}
+                            name="emp"
+                            id="emp"
+                            options={emp}
+                            value={
+                              emp &&
+                              emp.filter(
+                                (item) =>
+                                  item.value === formData?.certifying_authority
+                              )[0]
+                            }
+                            onChange={(val) =>
+                              setFormData({
+                                ...formData,
+                                certifying_authority: val?.value || "",
+                              })
+                            }
+                          />
+                        )}
                       </div>
                     </div>
 
@@ -1512,7 +1526,7 @@ const WDCSub = () => {
         </div>
       )}
 
-      {user.department_id === USER_PPNC_DEPARTMENT && (
+      {user.vendor_code === user.vendor_code && (
         <>
           <div
             className={isSecPopup ? "popup popup_lg active" : "popup popup_lg"}
@@ -1646,6 +1660,7 @@ const WDCSub = () => {
                         <th>Actual Start</th>
                         <th>Actual Completion</th>
                         <th>Hinderance in Days</th>
+                        <th>Status</th>
                         <th>Delay</th>
                       </tr>
                     </thead>
@@ -1698,6 +1713,21 @@ const WDCSub = () => {
                                   formatDate(field?.actual_completion_date)}
                               </td>
                               <td>{field?.hinderance_in_days}</td>
+                              <td>
+                                <select
+                                  className="form-select"
+                                  onChange={(e) =>
+                                    setDoForm({
+                                      ...doForm,
+                                      status: e.target.value,
+                                    })
+                                  }
+                                >
+                                  <option value="">Select</option>
+                                  <option value="APPROVED">Approved</option>
+                                  <option value="REJECTED">Rejected</option>
+                                </select>
+                              </td>
                               <td>{delay}</td>
                             </tr>
                           </Fragment>
@@ -1844,6 +1874,7 @@ const WDCSub = () => {
                         <th>Actual Start Date</th>
                         <th>Actual Completion date</th>
                         <th>Delay in work execution</th>
+                        <th>Status</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -1870,6 +1901,21 @@ const WDCSub = () => {
                                   formatDate(field?.actual_completion_date)}
                               </td>
                               <td>{field?.delay_in_work_execution}</td>
+                              <td>
+                                <select
+                                  className="form-select"
+                                  onChange={(e) =>
+                                    setDoFormJcc({
+                                      ...doFormJcc,
+                                      status: e.target.value,
+                                    })
+                                  }
+                                >
+                                  <option value="">Select</option>
+                                  <option value="APPROVED">Approved</option>
+                                  <option value="REJECTED">Rejected</option>
+                                </select>
+                              </td>
                             </tr>
                           </Fragment>
                         ))}

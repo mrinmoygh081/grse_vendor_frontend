@@ -377,3 +377,48 @@ input[type="number"] {
 .mbv-2 {
   margin-bottom: 5.5rem !important;
 }
+
+/* DashboardLayout.css */
+.dashboard-layout {
+  display: flex;
+}
+
+.sidebar {
+  width: 200px;
+  background-color: #f8f9fa;
+  padding: 20px;
+}
+
+.sidebar ul {
+  list-style: none;
+  padding: 0;
+}
+
+.sidebar ul li {
+  margin-bottom: 10px;
+}
+
+.content {
+  flex-grow: 1;
+  padding: 20px;
+}
+
+.sidebar {
+  background-color: black;
+  color: white;
+  width: 250px;
+  height: 100vh;
+  position: fixed;
+  overflow-y: auto;
+  padding: 20px;
+  top: 80px;
+}
+
+.sidebar a {
+  color: white;
+  text-decoration: none;
+}
+
+.sidebar a:hover {
+  text-decoration: underline;
+}

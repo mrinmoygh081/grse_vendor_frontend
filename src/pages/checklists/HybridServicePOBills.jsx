@@ -242,8 +242,6 @@ const HybridServicePOBills = () => {
     setForm({ ...form, assigned_to: selectedOption.value });
   };
 
-  console.log(form.assigned_to);
-
   return (
     <>
       <div className="d-flex flex-column flex-root">

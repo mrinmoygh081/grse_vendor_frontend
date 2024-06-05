@@ -45,7 +45,9 @@ export const formatEpochToDate = (epochTimestamp) => {
 };
 
 export const formatDate = (epochTime) => {
-  let date = new Date(epochTime);
+  // let date = new Date(epochTime);
+  const et = isNaN(parseInt(epochTime)) ? epochTime : parseInt(epochTime);
+  let date = new Date(et);
 
   let day = date.getDate();
   let month = date.getMonth() + 1;

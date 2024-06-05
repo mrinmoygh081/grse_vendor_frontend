@@ -168,6 +168,33 @@ const BillsMaterialHybrid = () => {
                                 <table className="table table-striped table-bordered table_height">
                                   <tbody style={{ maxHeight: "100%" }}>
                                     <tr>
+                                      <td>Yard No:</td>
+                                      <td className="btn_value">
+                                        <input
+                                          type="number"
+                                          className="form-control"
+                                          onWheel={inputOnWheelPrevent}
+                                          name="yard_no"
+                                        />
+                                      </td>
+                                    </tr>
+                                    <tr>
+                                      <td>Stage:</td>
+                                      <td className="btn_value">
+                                        <select
+                                          name=""
+                                          id=""
+                                          className="form-select"
+                                        >
+                                          <option value="1"> 1</option>
+                                          <option value="2"> 2</option>
+                                          <option value="3"> 3</option>
+                                          <option value="4"> 4</option>
+                                          <option value="5"> 5</option>
+                                        </select>
+                                      </td>
+                                    </tr>
+                                    <tr>
                                       <td>Invoice No:</td>
                                       <td className="btn_value">
                                         <input
@@ -232,7 +259,7 @@ const BillsMaterialHybrid = () => {
                                     </tr>
 
                                     <tr>
-                                      <td>Associated PO:</td>
+                                      <td>Additional PO:</td>
                                       <td className="btn_value">
                                         {checkTypeArr(form?.associated_po) &&
                                           form.associated_po.map((item, i) => (
@@ -274,7 +301,7 @@ const BillsMaterialHybrid = () => {
                                       </td>
                                     </tr>
                                     <tr>
-                                      <td>Invoice value:</td>
+                                      <td>Basic value:</td>
                                       <td className="btn_value">
                                         <input
                                           type="number"
