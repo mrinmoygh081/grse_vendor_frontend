@@ -15,6 +15,19 @@ import { clrLegend } from "../utils/clrLegend";
 import { FaMinus, FaPlus } from "react-icons/fa";
 
 const DemandManagement = () => {
+  let line_item_fields = {
+    line_item_no: "",
+    request_amount: "",
+  };
+
+  let initialFormData = {
+    action_type: "",
+    remarks: "",
+    status: "",
+    delivery_date: "",
+    demand: [line_item_fields],
+  };
+
   const [isPopup, setIsPopup] = useState(false);
   const [isSecPopup, setIsSecPopup] = useState(false);
   const [data, setData] = useState([]);
@@ -26,19 +39,11 @@ const DemandManagement = () => {
   const [viewData, setViewData] = useState(null);
   const { id } = useParams();
   const [groupedData, setGroupedData] = useState([]);
-  const [dynamicFields, setDynamicFields] = useState([]);
-
-  console.log(data, "groupedDatagroupedData");
+  // const [dynamicFields, setDynamicFields] = useState([]);
+  const [dynamicFields, setDynamicFields] = useState([line_item_fields]);
 
   const { user, token } = useSelector((state) => state.auth);
-  const [formData, setFormData] = useState({
-    action_type: "",
-    remarks: "",
-    line_item_no: "",
-    request_amount: "",
-    recived_quantity: "",
-    delivery_date: "",
-  });
+  const [formData, setFormData] = useState(initialFormData);
 
   const getData = async () => {
     try {
@@ -68,22 +73,44 @@ const DemandManagement = () => {
     }
   };
 
+  // const getAvailableAmount = async (item) => {
+  //   try {
+  //     const data = await apiCallBack(
+  //       "GET",
+  //       `po/demandeManagement/getRestAmount?po_no=${id}&line_item_no=${item}`,
+  //       null,
+  //       token
+  //     );
+  //     if (data?.status) {
+  //       setAvailableAmount(data?.data?.rest_amount);
+  //       setDescription(data?.data?.description);
+  //       setMaterialCode(data?.data?.matarial_code);
+  //       setUnit(data?.data?.unit);
+  //     }
+  //   } catch (error) {
+  //     console.error("Error fetching WDC list:", error);
+  //   }
+  // };
+
   const getAvailableAmount = async (item) => {
     try {
-      const data = await apiCallBack(
+      const res = await apiCallBack(
         "GET",
         `po/demandeManagement/getRestAmount?po_no=${id}&line_item_no=${item}`,
         null,
         token
       );
-      if (data?.status) {
-        setAvailableAmount(data?.data?.rest_amount);
-        setDescription(data?.data?.description);
-        setMaterialCode(data?.data?.matarial_code);
-        setUnit(data?.data?.unit);
+      if (res?.status) {
+        return {
+          description: res?.data?.description,
+          rest_amount: res?.data?.rest_amount,
+          unit: res?.data?.unit,
+          matarial_code: res?.data?.matarial_code,
+        };
       }
     } catch (error) {
       console.error("Error fetching WDC list:", error);
+      return null;
     }
   };
 
@@ -265,6 +292,79 @@ const DemandManagement = () => {
     }
   };
 
+  const handleFieldChange = async (index, fieldName, value) => {
+    const updatedFields = [...dynamicFields];
+    updatedFields[index][fieldName] = value;
+
+    // Fetch and update Description, Open PO Qty, and UOM when Line Item No changes
+    if (fieldName === "line_item_no") {
+      const lineItemNo = value;
+      // Fetch corresponding data for the selected Line Item No
+      let getRestData = await getAvailableAmount(lineItemNo);
+      // Update the corresponding fields in the state
+      updatedFields[index].description = getRestData?.description;
+      updatedFields[index].rest_amount = getRestData?.rest_amount;
+      updatedFields[index].unit = getRestData?.unit;
+      updatedFields[index].matarial_code = getRestData?.matarial_code;
+
+      // Update the state with the modified dynamic fields
+      setDynamicFields(updatedFields);
+    } else {
+      // Update the state with the modified dynamic fields
+      setDynamicFields(updatedFields);
+    }
+  };
+
+  const submitHandler = async (flag) => {
+    try {
+      const formDataCopy = { ...formData };
+
+      if (formDataCopy.action_type.trim() === "") {
+        return toast.warn("Action Type is required!");
+      }
+
+      if (parseInt(formDataCopy.request_amount) > parseInt(availableAmount)) {
+        return toast.warn(
+          "Demand quantity should be less than or equal to available quantity!"
+        );
+      }
+      formDataCopy.demand = dynamicFields;
+      const formObj = {
+        purchasing_doc_no: id,
+        demand: formDataCopy.demand,
+        delivery_date: convertToEpoch(formDataCopy.delivery_date),
+        status: flag,
+        action_type: formDataCopy.action_type,
+        remarks: formDataCopy.remarks,
+      };
+
+      const response = await apiCallBack(
+        "POST",
+        "po/demandeManagement/insert",
+        formObj,
+        token
+      );
+
+      if (response?.status) {
+        toast.success(response?.message);
+        setIsPopup(false);
+        setFormData({
+          action_type: "",
+          remarks: "",
+          line_item_no: "",
+          request_amount: "",
+          delivery_date: "",
+          demand: [{ line_item_no: "", request_amount: "" }],
+        });
+        getData();
+      } else {
+        toast.error(response?.message);
+      }
+    } catch (error) {
+      console.error("Error uploading:", error);
+    }
+  };
+
   return (
     <>
       <div className="d-flex flex-column flex-root">
@@ -373,10 +473,9 @@ const DemandManagement = () => {
                                                 ).toLocaleDateString()} */}
                                               {/* {item?.delivery_date &&
                                                 formatDate(item?.delivery_date)} */}
+
                                               {item.delivery_date &&
-                                                new Date(
-                                                  item.delivery_date * 1000
-                                                ).toLocaleDateString("en-GB")}
+                                                formatDate(item.delivery_date)}
                                             </td>
                                             <td>{item.remarks}</td>
                                             <td
@@ -423,13 +522,19 @@ const DemandManagement = () => {
       </div>
       {user?.department_id === USER_PPNC_DEPARTMENT && (
         <>
-          <div className={isPopup ? "popup active" : "popup"}>
+          <div className={isPopup ? "popup popup_lg active" : "popup popup_lg"}>
             <div className="card card-xxl-stretch mb-5 mb-xxl-8">
               <div className="card-header border-0 pt-5 pb-3">
                 <h3 className="card-title align-items-start flex-column">
                   <span className="card-label fw-bold fs-3 mb-1">
                     Take Your Action{" "}
-                    {viewData?.reference_no && `for ${viewData?.reference_no}`}
+                    {formData?.action_type === "Material Requirement"
+                      ? "( Material Requirement)"
+                      : formData?.action_type === "Service Engineer Requirement"
+                      ? "( Service Engineer Requirement)"
+                      : formData?.action_type === "Others"
+                      ? "( Others )"
+                      : ""}
                   </span>
                 </h3>
                 <button
@@ -440,8 +545,8 @@ const DemandManagement = () => {
                 </button>
               </div>
               <form>
-                <div className="row align-items-center">
-                  <div className="col-12">
+                <div className="row">
+                  <div className="col-6">
                     <div className="mb-3">
                       <label className="form-label">
                         Action Type <span className="red">*</span>{" "}
@@ -469,166 +574,87 @@ const DemandManagement = () => {
                       </select>
                     </div>
                   </div>
-                  <div className="col-12 col-md-2">
-                    <div className="mb-3">
-                      <label className="form-label">
-                        PO Line Item <span className="red">*</span>{" "}
-                      </label>
-                      <select
-                        name=""
-                        id=""
-                        className="form-select"
-                        value={formData?.line_item_no}
-                        onChange={(e) =>
-                          setFormData({
-                            ...formData,
-                            line_item_no: e.target.value,
-                          })
-                        }
-                      >
-                        <option value="">Choose PO Line Item</option>
-                        {checkTypeArr(lineItemData) &&
-                          lineItemData.map((item, i) => {
-                            return (
-                              <option
-                                value={item?.material_item_number}
-                                key={i}
-                              >
-                                {item?.material_item_number}
-                              </option>
-                            );
-                          })}
-                      </select>
-                    </div>
-                  </div>
-                  {formData?.action_type !== "Service Engineer Requirement" && (
+                  {formData?.action_type === "Material Requirement" && (
                     <>
-                      <div className="col-12 col-md-2">
-                        <div className="mb-3">
-                          <label className="form-label">Available</label>
-                          <p>
-                            {availableAmount}
-                            {unit}
-                          </p>
-                        </div>
-                      </div>
-                      <div className="col-12 col-md-2">
-                        <div className="mb-3">
-                          <label className="form-label">Description</label>
-                          <p>{description}</p>
-                        </div>
-                      </div>
-                      <div className="col-12 col-md-2">
-                        <div className="mb-3">
-                          <label className="form-label">Material Code</label>
-
-                          <p>{materialCode}</p>
-                        </div>
-                      </div>
-                      <div className="col-12 col-md-2">
-                        <div className="mb-3">
-                          <label className="form-label">
-                            Demand Quantity <span className="red">*</span>{" "}
-                          </label>
-                          <input
-                            type="number"
-                            className="form-control"
-                            value={formData?.request_amount}
-                            onChange={(e) =>
-                              setFormData({
-                                ...formData,
-                                request_amount: e.target.value,
-                              })
-                            }
-                          />
-                        </div>
-                      </div>
-                    </>
-                  )}
-                  <div className="col-md-2 flex_center">
-                    <FaPlus onClick={addNewField} />
-                  </div>
-
-                  {dynamicFields.map((field, index) => (
-                    <Fragment key={index}>
-                      <div className="col-12 col-md-2">
-                        <div className="mb-3">
-                          <select
-                            name={`line_item_${index}`}
-                            id={`line_item_${index}`}
-                            className="form-select"
-                            value={field.line_item_no}
-                            onChange={(e) => {
-                              const updatedFields = [...dynamicFields];
-                              updatedFields[index].line_item_no =
-                                e.target.value;
-                              setDynamicFields(updatedFields);
-                              setDynamicValues(index, e.target.value); // Fetch and set dynamic values
-                            }}
-                          >
-                            <option value="">Choose PO Line Item</option>
-                            {checkTypeArr(lineItemData) &&
-                              lineItemData.map((item, i) => (
-                                <option
-                                  value={item?.material_item_number}
-                                  key={i}
-                                >
-                                  {item?.material_item_number}
-                                </option>
-                              ))}
-                          </select>
-                        </div>
-                      </div>
-                      {formData?.action_type !==
-                        "Service Engineer Requirement" && (
-                        <>
-                          <div className="col-12 col-md-2">
-                            <div className="mb-3">
-                              <p>
-                                {field.availableAmount !== null
-                                  ? `${field.availableAmount} ${field.unit}`
-                                  : "N/A"}{" "}
-                                {/* Display N/A if availableAmount is null */}
-                                {field.unit}
-                              </p>
-                            </div>
-                          </div>
-                          <div className="col-12 col-md-2">
-                            <div className="mb-3">
-                              <p>{field.description}</p>
-                            </div>
-                          </div>
-                          <div className="col-12 col-md-2">
-                            <div className="mb-3">
-                              <p>{field.materialCode}</p>
-                            </div>
-                          </div>
-
-                          <div className="col-12 col-md-2">
-                            <div className="mb-3">
-                              <input
-                                type="number"
-                                className="form-control"
-                                value={field.request_amount}
-                                onChange={(e) => {
-                                  const updatedFields = [...dynamicFields];
-                                  updatedFields[index].request_amount =
-                                    e.target.value;
-                                  setDynamicFields(updatedFields);
-                                }}
-                              />
-                            </div>
-                          </div>
-                        </>
-                      )}
-                      <div className="col-md-2 flex_center">
-                        <FaPlus onClick={addNewField} />
-                        {/* <FaMinus /> */}
-                      </div>
-                    </Fragment>
-                  ))}
-                  {formData?.action_type !== "Service Engineer Requirement" && (
-                    <>
+                      <table className="table table-bordered table-striped">
+                        <thead>
+                          <tr>
+                            <th>PO LineItem</th>
+                            <th>Description</th>
+                            <th>Available</th>
+                            <th>Material Code</th>
+                            <th>Demand Quantity *</th>
+                            <th>Action</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {dynamicFields.map((field, index) => (
+                            <Fragment key={index}>
+                              <tr>
+                                <td>
+                                  <select
+                                    className="form-select"
+                                    value={field.line_item_no}
+                                    onChange={(e) =>
+                                      handleFieldChange(
+                                        index,
+                                        "line_item_no",
+                                        e.target.value
+                                      )
+                                    }
+                                  >
+                                    <option value="">
+                                      Choose PO Line Item
+                                    </option>
+                                    {lineItemData.map((item, i) => (
+                                      <option
+                                        value={item?.material_item_number}
+                                        key={i}
+                                      >
+                                        {item?.material_item_number}
+                                      </option>
+                                    ))}
+                                  </select>
+                                </td>
+                                <td>{field.description}</td>
+                                <td>
+                                  {field.rest_amount} {field.unit}
+                                </td>
+                                <td>{field.matarial_code}</td>
+                                <td>
+                                  <input
+                                    type="number"
+                                    className="form-control"
+                                    value={field.request_amount}
+                                    onChange={(e) =>
+                                      handleFieldChange(
+                                        index,
+                                        "request_amount",
+                                        e.target.value
+                                      )
+                                    }
+                                  />
+                                </td>
+                                <td>
+                                  {index === dynamicFields.length - 1 && (
+                                    <FaPlus
+                                      onClick={() =>
+                                        setDynamicFields([
+                                          ...dynamicFields,
+                                          {
+                                            line_item_no: "",
+                                            request_amount: "",
+                                          },
+                                        ])
+                                      }
+                                    />
+                                  )}
+                                </td>
+                              </tr>
+                            </Fragment>
+                          ))}
+                        </tbody>
+                      </table>
                       <div className="col-12 col-md-6">
                         <div className="mb-3">
                           <label className="form-label">
@@ -648,40 +674,299 @@ const DemandManagement = () => {
                           />
                         </div>
                       </div>
+                      <div className="col-12 col-md-6">
+                        <div className="mb-3">
+                          <label className="form-label">
+                            Remarks <span className="red">*</span>{" "}
+                          </label>
+                          <textarea
+                            rows="4"
+                            className="form-control"
+                            value={formData?.remarks}
+                            onChange={(e) =>
+                              setFormData({
+                                ...formData,
+                                remarks: e.target.value,
+                              })
+                            }
+                          ></textarea>
+                        </div>
+                      </div>
+                      <div className="col-12">
+                        <div className="mb-3 d-flex justify-content-between">
+                          <button
+                            onClick={() => submitHandler("SUBMITTED")}
+                            className="btn fw-bold btn-primary"
+                            type="button"
+                          >
+                            SUBMIT
+                          </button>
+                        </div>
+                      </div>
                     </>
                   )}
-                  <div className="col-12">
-                    <div className="mb-3">
-                      <label className="form-label">Remarks</label>&nbsp;&nbsp;
-                      <span className="mandatorystart">*</span>
-                      <textarea
-                        name=""
-                        id=""
-                        rows="4"
-                        className="form-control"
-                        value={formData?.remarks}
-                        onChange={(e) =>
-                          setFormData({ ...formData, remarks: e.target.value })
-                        }
-                      ></textarea>
-                    </div>
-                  </div>
-                  <div className="col-12">
-                    <div className="mb-3 d-flex justify-content-between">
-                      <button
-                        onClick={() => actionHandler("SUBMITTED")}
-                        className="btn fw-bold btn-primary"
-                        type="button"
-                      >
-                        SUBMIT
-                      </button>
-                    </div>
-                  </div>
+                  {formData?.action_type === "Service Engineer Requirement" && (
+                    <>
+                      <table className="table table-bordered table-striped">
+                        <thead>
+                          <tr>
+                            <th>PO LineItem</th>
+                            <th>Demand Quantity *</th>
+                            <th>Action</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {dynamicFields.map((field, index) => (
+                            <Fragment key={index}>
+                              <tr>
+                                <td>
+                                  <select
+                                    className="form-select"
+                                    value={field.line_item_no}
+                                    onChange={(e) =>
+                                      handleFieldChange(
+                                        index,
+                                        "line_item_no",
+                                        e.target.value
+                                      )
+                                    }
+                                  >
+                                    <option value="">
+                                      Choose PO Line Item
+                                    </option>
+                                    {lineItemData.map((item, i) => (
+                                      <option
+                                        value={item?.material_item_number}
+                                        key={i}
+                                      >
+                                        {item?.material_item_number}
+                                      </option>
+                                    ))}
+                                  </select>
+                                </td>
+
+                                <td>
+                                  <input
+                                    type="number"
+                                    className="form-control"
+                                    value={field.request_amount}
+                                    onChange={(e) =>
+                                      handleFieldChange(
+                                        index,
+                                        "request_amount",
+                                        e.target.value
+                                      )
+                                    }
+                                  />
+                                </td>
+                                <td>
+                                  {index === dynamicFields.length - 1 && (
+                                    <FaPlus
+                                      onClick={() =>
+                                        setDynamicFields([
+                                          ...dynamicFields,
+                                          {
+                                            line_item_no: "",
+                                            request_amount: "",
+                                          },
+                                        ])
+                                      }
+                                    />
+                                  )}
+                                </td>
+                              </tr>
+                            </Fragment>
+                          ))}
+                        </tbody>
+                      </table>
+                      <div className="col-12 col-md-6">
+                        <div className="mb-3">
+                          <label className="form-label">
+                            Delivery Date <span className="red">*</span>{" "}
+                          </label>
+                          <ReactDatePicker
+                            selected={formData?.delivery_date}
+                            onChange={(date) =>
+                              setFormData({
+                                ...formData,
+                                delivery_date: date,
+                              })
+                            }
+                            dateFormat="dd/MM/yyyy"
+                            className="form-control"
+                            placeholderText="DD/MM/YYYY"
+                          />
+                        </div>
+                      </div>
+                      <div className="col-12 col-md-6">
+                        <div className="mb-3">
+                          <label className="form-label">
+                            Remarks <span className="red">*</span>{" "}
+                          </label>
+                          <textarea
+                            rows="4"
+                            className="form-control"
+                            value={formData?.remarks}
+                            onChange={(e) =>
+                              setFormData({
+                                ...formData,
+                                remarks: e.target.value,
+                              })
+                            }
+                          ></textarea>
+                        </div>
+                      </div>
+                      <div className="col-12">
+                        <div className="mb-3 d-flex justify-content-between">
+                          <button
+                            onClick={() => submitHandler("SUBMITTED")}
+                            className="btn fw-bold btn-primary"
+                            type="button"
+                          >
+                            SUBMIT
+                          </button>
+                        </div>
+                      </div>
+                    </>
+                  )}
+                  {formData?.action_type === "Others" && (
+                    <>
+                      <table className="table table-bordered table-striped">
+                        <thead>
+                          <tr>
+                            <th>PO LineItem</th>
+                            <th>Description</th>
+                            <th>Available</th>
+                            <th>Material Code</th>
+                            <th>Demand Quantity *</th>
+                            <th>Action</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {dynamicFields.map((field, index) => (
+                            <Fragment key={index}>
+                              <tr>
+                                <td>
+                                  <select
+                                    className="form-select"
+                                    value={field.line_item_no}
+                                    onChange={(e) =>
+                                      handleFieldChange(
+                                        index,
+                                        "line_item_no",
+                                        e.target.value
+                                      )
+                                    }
+                                  >
+                                    <option value="">
+                                      Choose PO Line Item
+                                    </option>
+                                    {lineItemData.map((item, i) => (
+                                      <option
+                                        value={item?.material_item_number}
+                                        key={i}
+                                      >
+                                        {item?.material_item_number}
+                                      </option>
+                                    ))}
+                                  </select>
+                                </td>
+                                <td>{field.description}</td>
+                                <td>
+                                  {field.rest_amount} {field.unit}
+                                </td>
+                                <td>{field.matarial_code}</td>
+                                <td>
+                                  <input
+                                    type="number"
+                                    className="form-control"
+                                    value={field.request_amount}
+                                    onChange={(e) =>
+                                      handleFieldChange(
+                                        index,
+                                        "request_amount",
+                                        e.target.value
+                                      )
+                                    }
+                                  />
+                                </td>
+                                <td>
+                                  {index === dynamicFields.length - 1 && (
+                                    <FaPlus
+                                      onClick={() =>
+                                        setDynamicFields([
+                                          ...dynamicFields,
+                                          {
+                                            line_item_no: "",
+                                            request_amount: "",
+                                          },
+                                        ])
+                                      }
+                                    />
+                                  )}
+                                </td>
+                              </tr>
+                            </Fragment>
+                          ))}
+                        </tbody>
+                      </table>
+                      <div className="col-12 col-md-6">
+                        <div className="mb-3">
+                          <label className="form-label">
+                            Delivery Date <span className="red">*</span>{" "}
+                          </label>
+                          <ReactDatePicker
+                            selected={formData?.delivery_date}
+                            onChange={(date) =>
+                              setFormData({
+                                ...formData,
+                                delivery_date: date,
+                              })
+                            }
+                            dateFormat="dd/MM/yyyy"
+                            className="form-control"
+                            placeholderText="DD/MM/YYYY"
+                          />
+                        </div>
+                      </div>
+                      <div className="col-12 col-md-6">
+                        <div className="mb-3">
+                          <label className="form-label">
+                            Remarks <span className="red">*</span>{" "}
+                          </label>
+                          <textarea
+                            rows="4"
+                            className="form-control"
+                            value={formData?.remarks}
+                            onChange={(e) =>
+                              setFormData({
+                                ...formData,
+                                remarks: e.target.value,
+                              })
+                            }
+                          ></textarea>
+                        </div>
+                      </div>
+                      <div className="col-12">
+                        <div className="mb-3 d-flex justify-content-between">
+                          <button
+                            onClick={() => submitHandler("SUBMITTED")}
+                            className="btn fw-bold btn-primary"
+                            type="button"
+                          >
+                            SUBMIT
+                          </button>
+                        </div>
+                      </div>
+                    </>
+                  )}
                 </div>
               </form>
             </div>
           </div>
-          <div className={isSecPopup ? "popup active" : "popup"}>
+
+          {/* ///////////////////////////// */}
+          {/* <div className={isSecPopup ? "popup active" : "popup"}>
             <div className="card card-xxl-stretch mb-5 mb-xxl-8">
               <div className="card-header border-0 pt-5 pb-3">
                 <h3 className="card-title align-items-start flex-column">
@@ -775,7 +1060,7 @@ const DemandManagement = () => {
                 </div>
               </form>
             </div>
-          </div>
+          </div> */}
         </>
       )}
     </>

@@ -110,15 +110,9 @@ const WDCSub = () => {
   const { id } = useParams();
   const { user, token } = useSelector((state) => state.auth);
 
-  // console.log(
-  //   formDataWdc,
-  //   "formDataWdcformDataWdcformDataWdcformDataWdc zzzzzzzzzzzzzzzzzzzzzz"
-  // );
-
   const fileoneInputRef = useRef(null);
   const filetwoInputRef = useRef(null);
   const filethreeInputRef = useRef(null);
-  // console.log(formData, "formDataabhinit");
 
   const getData = async () => {
     try {
@@ -232,7 +226,7 @@ const WDCSub = () => {
           JSON.stringify(formDataCopy.line_item_array)
         );
 
-        console.log("fd", fD);
+        // console.log("fd", fD);
 
         const res = await apiCallBack("POST", "po/wdc/submitWdc", fD, token);
 
@@ -388,10 +382,6 @@ const WDCSub = () => {
 
         fD.append("line_item_array", JSON.stringify(lineItemArray));
         fD.append("total_amount_status", "APPROVED");
-
-        console.log("fd", fD);
-
-        console.log("fd", fD);
 
         const res = await apiCallBack("POST", "po/wdc/submitWdc", fD, token);
 
@@ -648,10 +638,7 @@ const WDCSub = () => {
                                         items.map((item, index) => (
                                           <tr key={index}>
                                             <td>{item?.action_type}</td>
-                                            {console.log(
-                                              item,
-                                              "ccccccccccccccccccccccccc"
-                                            )}
+
                                             <td>
                                               {item?.created_at &&
                                                 formatDate(item?.created_at)}
