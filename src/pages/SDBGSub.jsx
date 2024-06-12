@@ -533,35 +533,33 @@ const SDBGSub = () => {
                                                     )}
                                                   </td>
                                                   <td>
-                                                    {isDO && (
-                                                      <span>
-                                                        <button
-                                                          onClick={() => {
-                                                            setIsEntryPopup(
-                                                              true
-                                                            );
-
-                                                            setFormDatainput({
-                                                              ...formDatainput,
-                                                              reference_no:
-                                                                item,
-                                                            });
-                                                            SdbgEntryUpdate(
-                                                              item
-                                                            );
-                                                          }}
-                                                          className="btn fw-bold btn-primary btn-sm"
-                                                        >
-                                                          ACTION
-                                                        </button>
-                                                      </span>
-                                                    )}
-                                                    {console.log(
-                                                      "Department ID:",
-                                                      user?.department_id,
-                                                      "Status:",
-                                                      items?.status
-                                                    )}
+                                                    {isDO &&
+                                                      ite.some(
+                                                        (data) =>
+                                                          data.status !==
+                                                          "ASSIGNED"
+                                                      ) && (
+                                                        <span>
+                                                          <button
+                                                            onClick={() => {
+                                                              setIsEntryPopup(
+                                                                true
+                                                              );
+                                                              setFormDatainput({
+                                                                ...formDatainput,
+                                                                reference_no:
+                                                                  item,
+                                                              });
+                                                              SdbgEntryUpdate(
+                                                                item
+                                                              );
+                                                            }}
+                                                            className="btn fw-bold btn-primary btn-sm"
+                                                          >
+                                                            ACTION
+                                                          </button>
+                                                        </span>
+                                                      )}
 
                                                     {ite &&
                                                       ite.some(
