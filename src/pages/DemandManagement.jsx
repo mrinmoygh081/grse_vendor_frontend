@@ -532,8 +532,6 @@ const DemandManagement = () => {
                       ? "( Material Requirement)"
                       : formData?.action_type === "Service Engineer Requirement"
                       ? "( Service Engineer Requirement)"
-                      : formData?.action_type === "Others"
-                      ? "( Others )"
                       : ""}
                   </span>
                 </h3>
@@ -570,7 +568,6 @@ const DemandManagement = () => {
                         <option value="Service Engineer Requirement">
                           Service Engineer Requirement
                         </option>
-                        <option value="Others">Others</option>
                       </select>
                     </div>
                   </div>
@@ -745,137 +742,6 @@ const DemandManagement = () => {
                                   </select>
                                 </td>
 
-                                <td>
-                                  <input
-                                    type="number"
-                                    className="form-control"
-                                    value={field.request_amount}
-                                    onChange={(e) =>
-                                      handleFieldChange(
-                                        index,
-                                        "request_amount",
-                                        e.target.value
-                                      )
-                                    }
-                                  />
-                                </td>
-                                <td>
-                                  {index === dynamicFields.length - 1 && (
-                                    <FaPlus
-                                      onClick={() =>
-                                        setDynamicFields([
-                                          ...dynamicFields,
-                                          {
-                                            line_item_no: "",
-                                            request_amount: "",
-                                          },
-                                        ])
-                                      }
-                                    />
-                                  )}
-                                </td>
-                              </tr>
-                            </Fragment>
-                          ))}
-                        </tbody>
-                      </table>
-                      <div className="col-12 col-md-6">
-                        <div className="mb-3">
-                          <label className="form-label">
-                            Delivery Date <span className="red">*</span>{" "}
-                          </label>
-                          <ReactDatePicker
-                            selected={formData?.delivery_date}
-                            onChange={(date) =>
-                              setFormData({
-                                ...formData,
-                                delivery_date: date,
-                              })
-                            }
-                            dateFormat="dd/MM/yyyy"
-                            className="form-control"
-                            placeholderText="DD/MM/YYYY"
-                          />
-                        </div>
-                      </div>
-                      <div className="col-12 col-md-6">
-                        <div className="mb-3">
-                          <label className="form-label">
-                            Remarks <span className="red">*</span>{" "}
-                          </label>
-                          <textarea
-                            rows="4"
-                            className="form-control"
-                            value={formData?.remarks}
-                            onChange={(e) =>
-                              setFormData({
-                                ...formData,
-                                remarks: e.target.value,
-                              })
-                            }
-                          ></textarea>
-                        </div>
-                      </div>
-                      <div className="col-12">
-                        <div className="mb-3 d-flex justify-content-between">
-                          <button
-                            onClick={() => submitHandler("SUBMITTED")}
-                            className="btn fw-bold btn-primary"
-                            type="button"
-                          >
-                            SUBMIT
-                          </button>
-                        </div>
-                      </div>
-                    </>
-                  )}
-                  {formData?.action_type === "Others" && (
-                    <>
-                      <table className="table table-bordered table-striped">
-                        <thead>
-                          <tr>
-                            <th>PO LineItem</th>
-                            <th>Description</th>
-                            <th>Available</th>
-                            <th>Material Code</th>
-                            <th>Demand Quantity *</th>
-                            <th>Action</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {dynamicFields.map((field, index) => (
-                            <Fragment key={index}>
-                              <tr>
-                                <td>
-                                  <select
-                                    className="form-select"
-                                    value={field.line_item_no}
-                                    onChange={(e) =>
-                                      handleFieldChange(
-                                        index,
-                                        "line_item_no",
-                                        e.target.value
-                                      )
-                                    }
-                                  >
-                                    <option value="">
-                                      Choose PO Line Item
-                                    </option>
-                                    {lineItemData.map((item, i) => (
-                                      <option
-                                        value={item?.material_item_number}
-                                        key={i}
-                                      >
-                                        {item?.material_item_number}
-                                      </option>
-                                    ))}
-                                  </select>
-                                </td>
-                                <td>{field.description}</td>
-                                <td>
-                                  {field.rest_amount} {field.unit}
-                                </td>
-                                <td>{field.matarial_code}</td>
                                 <td>
                                   <input
                                     type="number"

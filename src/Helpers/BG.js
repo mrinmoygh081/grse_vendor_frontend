@@ -46,6 +46,9 @@ export const bgInputs = {
 };
 
 export const BGEntry = async (formDatainput, token) => {
+  const convertToEpochh = (date) => {
+    return Math.floor(new Date(date).getTime() / 1000);
+  };
   const {
     purchasing_doc_no,
     reference_no,
@@ -85,13 +88,15 @@ export const BGEntry = async (formDatainput, token) => {
   let form = {
     ...formDatainput,
     // bg_date: convertToEpoch(bg_date),
-    bg_date: convertToEpoch(new Date(bg_date)),
+    bg_date: convertToEpochh(new Date(formDatainput.bg_date * 1000)),
     // entension_letter_date: convertToEpoch(entension_letter_date),
     // demand_notice_date: convertToEpoch(demand_notice_date),
     // release_date: convertToEpoch(release_date),
     // check_list_date: convertToEpoch(check_list_date),
     // validity_date: convertToEpoch(validity_date),
-    validity_date: convertToEpoch(new Date(validity_date)),
+    validity_date: convertToEpochh(
+      new Date(formDatainput.validity_date * 1000)
+    ),
     // po_date: convertToEpoch(po_date),
     // extension_date1: convertToEpoch(extension_date1),
     // extension_date2: convertToEpoch(extension_date2),
@@ -100,7 +105,7 @@ export const BGEntry = async (formDatainput, token) => {
     // extension_date5: convertToEpoch(extension_date5),
     // extension_date6: convertToEpoch(extension_date6),
     // claim_priod: convertToEpoch(claim_priod),
-    claim_priod: convertToEpoch(new Date(claim_priod)),
+    claim_priod: convertToEpochh(new Date(formDatainput.claim_priod * 1000)),
     reference_no: reference_no,
     status: "FORWARD_TO_FINANCE",
     remarks: "Forwarded to Finance Department",

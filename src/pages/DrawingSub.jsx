@@ -9,6 +9,7 @@ import { toast } from "react-toastify";
 import { reConfirm } from "../utils/reConfirm";
 import { clrLegend } from "../utils/clrLegend";
 import { groupedByRefNo } from "../utils/groupedByReq";
+import { formatDate } from "../utils/getDateTimeNow";
 
 const DrawingSub = () => {
   const [isPopup, setIsPopup] = useState(false);
@@ -23,7 +24,8 @@ const DrawingSub = () => {
   const [selectedActionType, setSelectedActionType] = useState("");
   const { id } = useParams();
   const { user, token, userType } = useSelector((state) => state.auth);
-  // const { poType } = useSelector((state) => state.selectedPO);
+  const { poType } = useSelector((state) => state.selectedPO);
+  console.log(poType, "poTypepoType mmmmmmmmmmmmmmmmmmmmmmm");
   const [referenceNo, setreferenceNo] = useState("");
   // console.log("useruser", user);
   // console.log(poType, "poType");
@@ -141,16 +143,17 @@ const DrawingSub = () => {
                   <div className="row g-5 g-xl-8">
                     <div className="col-12">
                       <div className="screen_header">
-                        {/* {userType === 1 && ( */}
-                        <button
-                          onClick={() => {
-                            setIsPopup(true);
-                          }}
-                          className="btn fw-bold btn-primary mx-3"
-                        >
-                          ACTION
-                        </button>
-                        {/* )} */}
+                        {(userType !== 1 || poType === "service") &&
+                          poType === "service" && (
+                            <button
+                              onClick={() => {
+                                setIsPopup(true);
+                              }}
+                              className="btn fw-bold btn-primary mx-3"
+                            >
+                              ACTION
+                            </button>
+                          )}
                       </div>
                     </div>
                     <div className="col-12">
@@ -166,7 +169,8 @@ const DrawingSub = () => {
                                   <th>Action By</th>
                                   <th className="min-w-150px">Remarks</th>
                                   <th>Status</th>
-                                  {user.department_id === 2 && <th>Action</th>}
+                                  {user.department_id === 2 &&
+                                    poType !== "service" && <th>Action</th>}
                                 </tr>
                               </thead>
                               <tbody style={{ maxHeight: "100%" }}>
@@ -186,10 +190,11 @@ const DrawingSub = () => {
                                               {item.reference_no}
                                             </td> */}
                                             <td className="table_center">
-                                              {item?.created_at &&
+                                              {/* {item?.created_at &&
                                                 new Date(
                                                   item?.created_at
-                                                ).toLocaleString()}
+                                                ).toLocaleString()} */}
+                                              {formatDate(item?.created_at)}
                                             </td>
                                             <td className="table_center">
                                               {item.file_name && (
@@ -215,24 +220,25 @@ const DrawingSub = () => {
                                             >
                                               {item.status}
                                             </td>
-                                            {user.department_id === 2 && (
-                                              <td>
-                                                {item.status ===
-                                                  "SUBMITTED" && (
-                                                  <button
-                                                    onClick={() => {
-                                                      setIsPopup(true);
-                                                      setreferenceNo(
-                                                        item.reference_no
-                                                      );
-                                                    }}
-                                                    className="btn fw-bold btn-primary mx-3"
-                                                  >
-                                                    ACTION
-                                                  </button>
-                                                )}
-                                              </td>
-                                            )}
+                                            {user.department_id === 2 &&
+                                              poType !== "service" && (
+                                                <td>
+                                                  {item.status ===
+                                                    "SUBMITTED" && (
+                                                    <button
+                                                      onClick={() => {
+                                                        setIsPopup(true);
+                                                        setreferenceNo(
+                                                          item.reference_no
+                                                        );
+                                                      }}
+                                                      className="btn fw-bold btn-primary mx-3"
+                                                    >
+                                                      ACTION
+                                                    </button>
+                                                  )}
+                                                </td>
+                                              )}
                                           </tr>
                                         ))}
                                     </Fragment>

@@ -754,7 +754,12 @@ const WDCSub = () => {
               <h3 className="card-title align-items-start flex-column">
                 <span className="card-label fw-bold fs-3 mb-1">
                   Take Your Action{" "}
-                  {formData?.action_type === "WDC" ? "(WDC)" : "(JCC)"}
+                  {formData?.action_type === "WDC"
+                    ? "( WDC)"
+                    : formData?.action_type === "JCC"
+                    ? "( JCC)"
+                    : ""}
+                  {/* {formData?.action_type === "WDC" ? "(WDC)" : "(JCC)"} */}
                 </span>
               </h3>
               <button

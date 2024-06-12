@@ -58,11 +58,8 @@ const MainHeader = ({ title }) => {
             {user?.user_type !== 1 && (
               <>
                 <li className="nav-item">
-                  <Link
-                    className="nav-link text-black"
-                    to={`/finance-dashboard`}
-                  >
-                    FINANCE DASHBOARD
+                  <Link className="nav-link text-black" to={`/dashboard/bg`}>
+                    DASHBOARD
                   </Link>
                 </li>
               </>

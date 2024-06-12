@@ -39,6 +39,7 @@ export const actionHandlerBTN = async (
       total_price,
       total_icgrn_value,
       hsn_gstn_icgrn,
+      agree_to_declaration,
       ld_gate_entry_date,
       ld_contractual_date,
       c_sdbg_filename,
@@ -48,6 +49,10 @@ export const actionHandlerBTN = async (
     } = form;
     console.log("associated_po1", associated_po);
 
+    if (!agree_to_declaration) {
+      toast.warning("Please check the  I Agree To Declaration!");
+      return;
+    }
     if (!hsn_gstn_icgrn) {
       toast.warning("Please check the HSN code, GSTIN, Tax rate is as per PO!");
       return;
@@ -80,6 +85,7 @@ export const actionHandlerBTN = async (
     fDToSend.append("total_icgrn_value", total_icgrn_value);
     fDToSend.append("total_price", total_price);
     fDToSend.append("hsn_gstn_icgrn", hsn_gstn_icgrn);
+    fDToSend.append("agree_to_declaration", agree_to_declaration);
     fDToSend.append("associated_po", associated_po);
     if (invoice_filename) {
       fDToSend.append("invoice_filename", invoice_filename);

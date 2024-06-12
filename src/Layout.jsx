@@ -59,7 +59,6 @@
 // import HybridServicePOBillsView from "./pages/checklists/HybridServicePOBillsView";
 // import AdvanceBillHybridEdit from "./pages/checklists/AdvanceBillHybridEdit";
 // import AdvanceBillHybridView from "./pages/checklists/AdvanceBillHybridView";
-// import FinanceDashboard from "./pages/FinanceDashboard";
 // import BGfinance from "./pages/BGfinance";
 // import BTNfinance from "./pages/BTNfinance";
 
@@ -201,15 +200,8 @@
 //             />
 //             <Route exact path="/pbg-upload/:id" element={<PBGuploadSub />} />
 //             <Route exact path="/bg-extension" element={<BGExtensionSub />} />
-//             {/* <Route
-//               exact
-//               path="/finance-dashboard"
-//               element={<FinanceDashboard />}
-//             /> */}
-//             <Route path="/finance-dashboard/*" element={<FinanceDashboard />}>
 //               <Route path="bg" element={<BGfinance />} />
 //               <Route path="btn" element={<BTNfinance />} />
-//             </Route>
 
 //             <Route
 //               exact
@@ -342,7 +334,6 @@ import HybridServicePOBillsEdit from "./pages/checklists/HybridServicePOBillsEdi
 import HybridServicePOBillsView from "./pages/checklists/HybridServicePOBillsView";
 import AdvanceBillHybridEdit from "./pages/checklists/AdvanceBillHybridEdit";
 import AdvanceBillHybridView from "./pages/checklists/AdvanceBillHybridView";
-import FinanceDashboard from "./pages/FinanceDashboard";
 import BGfinance from "./pages/BGfinance";
 import BTNfinance from "./pages/BTNfinance";
 
@@ -449,10 +440,8 @@ function Layout() {
           <Route path="/payment-advise/:id" element={<PaymentAdvisesSub />} />
           <Route path="/pbg-upload/:id" element={<PBGuploadSub />} />
           <Route path="/bg-extension" element={<BGExtensionSub />} />
-          <Route path="/finance-dashboard" element={<FinanceDashboard />}>
-            <Route path="bg" element={<BGfinance />} />
-            <Route path="btn" element={<BTNfinance />} />
-          </Route>
+          <Route path="/dashboard/bg" element={<BGfinance />} />
+          <Route path="/dashboard/btn" element={<BTNfinance />} />
           <Route path="/claim-letter/:id" element={<ClaimLatterSub />} />
           <Route path="/checklistedit/:id" element={<ChecklistSubEdit />} />
           <Route path="/wdc/:id" element={<WDCSub />} />

@@ -1,3 +1,4 @@
+// src/pages/POs.js
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
@@ -9,6 +10,7 @@ import { logOutFun } from "../utils/logOutFun";
 import { logoutHandler } from "../redux/slices/loginSlice";
 import "jspdf-autotable";
 import * as XLSX from "xlsx";
+import UniqueLoader from "../components/UniqueLoader";
 
 const POs = () => {
   const dispatch = useDispatch();
@@ -18,6 +20,7 @@ const POs = () => {
   const { po } = useSelector((state) => state.selectedPO);
   const navigate = useNavigate();
   const [selectedStatus, setSelectedStatus] = useState("All");
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     (async () => {
@@ -27,6 +30,7 @@ const POs = () => {
       } else if (data?.response?.data?.message === "INVALID_EXPIRED_TOKEN") {
         logOutFun(dispatch, logoutHandler, poRemoveHandler);
       }
+      setLoading(false); // Set loading to false after data is fetched
     })();
   }, [token]);
 
@@ -36,7 +40,6 @@ const POs = () => {
     }
   }, [po, navigate]);
 
-  // Filter the polist based on the searchQuery
   const filteredPolist = polist.filter((po) => {
     const matchesSearchQuery =
       (po?.poNumber &&
@@ -97,13 +100,7 @@ const POs = () => {
 
   return (
     <>
-      {/* {user.department_name !== "PPC" && ( */}
       <MainHeader title={"Welcome to OBPS Portal"} />
-      {/* )} */}
-      {/* {user.department_name !== "PPC" ? ( */}
-      {/* // <div className="container">
-        //   <div className="row justify-content-center">
-        //     <div className="col-md-8 col-12"> */}
       <div className="w-99 m-auto">
         <div className="card">
           <div className="searchfun">
@@ -181,9 +178,17 @@ const POs = () => {
                 </tr>
               </thead>
               <tbody>
-                {filteredPolist && filteredPolist.length === 0 ? (
+                {loading ? (
                   <tr>
-                    <td colSpan="7">No data found</td>
+                    <td colSpan="6">
+                      <div className="py-5">
+                        <UniqueLoader />
+                      </div>
+                    </td>
+                  </tr>
+                ) : filteredPolist.length === 0 ? (
+                  <tr>
+                    <td colSpan="6">No data found</td>
                   </tr>
                 ) : (
                   filteredPolist.map((po, index) => (
@@ -194,11 +199,6 @@ const POs = () => {
                           onClick={() => dispatch(poHandler(po))}
                         >
                           <u>{po?.poNumber}</u> |{" "}
-                          {/* {po?.poType === "material"
-                            ? "Hybrid"
-                            : po?.poType === "service"
-                            ? "Service"
-                            : ""}{" "} */}
                           <span style={{ textTransform: "capitalize" }}>
                             {po?.poType}
                           </span>
@@ -216,7 +216,6 @@ const POs = () => {
                         </button>
                       </td>
                       <td>
-                        {/* SD Date:{" "} */}
                         {po?.SD?.SdContractualSubmissionDate
                           ? new Date(
                               po.SD.SdContractualSubmissionDate
@@ -231,7 +230,6 @@ const POs = () => {
                         | {po?.SD?.SdLastStatus || "--"}
                       </td>
                       <td>
-                        {/* Drawing Date:{" "} */}
                         {po?.Drawing?.DrawingContractualSubmissionDate
                           ? new Date(
                               po.Drawing.DrawingContractualSubmissionDate
@@ -246,7 +244,6 @@ const POs = () => {
                         | {po?.Drawing?.DrawingLastStatus || "--"}
                       </td>
                       <td>
-                        {/* QAP Date:{" "} */}
                         {po?.QAP?.qapContractualSubmissionDate
                           ? new Date(
                               po.QAP.qapContractualSubmissionDate
@@ -260,9 +257,7 @@ const POs = () => {
                           : "--"}{" "}
                         | {po?.QAP?.qapLastStatus || "--"}
                       </td>
-
                       <td>
-                        {/* ILMS Date:{" "} */}
                         {po?.ILMS?.ilmsContractualSubmissionDate
                           ? new Date(
                               po.ILMS.ilmsContractualSubmissionDate
@@ -276,7 +271,6 @@ const POs = () => {
                           : "--"}{" "}
                         | {po?.ILMS?.ilmsLastStatus || "--"}
                       </td>
-
                       <td>{po?.currentStage?.current}</td>
                     </tr>
                   ))
@@ -286,12 +280,6 @@ const POs = () => {
           </div>
         </div>
       </div>
-      {/* ) : ( */}
-      {/* //     </div>
-        //   </div>
-        // </div>
-        <WBS />
-      )} */}
     </>
   );
 };

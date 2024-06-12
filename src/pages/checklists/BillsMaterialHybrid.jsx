@@ -44,12 +44,14 @@ const BillsMaterialHybrid = () => {
     get_entry_filename: "",
     total_icgrn_value: "",
     hsn_gstn_icgrn: false,
+    agree_to_declaration: false,
     ld_gate_entry_date: "",
     ld_contractual_date: "",
     c_sdbg_filename: "",
     demand_raise_filename: "",
     pbg_filename: "",
     grn_nos: "",
+    yard_no: "",
     icgrn_nos: "",
     associated_po: [
       {
@@ -175,6 +177,13 @@ const BillsMaterialHybrid = () => {
                                           className="form-control"
                                           onWheel={inputOnWheelPrevent}
                                           name="yard_no"
+                                          value={form?.yard_no}
+                                          onChange={(e) =>
+                                            setForm({
+                                              ...form,
+                                              yard_no: e.target.value,
+                                            })
+                                          }
                                         />
                                       </td>
                                     </tr>
@@ -191,6 +200,11 @@ const BillsMaterialHybrid = () => {
                                           <option value="3"> 3</option>
                                           <option value="4"> 4</option>
                                           <option value="5"> 5</option>
+                                          <option value="6"> 6</option>
+                                          <option value="7"> 7</option>
+                                          <option value="8"> 8</option>
+                                          <option value="9"> 9</option>
+                                          <option value="10"> 10</option>
                                         </select>
                                       </td>
                                     </tr>
@@ -597,6 +611,32 @@ const BillsMaterialHybrid = () => {
                                               }
                                             )
                                           : "PBG NOT SUBMITTED"}
+                                      </td>
+                                    </tr>
+                                    <tr>
+                                      <td colSpan="2">
+                                        <div className="form-check">
+                                          <input
+                                            type="checkbox"
+                                            className="form-check-input"
+                                            id="agree_to_declaration"
+                                            name="agree_to_declaration"
+                                            value={form?.agree_to_declaration}
+                                            onClick={(e) =>
+                                              setForm({
+                                                ...form,
+                                                agree_to_declaration:
+                                                  e.target.checked,
+                                              })
+                                            }
+                                          />
+                                          <label
+                                            className="form-check-label"
+                                            htmlFor="agree_to_declaration"
+                                          >
+                                            I Agree To Declaration
+                                          </label>
+                                        </div>
                                       </td>
                                     </tr>
                                     <tr>

@@ -391,6 +391,9 @@ const QAPSub = () => {
                               <tbody style={{ maxHeight: "100%" }}>
                                 {Object.keys(groupedData).map((it, index) => {
                                   let items = groupedData[it];
+                                  const allApproved = items.every(
+                                    (item) => item.status === "ASSIGNED"
+                                  );
                                   return (
                                     <Fragment key={index}>
                                       <tr>
@@ -399,22 +402,23 @@ const QAPSub = () => {
                                         </td>
                                         <td>
                                           {(userType === 1 ||
-                                            user?.department_id === 3) && (
-                                            <td className="border-0">
-                                              <button
-                                                onClick={() => {
-                                                  setIsPopup(true);
-                                                  setFormData({
-                                                    ...formData,
-                                                    reference_no: it,
-                                                  });
-                                                }}
-                                                className="btn fw-bold btn-sm btn-primary me-3"
-                                              >
-                                                ACTION
-                                              </button>
-                                            </td>
-                                          )}
+                                            user?.department_id === 3) &&
+                                            !allApproved && (
+                                              <td className="border-0">
+                                                <button
+                                                  onClick={() => {
+                                                    setIsPopup(true);
+                                                    setFormData({
+                                                      ...formData,
+                                                      reference_no: it,
+                                                    });
+                                                  }}
+                                                  className="btn fw-bold btn-sm btn-primary me-3"
+                                                >
+                                                  ACTION
+                                                </button>
+                                              </td>
+                                            )}
                                         </td>
                                       </tr>
                                       {items &&
@@ -423,6 +427,10 @@ const QAPSub = () => {
                                             {/* <td className="table_centerr">
                                               {qap.reference_no}
                                             </td> */}
+                                            {console.log(
+                                              items,
+                                              "........................................."
+                                            )}
                                             <td className="table_center">
                                               {qap?.created_at &&
                                                 new Date(

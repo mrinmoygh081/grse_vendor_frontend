@@ -63,6 +63,12 @@ export const formatDate = (epochTime) => {
   return day + "/" + month + "/" + year;
 };
 
+// export const manageFormatDate = (timestamp) => {
+//   if (!timestamp || timestamp === "0") return "N/A";
+//   const date = new Date(Number(timestamp) * 1000);
+//   return date.toLocaleDateString("en-US");
+// };
+
 export const calDatesDiff = (date1, date2) => {
   let differenceInTime = date1.getTime() - date2.getTime();
 

@@ -54,6 +54,7 @@ const SDBGSub = () => {
   const { user, token, userType } = useSelector((state) => state.auth);
   const { isDO } = useSelector((state) => state.selectedPO);
   const [empOption, setEmpOption] = useState([]);
+  const [currentAssign, setCurrentAssign] = useState([]);
   const [assign, setAssign] = useState({
     purchasing_doc_no: id,
     assigned_from: user?.vendor_code,
@@ -61,9 +62,13 @@ const SDBGSub = () => {
     remarks: "Assigned to Finance Employee",
     status: "ASSIGNED",
   });
+
   const convertToEpochh = (date) => {
-    console.log("Dateabhinit:", date);
-    return date instanceof Date ? Math.floor(date.getTime() / 1000) : null;
+    return Math.floor(new Date(date).getTime() / 1000);
+  };
+
+  const parseDateFromEpoch = (epoch) => {
+    return epoch ? new Date(epoch * 1000) : null;
   };
 
   const getSDBG = async () => {
@@ -80,7 +85,22 @@ const SDBGSub = () => {
     }
   };
 
+  const getAssign = async () => {
+    const data = await apiCallBack(
+      "GET",
+      `po/sdbg/getCurrentAssignee?poNo=${id}`,
+      null,
+      token
+    );
+    if (data?.status) {
+      setCurrentAssign(data?.data);
+    } else if (data?.response?.data?.message === "INVALID_EXPIRED_TOKEN") {
+      logOutFun(dispatch, logoutHandler, poRemoveHandler);
+    }
+  };
+
   const getSDBGEntry = async (refNo) => {
+    console.log("LEE", refNo, id);
     const data = await apiCallBack(
       "GET",
       `po/sdbg/getSdbgEntry?poNo=${id}&reference_no=${refNo}`,
@@ -106,7 +126,7 @@ const SDBGSub = () => {
         res.data.map((item, index) => {
           return {
             value: item.emp_id,
-            label: `${item.CNAME} (${item.emp_id})`,
+            label: `${item.cname} (${item.emp_id})`,
           };
         });
       setEmpOption(options);
@@ -122,10 +142,15 @@ const SDBGSub = () => {
   };
 
   useEffect(() => {
-    getSDBG();
     if (user?.user_type !== 1) {
       getEmpList();
+      getSDBG();
     }
+  }, []);
+
+  useEffect(() => {
+    getAssign();
+    getSDBG();
   }, []);
 
   useEffect(() => {
@@ -219,7 +244,10 @@ const SDBGSub = () => {
       if (res?.status) {
         setIsAssignPopup(false);
         toast.success(`Successfully assigned to ${assign?.assigned_to}`);
+        getAssign();
         getSDBG();
+      } else {
+        toast.warn(res?.message);
       }
     } else {
       toast.warn("Please choose an employee to Assign!");
@@ -235,6 +263,8 @@ const SDBGSub = () => {
     } else if (flag === "RETURN_TO_DO") {
       remarks = "SDBG Entry returned to dealing officer for correction";
     } else if (flag === "REJECTED") {
+      remarks = "Rejected by Finance Officer";
+    } else if (flag === "HOLD") {
       remarks = "Rejected by Finance Officer";
     }
 
@@ -275,9 +305,10 @@ const SDBGSub = () => {
       payload,
       token
     );
-    console.log("TES", data?.data);
+
     if (data?.status && checkTypeArr(data?.data)) {
       setFormDatainput(data?.data[data?.data.length - 1]);
+      setSdbgEntry(data?.data[data?.data.length - 1]);
       console.log(data?.message);
       setIsLoading(false);
     } else {
@@ -285,8 +316,6 @@ const SDBGSub = () => {
       toast.warn(data?.message);
     }
   };
-
-  console.log(formDatainput, "formDatainputformDatainput");
 
   useEffect(() => {
     if (allsdbg && allsdbg.length > 0) {
@@ -297,7 +326,7 @@ const SDBGSub = () => {
 
   const handleDownloadPDF = () => {
     // Generate PDF
-    const pdf = generatePDFFromSDBGEntry(sdbgEntry);
+    const pdf = generatePDFFromSDBGEntry(formDatainput);
 
     // Trigger download
     pdf.save(`sdbg_entry_${id}.pdf`);
@@ -432,12 +461,9 @@ const SDBGSub = () => {
                               user?.internal_role_id === 1 && (
                                 <>
                                   <p className="m-0 p-2">
-                                    {!allsdbg[allsdbg?.length - 1]?.assigned_to
+                                    {!currentAssign?.assigned_to
                                       ? "(Not Assigned!)"
-                                      : `Assigned to ${
-                                          allsdbg[allsdbg?.length - 1]
-                                            ?.assigned_to
-                                        }`}
+                                      : `Assigned to ${currentAssign.assigned_to}`}
                                   </p>
                                   <button
                                     onClick={() => setIsAssignPopup(true)}
@@ -510,7 +536,7 @@ const SDBGSub = () => {
                                                             setIsEntryPopup(
                                                               true
                                                             );
-                                                            console.log(items);
+
                                                             setFormDatainput({
                                                               ...formDatainput,
                                                               reference_no:
@@ -525,6 +551,20 @@ const SDBGSub = () => {
                                                           ACTION
                                                         </button>
                                                       </span>
+                                                    )}
+                                                    {user?.department_id ===
+                                                      15 && (
+                                                      <button
+                                                        onClick={() => {
+                                                          setIsCheckEntryPopup(
+                                                            true
+                                                          );
+                                                          SdbgEntryUpdate(item);
+                                                        }}
+                                                        className="btn fw-bold btn-primary me-3"
+                                                      >
+                                                        ACTION
+                                                      </button>
                                                     )}
                                                   </td>
                                                 </tr>
@@ -597,7 +637,7 @@ const SDBGSub = () => {
                                                               </button>
                                                             </>
                                                           )} */}
-                                                        {data?.status ===
+                                                        {/* {data?.status ===
                                                           FORWARD_TO_FINANCE && (
                                                           <>
                                                             {user?.department_id ===
@@ -623,7 +663,7 @@ const SDBGSub = () => {
                                                               </>
                                                             )}
                                                           </>
-                                                        )}
+                                                        )} */}
                                                       </td>
                                                     </tr>
                                                   ))}
@@ -909,13 +949,8 @@ const SDBGSub = () => {
                       className="form-control"
                     /> */}
                     <DatePicker
-                      selected={
-                        formDatainput.bg_date
-                          ? new Date(formDatainput.bg_date * 1000)
-                          : null
-                      }
+                      selected={parseDateFromEpoch(formDatainput.bg_date)}
                       onChange={(date) => {
-                        console.log("Selected BG Date:", date);
                         setFormDatainput((prevData) => ({
                           ...prevData,
                           bg_date: convertToEpochh(date),
@@ -975,10 +1010,9 @@ const SDBGSub = () => {
                           : null
                       }
                       onChange={(date) => {
-                        console.log("Selected Validity Date:", date);
                         setFormDatainput((prevData) => ({
                           ...prevData,
-                          validity_date: convertToEpochh(date),
+                          validity_date: new Date(convertToEpoch(date)),
                         }));
                       }}
                       dateFormat="dd/MM/yyyy"
@@ -1009,10 +1043,9 @@ const SDBGSub = () => {
                           : null
                       }
                       onChange={(date) => {
-                        console.log("Selected Claim Period Date:", date);
                         setFormDatainput((prevData) => ({
                           ...prevData,
-                          claim_priod: convertToEpochh(date),
+                          claim_priod: new Date(convertToEpoch(date)),
                         }));
                       }}
                       dateFormat="dd/MM/yyyy"
@@ -1086,12 +1119,6 @@ const SDBGSub = () => {
                   Check BG Entry
                 </span>
               </h3>
-              {/* <button
-                className="btn fw-bold btn-success btn-sm"
-                onClick={handleDownloadPDF}
-              >
-                Download BG Entry
-              </button> */}
               <button
                 className="btn fw-bold btn-danger"
                 onClick={() => setIsCheckEntryPopup(false)}
@@ -1311,8 +1338,15 @@ const SDBGSub = () => {
                     APPROVED
                   </button>
                   <button
+                    className="btn fw-bold btn-success me-3"
                     type="button"
-                    onClick={() => toast.warn("SAP is not conntected!")}
+                    onClick={() =>
+                      reConfirm(
+                        { file: true },
+                        () => financeEntry("HOLD"),
+                        "You're going to Hold the SDBG Entry. Please confirm!"
+                      )
+                    }
                   >
                     HOLD
                   </button>

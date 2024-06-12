@@ -4,9 +4,9 @@ import { logoutHandler } from "../redux/slices/loginSlice";
 import { Link, Outlet } from "react-router-dom";
 import { poRemoveHandler } from "../redux/slices/poSlice";
 import { reConfirm } from "../utils/reConfirm";
-import { sidebarDataFinanceDashboard } from "../data/sidebarFinanceDashboard";
+import { sidebarDashboardData } from "../data/sidebarDashboard";
 
-const FinanceDashboard = ({ title }) => {
+const SidebarDashboard = ({ title }) => {
   const dispatch = useDispatch();
 
   const logOutFun = () => {
@@ -37,8 +37,8 @@ const FinanceDashboard = ({ title }) => {
           style={{ height: "calc(100vh - 100px)", paddingBottom: "40px" }}
         >
           <div className="menu menu-column menu-title-gray-800 menu-state-title-primary menu-state-icon-primary menu-state-bullet-primary menu-arrow-gray-500">
-            {sidebarDataFinanceDashboard &&
-              sidebarDataFinanceDashboard.map((item, i) => (
+            {sidebarDashboardData &&
+              sidebarDashboardData.map((item, i) => (
                 <div className="menu-item" key={i}>
                   <Link to={item?.link} className="menu-link">
                     <span className="menu-icon">
@@ -172,4 +172,4 @@ const FinanceDashboard = ({ title }) => {
   );
 };
 
-export default FinanceDashboard;
+export default SidebarDashboard;
