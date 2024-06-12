@@ -265,7 +265,7 @@ const SDBGSub = () => {
     } else if (flag === "REJECTED") {
       remarks = "Rejected by Finance Officer";
     } else if (flag === "HOLD") {
-      remarks = "Rejected by Finance Officer";
+      remarks = "Hold by Finance Officer";
     }
 
     let payload = {
@@ -527,6 +527,10 @@ const SDBGSub = () => {
                                                 <tr>
                                                   <td colSpan={5}>
                                                     <b>{item}</b>
+                                                    {console.log(
+                                                      items,
+                                                      ">>>>>>>>>>>>>>>>>>>>>>>000"
+                                                    )}
                                                   </td>
                                                   <td>
                                                     {isDO && (
@@ -552,20 +556,40 @@ const SDBGSub = () => {
                                                         </button>
                                                       </span>
                                                     )}
-                                                    {user?.department_id ===
-                                                      15 && (
-                                                      <button
-                                                        onClick={() => {
-                                                          setIsCheckEntryPopup(
-                                                            true
-                                                          );
-                                                          SdbgEntryUpdate(item);
-                                                        }}
-                                                        className="btn fw-bold btn-primary me-3"
-                                                      >
-                                                        ACTION
-                                                      </button>
+                                                    {console.log(
+                                                      "Department ID:",
+                                                      user?.department_id,
+                                                      "Status:",
+                                                      items?.status
                                                     )}
+
+                                                    {ite &&
+                                                      ite.some(
+                                                        (data) =>
+                                                          user?.department_id ===
+                                                            15 &&
+                                                          data.status !==
+                                                            "ASSIGNED"
+                                                      ) && (
+                                                        <button
+                                                          onClick={() => {
+                                                            setIsCheckEntryPopup(
+                                                              true
+                                                            );
+                                                            setFormDatainput({
+                                                              ...formDatainput,
+                                                              reference_no:
+                                                                item,
+                                                            });
+                                                            SdbgEntryUpdate(
+                                                              item
+                                                            );
+                                                          }}
+                                                          className="btn fw-bold btn-primary me-3"
+                                                        >
+                                                          ACTION
+                                                        </button>
+                                                      )}
                                                   </td>
                                                 </tr>
                                                 {ite &&
@@ -1131,17 +1155,17 @@ const SDBGSub = () => {
               <div className="col-md-6 col-12">
                 <div className="mb-3">
                   <label className="form-label">Reference No</label>
-                  <p>{sdbgEntry?.reference_no}</p>
+                  <p>{formDatainput?.reference_no}</p>
                 </div>
               </div>
               <div className="col-md-6 col-12">
                 <div className="mb-3">
                   <label className="form-label">BG Entry Date</label>
-                  {/* <p>{sdbgEntry?.created_at}</p> */}
+                  {/* <p>{formDatainput?.created_at}</p> */}
                   <p>
                     {" "}
-                    {sdbgEntry?.created_at
-                      ? new Date(sdbgEntry?.created_at).toLocaleDateString()
+                    {formDatainput?.created_at
+                      ? new Date(formDatainput?.created_at).toLocaleDateString()
                       : ""}
                   </p>
                 </div>
@@ -1149,37 +1173,37 @@ const SDBGSub = () => {
               <div className="col-md-6 col-12">
                 <div className="mb-3">
                   <label className="form-label">Bankers Name</label>
-                  <p>{sdbgEntry?.bank_name}</p>
+                  <p>{formDatainput?.bank_name}</p>
                 </div>
               </div>
               <div className="col-md-6 col-12">
                 <div className="mb-3">
                   <label className="form-label">Bankers Branch</label>
-                  <p>{sdbgEntry?.branch_name}</p>
+                  <p>{formDatainput?.branch_name}</p>
                 </div>
               </div>
               <div className="col-md-6 col-12">
                 <div className="mb-3">
                   <label className="form-label">Bankers Address1</label>
-                  <p>{sdbgEntry?.bank_addr1}</p>
+                  <p>{formDatainput?.bank_addr1}</p>
                 </div>
               </div>
-              {sdbgEntry?.bank_addr2 && (
+              {formDatainput?.bank_addr2 && (
                 <>
                   <div className="col-md-6 col-12">
                     <div className="mb-3">
                       <label className="form-label">Bankers Address2</label>
-                      <p>{sdbgEntry?.bank_addr2}</p>
+                      <p>{formDatainput?.bank_addr2}</p>
                     </div>
                   </div>
                 </>
               )}
-              {sdbgEntry?.bank_addr3 && (
+              {formDatainput?.bank_addr3 && (
                 <>
                   <div className="col-md-6 col-12">
                     <div className="mb-3">
                       <label className="form-label">Bankers Address3</label>
-                      <p>{sdbgEntry?.bank_addr3}</p>
+                      <p>{formDatainput?.bank_addr3}</p>
                     </div>
                   </div>
                 </>
@@ -1187,27 +1211,29 @@ const SDBGSub = () => {
               <div className="col-md-6 col-12">
                 <div className="mb-3">
                   <label className="form-label">Bankers City</label>
-                  <p>{sdbgEntry?.bank_city}</p>
+                  <p>{formDatainput?.bank_city}</p>
                 </div>
               </div>
               <div className="col-md-6 col-12">
                 <div className="mb-3">
                   <label className="form-label">Bank Pincode</label>
-                  <p>{sdbgEntry?.bank_pin_code}</p>
+                  <p>{formDatainput?.bank_pin_code}</p>
                 </div>
               </div>
               <div className="col-md-6 col-12">
                 <div className="mb-3">
                   <label className="form-label">Bank Guarantee No</label>
-                  <p>{sdbgEntry?.bg_no}</p>
+                  <p>{formDatainput?.bg_no}</p>
                 </div>
               </div>
               <div className="col-md-6 col-12">
                 <div className="mb-3">
                   <label className="form-label">BG Date</label>
                   <p>
-                    {sdbgEntry?.bg_date
-                      ? new Date(sdbgEntry?.bg_date * 1000).toLocaleDateString()
+                    {formDatainput?.bg_date
+                      ? new Date(
+                          formDatainput?.bg_date * 1000
+                        ).toLocaleDateString()
                       : ""}
                   </p>
                 </div>
@@ -1215,50 +1241,50 @@ const SDBGSub = () => {
               <div className="col-md-6 col-12">
                 <div className="mb-3">
                   <label className="form-label">BG Amount</label>
-                  <p>{sdbgEntry?.bg_ammount}</p>
+                  <p>{formDatainput?.bg_ammount}</p>
                 </div>
               </div>
               <div className="col-md-6 col-12">
                 <div className="mb-3">
                   <label className="form-label">BG Type</label>
-                  <p>{sdbgEntry?.bg_type}</p>
+                  <p>{formDatainput?.bg_type}</p>
                 </div>
               </div>
 
               {/* <div className="col-md-6 col-12">
                 <div className="mb-3">
                   <label className="form-label">Department</label>
-                  <p>{sdbgEntry?.department}</p>
+                  <p>{formDatainput?.department}</p>
                 </div>
               </div> */}
               <div className="col-md-6 col-12">
                 <div className="mb-3">
                   <label className="form-label">PO Number</label>
-                  <p>{sdbgEntry?.purchasing_doc_no}</p>
+                  <p>{formDatainput?.purchasing_doc_no}</p>
                 </div>
               </div>
               <div className="col-md-6 col-12">
                 <div className="mb-3">
                   <label className="form-label">PO Date</label>
                   <p>
-                    {sdbgEntry?.po_date &&
-                      new Date(sdbgEntry?.po_date).toLocaleDateString()}
+                    {formDatainput?.po_date &&
+                      new Date(formDatainput?.po_date).toLocaleDateString()}
                   </p>
                 </div>
               </div>
               <div className="col-md-6 col-12">
                 <div className="mb-3">
                   <label className="form-label">Yard No</label>
-                  <p>{sdbgEntry?.yard_no}</p>
+                  <p>{formDatainput?.yard_no}</p>
                 </div>
               </div>
               <div className="col-md-6 col-12">
                 <div className="mb-3">
                   <label className="form-label">Validity Date</label>
                   <p>
-                    {sdbgEntry?.validity_date
+                    {formDatainput?.validity_date
                       ? new Date(
-                          sdbgEntry?.validity_date * 1000
+                          formDatainput?.validity_date * 1000
                         ).toLocaleDateString()
                       : ""}
                   </p>
@@ -1268,9 +1294,9 @@ const SDBGSub = () => {
                 <div className="mb-3">
                   <label className="form-label">Claim Period</label>
                   <p>
-                    {sdbgEntry?.claim_priod
+                    {formDatainput?.claim_priod
                       ? new Date(
-                          sdbgEntry?.validity_date * 1000
+                          formDatainput?.validity_date * 1000
                         ).toLocaleDateString()
                       : ""}
                   </p>
@@ -1280,31 +1306,31 @@ const SDBGSub = () => {
               <div className="col-md-6 col-12">
                 <div className="mb-3">
                   <label className="form-label">Vendor Name</label>
-                  <p>{sdbgEntry?.vendor_name}</p>
+                  <p>{formDatainput?.vendor_name}</p>
                 </div>
               </div>
               <div className="col-md-6 col-12">
                 <div className="mb-3">
                   <label className="form-label">Vendor Address1</label>
-                  <p>{sdbgEntry?.vendor_address1}</p>
+                  <p>{formDatainput?.vendor_address1}</p>
                 </div>
               </div>
-              {sdbgEntry?.vendor_address2 && (
+              {formDatainput?.vendor_address2 && (
                 <>
                   <div className="col-md-6 col-12">
                     <div className="mb-3">
                       <label className="form-label">Vendor Address2</label>
-                      <p>{sdbgEntry?.vendor_address2}</p>
+                      <p>{formDatainput?.vendor_address2}</p>
                     </div>
                   </div>
                 </>
               )}
-              {sdbgEntry?.vendor_address3 && (
+              {formDatainput?.vendor_address3 && (
                 <>
                   <div className="col-md-6 col-12">
                     <div className="mb-3">
                       <label className="form-label">Vendor Address3</label>
-                      <p>{sdbgEntry?.vendor_address3}</p>
+                      <p>{formDatainput?.vendor_address3}</p>
                     </div>
                   </div>
                 </>
@@ -1312,13 +1338,13 @@ const SDBGSub = () => {
               <div className="col-md-6 col-12">
                 <div className="mb-3">
                   <label className="form-label">Vendor City</label>
-                  <p>{sdbgEntry?.vendor_city}</p>
+                  <p>{formDatainput?.vendor_city}</p>
                 </div>
               </div>
               <div className="col-md-6 col-12">
                 <div className="mb-3">
                   <label className="form-label">Vendor Pincode</label>
-                  <p>{sdbgEntry?.vendor_pin_code}</p>
+                  <p>{formDatainput?.vendor_pin_code}</p>
                 </div>
               </div>
 

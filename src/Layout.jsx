@@ -336,6 +336,7 @@ import AdvanceBillHybridEdit from "./pages/checklists/AdvanceBillHybridEdit";
 import AdvanceBillHybridView from "./pages/checklists/AdvanceBillHybridView";
 import BGfinance from "./pages/BGfinance";
 import BTNfinance from "./pages/BTNfinance";
+import SyncComponent from "./pages/SyncComponent";
 
 function Layout() {
   const { token, isLoggedIn } = useSelector((state) => state.auth);
@@ -355,6 +356,7 @@ function Layout() {
           <Route path="/poarchive/:id" element={<POArchived />} />
           <Route path="/sdbg/:id" element={<SDBGSub />} />
           <Route path="/drawing/:id" element={<DrawingSub />} />
+          <Route path="/synci-data/:id" element={<SyncComponent />} />
           <Route path="/qap/:id" element={<QAPSub />} />
           <Route
             path="/demand-delivery-lead-time/:id"
