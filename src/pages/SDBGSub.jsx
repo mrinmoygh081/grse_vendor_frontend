@@ -273,7 +273,7 @@ const SDBGSub = () => {
       status: flag,
       remarks,
       action_type,
-      reference_no: sdbgEntry?.reference_no,
+      reference_no: formDatainput?.reference_no,
     };
 
     const data = await apiCallBack(

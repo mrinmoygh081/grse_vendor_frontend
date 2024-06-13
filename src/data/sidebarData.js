@@ -16,10 +16,6 @@ export const sidebarData = [
     link: "/qap",
   },
   {
-    title: "sync",
-    link: "/synci-data",
-  },
-  {
     title: "ILMS Status",
     link: "/ilms",
   },
