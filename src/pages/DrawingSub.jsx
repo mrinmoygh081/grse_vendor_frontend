@@ -127,21 +127,90 @@ const DrawingSub = () => {
     }
   };
 
+  // const updateDrawing = async (flag) => {
+  //   const { drawingFile, remarks } = formData;
+  //   if (
+  //     flag === "SUBMITTED" &&
+  //     (selectedActionType === "" || !drawingFile || remarks.trim() === "")
+  //   ) {
+  //     return toast.warn("Please fill all the required fields!");
+  //   }
+
+  //   if (
+  //     (flag === "APPROVED" || flag === "REJECTED") &&
+  //     (selectedActionType === "" || remarks.trim() === "")
+  //   ) {
+  //     return toast.warn(
+  //       "Action Type and remarks is mandatory for approval or rejection!"
+  //     );
+  //   }
+
+  //   let isApproved = flag;
+  //   let uType;
+  //   let mailSendTo;
+  //   if (userType === 1) {
+  //     uType = "VENDOR";
+  //     mailSendTo = "mrinmoygh081@gmail.com";
+  //   } else {
+  //     uType = "GRSE";
+  //     mailSendTo = "aabhinit96@gmail.com";
+  //   }
+
+  //   try {
+  //     const formDataToSend = new FormData();
+  //     formDataToSend.append("purchasing_doc_no", id);
+  //     formDataToSend.append("file", formData.drawingFile);
+  //     formDataToSend.append("remarks", formData.remarks);
+  //     formDataToSend.append("status", isApproved);
+  //     formDataToSend.append("mailSendTo", mailSendTo);
+  //     formDataToSend.append("updated_by", uType);
+  //     formDataToSend.append("vendor_code", user.vendor_code);
+  //     formDataToSend.append("action_by_name", user.name);
+  //     formDataToSend.append("action_by_id", user.email);
+  //     formDataToSend.append("actionType", selectedActionType);
+  //     formDataToSend.append("reference_no", referenceNo);
+
+  //     const response = await apiCallBack(
+  //       "POST",
+  //       "po/drawing/submitDrawing",
+  //       formDataToSend,
+  //       token
+  //     );
+
+  //     if (response?.status) {
+  //       toast.success(response.message);
+  //       setIsPopup(false);
+  //       setFormData({
+  //         drawingFile: null,
+  //         remarks: "",
+  //       });
+  //       setSelectedActionType("");
+  //       inputFileRef.current.value = null;
+  //       getData();
+  //     } else {
+  //       toast.error(response?.message);
+  //     }
+  //   } catch (error) {
+  //     toast.error("Error:", error);
+  //   }
+  // };
+
   const updateDrawing = async (flag) => {
     const { drawingFile, remarks } = formData;
+
+    // Validation checks
     if (
       flag === "SUBMITTED" &&
       (selectedActionType === "" || !drawingFile || remarks.trim() === "")
     ) {
       return toast.warn("Please fill all the required fields!");
     }
-
     if (
       (flag === "APPROVED" || flag === "REJECTED") &&
       (selectedActionType === "" || remarks.trim() === "")
     ) {
       return toast.warn(
-        "Action Type and remarks is mandatory for approval or rejection!"
+        "Action Type and remarks are mandatory for approval or rejection!"
       );
     }
 
@@ -159,18 +228,19 @@ const DrawingSub = () => {
     try {
       const formDataToSend = new FormData();
       formDataToSend.append("purchasing_doc_no", id);
-      formDataToSend.append("file", formData.drawingFile);
       formDataToSend.append("remarks", formData.remarks);
       formDataToSend.append("status", isApproved);
-      formDataToSend.append("mailSendTo", mailSendTo);
-      formDataToSend.append("updated_by", uType);
-      formDataToSend.append("vendor_code", user.vendor_code);
-      formDataToSend.append("action_by_name", user.name);
-      formDataToSend.append("action_by_id", user.email);
-      formDataToSend.append("actionType", selectedActionType);
       formDataToSend.append("reference_no", referenceNo);
-      // formDataToSend.append("file_type_id", selectedFileTypeId);
-      // formDataToSend.append("file_type_name", selectedFileTypeName);
+
+      if (flag === "SUBMITTED") {
+        formDataToSend.append("file", formData.drawingFile);
+        formDataToSend.append("mailSendTo", mailSendTo);
+        formDataToSend.append("updated_by", uType);
+        formDataToSend.append("vendor_code", user.vendor_code);
+        formDataToSend.append("action_by_name", user.name);
+        formDataToSend.append("action_by_id", user.email);
+        formDataToSend.append("actionType", selectedActionType);
+      }
 
       const response = await apiCallBack(
         "POST",
@@ -187,13 +257,13 @@ const DrawingSub = () => {
           remarks: "",
         });
         setSelectedActionType("");
-        inputFileRef.current.value = null;
+        if (inputFileRef.current) inputFileRef.current.value = null;
         getData();
       } else {
         toast.error(response?.message);
       }
     } catch (error) {
-      toast.error("Error:", error);
+      toast.error(`Error: ${error}`);
     }
   };
 
