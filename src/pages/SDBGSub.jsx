@@ -48,6 +48,8 @@ const SDBGSub = () => {
     sdbgFile: null,
     remarks: "",
   });
+  const [remarks, setRemarks] = useState("");
+  const [showRemarksInput, setShowRemarksInput] = useState(false);
 
   let bg = { ...bgInputs, purchasing_doc_no: id };
   const [formDatainput, setFormDatainput] = useState(bg);
@@ -117,6 +119,15 @@ const SDBGSub = () => {
       getSDBGEntry(formDatainput?.reference_no);
     }
   }, [formDatainput?.reference_no]);
+
+  // handle remarks to deling ofiicer
+  // useEffect(() => {
+  //   if (remarks.trim().length > 0) {
+  //     setIsRemarksProvided(true);
+  //   } else {
+  //     setIsRemarksProvided(false);
+  //   }
+  // }, [remarks]);
 
   const getEmpList = async () => {
     const res = await apiCallBack("GET", `po/sdbg/assigneeList`, null, token);
@@ -255,23 +266,25 @@ const SDBGSub = () => {
   };
 
   const financeEntry = async (flag) => {
-    let remarks;
     let action_type = "SDBG SUBMISSION";
+    let payloadRemarks = remarks;
 
     if (flag === "APPROVED") {
-      remarks = "APPROVED by Finance Officer";
+      payloadRemarks = "APPROVED by Finance Officer";
     } else if (flag === "RETURN_TO_DO") {
-      remarks = "SDBG Entry returned to dealing officer for correction";
+      payloadRemarks =
+        payloadRemarks ||
+        "SDBG Entry returned to dealing officer for correction";
     } else if (flag === "REJECTED") {
-      remarks = "Rejected by Finance Officer";
+      payloadRemarks = "Rejected by Finance Officer";
     } else if (flag === "HOLD") {
-      remarks = "Hold by Finance Officer";
+      payloadRemarks = "Hold by Finance Officer";
     }
 
     let payload = {
       purchasing_doc_no: id,
       status: flag,
-      remarks,
+      remarks: payloadRemarks,
       action_type,
       reference_no: formDatainput?.reference_no,
     };
@@ -289,6 +302,18 @@ const SDBGSub = () => {
       toast.success(data?.message);
     } else {
       toast.warn(data?.message);
+    }
+  };
+
+  const handleReturnClick = () => {
+    if (showRemarksInput && remarks.trim()) {
+      reConfirm(
+        { file: true },
+        () => financeEntry("RETURN_TO_DO"),
+        "You're going to return the SDBG Entry to Dealing Officer to recheck. Please confirm!"
+      );
+    } else {
+      setShowRemarksInput(true);
     }
   };
 
@@ -1159,12 +1184,13 @@ const SDBGSub = () => {
               <div className="col-md-6 col-12">
                 <div className="mb-3">
                   <label className="form-label">BG Entry Date</label>
-                  {/* <p>{formDatainput?.created_at}</p> */}
+
                   <p>
                     {" "}
-                    {formDatainput?.created_at
+                    {/* {formDatainput?.created_at
                       ? new Date(formDatainput?.created_at).toLocaleDateString()
-                      : ""}
+                      : ""} */}
+                    <td>{formatDate(formDatainput?.created_at)}</td>
                   </p>
                 </div>
               </div>
@@ -1345,6 +1371,29 @@ const SDBGSub = () => {
                   <p>{formDatainput?.vendor_pin_code}</p>
                 </div>
               </div>
+              <div className="col-md-6 col-12">
+                {showRemarksInput && (
+                  <div className="mb-3">
+                    <label className="form-label">Remarks</label>
+                    <textarea
+                      className="form-control"
+                      value={remarks}
+                      onChange={(e) => setRemarks(e.target.value)}
+                    />
+                  </div>
+                )}
+              </div>
+
+              {/* {showRemarksInput && (
+              <div className="col-12 mb-3">
+                <label className="form-label">Remarks</label>
+                <textarea
+                  className="form-control"
+                  value={remarks}
+                  onChange={(e) => setRemarks(e.target.value)}
+                />
+              </div>
+            )} */}
 
               <div className="col-12">
                 <div className="mb-3 d-flex justify-content-between">
@@ -1374,7 +1423,7 @@ const SDBGSub = () => {
                   >
                     HOLD
                   </button>
-                  <button
+                  {/* <button
                     onClick={() =>
                       reConfirm(
                         { file: true },
@@ -1385,7 +1434,17 @@ const SDBGSub = () => {
                     className="btn fw-bold btn-primary"
                     type="button"
                   >
-                    Return to Dealing Officer
+                    Return to Dealing Officer handleReturnClick
+                  </button> */}
+
+                  <button
+                    onClick={handleReturnClick}
+                    className="btn fw-bold btn-primary"
+                    type="button"
+                  >
+                    {showRemarksInput
+                      ? "Confirm Return to Dealing Officer"
+                      : "Return to Dealing Officer"}
                   </button>
                   <button
                     onClick={() =>

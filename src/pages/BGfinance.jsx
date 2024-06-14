@@ -1,4 +1,3 @@
-// BG.js
 import React, { useEffect, useState } from "react";
 import MainHeader from "../components/MainHeader";
 import { checkTypeArr } from "../utils/smallFun";
@@ -25,12 +24,7 @@ const BGfinance = () => {
   const createPayment = async () => {
     setLoading(true); // Start loading
     try {
-      const response = await apiCallBack(
-        "GET",
-        "po/stat/statcontroller",
-        null,
-        token
-      );
+      const response = await apiCallBack("GET", "stat/bg", null, token);
       if (response?.status) {
         setPaymentdata(response.data); // Assuming response.data contains the payment data
       } else {

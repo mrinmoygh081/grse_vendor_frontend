@@ -10,6 +10,7 @@ import { reConfirm } from "../utils/reConfirm";
 import { clrLegend } from "../utils/clrLegend";
 import { groupedByRefNo } from "../utils/groupedByReq";
 import { formatDate } from "../utils/getDateTimeNow";
+import Select from "react-select";
 
 const DrawingSub = () => {
   const [isPopup, setIsPopup] = useState(false);
@@ -25,13 +26,46 @@ const DrawingSub = () => {
   const { id } = useParams();
   const { user, token, userType } = useSelector((state) => state.auth);
   const { poType } = useSelector((state) => state.selectedPO);
-  console.log(poType, "poTypepoType mmmmmmmmmmmmmmmmmmmmmmm");
+  const [isAssignPopup, setIsAssignPopup] = useState(false);
   const [referenceNo, setreferenceNo] = useState("");
+  console.log(poType, "poType MMMMMMMMMMMMMMMMMMMM");
+  const [assign, setAssign] = useState({
+    purchasing_doc_no: id,
+    assigned_from: user?.vendor_code,
+    assigned_to: null,
+    remarks: "Assigned to Finance Employee",
+    status: "ASSIGNED",
+  });
+  const [empOption, setEmpOption] = useState([]);
   // console.log("useruser", user);
   // console.log(poType, "poType");
   // console.log(userType, "userType");
   // console.log("referenceNo--", referenceNo);
-
+  const getEmpList = async () => {
+    const res = await apiCallBack(
+      "GET",
+      `po/drawing/assigneeList`,
+      null,
+      token
+    );
+    if (res?.status) {
+      let options =
+        res?.data &&
+        res.data.map((item, index) => {
+          return {
+            value: item.emp_id,
+            label: `${item.cname} (${item.emp_id})`,
+          };
+        });
+      setEmpOption(options);
+    }
+  };
+  useEffect(() => {
+    if (user?.user_type !== 1) {
+      getEmpList();
+      getData();
+    }
+  }, []);
   const getData = async () => {
     try {
       const data = await apiCallBack(
@@ -143,8 +177,8 @@ const DrawingSub = () => {
                   <div className="row g-5 g-xl-8">
                     <div className="col-12">
                       <div className="screen_header">
-                        {(userType !== 1 || poType === "service") &&
-                          poType === "service" && (
+                        {(userType !== 1 || poType === "material") &&
+                          poType === "material" && (
                             <button
                               onClick={() => {
                                 setIsPopup(true);
@@ -154,6 +188,28 @@ const DrawingSub = () => {
                               ACTION
                             </button>
                           )}
+
+                        {user?.user_type !== 1 && (
+                          <>
+                            {/* Finance Head (deptid = 15 and internal_role_Id 1) */}
+                            {user?.department_id === 2 &&
+                              user?.internal_role_id === 1 && (
+                                <>
+                                  {/* <p className="m-0 p-2">
+                                    {!currentAssign?.assigned_to
+                                      ? "(Not Assigned!)"
+                                      : `Assigned to ${currentAssign.assigned_to}`}
+                                  </p> */}
+                                  <button
+                                    onClick={() => setIsAssignPopup(true)}
+                                    className="btn fw-bold btn-primary me-3"
+                                  >
+                                    ASSIGN
+                                  </button>
+                                </>
+                              )}
+                          </>
+                        )}
                       </div>
                     </div>
                     <div className="col-12">
@@ -258,6 +314,54 @@ const DrawingSub = () => {
           </div>
         </div>
       </div>
+
+      {/* for finance officer and Assigner  */}
+      {userType !== 1 &&
+        user.department_id === 2 &&
+        user.internal_role_id === 1 && (
+          <div className={isAssignPopup ? "popup active" : "popup"}>
+            <div className="card card-xxl-stretch mb-5 mb-xxl-8">
+              <div className="card-header border-0 pt-5">
+                <h3 className="card-title align-items-start flex-column">
+                  <span className="card-label fw-bold fs-3 mb-1">ASSIGN</span>
+                </h3>
+                <button
+                  className="btn fw-bold btn-danger"
+                  onClick={() => setIsAssignPopup(false)}
+                >
+                  Close
+                </button>
+              </div>
+              <form>
+                <div className="row" style={{ overflow: "unset" }}>
+                  <div className="col-12">
+                    <div className="mb-3">
+                      <label htmlFor="empName">Employee Name</label>
+                      <Select
+                        className="basic-single"
+                        classNamePrefix="select"
+                        isClearable={true}
+                        isSearchable={true}
+                        name="empName"
+                        id="empName"
+                        options={empOption}
+                        onChange={(val) =>
+                          setAssign({ ...assign, assigned_to: val.value })
+                        }
+                      />
+                    </div>
+                  </div>
+
+                  <div className="col-12">
+                    <div className="mb-3 d-flex justify-content-between">
+                      <button>ASSIGN</button>
+                    </div>
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div>
+        )}
 
       {
         <div className={isPopup ? "popup active" : "popup"}>
