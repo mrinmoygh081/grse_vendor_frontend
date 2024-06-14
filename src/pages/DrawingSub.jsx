@@ -11,6 +11,7 @@ import { clrLegend } from "../utils/clrLegend";
 import { groupedByRefNo } from "../utils/groupedByReq";
 import { formatDate } from "../utils/getDateTimeNow";
 import Select from "react-select";
+import { logOutFun } from "../utils/logOutFun";
 
 const DrawingSub = () => {
   const [isPopup, setIsPopup] = useState(false);
@@ -31,16 +32,34 @@ const DrawingSub = () => {
   console.log(poType, "poType MMMMMMMMMMMMMMMMMMMM");
   const [assign, setAssign] = useState({
     purchasing_doc_no: id,
-    assigned_from: user?.vendor_code,
-    assigned_to: null,
-    remarks: "Assigned to Finance Employee",
+    assign_to: null,
+    remarks: "Assigned to Drawing Employee",
     status: "ASSIGNED",
   });
   const [empOption, setEmpOption] = useState([]);
+  const [currentAssign, setCurrentAssign] = useState([]);
+  console.log(currentAssign, "llllllllll");
   // console.log("useruser", user);
   // console.log(poType, "poType");
   // console.log(userType, "userType");
   // console.log("referenceNo--", referenceNo);
+
+  const getAssign = async () => {
+    const data = await apiCallBack(
+      "GET",
+      `po/drawing/getCurrentAssignee?poNo=${id}`,
+      null,
+      token
+    );
+    if (data?.status) {
+      setCurrentAssign(data?.data);
+    } else if (data?.response?.data?.message === "INVALID_EXPIRED_TOKEN") {
+    }
+  };
+  useEffect(() => {
+    getAssign();
+    getData();
+  }, []);
   const getEmpList = async () => {
     const res = await apiCallBack(
       "GET",
@@ -86,6 +105,27 @@ const DrawingSub = () => {
   useEffect(() => {
     getData();
   }, [id, token]);
+
+  const assignDrawing = async (flag) => {
+    if (assign?.assign_to) {
+      const res = await apiCallBack(
+        "POST",
+        "po/drawing/submitDrawing",
+        assign,
+        token
+      );
+      if (res?.status) {
+        setIsAssignPopup(false);
+        toast.success(`Successfully assigned to ${assign?.assign_to}`);
+        getAssign();
+        getData();
+      } else {
+        toast.warn(res?.message);
+      }
+    } else {
+      toast.warn("Please choose an employee to Assign!");
+    }
+  };
 
   const updateDrawing = async (flag) => {
     const { drawingFile, remarks } = formData;
@@ -178,6 +218,10 @@ const DrawingSub = () => {
                     <div className="col-12">
                       <div className="screen_header">
                         {(userType !== 1 || poType === "material") &&
+                          (user.department_id !== 2 ||
+                            user.internal_role_id !== 1) &&
+                          (user.department_id !== 2 ||
+                            user.internal_role_id !== 2) &&
                           poType === "material" && (
                             <button
                               onClick={() => {
@@ -195,11 +239,11 @@ const DrawingSub = () => {
                             {user?.department_id === 2 &&
                               user?.internal_role_id === 1 && (
                                 <>
-                                  {/* <p className="m-0 p-2">
-                                    {!currentAssign?.assigned_to
+                                  <p className="m-0 p-2">
+                                    {!currentAssign?.assign_to
                                       ? "(Not Assigned!)"
-                                      : `Assigned to ${currentAssign.assigned_to}`}
-                                  </p> */}
+                                      : `Assigned to ${currentAssign.assign_to}`}
+                                  </p>
                                   <button
                                     onClick={() => setIsAssignPopup(true)}
                                     className="btn fw-bold btn-primary me-3"
@@ -276,7 +320,8 @@ const DrawingSub = () => {
                                             >
                                               {item.status}
                                             </td>
-                                            {user.department_id === 2 &&
+                                            {(user.department_id === 2 ||
+                                              user.internal_role_id === 2) &&
                                               poType !== "service" && (
                                                 <td>
                                                   {item.status ===
@@ -346,7 +391,10 @@ const DrawingSub = () => {
                         id="empName"
                         options={empOption}
                         onChange={(val) =>
-                          setAssign({ ...assign, assigned_to: val.value })
+                          setAssign({
+                            ...assign,
+                            assign_to: val ? val.value : null,
+                          })
                         }
                       />
                     </div>
@@ -354,7 +402,13 @@ const DrawingSub = () => {
 
                   <div className="col-12">
                     <div className="mb-3 d-flex justify-content-between">
-                      <button>ASSIGN</button>
+                      <button
+                        onClick={() => assignDrawing()}
+                        className="btn fw-bold btn-primary"
+                        type="button"
+                      >
+                        ASSIGN
+                      </button>
                     </div>
                   </div>
                 </div>
@@ -451,7 +505,8 @@ const DrawingSub = () => {
                     <div className="d-flex gap-3">
                       {userType === 2 &&
                         user?.department_id === 2 &&
-                        user?.internal_role_id === 1 && (
+                        (user?.internal_role_id === 1 ||
+                          user?.internal_role_id === 2) && (
                           <button
                             onClick={() =>
                               reConfirm(
@@ -469,7 +524,8 @@ const DrawingSub = () => {
 
                       {userType === 2 &&
                         user?.department_id === 2 &&
-                        user?.internal_role_id === 1 && (
+                        (user?.internal_role_id === 1 ||
+                          user?.internal_role_id === 2) && (
                           <button
                             onClick={() =>
                               reConfirm(
