@@ -11,6 +11,7 @@ import { reConfirm } from "../utils/reConfirm";
 import { clrLegend } from "../utils/clrLegend";
 import { SUBMITTED, ACCEPTED } from "../constants/BGconstants";
 import { groupedByRefNo } from "../utils/groupedByReq";
+import { formatDate } from "../utils/getDateTimeNow";
 
 const QAPSub = () => {
   const inputRef = useRef(null);
@@ -120,7 +121,7 @@ const QAPSub = () => {
     try {
       const { status, data } = await apiCallBack(
         "GET",
-        `po/getQapSave?poNo=${id}`,
+        `po/getQapSave?reference_no=${formData.reference_no}`,
         null,
         token
       );
@@ -132,6 +133,12 @@ const QAPSub = () => {
       console.error("Error fetching drawing list:", error);
     }
   };
+
+  // useEffect(() => {
+  //   if (formDatainput?.reference_no) {
+  //     getSDBGEntry(formDatainput?.reference_no);
+  //   }
+  // }, [formDatainput?.reference_no]);
 
   const deleteSavedQAP = async () => {
     try {
@@ -270,7 +277,7 @@ const QAPSub = () => {
 
   const savedQAPHandler = async () => {
     await deleteSavedQAP();
-    const { remarks, QapFile, supporting_doc } = formData;
+    const { remarks, QapFile, supporting_doc, reference_no } = formData;
 
     if (!id) {
       toast.error("PO Number is required!");
@@ -283,6 +290,7 @@ const QAPSub = () => {
       formDataToSend.append("file", QapFile);
     }
     formDataToSend.append("remarks", remarks);
+    formDataToSend.append("reference_no", reference_no);
     supporting_doc.forEach((file) => {
       formDataToSend.append("supporting_doc", file);
     });
@@ -432,10 +440,18 @@ const QAPSub = () => {
                                               "........................................."
                                             )}
                                             <td className="table_center">
-                                              {qap?.created_at &&
+                                              {/* {qap?.created_at &&
                                                 new Date(
                                                   qap?.created_at
-                                                ).toLocaleString()}
+                                                ).toLocaleString()} */}
+                                              <td
+                                                style={{
+                                                  border: "none",
+                                                  background: "none",
+                                                }}
+                                              >
+                                                {formatDate(qap?.created_at)}
+                                              </td>
                                             </td>
                                             <td>{qap.action_type}</td>
                                             <td>

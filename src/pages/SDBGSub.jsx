@@ -30,6 +30,7 @@ import { groupedByActionType, groupedByRefNo } from "../utils/groupedByReq";
 import jsPDF from "jspdf";
 import { checkTypeArr } from "../utils/smallFun";
 import { convertToEpoch, formatDate } from "../utils/getDateTimeNow";
+import logoimage from "../images/logo.png";
 
 const SDBGSub = () => {
   const dispatch = useDispatch();
@@ -67,6 +68,7 @@ const SDBGSub = () => {
     remarks: "Assigned to Finance Employee",
     status: "ASSIGNED",
   });
+  console.log(formDatainput, "formDatainput mmmmmmm");
 
   const convertToEpochh = (date) => {
     return Math.floor(new Date(date).getTime() / 1000);
@@ -104,24 +106,24 @@ const SDBGSub = () => {
     }
   };
 
-  const getSDBGEntry = async (refNo) => {
-    console.log("LEE", refNo, id);
-    const data = await apiCallBack(
-      "GET",
-      `po/sdbg/getSdbgEntry?poNo=${id}&reference_no=${refNo}`,
-      null,
-      token
-    );
-    if (data?.status) {
-      setSdbgEntry(data?.data);
-    }
-  };
+  // const getSDBGEntry = async (refNo) => {
+  //   console.log("LEE", refNo, id);
+  //   const data = await apiCallBack(
+  //     "GET",
+  //     `po/sdbg/getSdbgEntry?poNo=${id}&reference_no=${refNo}`,
+  //     null,
+  //     token
+  //   );
+  //   if (data?.status) {
+  //     setSdbgEntry(data?.data);
+  //   }
+  // };
 
-  useEffect(() => {
-    if (formDatainput?.reference_no) {
-      getSDBGEntry(formDatainput?.reference_no);
-    }
-  }, [formDatainput?.reference_no]);
+  // useEffect(() => {
+  //   if (formDatainput?.reference_no) {
+  //     getSDBGEntry(formDatainput?.reference_no);
+  //   }
+  // }, [formDatainput?.reference_no]);
 
   // handle remarks to deling ofiicer
   // useEffect(() => {
@@ -401,6 +403,7 @@ const SDBGSub = () => {
     };
 
     try {
+      // First, try to fetch data from getSdbgSave endpoint
       const response1 = await fetch(
         `http://localhost:4001/api/v1/po/sdbg/getSdbgSave?reference_no=${referenceNo}`,
         {
@@ -412,20 +415,17 @@ const SDBGSub = () => {
         }
       );
 
-      if (!response1.ok) {
-        throw new Error(`HTTP error! Status: ${response1.status}`);
+      if (response1.ok) {
+        const data1 = await response1.json();
+        if (data1.status && checkTypeArr(data1.data)) {
+          setFormDatainput(data1.data[data1.data.length - 1]);
+          setIsLoading(false);
+          console.log(data1.message);
+          return; // Exit function if successful
+        }
       }
 
-      const data1 = await response1.json();
-
-      if (data1.status && checkTypeArr(data1.data)) {
-        setFormDatainput(data1.data[data1.data.length - 1]);
-        // setSdbgEntry(data1.data[data1.data.length - 1]);
-        setIsLoading(false);
-        console.log(data1.message);
-        return; // Exit function if successful
-      }
-
+      // If fetching from getSdbgSave fails or doesn't return valid data, fall back to getspecificbg
       const response2 = await fetch(
         "http://localhost:4001/api/v1/po/sdbg/getspecificbg",
         {
@@ -446,23 +446,22 @@ const SDBGSub = () => {
 
       if (data2.status && checkTypeArr(data2.data)) {
         setFormDatainput(data2.data[data2.data.length - 1]);
-        // setSdbgEntry(data2.data[data2.data.length - 1]);
-        setIsLoading(false);
         console.log(data2.message);
       } else {
-        setIsLoading(false);
         toast.warn(data2.message || "Failed to fetch specific BG entry");
       }
     } catch (error) {
-      setIsLoading(false);
       console.error("Error in fetching data:", error);
       toast.error("Failed to fetch data");
+    } finally {
+      setIsLoading(false);
     }
   };
 
   // const SdbgEntryUpdate = async (referenceNo) => {
   //   try {
   //     setIsLoading(true);
+
   //     let payload = {
   //       purchasing_doc_no: id,
   //       reference_no: referenceNo,
@@ -476,23 +475,24 @@ const SDBGSub = () => {
   //       token
   //     );
 
-  //     // Check if response2 is valid
-  //     if (!response2 || typeof response2.json !== "function") {
+  //     console.log("Response from API 2:", response2); // Add this log to inspect response
+
+  //     // Check if response2 is valid and process data
+  //     if (response2 && typeof response2.json === "function") {
+  //       const data2 = await response2.json();
+  //       console.log("Data from API 2:", data2); // Add this log to inspect data
+
+  //       if (data2?.status && checkTypeArr(data2?.data)) {
+  //         setFormDatainput(data2.data[data2.data.length - 1]);
+  //         console.log(data2.message);
+  //         return; // Exit the function early since we have the data
+  //       } else {
+  //         toast.warn(data2?.message);
+  //       }
+  //     } else {
   //       throw new Error(
   //         "Invalid response from apiCallBack for the second API call"
   //       );
-  //     }
-
-  //     const data2 = await response2.json();
-
-  //     if (data2?.status && checkTypeArr(data2?.data)) {
-  //       setFormDatainput(data2?.data[data2?.data.length - 1]);
-  //       setSdbgEntry(data2?.data[data2?.data.length - 1]);
-  //       console.log(data2?.message);
-  //       setIsLoading(false);
-  //       return; // Exit the function early since we have the data
-  //     } else {
-  //       toast.warn(data2?.message);
   //     }
 
   //     // If the second API call did not return the needed data, fall back to the first API call
@@ -503,21 +503,20 @@ const SDBGSub = () => {
   //       token
   //     );
 
-  //     // Check if response1 is valid
-  //     if (!response1 || typeof response1.json !== "function") {
+  //     // Check if response1 is valid and process data
+  //     if (response1 && typeof response1.json === "function") {
+  //       const data1 = await response1.json();
+
+  //       if (data1?.status && checkTypeArr(data1?.data)) {
+  //         setFormDatainput(data1.data[data1.data.length - 1]);
+  //         console.log(data1.message);
+  //       } else {
+  //         toast.warn(data1?.message);
+  //       }
+  //     } else {
   //       throw new Error(
   //         "Invalid response from apiCallBack for the first API call"
   //       );
-  //     }
-
-  //     const data1 = await response1.json();
-
-  //     if (data1?.status && checkTypeArr(data1?.data)) {
-  //       setFormDatainput(data1?.data[data1?.data.length - 1]);
-  //       setSdbgEntry(data1?.data[data1?.data.length - 1]);
-  //       console.log(data1?.message);
-  //     } else {
-  //       toast.warn(data1?.message);
   //     }
   //   } catch (error) {
   //     console.error("Error in SdbgEntryUpdate:", error);
@@ -560,15 +559,7 @@ const SDBGSub = () => {
     pdf.setFontSize(12);
     pdf.text(20, y, `Reference No: ${entry?.reference_no || ""}`);
     y += 10;
-    pdf.text(
-      20,
-      y,
-      `BG Entry Date: ${
-        entry?.created_at
-          ? new Date(entry?.created_at).toLocaleDateString()
-          : ""
-      }`
-    );
+    pdf.text(20, y, `BG Entry Date: ${formatDate(entry?.created_at)}`);
     y += 10;
     pdf.text(20, y, `Bankers Name: ${entry?.bank_name || ""}`);
     y += 10;
@@ -604,18 +595,18 @@ const SDBGSub = () => {
     y += 10;
     pdf.text(20, y, `BG Type: ${entry?.bg_type || ""}`);
     y += 10;
-    pdf.text(20, y, `Department: ${entry?.department || ""}`);
+    pdf.text(20, y, `Department: ${entry?.depertment || ""}`);
     y += 10;
     pdf.text(20, y, `PO Number: ${entry?.purchasing_doc_no || ""}`);
     y += 10;
-    pdf.text(
-      20,
-      y,
-      `PO Date: ${
-        entry?.po_date ? new Date(entry?.po_date).toLocaleDateString() : ""
-      }`
-    );
-    y += 10;
+    // pdf.text(
+    //   20,
+    //   y,
+    //   `PO Date: ${
+    //     entry?.po_date ? new Date(entry?.po_date).toLocaleDateString() : ""
+    //   }`
+    // );
+    // y += 10;
     pdf.text(20, y, `Yard No: ${entry?.yard_no || ""}`);
     y += 10;
     pdf.text(
@@ -638,14 +629,14 @@ const SDBGSub = () => {
       }`
     );
     y += 10;
-    pdf.text(20, y, `Vendor Name: ${entry?.vendor_name || ""}`);
-    y += 10;
-    pdf.text(20, y, `Vendor Address1: ${entry?.vendor_address1 || ""}`);
-    y += 10;
-    pdf.text(20, y, `Vendor City: ${entry?.vendor_city || ""}`);
-    y += 10;
-    pdf.text(20, y, `Vendor Pincode: ${entry?.vendor_pin_code || ""}`);
-    y += 10;
+    // pdf.text(20, y, `Vendor Name: ${entry?.vendor_name || ""}`);
+    // y += 10;
+    // pdf.text(20, y, `Vendor Address1: ${entry?.vendor_address1 || ""}`);
+    // y += 10;
+    // pdf.text(20, y, `Vendor City: ${entry?.vendor_city || ""}`);
+    // y += 10;
+    // pdf.text(20, y, `Vendor Pincode: ${entry?.vendor_pin_code || ""}`);
+    // y += 10;
     return pdf;
   };
 
@@ -736,10 +727,6 @@ const SDBGSub = () => {
                                                 <tr>
                                                   <td colSpan={5}>
                                                     <b>{item}</b>
-                                                    {console.log(
-                                                      items,
-                                                      ">>>>>>>>>>>>>>>>>>>>>>>000"
-                                                    )}
                                                   </td>
                                                   <td>
                                                     {isDO &&
@@ -1043,7 +1030,73 @@ const SDBGSub = () => {
               </button>
             </div>
             {isLoading ? (
-              <>Loading...</>
+              <div className="row">
+                <div className="col-md-6 col-12">
+                  <div className="mb-3">
+                    <div className="skeleton-text skeleton"></div>
+                  </div>
+                </div>
+                <div className="col-md-6 col-12">
+                  <div className="mb-3">
+                    <div className="skeleton-text skeleton"></div>
+                  </div>
+                </div>
+                <div className="col-md-6 col-12">
+                  <div className="mb-3">
+                    <div className="skeleton-text skeleton"></div>
+                  </div>
+                </div>
+                <div className="col-md-6 col-12">
+                  <div className="mb-3">
+                    <div className="skeleton-text skeleton"></div>
+                  </div>
+                </div>
+                <div className="col-md-6 col-12">
+                  <div className="mb-3">
+                    <div className="skeleton-text skeleton"></div>
+                  </div>
+                </div>
+                <div className="col-md-6 col-12">
+                  <div className="mb-3">
+                    <div className="skeleton-text skeleton"></div>
+                  </div>
+                </div>
+                <div className="col-md-6 col-12">
+                  <div className="mb-3">
+                    <div className="skeleton-text skeleton"></div>
+                  </div>
+                </div>
+                <div className="col-md-6 col-12">
+                  <div className="mb-3">
+                    <div className="skeleton-text skeleton"></div>
+                  </div>
+                </div>
+                <div className="col-md-6 col-12">
+                  <div className="mb-3">
+                    <div className="skeleton-text skeleton"></div>
+                  </div>
+                </div>
+                <div className="col-md-6 col-12">
+                  <div className="mb-3">
+                    <div className="skeleton-text skeleton"></div>
+                  </div>
+                </div>
+                <div className="col-md-6 col-12">
+                  <div className="mb-3">
+                    <div className="skeleton-text skeleton"></div>
+                  </div>
+                </div>
+                <div className="col-md-6 col-12">
+                  <div className="mb-3">
+                    <div className="skeleton-text skeleton"></div>
+                  </div>
+                </div>
+                <div className="col-md-6 col-12">
+                  <div className="mb-3">
+                    <div className="skeleton-text skeleton"></div>
+                  </div>
+                </div>
+              </div>
             ) : (
               <div className="row">
                 <div className="col-md-6 col-12">
@@ -1171,14 +1224,6 @@ const SDBGSub = () => {
                   <div className="mb-3">
                     <label className="form-label">BG Date</label>&nbsp;&nbsp;
                     <span className="mandatorystart">*</span>
-                    {/* <DatePicker
-                      selected={new Date(formDatainput?.bg_date) || ""}
-                      onChange={(date) =>
-                        setFormDatainput({ ...formDatainput, bg_date: date })
-                      }
-                      dateFormat="dd/MM/yyyy"
-                      className="form-control"
-                    /> */}
                     <DatePicker
                       selected={parseDateFromEpoch(formDatainput.bg_date)}
                       onChange={(date) => {
@@ -1223,17 +1268,6 @@ const SDBGSub = () => {
                     <label className="form-label">Validity Date</label>
                     &nbsp;&nbsp;
                     <span className="mandatorystart">*</span>
-                    {/* <DatePicker
-                      selected={new Date(formDatainput?.validity_date) || ""}
-                      onChange={(date) =>
-                        setFormDatainput({
-                          ...formDatainput,
-                          validity_date: date,
-                        })
-                      }
-                      dateFormat="dd/MM/yyyy"
-                      className="form-control"
-                    /> */}
                     <DatePicker
                       selected={
                         formDatainput.validity_date
@@ -1256,17 +1290,6 @@ const SDBGSub = () => {
                     <label className="form-label">Claim Period</label>
                     &nbsp;&nbsp;
                     <span className="mandatorystart">*</span>
-                    {/* <DatePicker
-                      selected={new Date(formDatainput?.claim_priod) || ""}
-                      onChange={(date) =>
-                        setFormDatainput({
-                          ...formDatainput,
-                          claim_priod: date,
-                        })
-                      }
-                      dateFormat="dd/MM/yyyy"
-                      className="form-control"
-                    /> */}
                     <DatePicker
                       selected={
                         formDatainput.claim_priod

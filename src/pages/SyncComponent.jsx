@@ -4,6 +4,7 @@ import { useDispatch } from "react-redux";
 import { logoutHandler } from "../redux/slices/loginSlice";
 import { poRemoveHandler } from "../redux/slices/poSlice";
 import { reConfirm } from "../utils/reConfirm";
+import { ToastContainer, toast } from "react-toastify";
 
 const SyncComponent = () => {
   const [syncing, setSyncing] = useState(false);
@@ -21,13 +22,34 @@ const SyncComponent = () => {
     setSyncMessage("");
     try {
       const response = await axios.post(endpoint);
-      setSyncMessage(response.data.message || "Sync successful");
+      toast.success(response.data.message || "Sync successful");
+      if (response.data.status) {
+        const uploadResponse = await axios.post(
+          "http://localhost:4001/api/v1/sync/sync_upload"
+        );
+        toast.success(uploadResponse.data.message || "Data has been synced");
+      }
     } catch (error) {
-      setSyncMessage(
+      toast.error(
         "Sync failed: " + (error.response?.data?.message || error.message)
       );
     }
     setSyncing(false);
+  };
+
+  const handleFileSync = async (endpoint) => {
+    setSyncing(true);
+    setSyncMessage("");
+    try {
+      const response = await axios.post(endpoint);
+      toast.success(response.data.message || "File sync successful");
+    } catch (error) {
+      toast.error(
+        "File sync failed: " + (error.response?.data?.message || error.message)
+      );
+    } finally {
+      setSyncing(false);
+    }
   };
 
   return (
@@ -87,7 +109,9 @@ const SyncComponent = () => {
                 className="btn btn-secondary btn-sm mt-2"
                 disabled={syncing}
                 onClick={() =>
-                  handleSync("http://localhost:4001/api/v1/sync/sync_upload")
+                  handleFileSync(
+                    "http://localhost:4001/api/v1/sync/sync_file_upload"
+                  )
                 }
               >
                 Sync File
