@@ -34,6 +34,10 @@ const BillsMaterialHybridView = () => {
     debit_note: "",
     credit_note: "",
     net_claim_amount: 0,
+    net_with_gst: 0,
+    cgst: null,
+    sgst: null,
+    igst: null,
     debit_credit_filename: "",
     gate_entry_no: "",
     gate_entry_date: "",
@@ -354,7 +358,31 @@ const BillsMaterialHybridView = () => {
                                       <td className="btn_value">
                                         <b>{data?.net_claim_amount}</b>
                                       </td>
-                                    </tr>{" "}
+                                    </tr>
+                                    <tr>
+                                      <td>CGST:</td>
+                                      <td className="btn_value">
+                                        <b>{data?.cgst}</b>
+                                      </td>
+                                    </tr>
+                                    <tr>
+                                      <td>SGST:</td>
+                                      <td className="btn_value">
+                                        <b>{data?.sgst}</b>
+                                      </td>
+                                    </tr>
+                                    <tr>
+                                      <td>IGST:</td>
+                                      <td className="btn_value">
+                                        <b>{data?.igst}</b>
+                                      </td>
+                                    </tr>
+                                    <tr>
+                                      <td>Net Claim Amount with GST:</td>
+                                      <td className="btn_value">
+                                        <b>{data?.net_with_gst}</b>
+                                      </td>
+                                    </tr>
                                     <tr>
                                       <td>Contractual SDBG Submission Date</td>
                                       <td className="btn_value">

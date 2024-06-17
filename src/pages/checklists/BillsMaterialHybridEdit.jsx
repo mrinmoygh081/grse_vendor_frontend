@@ -36,6 +36,7 @@ const BillsMaterialHybridEdit = () => {
     debit_note: "",
     credit_note: "",
     net_claim_amount: 0,
+    net_with_gst: 0,
     cgst: null,
     sgst: null,
     igst: null,
@@ -417,7 +418,7 @@ const BillsMaterialHybridEdit = () => {
                                     <tr>
                                       <td>Net Claim Amount with GST:</td>
                                       <td className="btn_value">
-                                        <b></b>
+                                        <b>{data?.net_with_gst}</b>
                                       </td>
                                     </tr>
                                     <tr>

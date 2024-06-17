@@ -38,6 +38,7 @@ const BillsMaterialHybrid = () => {
     cgst: null,
     sgst: null,
     igst: null,
+    net_with_gst: 0,
     debit_credit_filename: "",
     gate_entry_no: "",
     gate_entry_date: "",
@@ -80,6 +81,29 @@ const BillsMaterialHybrid = () => {
     }
   }, [form?.invoice_value, form?.debit_note, form?.credit_note]);
 
+  const calNetClaimAmountwithGST = (net_claim_amount, cgst, sgst, igst) => {
+    console.log("cgst...", cgst);
+    cgst = parseFloat(cgst) || 0;
+    console.log("cgstcgst...", cgst);
+    sgst = parseFloat(sgst) || 0;
+    igst = parseFloat(igst) || 0;
+
+    const totalGST = (cgst + sgst + igst) / 100;
+    console.log("totalGST", totalGST);
+    let netWithGST = net_claim_amount * (1 + totalGST);
+    console.log("netWithGST", netWithGST);
+    netWithGST = parseFloat(netWithGST.toFixed(2));
+    setForm((prevForm) => ({
+      ...prevForm,
+      net_with_gst: netWithGST,
+    }));
+  };
+  useEffect(() => {
+    const { net_claim_amount, cgst, sgst, igst } = form;
+    if (net_claim_amount || cgst || sgst || igst) {
+      calNetClaimAmountwithGST(net_claim_amount, cgst, sgst, igst);
+    }
+  }, [form?.net_claim_amount, form?.cgst, form?.sgst, form?.igst]);
   const getData = async () => {
     try {
       const d = await apiCallBack(
@@ -431,7 +455,7 @@ const BillsMaterialHybrid = () => {
                                     <tr>
                                       <td>Net claim amount with GST:</td>
                                       <td className="btn_value">
-                                        <b></b>
+                                        <b>{form?.net_with_gst}</b>
                                       </td>
                                     </tr>
                                     <tr>
@@ -622,6 +646,7 @@ const BillsMaterialHybrid = () => {
                                             id="agree_to_declaration"
                                             name="agree_to_declaration"
                                             value={form?.agree_to_declaration}
+                                            required
                                             onClick={(e) =>
                                               setForm({
                                                 ...form,
@@ -647,6 +672,7 @@ const BillsMaterialHybrid = () => {
                                             className="form-check-input"
                                             id="hsn_gstn_icgrn"
                                             name="hsn_gstn_icgrn"
+                                            required
                                             value={form?.hsn_gstn_icgrn}
                                             onClick={(e) =>
                                               setForm({

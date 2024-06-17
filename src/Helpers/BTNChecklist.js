@@ -22,6 +22,7 @@ export const actionHandlerBTN = async (
       debit_note,
       credit_note,
       net_claim_amount,
+      net_with_gst,
       debit_credit_filename,
       gate_entry_no,
       gate_entry_date,
@@ -40,13 +41,12 @@ export const actionHandlerBTN = async (
       total_icgrn_value,
       hsn_gstn_icgrn,
       agree_to_declaration,
-      ld_gate_entry_date,
-      ld_contractual_date,
       c_sdbg_filename,
       demand_raise_filename,
       pbg_filename,
       associated_po,
     } = form;
+
     console.log("associated_po1", associated_po);
 
     if (!agree_to_declaration) {
@@ -70,6 +70,7 @@ export const actionHandlerBTN = async (
     fDToSend.append("credit_note", credit_note);
     fDToSend.append("gst_rate", gst_rate);
     fDToSend.append("net_claim_amount", net_claim_amount);
+    fDToSend.append("net_with_gst", net_with_gst);
     fDToSend.append("gate_entry_no", gate_entry_no);
     fDToSend.append("gate_entry_date", gate_entry_date);
     fDToSend.append("grn_no_1", grn_no_1 || "");
@@ -273,6 +274,7 @@ export const actionHandlerAdvancebillHybrid = async (
       credit_note,
       debit_credit_filename,
       net_claim_amount,
+      net_with_gst,
       cgst,
       sgst,
       igst,
@@ -316,6 +318,7 @@ export const actionHandlerAdvancebillHybrid = async (
     fDToSend.append("debit_note", debit_note);
     fDToSend.append("credit_note", credit_note);
     fDToSend.append("net_claim_amount", net_claim_amount);
+    fDToSend.append("net_with_gst", net_with_gst);
     fDToSend.append("cgst", cgst);
     fDToSend.append("sgst", sgst);
     fDToSend.append("igst", igst || "");
