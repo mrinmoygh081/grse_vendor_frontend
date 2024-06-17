@@ -289,10 +289,8 @@ const DrawingSub = () => {
                       <div className="screen_header">
                         {(userType !== 1 || poType === "material") &&
                           (user.department_id !== 2 ||
-                            user.internal_role_id !== 1) &&
-                          (user.department_id !== 2 ||
-                            user.internal_role_id !== 2) &&
-                          poType === "material" && (
+                            user.internal_role_id !== 1 ||
+                            poType === "service") && (
                             <button
                               onClick={() => {
                                 setIsPopup(true);
@@ -303,7 +301,7 @@ const DrawingSub = () => {
                             </button>
                           )}
 
-                        {user?.user_type !== 1 && (
+                        {user?.user_type !== 1 && poType !== "service" && (
                           <>
                             {/* Finance Head (deptid = 15 and internal_role_Id 1) */}
                             {user?.department_id === 2 &&

@@ -9,6 +9,7 @@ import moment from "moment";
 import { toast } from "react-toastify";
 import { reConfirm } from "../utils/reConfirm";
 import { clrLegend } from "../utils/clrLegend";
+import { formatDate } from "../utils/getDateTimeNow";
 
 const IlmsSub = () => {
   const [isPopup, setIsPopup] = useState(false);
@@ -145,10 +146,18 @@ const IlmsSub = () => {
                                     <tr key={index}>
                                       <td>{item.reference_no}</td>
                                       <td>
-                                        {item?.created_at &&
+                                        {/* {item?.created_at &&
                                           new Date(
                                             item?.created_at
-                                          ).toLocaleString()}
+                                          ).toLocaleString()} */}
+                                        <td
+                                          style={{
+                                            border: "none",
+                                            background: "none",
+                                          }}
+                                        >
+                                          {formatDate(item?.created_at)}
+                                        </td>
                                       </td>
                                       <td className="">
                                         {item.file_name && (

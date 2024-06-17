@@ -11,7 +11,7 @@ import Select from "react-select";
 import { reConfirm } from "../utils/reConfirm";
 import { inputOnWheelPrevent } from "../utils/inputOnWheelPrevent";
 import { clrLegend } from "../utils/clrLegend";
-import { BGEntry, bgInputs } from "../Helpers/BG";
+import { BGEntry, BGEntrySave, bgInputs } from "../Helpers/BG";
 import {
   ACTION_ABG,
   ACTION_DD,
@@ -50,6 +50,9 @@ const SDBGSub = () => {
   });
   const [remarks, setRemarks] = useState("");
   const [showRemarksInput, setShowRemarksInput] = useState(false);
+  const [entryState, setEntryState] = useState({});
+  const GRSE_LOGO_BASE64 =
+    "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUA...";
 
   let bg = { ...bgInputs, purchasing_doc_no: id };
   const [formDatainput, setFormDatainput] = useState(bg);
@@ -224,6 +227,16 @@ const SDBGSub = () => {
       getSDBG();
     }
   };
+  const uploadSDBGSave = async () => {
+    let status = await BGEntrySave(formDatainput, token);
+    if (status) {
+      setIsPopup(false);
+      setIsEntryPopup(false);
+      let bg = { ...bgInputs, purchasing_doc_no: id };
+      setFormDatainput(bg);
+      getSDBG();
+    }
+  };
   const rejectSDBG = async (flag = "REJECTED") => {
     let form = {
       purchasing_doc_no: id,
@@ -265,9 +278,10 @@ const SDBGSub = () => {
     }
   };
 
-  const financeEntry = async (flag) => {
+  const financeEntry = async (flag, referenceNo) => {
+    const entry = entryState[referenceNo];
     let action_type = "SDBG SUBMISSION";
-    let payloadRemarks = remarks;
+    let payloadRemarks = entry?.remarks;
 
     if (flag === "APPROVED") {
       payloadRemarks = "APPROVED by Finance Officer";
@@ -286,7 +300,7 @@ const SDBGSub = () => {
       status: flag,
       remarks: payloadRemarks,
       action_type,
-      reference_no: formDatainput?.reference_no,
+      reference_no: referenceNo,
     };
 
     const data = await apiCallBack(
@@ -300,22 +314,63 @@ const SDBGSub = () => {
       setIsCheckEntryPopup(false);
       getSDBG();
       toast.success(data?.message);
+      // Reset remarks input after successful submission
+      setEntryState((prevState) => ({
+        ...prevState,
+        [referenceNo]: { showRemarksInput: false, remarks: "" },
+      }));
     } else {
       toast.warn(data?.message);
     }
   };
 
-  const handleReturnClick = () => {
-    if (showRemarksInput && remarks.trim()) {
+  const handleReturnClick = (referenceNo) => {
+    const entry = entryState[referenceNo];
+    if (entry?.showRemarksInput && entry?.remarks.trim()) {
       reConfirm(
         { file: true },
-        () => financeEntry("RETURN_TO_DO"),
+        () => financeEntry("RETURN_TO_DO", referenceNo),
         "You're going to return the SDBG Entry to Dealing Officer to recheck. Please confirm!"
       );
     } else {
-      setShowRemarksInput(true);
+      setEntryState((prevState) => ({
+        ...prevState,
+        [referenceNo]: { ...entry, showRemarksInput: true },
+      }));
     }
   };
+
+  const handleRemarksChange = (referenceNo, value) => {
+    setEntryState((prevState) => ({
+      ...prevState,
+      [referenceNo]: { ...prevState[referenceNo], remarks: value },
+    }));
+  };
+
+  // const SdbgEntryUpdate = async (referenceNo) => {
+  //   setIsLoading(true);
+  //   let payload = {
+  //     purchasing_doc_no: id,
+  //     reference_no: referenceNo,
+  //   };
+
+  //   const data = await apiCallBack(
+  //     "POST",
+  //     `/po/sdbg/getspecificbg`,
+  //     payload,
+  //     token
+  //   );
+
+  //   if (data?.status && checkTypeArr(data?.data)) {
+  //     setFormDatainput(data?.data[data?.data.length - 1]);
+  //     setSdbgEntry(data?.data[data?.data.length - 1]);
+  //     console.log(data?.message);
+  //     setIsLoading(false);
+  //   } else {
+  //     setIsLoading(false);
+  //     toast.warn(data?.message);
+  //   }
+  // };
 
   const SdbgEntryUpdate = async (referenceNo) => {
     setIsLoading(true);
@@ -324,21 +379,65 @@ const SDBGSub = () => {
       reference_no: referenceNo,
     };
 
-    const data = await apiCallBack(
-      "POST",
-      `/po/sdbg/getspecificbg`,
-      payload,
-      token
-    );
+    try {
+      if (user?.department_id !== 15) {
+        const response1 = await fetch(
+          `http://localhost:4001/api/v1/po/sdbg/getSdbgSave?reference_no=${referenceNo}`,
+          {
+            method: "GET",
+            headers: {
+              Authorization: `Bearer ${token}`,
+              "Content-Type": "application/json",
+            },
+          }
+        );
 
-    if (data?.status && checkTypeArr(data?.data)) {
-      setFormDatainput(data?.data[data?.data.length - 1]);
-      setSdbgEntry(data?.data[data?.data.length - 1]);
-      console.log(data?.message);
+        if (!response1.ok) {
+          throw new Error(`HTTP error! Status: ${response1.status}`);
+        }
+
+        const data1 = await response1.json();
+
+        if (data1.status && checkTypeArr(data1.data)) {
+          setFormDatainput(data1.data[data1.data.length - 1]);
+          setSdbgEntry(data1.data[data1.data.length - 1]);
+          setIsLoading(false);
+          console.log(data1.message);
+          return; // Exit function if successful
+        }
+      }
+
+      const response2 = await fetch(
+        "http://localhost:4001/api/v1/po/sdbg/getspecificbg",
+        {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(payload),
+        }
+      );
+
+      if (!response2.ok) {
+        throw new Error(`HTTP error! Status: ${response2.status}`);
+      }
+
+      const data2 = await response2.json();
+
+      if (data2.status && checkTypeArr(data2.data)) {
+        setFormDatainput(data2.data[data2.data.length - 1]);
+        setSdbgEntry(data2.data[data2.data.length - 1]);
+        setIsLoading(false);
+        console.log(data2.message);
+      } else {
+        setIsLoading(false);
+        toast.warn(data2.message || "Failed to fetch specific BG entry");
+      }
+    } catch (error) {
       setIsLoading(false);
-    } else {
-      setIsLoading(false);
-      toast.warn(data?.message);
+      console.error("Error in fetching data:", error);
+      toast.error("Failed to fetch data");
     }
   };
 
@@ -360,23 +459,36 @@ const SDBGSub = () => {
   const generatePDFFromSDBGEntry = (entry) => {
     const pdf = new jsPDF();
 
+    try {
+      // Add GRSE logo and heading
+      pdf.addImage(GRSE_LOGO_BASE64, "PNG", 10, 10, 50, 20);
+    } catch (error) {
+      console.error("Error adding image to PDF:", error);
+    }
+
+    pdf.setFontSize(18);
+    pdf.text(70, 20, "GRSE BG Entry");
+
     // Add content to PDF
-    let y = 20; // Initial y-coordinate
-    pdf.text(20, y, `Reference No: ${entry?.reference_no}`);
-    y += 10; // Increase y-coordinate for the next line
+    let y = 40; // Initial y-coordinate
+    pdf.setFontSize(12);
+    pdf.text(20, y, `Reference No: ${entry?.reference_no || ""}`);
+    y += 10;
     pdf.text(
       20,
       y,
       `BG Entry Date: ${
-        entry?.created_at && new Date(entry?.created_at).toLocaleDateString()
+        entry?.created_at
+          ? new Date(entry?.created_at).toLocaleDateString()
+          : ""
       }`
     );
     y += 10;
-    pdf.text(20, y, `Bankers Name: ${entry?.bank_name}`);
+    pdf.text(20, y, `Bankers Name: ${entry?.bank_name || ""}`);
     y += 10;
-    pdf.text(20, y, `Bankers Branch: ${entry?.branch_name}`);
+    pdf.text(20, y, `Bankers Branch: ${entry?.branch_name || ""}`);
     y += 10;
-    pdf.text(20, y, `Bankers Address1: ${entry?.bank_addr1}`);
+    pdf.text(20, y, `Bankers Address1: ${entry?.bank_addr1 || ""}`);
     y += 10;
     if (entry?.bank_addr2) {
       pdf.text(20, y, `Bankers Address2: ${entry?.bank_addr2}`);
@@ -386,47 +498,39 @@ const SDBGSub = () => {
       pdf.text(20, y, `Bankers Address3: ${entry?.bank_addr3}`);
       y += 10;
     }
-    pdf.text(20, y, `Bankers City: ${entry?.bank_city}`);
+    pdf.text(20, y, `Bankers City: ${entry?.bank_city || ""}`);
     y += 10;
-    pdf.text(20, y, `Bank Pincode: ${entry?.bank_pin_code}`);
+    pdf.text(20, y, `Bank Pincode: ${entry?.bank_pin_code || ""}`);
     y += 10;
-    pdf.text(20, y, `Bank Guarantee No: ${entry?.bg_no}`);
+    pdf.text(20, y, `Bank Guarantee No: ${entry?.bg_no || ""}`);
     y += 10;
-    // pdf.text(
-    //   20,
-    //   y,
-    //   `BG Date: ${
-    //     entry?.bg_date
-    //       ? new Date(entry?.bg_date * 1000).toLocaleDateString()
-    //       : ""
-    //   }`
-    // );
-    // y += 10;
     pdf.text(
       20,
       y,
       `BG Date: ${
-        entry?.bg_date && new Date(entry?.bg_date * 1000).toLocaleDateString()
+        entry?.bg_date
+          ? new Date(entry?.bg_date * 1000).toLocaleDateString()
+          : ""
       }`
     );
     y += 10;
-    pdf.text(20, y, `BG Amount: ${entry?.bg_ammount}`);
+    pdf.text(20, y, `BG Amount: ${entry?.bg_ammount || ""}`);
     y += 10;
-    pdf.text(20, y, `BG Type: ${entry?.bg_type}`);
+    pdf.text(20, y, `BG Type: ${entry?.bg_type || ""}`);
     y += 10;
-    pdf.text(20, y, `Department: ${entry?.department}`);
+    pdf.text(20, y, `Department: ${entry?.department || ""}`);
     y += 10;
-    pdf.text(20, y, `PO Number: ${entry?.purchasing_doc_no}`);
+    pdf.text(20, y, `PO Number: ${entry?.purchasing_doc_no || ""}`);
     y += 10;
     pdf.text(
       20,
       y,
       `PO Date: ${
-        entry?.po_date && new Date(entry?.po_date).toLocaleDateString()
+        entry?.po_date ? new Date(entry?.po_date).toLocaleDateString() : ""
       }`
     );
     y += 10;
-    pdf.text(20, y, `Yard No: ${entry?.yard_no}`);
+    pdf.text(20, y, `Yard No: ${entry?.yard_no || ""}`);
     y += 10;
     pdf.text(
       20,
@@ -443,24 +547,18 @@ const SDBGSub = () => {
       y,
       `Claim Period: ${
         entry?.claim_priod
-          ? new Date(entry?.validity_date * 1000).toLocaleDateString()
+          ? new Date(entry?.claim_priod * 1000).toLocaleDateString()
           : ""
       }`
     );
     y += 10;
-    pdf.text(20, y, `Vendor Name: ${entry?.vendor_name}`);
+    pdf.text(20, y, `Vendor Name: ${entry?.vendor_name || ""}`);
     y += 10;
-    pdf.text(20, y, `Vendor Address1: ${entry?.vendor_address1}`);
+    pdf.text(20, y, `Vendor Address1: ${entry?.vendor_address1 || ""}`);
     y += 10;
-    // pdf.text(20, y, `Vendor Address2: ${entry.vendor_address2}`);
-    // y += 10;
-    // pdf.text(20, y, `Vendor Address3: ${entry.vendor_address3}`);
-    // y += 10;
-    // pdf.text(20, y, `Vendor Address3: ${entry.vendor_address3}`);
-    // y += 10;
-    pdf.text(20, y, `Vendor City: ${entry?.vendor_city}`);
+    pdf.text(20, y, `Vendor City: ${entry?.vendor_city || ""}`);
     y += 10;
-    pdf.text(20, y, `Vendor Pincode: ${entry?.vendor_pin_code}`);
+    pdf.text(20, y, `Vendor Pincode: ${entry?.vendor_pin_code || ""}`);
     y += 10;
     return pdf;
   };
@@ -1102,6 +1200,19 @@ const SDBGSub = () => {
                 </div>
                 <div className="col-md-6 col-12">
                   <div className="mb-3">
+                    <label className="form-label">Depertment</label>
+                    &nbsp;&nbsp;
+                    <input
+                      type="text"
+                      className="form-control"
+                      name="depertment"
+                      value={formDatainput?.depertment || ""}
+                      onChange={handleInputChange2}
+                    />
+                  </div>
+                </div>
+                <div className="col-md-6 col-12">
+                  <div className="mb-3">
                     <label className="form-label">BG Type</label>&nbsp;&nbsp;
                     <span className="mandatorystart">*</span>
                     <select
@@ -1128,6 +1239,13 @@ const SDBGSub = () => {
                       type="submit"
                     >
                       FORWARD TO FINANCE
+                    </button>
+                    <button
+                      onClick={() => uploadSDBGSave("SAVED")}
+                      className="btn fw-bold btn-primary custom-save-button"
+                      type="submit"
+                    >
+                      SAVE
                     </button>
                     <button
                       className="btn fw-bold btn-success"
@@ -1190,7 +1308,14 @@ const SDBGSub = () => {
                     {/* {formDatainput?.created_at
                       ? new Date(formDatainput?.created_at).toLocaleDateString()
                       : ""} */}
-                    <td>{formatDate(formDatainput?.created_at)}</td>
+                    <td
+                      style={{
+                        border: "none",
+                        background: "none",
+                      }}
+                    >
+                      {formatDate(formDatainput?.created_at)}
+                    </td>
                   </p>
                 </div>
               </div>
@@ -1372,13 +1497,18 @@ const SDBGSub = () => {
                 </div>
               </div>
               <div className="col-md-6 col-12">
-                {showRemarksInput && (
-                  <div className="mb-3">
+                {entryState[formDatainput?.reference_no]?.showRemarksInput && (
+                  <div className="col-12 mb-3">
                     <label className="form-label">Remarks</label>
                     <textarea
                       className="form-control"
-                      value={remarks}
-                      onChange={(e) => setRemarks(e.target.value)}
+                      value={entryState[formDatainput?.reference_no]?.remarks}
+                      onChange={(e) =>
+                        handleRemarksChange(
+                          formDatainput?.reference_no,
+                          e.target.value
+                        )
+                      }
                     />
                   </div>
                 )}
@@ -1438,11 +1568,13 @@ const SDBGSub = () => {
                   </button> */}
 
                   <button
-                    onClick={handleReturnClick}
+                    onClick={() =>
+                      handleReturnClick(formDatainput?.reference_no)
+                    }
                     className="btn fw-bold btn-primary"
                     type="button"
                   >
-                    {showRemarksInput
+                    {entryState[formDatainput?.reference_no]?.showRemarksInput
                       ? "Confirm Return to Dealing Officer"
                       : "Return to Dealing Officer"}
                   </button>

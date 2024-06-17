@@ -454,6 +454,15 @@ input[type="number"] {
   font-size: 1.2em;
   color: #3498db;
 } */
+.custom-save-button {
+  background-color: rgb(223, 238, 223); /* आपका इच्छित रंग यहाँ लगाएं */
+  border-color: rgb(85, 125, 85); /* बॉर्डर का रंग भी चेंज करें अगर जरूरत हो */
+}
+
+.custom-save-button:hover {
+  background-color: blue; /* hover पर रंग बदलने के लिए */
+  border-color: blue; /* hover पर बॉर्डर का रंग बदलने के लिए */
+}
 
 .skeleton-box {
   height: 20px;
