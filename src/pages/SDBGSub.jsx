@@ -354,21 +354,42 @@ const SDBGSub = () => {
   //     reference_no: referenceNo,
   //   };
 
-  //   const data = await apiCallBack(
+  //   const response1 = await apiCallBack(
   //     "POST",
   //     `/po/sdbg/getspecificbg`,
   //     payload,
   //     token
   //   );
 
-  //   if (data?.status && checkTypeArr(data?.data)) {
-  //     setFormDatainput(data?.data[data?.data.length - 1]);
-  //     setSdbgEntry(data?.data[data?.data.length - 1]);
-  //     console.log(data?.message);
+  //   const data1 = await response1.json();
+
+  //   if (data1?.status && checkTypeArr(data1?.data)) {
+  //     setFormDatainput(data1?.data[data1?.data.length - 1]);
+  //     setSdbgEntry(data1?.data[data1?.data.length - 1]);
+  //     console.log(data1?.message);
   //     setIsLoading(false);
   //   } else {
   //     setIsLoading(false);
-  //     toast.warn(data?.message);
+  //     toast.warn(data1?.message);
+  //   }
+
+  //   const response2 = await apiCallBack(
+  //     "GET",
+  //     `po/sdbg/getSdbgSave?reference_no=${referenceNo}`,
+  //     null,
+  //     token
+  //   );
+
+  //   const data2 = await response2.json();
+
+  //   if (data2?.status && checkTypeArr(data2?.data)) {
+  //     setFormDatainput(data2?.data[data2?.data.length - 1]);
+  //     setSdbgEntry(data2?.data[data2?.data.length - 1]);
+  //     console.log(data2?.message);
+  //     setIsLoading(false);
+  //   } else {
+  //     setIsLoading(false);
+  //     toast.warn(data2?.message);
   //   }
   // };
 
@@ -380,31 +401,29 @@ const SDBGSub = () => {
     };
 
     try {
-      if (user?.department_id !== 15) {
-        const response1 = await fetch(
-          `http://localhost:4001/api/v1/po/sdbg/getSdbgSave?reference_no=${referenceNo}`,
-          {
-            method: "GET",
-            headers: {
-              Authorization: `Bearer ${token}`,
-              "Content-Type": "application/json",
-            },
-          }
-        );
-
-        if (!response1.ok) {
-          throw new Error(`HTTP error! Status: ${response1.status}`);
+      const response1 = await fetch(
+        `http://localhost:4001/api/v1/po/sdbg/getSdbgSave?reference_no=${referenceNo}`,
+        {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
         }
+      );
 
-        const data1 = await response1.json();
+      if (!response1.ok) {
+        throw new Error(`HTTP error! Status: ${response1.status}`);
+      }
 
-        if (data1.status && checkTypeArr(data1.data)) {
-          setFormDatainput(data1.data[data1.data.length - 1]);
-          setSdbgEntry(data1.data[data1.data.length - 1]);
-          setIsLoading(false);
-          console.log(data1.message);
-          return; // Exit function if successful
-        }
+      const data1 = await response1.json();
+
+      if (data1.status && checkTypeArr(data1.data)) {
+        setFormDatainput(data1.data[data1.data.length - 1]);
+        // setSdbgEntry(data1.data[data1.data.length - 1]);
+        setIsLoading(false);
+        console.log(data1.message);
+        return; // Exit function if successful
       }
 
       const response2 = await fetch(
@@ -427,7 +446,7 @@ const SDBGSub = () => {
 
       if (data2.status && checkTypeArr(data2.data)) {
         setFormDatainput(data2.data[data2.data.length - 1]);
-        setSdbgEntry(data2.data[data2.data.length - 1]);
+        // setSdbgEntry(data2.data[data2.data.length - 1]);
         setIsLoading(false);
         console.log(data2.message);
       } else {
@@ -440,6 +459,73 @@ const SDBGSub = () => {
       toast.error("Failed to fetch data");
     }
   };
+
+  // const SdbgEntryUpdate = async (referenceNo) => {
+  //   try {
+  //     setIsLoading(true);
+  //     let payload = {
+  //       purchasing_doc_no: id,
+  //       reference_no: referenceNo,
+  //     };
+
+  //     // Attempt the second API call first
+  //     const response2 = await apiCallBack(
+  //       "GET",
+  //       `po/sdbg/getSdbgSave?reference_no=${referenceNo}`,
+  //       null,
+  //       token
+  //     );
+
+  //     // Check if response2 is valid
+  //     if (!response2 || typeof response2.json !== "function") {
+  //       throw new Error(
+  //         "Invalid response from apiCallBack for the second API call"
+  //       );
+  //     }
+
+  //     const data2 = await response2.json();
+
+  //     if (data2?.status && checkTypeArr(data2?.data)) {
+  //       setFormDatainput(data2?.data[data2?.data.length - 1]);
+  //       setSdbgEntry(data2?.data[data2?.data.length - 1]);
+  //       console.log(data2?.message);
+  //       setIsLoading(false);
+  //       return; // Exit the function early since we have the data
+  //     } else {
+  //       toast.warn(data2?.message);
+  //     }
+
+  //     // If the second API call did not return the needed data, fall back to the first API call
+  //     const response1 = await apiCallBack(
+  //       "POST",
+  //       `/po/sdbg/getspecificbg`,
+  //       payload,
+  //       token
+  //     );
+
+  //     // Check if response1 is valid
+  //     if (!response1 || typeof response1.json !== "function") {
+  //       throw new Error(
+  //         "Invalid response from apiCallBack for the first API call"
+  //       );
+  //     }
+
+  //     const data1 = await response1.json();
+
+  //     if (data1?.status && checkTypeArr(data1?.data)) {
+  //       setFormDatainput(data1?.data[data1?.data.length - 1]);
+  //       setSdbgEntry(data1?.data[data1?.data.length - 1]);
+  //       console.log(data1?.message);
+  //     } else {
+  //       toast.warn(data1?.message);
+  //     }
+  //   } catch (error) {
+  //     console.error("Error in SdbgEntryUpdate:", error);
+  //     toast.error("An error occurred while updating SDBG entry.");
+  //   } finally {
+  //     setIsLoading(false);
+  //   }
+  // };
 
   useEffect(() => {
     if (allsdbg && allsdbg.length > 0) {
