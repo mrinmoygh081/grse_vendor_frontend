@@ -281,6 +281,7 @@ const SDBGSub = () => {
   };
 
   const financeEntry = async (flag, referenceNo) => {
+    console.log(referenceNo, "referenceNo");
     const entry = entryState[referenceNo];
     let action_type = "SDBG SUBMISSION";
     let payloadRemarks = entry?.remarks;
@@ -1640,7 +1641,8 @@ const SDBGSub = () => {
                     onClick={() =>
                       reConfirm(
                         { file: true },
-                        () => financeEntry("APPROVED"),
+                        () =>
+                          financeEntry("APPROVED", formDatainput?.reference_no),
                         "You're going to Accept the SDBG Entry. Please confirm!"
                       )
                     }
@@ -1655,7 +1657,7 @@ const SDBGSub = () => {
                     onClick={() =>
                       reConfirm(
                         { file: true },
-                        () => financeEntry("HOLD"),
+                        () => financeEntry("HOLD", formDatainput?.reference_no),
                         "You're going to Hold the SDBG Entry. Please confirm!"
                       )
                     }
@@ -1666,7 +1668,7 @@ const SDBGSub = () => {
                     onClick={() =>
                       reConfirm(
                         { file: true },
-                        () => financeEntry("RETURN_TO_DO"),
+                        () => financeEntry("RETURN_TO_DO", formDatainput?.reference_no),
                         "You're going to return the SDBG Entry to Dealing Officer to recheck. Please confirm!"
                       )
                     }
@@ -1691,7 +1693,8 @@ const SDBGSub = () => {
                     onClick={() =>
                       reConfirm(
                         { file: true },
-                        () => financeEntry("REJECTED"),
+                        () =>
+                          financeEntry("REJECTED", formDatainput?.reference_no),
                         "You're going to Reject the SDBG Entry. Please confirm!"
                       )
                     }

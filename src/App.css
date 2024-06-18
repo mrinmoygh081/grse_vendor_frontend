@@ -510,3 +510,8 @@ input[type="number"] {
 .skeleton-text {
   width: 70%;
 }
+
+/* CSS file or within your component's styling */
+.react-select-container {
+  width: 100%; /* Adjust width as needed */
+}
