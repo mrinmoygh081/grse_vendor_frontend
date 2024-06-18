@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import logo from "../../images/logo.png";
 import { useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
+import { checkTypeArr } from "../../utils/smallFun";
 
 function InspectionReport() {
   const [apiData, setApiData] = useState([]);
@@ -214,7 +215,7 @@ function InspectionReport() {
               <h4>Loading....</h4>
             ) : (
               <tbody>
-                {apiData?.lineItems?.map((item, index) => (
+                {checkTypeArr(apiData.lineItems).map((item, index) => (
                   <tr>
                     <td>{item.purchasing_doc_no_item}</td>
                     <td>{item.materialNumber}</td>
