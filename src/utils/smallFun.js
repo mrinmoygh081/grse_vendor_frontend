@@ -1,5 +1,6 @@
 // import { toast } from "react-toastify";
 
+import { toast } from "react-toastify";
 import { convertToEpoch } from "./getDateTimeNow";
 
 export const checkTypeArr = (data) => {
@@ -64,30 +65,32 @@ export const calculateNetPay = (
   other,
   estimate
 ) => {
-  // if (!net || net === "") {
-  //   toast.warn("ICGRN Value is missing");
-  // }
-  if (!ld && ld === "") {
+  if (!net || net === "") {
+    toast.warn("Net claim amount is missing");
+  }
+  if (!ld || ld === "") {
     ld = 0;
-  } else if (!sdbg && sdbg === "") {
+  } else if (!sdbg || sdbg === "") {
     sdbg = 0;
-  } else if (!drg && drg === "") {
+  } else if (!drg || drg === "") {
     drg = 0;
-  } else if (!qap && qap === "") {
+  } else if (!qap || qap === "") {
     qap = 0;
-  } else if (!ilms && ilms === "") {
+  } else if (!ilms || ilms === "") {
     ilms = 0;
-  } else if (!other && other === "") {
+  } else if (!other || other === "") {
     other = 0;
-  } else if (!estimate && estimate === "") {
+  } else if (!estimate || estimate === "") {
     estimate = 0;
   }
-  let deduct = parseInt(ld) + parseInt(other) + parseInt(estimate);
 
-  let net_pay = parseInt(net) - deduct;
+  let deduct = parseFloat(ld) + parseFloat(other) + parseFloat(estimate);
+  console.log(estimate);
+
+  let net_pay = parseFloat(net) - deduct;
 
   return {
-    deduct,
-    net_pay,
+    deduct: parseFloat(deduct).toFixed(2),
+    net_pay: parseFloat(net_pay).toFixed(2),
   };
 };

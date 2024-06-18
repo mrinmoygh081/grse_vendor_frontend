@@ -2,6 +2,24 @@ import { toast } from "react-toastify";
 import { apiCallBack } from "../utils/fetchAPIs";
 import { convertToEpoch } from "../utils/getDateTimeNow";
 
+export const getGrnIcgrnByInvoice = async (po, invoice_no, token) => {
+  try {
+    const payload = {
+      purchasing_doc_no: po,
+      invoice_no: invoice_no,
+    };
+    const response = await apiCallBack(
+      "POST",
+      "po/btn/getGrnIcgrnByInvoice",
+      payload,
+      token
+    );
+    return response;
+  } catch (error) {
+    console.error("ERROR GETTING GRN ICGRN:", error);
+  }
+};
+
 export const actionHandlerBTN = async (
   flag,
   token,
@@ -13,48 +31,37 @@ export const actionHandlerBTN = async (
 ) => {
   try {
     const {
+      yard,
+      stage,
       invoice_no,
       invoice_filename,
       invoice_value,
       e_invoice_no,
-      gst_rate,
       e_invoice_filename,
       debit_note,
       credit_note,
       net_claim_amount,
-      net_with_gst,
+      cgst,
+      sgst,
+      igst,
       debit_credit_filename,
-      gate_entry_no,
-      gate_entry_date,
-      get_entry_filename,
-      grn_no_1,
-      grn_no_2,
-      grn_no_3,
-      grn_no_4,
-      icgrn_no_1,
-      icgrn_no_2,
-      icgrn_no_3,
-      icgrn_no_4,
-      grn_nos,
-      icgrn_nos,
       total_price,
-      total_icgrn_value,
       hsn_gstn_icgrn,
       agree_to_declaration,
-      c_sdbg_filename,
       demand_raise_filename,
-      pbg_filename,
       associated_po,
     } = form;
 
-    console.log("associated_po1", associated_po);
-
+    if (!invoice_value || !invoice_value.trim() === "") {
+      toast.warning("Basic Value is mandatory.");
+      return;
+    }
     if (!agree_to_declaration) {
-      toast.warning("Please check the  I Agree To Declaration!");
+      toast.warning("Please check to agree the Declaration.");
       return;
     }
     if (!hsn_gstn_icgrn) {
-      toast.warning("Please check the HSN code, GSTIN, Tax rate is as per PO!");
+      toast.warning("Please check the HSN code, GSTIN, Tax rate is as per PO.");
       return;
     }
     if (total_price !== net_claim_amount) {
@@ -62,32 +69,19 @@ export const actionHandlerBTN = async (
       return;
     }
     const fDToSend = new FormData();
+    fDToSend.append("yard", yard);
+    fDToSend.append("stage", stage);
     fDToSend.append("purchasing_doc_no", id);
     fDToSend.append("invoice_no", invoice_no);
     fDToSend.append("invoice_value", invoice_value);
     fDToSend.append("e_invoice_no", e_invoice_no);
     fDToSend.append("debit_note", debit_note);
     fDToSend.append("credit_note", credit_note);
-    fDToSend.append("gst_rate", gst_rate);
-    fDToSend.append("net_claim_amount", net_claim_amount);
-    fDToSend.append("net_with_gst", net_with_gst);
-    fDToSend.append("gate_entry_no", gate_entry_no);
-    fDToSend.append("gate_entry_date", gate_entry_date);
-    fDToSend.append("grn_no_1", grn_no_1 || "");
-    fDToSend.append("grn_no_2", grn_no_2 || "");
-    fDToSend.append("grn_no_3", grn_no_3 || "");
-    fDToSend.append("grn_no_4", grn_no_4 || "");
-    fDToSend.append("icgrn_no_1", icgrn_no_1 || "");
-    fDToSend.append("icgrn_no_2", icgrn_no_2 || "");
-    fDToSend.append("icgrn_no_3", icgrn_no_3 || "");
-    fDToSend.append("icgrn_no_4", icgrn_no_4 || "");
-    fDToSend.append("grn_nos", grn_nos || "");
-    fDToSend.append("icgrn_nos", icgrn_nos || "");
-    fDToSend.append("total_icgrn_value", total_icgrn_value);
-    fDToSend.append("total_price", total_price);
     fDToSend.append("hsn_gstn_icgrn", hsn_gstn_icgrn);
-    fDToSend.append("agree_to_declaration", agree_to_declaration);
-    fDToSend.append("associated_po", associated_po);
+    fDToSend.append("cgst", cgst);
+    fDToSend.append("sgst", sgst);
+    fDToSend.append("igst", igst);
+    fDToSend.append("associated_po", JSON.stringify(associated_po));
     if (invoice_filename) {
       fDToSend.append("invoice_filename", invoice_filename);
     }
@@ -97,17 +91,11 @@ export const actionHandlerBTN = async (
     if (debit_credit_filename) {
       fDToSend.append("debit_credit_filename", debit_credit_filename);
     }
-    if (get_entry_filename) {
-      fDToSend.append("get_entry_filename", get_entry_filename);
-    }
-    if (c_sdbg_filename) {
-      fDToSend.append("c_sdbg_filename", c_sdbg_filename);
-    }
+    // if (get_entry_filename) {
+    //   fDToSend.append("get_entry_filename", get_entry_filename);
+    // }
     if (demand_raise_filename) {
       fDToSend.append("demand_raise_filename", demand_raise_filename);
-    }
-    if (pbg_filename) {
-      fDToSend.append("pbg_filename", pbg_filename);
     }
     console.log("fDToSend", fDToSend);
     const response = await apiCallBack(
@@ -138,14 +126,28 @@ export const actionHandlerByDO = async (
   id,
   token
 ) => {
-  doForm.assigned_to = doForm?.certifying_authority;
+  console.log("doForm", doForm);
   try {
+    doForm.purchasing_doc_no = id;
+    if (!doForm?.assign_to || doForm?.assign_to === "") {
+      return toast.warn("Please choose the finance authority.");
+    }
+    if (!doForm?.ld_ge_date || doForm?.ld_ge_date === "") {
+      return toast.warn("Please select gate entry date");
+    }
+    if (!doForm?.contractual_ld || doForm?.contractual_ld === "") {
+      return toast.warn("Please select contractual delivery date.");
+    }
+    if (!doForm?.other_deduction || doForm?.other_deduction === "") {
+      return toast.warn("Please fill other decuction.");
+    }
     const response = await apiCallBack(
       "POST",
       "po/btn/BillsMaterialHybridByDO",
       doForm,
       token
     );
+    console.log("response2", response);
     if (response?.status) {
       toast.success(response?.message);
       setDoForm(initialData);
@@ -308,7 +310,6 @@ export const actionHandlerAdvancebillHybrid = async (
     //   toast.warning("Total price and net claim amount should be equal!");
     //   return;
     // }
-    console.log(user, "bbbbbbbbbbbbbbbb");
     let fDToSend = new FormData();
     fDToSend.append("btn_num", null);
     fDToSend.append("purchasing_doc_no", id);

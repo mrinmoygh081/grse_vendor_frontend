@@ -5,7 +5,10 @@ import Header from "../../components/Header";
 import Footer from "../../components/Footer";
 import { useSelector } from "react-redux";
 import { USER_VENDOR } from "../../constants/userConstants";
-import { actionHandlerBTN } from "../../Helpers/BTNChecklist";
+import {
+  actionHandlerBTN,
+  getGrnIcgrnByInvoice,
+} from "../../Helpers/BTNChecklist";
 import { FaPlus } from "react-icons/fa";
 import {
   checkTypeArr,
@@ -16,50 +19,15 @@ import { inputOnWheelPrevent } from "../../utils/inputOnWheelPrevent";
 import { apiCallBack } from "../../utils/fetchAPIs";
 import { formatDate } from "../../utils/getDateTimeNow";
 import { toast } from "react-toastify";
+import { initialData } from "../../data/btnData";
 
 const BillsMaterialHybrid = () => {
   const navigate = useNavigate();
-  const { isDO, poType } = useSelector((state) => state.selectedPO);
-
+  // const { isDO, poType } = useSelector((state) => state.selectedPO);
   const { user, token } = useSelector((state) => state.auth);
   const { id } = useParams();
 
   const [data, setData] = useState(null);
-
-  let initialData = {
-    invoice_no: "",
-    invoice_filename: "",
-    invoice_value: "",
-    e_invoice_no: "",
-    e_invoice_filename: "",
-    debit_note: "",
-    credit_note: "",
-    net_claim_amount: 0,
-    cgst: null,
-    sgst: null,
-    igst: null,
-    net_with_gst: 0,
-    debit_credit_filename: "",
-    gate_entry_no: "",
-    gate_entry_date: "",
-    get_entry_filename: "",
-    total_icgrn_value: "",
-    hsn_gstn_icgrn: false,
-    agree_to_declaration: false,
-    ld_gate_entry_date: "",
-    ld_contractual_date: "",
-    c_sdbg_filename: "",
-    demand_raise_filename: "",
-    pbg_filename: "",
-    grn_nos: "",
-    yard_no: "",
-    icgrn_nos: "",
-    associated_po: [
-      {
-        a_po: "",
-      },
-    ],
-  };
   const [form, setForm] = useState(initialData);
 
   const calNetClaimAmount = (invoice_value, debit_note, credit_note) => {
@@ -82,16 +50,12 @@ const BillsMaterialHybrid = () => {
   }, [form?.invoice_value, form?.debit_note, form?.credit_note]);
 
   const calNetClaimAmountwithGST = (net_claim_amount, cgst, sgst, igst) => {
-    console.log("cgst...", cgst);
     cgst = parseFloat(cgst) || 0;
-    console.log("cgstcgst...", cgst);
     sgst = parseFloat(sgst) || 0;
     igst = parseFloat(igst) || 0;
 
     const totalGST = (cgst + sgst + igst) / 100;
-    console.log("totalGST", totalGST);
     let netWithGST = net_claim_amount * (1 + totalGST);
-    console.log("netWithGST", netWithGST);
     netWithGST = parseFloat(netWithGST.toFixed(2));
     setForm((prevForm) => ({
       ...prevForm,
@@ -113,6 +77,7 @@ const BillsMaterialHybrid = () => {
         token
       );
       if (d?.status) {
+        console.log(d);
         setData(d?.data);
       }
     } catch (error) {
@@ -140,38 +105,25 @@ const BillsMaterialHybrid = () => {
     }
   }, [data]);
 
-  const createInvoiceNo = async () => {
-    try {
-      const payload = {
-        purchasing_doc_no: id,
-        invoice_no: form.invoice_no,
-      };
-      const response = await apiCallBack(
-        "POST",
-        "po/btn/getGrnIcrenPenelty",
-        payload,
-        token
-      );
-      console.log("createInvoiceNo", response);
-      if (response?.status) {
-        const { gate_entry_no, grn_nos, icgrn_nos, invoice_date, total_price } =
-          response.data;
-        setForm({
-          ...form,
-          gate_entry_no: gate_entry_no,
-          gate_entry_date: new Date(invoice_date).toLocaleDateString(),
-          grn_nos: grn_nos,
-          icgrn_nos: icgrn_nos,
-          total_price: total_price,
-        });
-      } else {
-        toast.warn(response.message);
-        console.error("Error creating invoice number:", response.message);
-      }
-    } catch (error) {
-      console.error("Error creating invoice number:", error);
+  const getGrnIcgrnHandler = async () => {
+    let response = await getGrnIcgrnByInvoice(id, form.invoice_no, token);
+    if (response?.status) {
+      const { gate_entry_no, grn_nos, icgrn_nos, invoice_date, total_price } =
+        response.data;
+      setForm({
+        ...form,
+        gate_entry_no: gate_entry_no,
+        gate_entry_date: formatDate(invoice_date),
+        grn_nos: grn_nos,
+        icgrn_nos: icgrn_nos,
+        total_price: total_price,
+      });
+    } else {
+      toast.warn(response.message);
     }
   };
+
+  console.log("form", form);
 
   return (
     <>
@@ -200,13 +152,10 @@ const BillsMaterialHybrid = () => {
                                           type="number"
                                           className="form-control"
                                           onWheel={inputOnWheelPrevent}
-                                          name="yard_no"
-                                          value={form?.yard_no}
+                                          name="yard"
+                                          value={form?.yard}
                                           onChange={(e) =>
-                                            setForm({
-                                              ...form,
-                                              yard_no: e.target.value,
-                                            })
+                                            inputTypeChange(e, form, setForm)
                                           }
                                         />
                                       </td>
@@ -215,9 +164,12 @@ const BillsMaterialHybrid = () => {
                                       <td>Stage:</td>
                                       <td className="btn_value">
                                         <select
-                                          name=""
+                                          name="stage"
                                           id=""
                                           className="form-select"
+                                          onChange={(e) =>
+                                            inputTypeChange(e, form, setForm)
+                                          }
                                         >
                                           <option value="1"> 1</option>
                                           <option value="2"> 2</option>
@@ -259,7 +211,7 @@ const BillsMaterialHybrid = () => {
                                         <button
                                           type="button"
                                           className="btn btn-primary btn-sm m-4"
-                                          onClick={createInvoiceNo}
+                                          onClick={getGrnIcgrnHandler}
                                         >
                                           CHECK
                                         </button>
@@ -289,7 +241,7 @@ const BillsMaterialHybrid = () => {
                                         {/* <button
                                           type="button"
                                           className="btn btn-primary btn-sm m-4"
-                                          onClick={createInvoiceNo}
+                                          onClick={getGrnIcgrnHandler}
                                         >
                                           CHECK
                                         </button> */}
@@ -308,7 +260,6 @@ const BillsMaterialHybrid = () => {
                                               value={item?.a_po}
                                               onChange={(e) => {
                                                 item.a_po = e.target.value;
-                                                // console.log(form.associated_po)
                                                 setForm({
                                                   ...form,
                                                   associated_po:
@@ -565,6 +516,7 @@ const BillsMaterialHybrid = () => {
                                         Contractual Drawing submission date
                                       </td>
                                       <td className="btn_value">
+                                        {console.log(form?.c_drawing_date)}
                                         <b>
                                           {form?.c_drawing_date &&
                                             formatDate(form?.c_drawing_date)}
