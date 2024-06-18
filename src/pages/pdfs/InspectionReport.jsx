@@ -239,7 +239,8 @@ function InspectionReport() {
               </tbody>
             )}
           </table>
-          <div className="col-12">
+
+          {/* <div className="col-12">
             <h6 className="m-0">Remarks</h6>
             {checkTypeArr(apiData?.lineItems) &&
               apiData?.lineItems.map((itemm, index) => (
@@ -250,7 +251,7 @@ function InspectionReport() {
                   {itemm?.remarks}
                 </p>
               ))}
-          </div>
+          </div> */}
         </div>
       </div>
 
