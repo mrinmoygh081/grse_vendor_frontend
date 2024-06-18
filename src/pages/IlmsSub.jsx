@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { Fragment, useEffect, useState } from "react";
 import Footer from "../components/Footer";
 import SideBar from "../components/SideBar";
 import Header from "../components/Header";
@@ -10,6 +10,7 @@ import { toast } from "react-toastify";
 import { reConfirm } from "../utils/reConfirm";
 import { clrLegend } from "../utils/clrLegend";
 import { formatDate } from "../utils/getDateTimeNow";
+import { groupedByIlms } from "../utils/groupedByReq";
 
 const IlmsSub = () => {
   const [isPopup, setIsPopup] = useState(false);
@@ -19,6 +20,7 @@ const IlmsSub = () => {
     drawingFile: null,
     remarks: "",
   });
+  const [groupedIlms, setGroupeIlms] = useState([]);
   const [selectedActionTypeName, setSelectedActionTypeName] = useState("");
   const { id } = useParams();
   const { user, token, userType } = useSelector((state) => state.auth);
@@ -41,6 +43,13 @@ const IlmsSub = () => {
       console.error("Error fetching drawing list:", error);
     }
   };
+
+  useEffect(() => {
+    if (allData && allData.length > 0) {
+      const gData = groupedByIlms(allData);
+      setGroupeIlms(gData);
+    }
+  }, [allData]);
 
   useEffect(() => {
     getData();
@@ -127,7 +136,6 @@ const IlmsSub = () => {
                             <table className="table table-striped table-bordered table_height">
                               <thead>
                                 <tr className="border-0">
-                                  <th>Reference No</th>
                                   <th>DateTime </th>
                                   <th>ILMS File</th>
                                   <th>Action By</th>
@@ -141,70 +149,68 @@ const IlmsSub = () => {
                                 </tr>
                               </thead>
                               <tbody style={{ maxHeight: "100%" }}>
-                                {allData &&
-                                  allData.map((item, index) => (
-                                    <tr key={index}>
-                                      <td>{item.reference_no}</td>
-                                      <td>
-                                        {/* {item?.created_at &&
-                                          new Date(
-                                            item?.created_at
-                                          ).toLocaleString()} */}
-                                        <td
-                                          style={{
-                                            border: "none",
-                                            background: "none",
-                                          }}
-                                        >
-                                          {formatDate(item?.created_at)}
+                                {Object.keys(groupedIlms).map((it, index) => {
+                                  let items = groupedIlms[it];
+                                  let firstItem = items[0];
+                                  return (
+                                    <Fragment key={index}>
+                                      <tr>
+                                        <td colSpan={5}>
+                                          <b>{it}</b>
                                         </td>
-                                      </td>
-                                      <td className="">
-                                        {item.file_name && (
-                                          <a
-                                            href={`${process.env.REACT_APP_PDF_URL}submitILMS/${item.file_name}`}
-                                            target="_blank"
-                                            rel="noreferrer"
-                                          >
-                                            Click Here
-                                          </a>
-                                        )}
-                                      </td>
-                                      <td className="">
-                                        {item?.created_by_id}
-                                      </td>
-                                      <td className="">{item?.remarks}</td>
-                                      <td
-                                        className={`${clrLegend(
-                                          item?.status
-                                        )} bold`}
-                                      >
-                                        {item.status}
-                                      </td>
-
-                                      {user.department_id === 2 ? (
-                                        <td>
-                                          {item.status == "SUBMITTED" ? (
-                                            <button
-                                              onClick={() => {
-                                                setIsPopup(true);
-                                                setreferenceNo(
-                                                  item.reference_no
-                                                );
-                                              }}
-                                              className="btn fw-bold btn-primary mx-3"
-                                            >
-                                              ACTION
-                                            </button>
-                                          ) : (
-                                            ""
+                                        {user.department_id === 2 &&
+                                          firstItem.status === "SUBMITTED" && (
+                                            <td>
+                                              <button
+                                                onClick={() => {
+                                                  setIsPopup(true);
+                                                  setreferenceNo(
+                                                    firstItem.reference_no
+                                                  );
+                                                }}
+                                                className="btn fw-bold btn-primary mx-3"
+                                              >
+                                                ACTION
+                                              </button>
+                                            </td>
                                           )}
-                                        </td>
-                                      ) : (
-                                        ""
-                                      )}
-                                    </tr>
-                                  ))}
+                                      </tr>
+                                      {items.map((item, i) => (
+                                        <tr key={i}>
+                                          <td
+                                            style={{
+                                              border: "none",
+                                              background: "none",
+                                            }}
+                                          >
+                                            {formatDate(item?.created_at)}
+                                          </td>
+                                          <td>
+                                            {item.file_name && (
+                                              <a
+                                                href={`${process.env.REACT_APP_PDF_URL}submitILMS/${item.file_name}`}
+                                                target="_blank"
+                                                rel="noreferrer"
+                                              >
+                                                Click Here
+                                              </a>
+                                            )}
+                                          </td>
+                                          <td>{item?.created_by_id}</td>
+                                          <td>{item?.remarks}</td>
+                                          <td
+                                            className={`${clrLegend(
+                                              item?.status
+                                            )} bold`}
+                                          >
+                                            {item.status}
+                                          </td>
+                                          <td></td>
+                                        </tr>
+                                      ))}
+                                    </Fragment>
+                                  );
+                                })}
                               </tbody>
                             </table>
                           </div>

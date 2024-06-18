@@ -19,6 +19,16 @@ export const groupedByRefNo = (data) => {
     return result;
   }, {});
 };
+export const groupedByIlms = (data) => {
+  return data.reduce((result, item) => {
+    const byType = item.reference_no;
+    if (!result[byType]) {
+      result[byType] = [];
+    }
+    result[byType].push(item);
+    return result;
+  }, {});
+};
 
 export const groupedByBtnNum = (data) => {
   return data.reduce((result, item) => {
