@@ -1352,7 +1352,7 @@ const SDBGSub = () => {
                     </button>
                     <button
                       onClick={() => uploadSDBGSave("SAVED")}
-                      className="btn fw-bold btn-primary custom-save-button"
+                      className="btn fw-bold btn-info custom-save-button"
                       type="submit"
                     >
                       SAVE
@@ -1522,7 +1522,7 @@ const SDBGSub = () => {
                   <p>{formDatainput?.purchasing_doc_no}</p>
                 </div>
               </div>
-              <div className="col-md-6 col-12">
+              {/* <div className="col-md-6 col-12">
                 <div className="mb-3">
                   <label className="form-label">PO Date</label>
                   <p>
@@ -1530,11 +1530,17 @@ const SDBGSub = () => {
                       new Date(formDatainput?.po_date).toLocaleDateString()}
                   </p>
                 </div>
-              </div>
+              </div> */}
               <div className="col-md-6 col-12">
                 <div className="mb-3">
                   <label className="form-label">Yard No</label>
                   <p>{formDatainput?.yard_no}</p>
+                </div>
+              </div>
+              <div className="col-md-6 col-12">
+                <div className="mb-3">
+                  <label className="form-label">Depertment</label>
+                  <p>{formDatainput?.department}</p>
                 </div>
               </div>
               <div className="col-md-6 col-12">
@@ -1562,7 +1568,7 @@ const SDBGSub = () => {
                 </div>
               </div>
 
-              <div className="col-md-6 col-12">
+              {/* <div className="col-md-6 col-12">
                 <div className="mb-3">
                   <label className="form-label">Vendor Name</label>
                   <p>{formDatainput?.vendor_name}</p>
@@ -1573,7 +1579,7 @@ const SDBGSub = () => {
                   <label className="form-label">Vendor Address1</label>
                   <p>{formDatainput?.vendor_address1}</p>
                 </div>
-              </div>
+              </div> */}
               {formDatainput?.vendor_address2 && (
                 <>
                   <div className="col-md-6 col-12">
@@ -1594,18 +1600,18 @@ const SDBGSub = () => {
                   </div>
                 </>
               )}
-              <div className="col-md-6 col-12">
+              {/* <div className="col-md-6 col-12">
                 <div className="mb-3">
                   <label className="form-label">Vendor City</label>
                   <p>{formDatainput?.vendor_city}</p>
                 </div>
-              </div>
-              <div className="col-md-6 col-12">
+              </div> */}
+              {/* <div className="col-md-6 col-12">
                 <div className="mb-3">
                   <label className="form-label">Vendor Pincode</label>
                   <p>{formDatainput?.vendor_pin_code}</p>
                 </div>
-              </div>
+              </div> */}
               <div className="col-md-6 col-12">
                 {entryState[formDatainput?.reference_no]?.showRemarksInput && (
                   <div className="col-12 mb-3">
@@ -1652,7 +1658,7 @@ const SDBGSub = () => {
                     APPROVED
                   </button>
                   <button
-                    className="btn fw-bold btn-success me-3"
+                    className="btn fw-bold btn-info me-3"
                     type="button"
                     onClick={() =>
                       reConfirm(
