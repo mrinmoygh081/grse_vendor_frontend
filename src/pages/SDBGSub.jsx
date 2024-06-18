@@ -595,7 +595,7 @@ const SDBGSub = () => {
     y += 10;
     pdf.text(20, y, `BG Type: ${entry?.bg_type || ""}`);
     y += 10;
-    pdf.text(20, y, `Department: ${entry?.depertment || ""}`);
+    pdf.text(20, y, `Department: ${entry?.department || ""}`);
     y += 10;
     pdf.text(20, y, `PO Number: ${entry?.purchasing_doc_no || ""}`);
     y += 10;
@@ -1314,8 +1314,8 @@ const SDBGSub = () => {
                     <input
                       type="text"
                       className="form-control"
-                      name="depertment"
-                      value={formDatainput?.depertment || ""}
+                      name="department"
+                      value={formDatainput?.department || ""}
                       onChange={handleInputChange2}
                     />
                   </div>
