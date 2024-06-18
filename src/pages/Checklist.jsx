@@ -4,7 +4,7 @@ import Footer from "../components/Footer";
 // import Header from "../components/Header";
 // import { useParams } from "react-router-dom";
 // import MainHeader from "../components/MainHeader";
-import { useNavigate, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import Header from "../components/Header";
 import SideBar from "../components/SideBar";
@@ -12,12 +12,14 @@ import { apiCallBack } from "../utils/fetchAPIs";
 import { useSelector } from "react-redux";
 import { checkTypeArr } from "../utils/smallFun";
 import { formatDate } from "../utils/getDateTimeNow";
+import { clrLegend } from "../utils/clrLegend";
 
 const Checklist = () => {
   const { id } = useParams();
   const { isDO } = useSelector((state) => state.selectedPO);
   const { user, token } = useSelector((state) => state.auth);
   const [data, setData] = useState(null);
+  const { pathname } = useLocation();
 
   const navigate = useNavigate();
   // const [isPopup, setIsPopup] = useState(false);
@@ -44,11 +46,7 @@ const Checklist = () => {
     }
   };
 
-  useEffect(() => {
-    getData();
-  }, []);
-
-  //************************************************Payment Advice********************************************************* */
+  //************Payment Advice********************* */
 
   const createpayment = async () => {
     try {
@@ -73,8 +71,9 @@ const Checklist = () => {
   };
 
   useEffect(() => {
+    getData();
     createpayment();
-  }, [id, token]);
+  }, [id, token, pathname]);
 
   return (
     <>
@@ -137,10 +136,11 @@ const Checklist = () => {
                             <table className="table table-striped table-bordered table_height">
                               <thead>
                                 <tr className="border-0">
+                                  <th>Date</th>
                                   <th>BTN Num </th>
-                                  <th>Invoice Number </th>
-                                  <th>Invoice Value</th>
-                                  {/* <th>Associated POs</th> */}
+                                  <th>Net Claim Amount</th>
+                                  <th>Net Payable Amount</th>
+                                  <th>Status</th>
                                   <th>Action</th>
                                 </tr>
                               </thead>
@@ -149,10 +149,17 @@ const Checklist = () => {
                                   data.map((item, i) => {
                                     return (
                                       <tr key={i}>
+                                        <td>{item?.purchasing_doc_no}</td>
                                         <td>{item?.btn_num}</td>
-                                        <td>{item?.invoice_no}</td>
-                                        <td>{item?.invoice_value}</td>
-                                        {/* <td></td> */}
+                                        <td>{item?.net_claim_amount}</td>
+                                        <td>{item?.net_payable_amount}</td>
+                                        <td
+                                          className={`${clrLegend(
+                                            item?.status
+                                          )} bold`}
+                                        >
+                                          {item?.status}
+                                        </td>
                                         <td>
                                           <div className="view-button-container">
                                             <button
