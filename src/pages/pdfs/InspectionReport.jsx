@@ -29,7 +29,7 @@ function InspectionReport() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const path = `${process.env.REACT_APP_BACKEND_API}sap/qa/icgrn/report`;
+        const path = `${process.env.REACT_APP_BACKEND_API}sap/document/icgrnReport`;
         const config = {
           method: "POST",
           headers: {

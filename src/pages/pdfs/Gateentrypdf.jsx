@@ -30,7 +30,7 @@ function Gateentrypdf() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const path = `${process.env.REACT_APP_BACKEND_API}sap/store/gateentryReport`;
+        const path = `${process.env.REACT_APP_BACKEND_API}sap/document/gateentryReport`;
         const config = {
           method: "POST",
           headers: {
