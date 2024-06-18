@@ -499,3 +499,14 @@ input[type="number"] {
     background-color: #e0e0e0;
   }
 }
+.skeleton {
+  background-color: #e0e0e0;
+  height: 1.6em;
+  margin-bottom: 0.75em;
+  border-radius: 4px;
+  width: 100%;
+}
+
+.skeleton-text {
+  width: 70%;
+}
