@@ -241,14 +241,15 @@ function InspectionReport() {
           </table>
           <div className="col-12">
             <h6 className="m-0">Remarks</h6>
-            {apiData?.lineItems?.map((itemm, index) => (
-              <p
-                className="m-0 w-75"
-                style={{ wordWrap: "break-word", fontSize: "14px" }}
-              >
-                {itemm?.remarks}
-              </p>
-            ))}
+            {checkTypeArr(apiData?.lineItems) &&
+              apiData?.lineItems.map((itemm, index) => (
+                <p
+                  className="m-0 w-75"
+                  style={{ wordWrap: "break-word", fontSize: "14px" }}
+                >
+                  {itemm?.remarks}
+                </p>
+              ))}
           </div>
         </div>
       </div>
