@@ -215,30 +215,27 @@ function InspectionReport() {
               <h4>Loading....</h4>
             ) : (
               <tbody>
-                {checkTypeArr(apiData.lineItems).map((item, index) => (
-                  <tr>
-                    <td>{item.purchasing_doc_no_item}</td>
-                    <td>{item.materialNumber}</td>
-                    <td>{item.materialDesc}</td>
-                    <td>{item.supplyQuantity}</td>
-                    <td>{item.acceptedQty}</td>
-                    <td>{item.rejectedQty}</td>
-                    <td>{item.baseUnit}</td>
-                    <td>{item.udCode}</td>
-                    {/* <td>
-                      {item.inspDate &&
-                        new Date(item.inspDate).toLocaleDateString()}
-                    </td> */}
-                    <td>
-                      {item.inspDate &&
-                        new Date(item.inspDate).toLocaleDateString("en-GB", {
-                          day: "2-digit",
-                          month: "2-digit",
-                          year: "numeric",
-                        })}
-                    </td>
-                  </tr>
-                ))}
+                {checkTypeArr(apiData.lineItems) &&
+                  apiData.lineItems.map((item, index) => (
+                    <tr key={index}>
+                      <td>{item.purchasing_doc_no_item}</td>
+                      <td>{item.materialNumber}</td>
+                      <td>{item.materialDesc}</td>
+                      <td>{item.supplyQuantity}</td>
+                      <td>{item.acceptedQty}</td>
+                      <td>{item.rejectedQty}</td>
+                      <td>{item.baseUnit}</td>
+                      <td>{item.udCode}</td>
+                      <td>
+                        {item.inspDate &&
+                          new Date(item.inspDate).toLocaleDateString("en-GB", {
+                            day: "2-digit",
+                            month: "2-digit",
+                            year: "numeric",
+                          })}
+                      </td>
+                    </tr>
+                  ))}
               </tbody>
             )}
           </table>
