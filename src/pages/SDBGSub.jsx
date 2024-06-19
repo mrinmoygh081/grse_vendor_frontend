@@ -1424,7 +1424,9 @@ const SDBGSub = () => {
                         background: "none",
                       }}
                     >
-                      {formatDate(formDatainput?.created_at)}
+                      {formDatainput?.created_at
+                        ? formatDate(formDatainput.created_at)
+                        : ""}
                     </td>
                   </p>
                 </div>
