@@ -291,7 +291,11 @@ const Checklist = () => {
                                     {items &&
                                       items.map((item, i) => (
                                         <tr key={i}>
-                                          <td>{item?.purchasing_doc_no}</td>
+                                          {console.log(
+                                            item,
+                                            "itemitemitemitemitemitemitem"
+                                          )}
+                                          {formatDate(item?.created_at)}
                                           <td>{item?.net_claim_amount}</td>
                                           <td>{item?.net_payable_amount}</td>
                                           <td
