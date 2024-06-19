@@ -406,7 +406,7 @@ const SDBGSub = () => {
     try {
       // First, try to fetch data from getSdbgSave endpoint
       const response1 = await fetch(
-        `http://localhost:4001/api/v1/po/sdbg/getSdbgSave?reference_no=${referenceNo}`,
+        `${process.env.REACT_APP_BACKEND_API}/po/sdbg/getSdbgSave?reference_no=${referenceNo}`,
         {
           method: "GET",
           headers: {
@@ -428,7 +428,7 @@ const SDBGSub = () => {
 
       // If fetching from getSdbgSave fails or doesn't return valid data, fall back to getspecificbg
       const response2 = await fetch(
-        "http://localhost:4001/api/v1/po/sdbg/getspecificbg",
+        `${process.env.REACT_APP_BACKEND_API}/po/sdbg/getspecificbg`,
         {
           method: "POST",
           headers: {

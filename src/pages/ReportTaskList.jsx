@@ -318,7 +318,7 @@ const ReportComponent = () => {
                           {row?.depertment === "3" ? (
                             <>
                               <a
-                                href={`https://localhost:4001/uploads/qap/${row?.file_name}`}
+                                href={`${process.env.REACT_APP_PDF_URL}/qap/${row?.file_name}`}
                                 target="_blank"
                                 rel="noopener noreferrer"
                               >
