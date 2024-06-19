@@ -15,7 +15,7 @@ function GoodsReceiptSlip() {
     hour: "2-digit",
     minute: "2-digit",
   });
-  console.log(apiData, "LLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLL");
+
   const handlePrint = () => {
     window.print();
   };
@@ -82,8 +82,17 @@ function GoodsReceiptSlip() {
                     <td width={"30%"}>
                       {/* {apiData?.documentDate &&
                         formatDate(apiData?.documentDate)} */}
-                      {apiData.documentDate &&
+                      {/* {apiData.documentDate &&
                         new Date(apiData.documentDate).toLocaleDateString(
+                          "en-GB",
+                          {
+                            day: "2-digit",
+                            month: "2-digit",
+                            year: "numeric",
+                          }
+                        )} */}
+                      {apiData.entryDate &&
+                        new Date(apiData.entryDate).toLocaleDateString(
                           "en-GB",
                           {
                             day: "2-digit",
