@@ -25,7 +25,7 @@ const SyncComponent = () => {
       toast.success(response.data.message || "Sync successful");
       if (response.data.status) {
         const uploadResponse = await axios.post(
-          "http://localhost:4001/api/v1/sync/sync_upload"
+          `${process.env.REACT_APP_BACKEND_API}/sync/sync_upload`
         );
         toast.success(uploadResponse.data.message || "Data has been synced");
       }
@@ -89,7 +89,9 @@ const SyncComponent = () => {
               <button
                 className="btn btn-primary btn-sm mt-2"
                 onClick={() =>
-                  handleSync("http://localhost:4001/api/v1/sync/sync_unzip")
+                  handleSync(
+                    `${process.env.REACT_APP_BACKEND_API}/sync/sync_unzip`
+                  )
                 }
                 disabled={syncing}
               >
@@ -110,7 +112,7 @@ const SyncComponent = () => {
                 disabled={syncing}
                 onClick={() =>
                   handleFileSync(
-                    "http://localhost:4001/api/v1/sync/sync_file_upload"
+                    `${process.env.REACT_APP_BACKEND_API}/sync/sync_file_upload`
                   )
                 }
               >
