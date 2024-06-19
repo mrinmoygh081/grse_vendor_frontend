@@ -287,19 +287,19 @@ const DrawingSub = () => {
                   <div className="row g-5 g-xl-8">
                     <div className="col-12">
                       <div className="screen_header">
-                        {(userType !== 1 || poType === "material") &&
-                          (user.department_id !== 2 ||
-                            user.internal_role_id !== 1 ||
-                            poType === "service") && (
-                            <button
-                              onClick={() => {
-                                setIsPopup(true);
-                              }}
-                              className="btn fw-bold btn-primary mx-3"
-                            >
-                              ACTION
-                            </button>
-                          )}
+                        {(userType === 1 && poType === "material") ||
+                          (user.department_id === 2 &&
+                            user.internal_role_id === 1 &&
+                            poType === "service" && (
+                              <button
+                                onClick={() => {
+                                  setIsPopup(true);
+                                }}
+                                className="btn fw-bold btn-primary mx-3"
+                              >
+                                ACTION
+                              </button>
+                            ))}
 
                         {user?.user_type !== 1 && poType !== "service" && (
                           <>
