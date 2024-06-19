@@ -13,6 +13,7 @@ import { logOutFun } from "../utils/logOutFun";
 import { logoutHandler } from "../redux/slices/loginSlice";
 import { Link } from "react-router-dom";
 import { MdArchive } from "react-icons/md";
+import { checkTypeArr } from "../utils/smallFun";
 
 const PODetails = () => {
   const dispatch = useDispatch();
@@ -303,20 +304,21 @@ const PODetails = () => {
                                               {currentStage || "Not available"}
                                             </span>
                                           </div>
+                                          {console.log(po.timeline, "kkkk")}
                                           {po?.timeline &&
-                                            Array.isArray(po.timeline) &&
+                                            checkTypeArr(po.timeline) &&
                                             po.timeline.map((item, i) => (
                                               <Fragment key={i}>
-                                                {item?.MTEXT &&
-                                                  item?.PLAN_DATE && (
+                                                {item?.mtext &&
+                                                  item?.plan_date && (
                                                     <div className="card_header_data">
                                                       <span className="label">
-                                                        {item?.MTEXT} :
+                                                        {item?.mtext} :
                                                       </span>
                                                       <span className="label_data">
-                                                        {item?.PLAN_DATE
+                                                        {item?.plan_date
                                                           ? new Date(
-                                                              item?.PLAN_DATE
+                                                              item?.plan_date
                                                             ).toLocaleDateString()
                                                           : "Not Updated"}{" "}
                                                         (

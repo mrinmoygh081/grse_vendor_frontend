@@ -1310,7 +1310,7 @@ const SDBGSub = () => {
                 </div>
                 <div className="col-md-6 col-12">
                   <div className="mb-3">
-                    <label className="form-label">Depertment</label>
+                    <label className="form-label">Department</label>
                     &nbsp;&nbsp;
                     <input
                       type="text"
@@ -1541,7 +1541,7 @@ const SDBGSub = () => {
               </div>
               <div className="col-md-6 col-12">
                 <div className="mb-3">
-                  <label className="form-label">Depertment</label>
+                  <label className="form-label">Department</label>
                   <p>{formDatainput?.department}</p>
                 </div>
               </div>
