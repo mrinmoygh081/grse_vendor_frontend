@@ -1626,7 +1626,7 @@ const SDBGSub = () => {
                     className="btn fw-bold btn-success me-3"
                     type="button"
                   >
-                    APPROVED
+                    RECEIVED
                   </button>
                   <button
                     className="btn fw-bold btn-info me-3"
