@@ -61,16 +61,27 @@ const BGfinance = () => {
     navigate(`/sdbg/${poNumber}`);
   };
 
-  const filteredData = paymentdata.filter(
-    (file) =>
-      (file.reference_no &&
-        file.reference_no.toLowerCase().includes(searchQuery.toLowerCase())) ||
-      (file.purchasing_doc_no &&
-        file.purchasing_doc_no
-          .toLowerCase()
-          .includes(searchQuery.toLowerCase()) &&
-        (selectedStatus === "All" || file.status === selectedStatus))
-  );
+  const filteredData = paymentdata.filter((file) => {
+    console.log(file.status === selectedStatus);
+    console.log("selectedStatus", selectedStatus === "All");
+    console.log("jkfld");
+    return (
+      ((file.bg_file_no &&
+        file.bg_file_no.toLowerCase().includes(searchQuery.toLowerCase())) ||
+        (file.reference_no &&
+          file.reference_no
+            .toLowerCase()
+            .includes(searchQuery.toLowerCase())) ||
+        (file.purchasing_doc_no &&
+          file.purchasing_doc_no
+            .toLowerCase()
+            .includes(searchQuery.toLowerCase()))) &&
+      (selectedStatus === "All" || file.status === selectedStatus)
+    );
+  });
+  console.log("filteredData", filteredData);
+  console.log("paymentdata", paymentdata);
+  console.log("selectedStatus", selectedStatus);
 
   const generateExcel = () => {
     const data = [
