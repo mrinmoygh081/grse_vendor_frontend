@@ -14,6 +14,10 @@ export const clrLegend = (flag) => {
     clr = "blue";
   } else if (flag === "FORWARD_TO_FINANCE") {
     clr = "blue";
+  } else if (flag === "RETURN_TO_DO") {
+    clr = "green";
+  } else if (flag === "HOLD") {
+    clr = "red";
   } else {
     clr = "black";
   }

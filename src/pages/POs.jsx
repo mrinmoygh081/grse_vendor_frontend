@@ -129,7 +129,7 @@ const POs = () => {
                   onClick={generateExcel}
                   className="btn fw-bold btn-primary"
                 >
-                  Download POs
+                  DOWNLOAD POs
                 </button>
               </div>
             </div>
@@ -210,8 +210,9 @@ const POs = () => {
                               {po?.DO?.ERNAM && `(${po?.DO?.ERNAM})`}{" "}
                             </>
                           )}
+                          <span> | </span>
                           <span>
-                            | {po?.vendor_code} ({po.vendor_name})
+                            {po?.vendor_code} ({po.vendor_name})
                           </span>
                         </button>
                       </td>

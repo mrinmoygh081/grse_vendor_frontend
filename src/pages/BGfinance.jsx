@@ -12,6 +12,8 @@ import { formatDate } from "../utils/getDateTimeNow";
 import SkeletonLoader from "../components/SkeletonLoader";
 import "jspdf-autotable";
 import * as XLSX from "xlsx";
+import { APPROVED, FORWARD_TO_FINANCE, HOLD } from "../constants/BGconstants";
+import { clrLegend } from "../utils/clrLegend";
 
 const BGfinance = () => {
   const { id } = useParams();
@@ -196,7 +198,7 @@ const BGfinance = () => {
                 <table className="table table-striped table-bordered table_height">
                   <thead>
                     <tr className="row-count">
-                      <td colSpan={11}>
+                      <td colSpan={11} style="text-align: left;">
                         {" "}
                         Number of BG {filteredData.length}{" "}
                         {filteredData.length === 1 ? "" : ""}
@@ -205,7 +207,7 @@ const BGfinance = () => {
                     <tr className="border-0">
                       <th className="min-w-150px">BG Ref No</th>
                       <th className="min-w-150px">BG File No</th>
-                      <th className="min-w-150px">Conformation</th>
+                      <th className="min-w-150px">Confirmation</th>
                       <th className="min-w-150px">Status</th>
                       <th className="min-w-150px">PO No</th>
                       <th className="min-w-150px">BG No</th>
@@ -230,14 +232,21 @@ const BGfinance = () => {
                           </button>
                         </td>
                         <td>{file.bg_file_no}</td>
-                        <td>{file.conformation}</td>
-                        <td>{file.status}</td>
+                        <td>
+                          {(file.status === FORWARD_TO_FINANCE ||
+                            file.status === HOLD) &&
+                            "NO"}
+                          {file.status === APPROVED && "YES"}
+                        </td>
+                        <td className={`${clrLegend(file?.status)} bold`}>
+                          {file.status}
+                        </td>
                         <td>{file.purchasing_doc_no}</td>
                         <td>{file.bg_no}</td>
                         <td>{formatDatee(file.bg_date)}</td>
-                        <td>{file.bg_amount}</td>
+                        <td>{file.bg_ammount}</td>
                         <td>{formatDatee(file.validity_date)}</td>
-                        <td>{formatDatee(file.claim_date)}</td>
+                        <td>{formatDatee(file.claim_priod)}</td>
                         <td>{formatDatee(file.bg_received_date)}</td>
                       </tr>
                     ))}

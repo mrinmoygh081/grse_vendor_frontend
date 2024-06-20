@@ -14,6 +14,7 @@ import { logoutHandler } from "../redux/slices/loginSlice";
 import { Link } from "react-router-dom";
 import { MdArchive } from "react-icons/md";
 import { checkTypeArr } from "../utils/smallFun";
+import { formatDate } from "../utils/getDateTimeNow";
 
 const PODetails = () => {
   const dispatch = useDispatch();
@@ -95,7 +96,7 @@ const PODetails = () => {
 
       const contentType = response.headers["content-type"];
       if (contentType !== "application/pdf") {
-        toast.error("Not Uploaded TNC Minutes!");
+        toast.warn("GRSE will uploaded TNC Minutes.");
         return;
       }
 
@@ -208,7 +209,7 @@ const PODetails = () => {
                                     className="btn btn-primary"
                                     to={`/poarchive/${id}`}
                                   >
-                                    Po Version
+                                    PO Version
                                     <MdArchive style={{ fontSize: "20px" }} />
                                   </Link> */}
                                   <button
@@ -324,10 +325,10 @@ const PODetails = () => {
                                                         (
                                                         <span
                                                           className={`${clrLegend(
-                                                            item?.status
+                                                            item?.current_status
                                                           )} bold`}
                                                         >
-                                                          {item?.status ||
+                                                          {item?.current_status ||
                                                             "Not Uploaded"}
                                                         </span>
                                                         )
@@ -397,77 +398,36 @@ const PODetails = () => {
                                       <th>Contractual delivery date </th>
                                     </tr>
                                   </thead>
-                                  {/* <tbody style={{ maxHeight: "100%" }}>
-                                    {poDetails.MAT_DETAILS ? (
-                                      poDetails.MAT_DETAILS.map((material) => (
-                                        <tr key={material.EBELP}>
-                                          <td>{material.EBELP}</td>
-                                          <td>{material.MATNR}</td>
-                                          <td>{material.TXZ01}</td>
-                                          <td>{material.MENGE}</td>
-                                          <td>{material.MEINS}</td>
-                                          <td>{material.KTMNG}</td>
-                                        </tr>
-                                      ))
-                                    ) : (
-                                      <tr>
-                                        <td colSpan="6">
-                                          No material details available.
-                                        </td>
-                                      </tr>
-                                    )}
-                                  </tbody> */}
                                   <tbody style={{ maxHeight: "100%" }}>
                                     {poDetails.length > 0 ? (
                                       poDetails.map((po) =>
-                                        po.materialResult.map(
-                                          (material, index) => (
-                                            <tr key={index}>
-                                              <td>
-                                                {material.material_item_number}
-                                              </td>
-                                              <td>{material.material_code}</td>
-                                              <td>
-                                                {material.mat_description}
-                                              </td>
-                                              <td>
-                                                {material.material_quantity}
-                                              </td>
-                                              <td>{material.material_unit}</td>
+                                        po.materialResult.map((item, index) => (
+                                          <tr key={index}>
+                                            <td>{item.material_item_number}</td>
+                                            <td>{item.material_code}</td>
+                                            <td>{item.mat_description}</td>
+                                            <td>{item.material_quantity}</td>
+                                            <td>{item.material_unit}</td>
 
-                                              <td>
-                                                {!material?.contractual_delivery_date
-                                                  ? "No date found"
-                                                  : new Date(
-                                                      material?.contractual_delivery_date
-                                                    ).toDateString()}
-                                              </td>
-                                            </tr>
-                                          )
-                                        )
+                                            <td>
+                                              {!item?.contractual_delivery_date
+                                                ? "No date found"
+                                                : formatDate(
+                                                    item?.contractual_delivery_date
+                                                  )}
+                                            </td>
+                                          </tr>
+                                        ))
                                       )
                                     ) : (
                                       <tr>
                                         <td colSpan="6">
-                                          😔No material details available.😔
+                                          Loading PO Details...
                                         </td>
                                       </tr>
                                     )}
                                   </tbody>
                                 </table>
-                                {/* <div className="d-flex align-items-center justify-content-between py-3">
-                                  <button className="btn fw-bold btn-info">
-                                    ADD NEW
-                                  </button>
-                                  <div>
-                                    <button className="btn fw-bold btn-primary mx-3">
-                                      Stop
-                                    </button>
-                                    <button className="btn fw-bold btn-primary">
-                                      Send
-                                    </button>
-                                  </div>
-                                </div> */}
                               </div>
                             </div>
                           </div>

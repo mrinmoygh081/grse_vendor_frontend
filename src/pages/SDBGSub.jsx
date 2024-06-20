@@ -42,15 +42,16 @@ const SDBGSub = () => {
   const [isCheckEntryPopup, setIsCheckEntryPopup] = useState(false);
   const [allsdbg, setAllsdbg] = useState([]);
   const [groupedBG, setGroupedBG] = useState([]);
-  const [sdbgEntry, setSdbgEntry] = useState([]);
+  const [sdbgEntryForFi, setSdbgEntryForFi] = useState({
+    bg_file_no: "",
+  });
   const [selectedActionType, setSelectedActionType] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [formData, setFormData] = useState({
     sdbgFile: null,
     remarks: "",
   });
-  const [remarks, setRemarks] = useState("");
-  const [showRemarksInput, setShowRemarksInput] = useState(false);
+
   const [entryState, setEntryState] = useState({});
   const GRSE_LOGO_BASE64 =
     "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUA...";
@@ -68,7 +69,6 @@ const SDBGSub = () => {
     remarks: "Assigned to Finance Employee",
     status: "ASSIGNED",
   });
-  console.log(formDatainput, "formDatainput mmmmmmm");
 
   const convertToEpochh = (date) => {
     return Math.floor(new Date(date).getTime() / 1000);
@@ -229,13 +229,13 @@ const SDBGSub = () => {
       getSDBG();
     }
   };
+
+  console.log("KJDL", formDatainput);
   const uploadSDBGSave = async () => {
     let status = await BGEntrySave(formDatainput, token);
     if (status) {
       setIsPopup(false);
       setIsEntryPopup(false);
-      let bg = { ...bgInputs, purchasing_doc_no: id };
-      setFormDatainput(bg);
       getSDBG();
     }
   };
@@ -281,10 +281,18 @@ const SDBGSub = () => {
   };
 
   const financeEntry = async (flag, referenceNo) => {
-    console.log(referenceNo, "referenceNo");
     const entry = entryState[referenceNo];
     let action_type = "SDBG SUBMISSION";
     let payloadRemarks = entry?.remarks;
+    const { bg_file_no } = sdbgEntryForFi;
+
+    if (
+      (flag === "APPROVED" || flag === "HOLD") &&
+      !bg_file_no &&
+      bg_file_no === ""
+    ) {
+      return toast.warn("Please fill the BG file no.");
+    }
 
     if (flag === "APPROVED") {
       payloadRemarks = "APPROVED by Finance Officer";
@@ -304,6 +312,7 @@ const SDBGSub = () => {
       remarks: payloadRemarks,
       action_type,
       reference_no: referenceNo,
+      bg_file_no,
     };
 
     const data = await apiCallBack(
@@ -317,7 +326,6 @@ const SDBGSub = () => {
       setIsCheckEntryPopup(false);
       getSDBG();
       toast.success(data?.message);
-      // Reset remarks input after successful submission
       setEntryState((prevState) => ({
         ...prevState,
         [referenceNo]: { showRemarksInput: false, remarks: "" },
@@ -448,8 +456,6 @@ const SDBGSub = () => {
       if (data2.status && checkTypeArr(data2.data)) {
         setFormDatainput(data2.data[data2.data.length - 1]);
         console.log(data2.message);
-      } else {
-        toast.warn(data2.message || "Failed to fetch specific BG entry");
       }
     } catch (error) {
       console.error("Error in fetching data:", error);
@@ -681,7 +687,7 @@ const SDBGSub = () => {
                           <>
                             <button
                               onClick={() => setIsPopup(true)}
-                              className="btn fw-bold btn-primary"
+                              className="btn btn-sm fw-bold btn-primary"
                             >
                               ACTION
                             </button>
@@ -780,7 +786,7 @@ const SDBGSub = () => {
                                                               item
                                                             );
                                                           }}
-                                                          className="btn fw-bold btn-primary me-3"
+                                                          className="btn btn-sm fw-bold btn-primary me-3"
                                                         >
                                                           ACTION
                                                         </button>
@@ -824,66 +830,7 @@ const SDBGSub = () => {
                                                       >
                                                         {data?.status}
                                                       </td>
-                                                      <td>
-                                                        {/* {isDO &&
-                                                          data?.status ===
-                                                            SUBMITTED &&
-                                                          (data?.action_type ===
-                                                            ACTION_SDBG ||
-                                                            data?.action_type ===
-                                                              ACTION_DD ||
-                                                            data?.action_type ===
-                                                              ACTION_IB ||
-                                                            data?.action_type ===
-                                                              ACTION_PBG) && (
-                                                            <>
-                                                              <button
-                                                                onClick={() => {
-                                                                  setIsEntryPopup(
-                                                                    true
-                                                                  );
-                                                                  setFormDatainput(
-                                                                    {
-                                                                      ...formDatainput,
-                                                                      reference_no:
-                                                                        data?.reference_no,
-                                                                    }
-                                                                  );
-                                                                }}
-                                                                className="btn fw-bold btn-primary me-3"
-                                                              >
-                                                                ACTION
-                                                              </button>
-                                                            </>
-                                                          )} */}
-                                                        {/* {data?.status ===
-                                                          FORWARD_TO_FINANCE && (
-                                                          <>
-                                                            {user?.department_id ===
-                                                              15 && (
-                                                              <>
-                                                                <button
-                                                                  onClick={() => {
-                                                                    setIsCheckEntryPopup(
-                                                                      true
-                                                                    );
-                                                                    setFormDatainput(
-                                                                      {
-                                                                        ...formDatainput,
-                                                                        reference_no:
-                                                                          data?.reference_no,
-                                                                      }
-                                                                    );
-                                                                  }}
-                                                                  className="btn fw-bold btn-primary me-3"
-                                                                >
-                                                                  ACTION
-                                                                </button>
-                                                              </>
-                                                            )}
-                                                          </>
-                                                        )} */}
-                                                      </td>
+                                                      <td></td>
                                                     </tr>
                                                   ))}
                                               </Fragment>
@@ -1329,11 +1276,15 @@ const SDBGSub = () => {
                       className="form-select"
                       name=""
                       id=""
-                      value={formData?.bg_type}
+                      value={formDatainput?.bg_type}
                       onChange={(e) =>
-                        setFormData({ ...formData, bg_type: e.target.value })
+                        setFormDatainput({
+                          ...formDatainput,
+                          bg_type: e.target.value,
+                        })
                       }
                     >
+                      <option value="">Choose BG</option>
                       <option value="SDBG">SDBG</option>
                       <option value="PBG">PBG</option>
                       <option value="ADVANCED BG">ADVANCED BG</option>
@@ -1403,6 +1354,24 @@ const SDBGSub = () => {
             </div>
 
             <div className="row">
+              <div className="col-md-6 col-12">
+                <div className="mb-3">
+                  <label className="form-label">BG File No</label>
+                  &nbsp;&nbsp;
+                  <input
+                    type="text"
+                    className="form-control"
+                    name="department"
+                    value={sdbgEntryForFi?.bg_file_no || ""}
+                    onChange={(e) =>
+                      setSdbgEntryForFi({
+                        ...sdbgEntryForFi,
+                        bg_file_no: e.target.value,
+                      })
+                    }
+                  />
+                </div>
+              </div>
               <div className="col-md-6 col-12">
                 <div className="mb-3">
                   <label className="form-label">Reference No</label>

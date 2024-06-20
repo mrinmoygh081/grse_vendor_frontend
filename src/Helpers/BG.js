@@ -14,30 +14,12 @@ export const bgInputs = {
   bg_no: "",
   bg_date: "",
   bg_ammount: "",
-  // department: "",
-  // po_date: "",
+  department: "",
   yard_no: "",
   validity_date: "",
   claim_priod: "",
   reference_no: "",
-  // check_list_date: "",
-  bg_type: "SDBG",
-  // vendor_name: "",
-  // vendor_address1: "",
-  // vendor_address2: "",
-  // vendor_address3: "",
-  // vendor_city: "",
-  // vendor_pin_code: "",
-  // confirmation: "",
-  // extension_date1: "",
-  // extension_date2: "",
-  // extension_date3: "",
-  // extension_date4: "",
-  // extension_date5: "",
-  // extension_date6: "",
-  // release_date: "",
-  // demand_notice_date: "",
-  // entension_letter_date: "",
+  bg_type: "",
   status: "",
   created_at: "",
   created_by: "",
@@ -275,8 +257,6 @@ export const BGEntrySave = async (formDatainput, token) => {
     department,
   } = formDatainput;
 
-  console.log(formDatainput);
-
   // Construct the form object
   let form = {
     purchasing_doc_no,
@@ -297,8 +277,9 @@ export const BGEntrySave = async (formDatainput, token) => {
     bg_type,
     department,
     status: "SAVED",
-    remarks: "Forwarded to SAVE",
+    remarks: "BG has been saved.",
   };
+  console.log("form", form);
 
   const d = await postAPI("/po/sdbg/insertSdbgSave", form, token);
 
