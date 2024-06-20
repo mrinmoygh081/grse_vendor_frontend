@@ -336,17 +336,17 @@ const PODetails = () => {
                                                     </div>
                                                   )}
 
-                                                {item?.milestoneText &&
-                                                  item?.actualSubmissionDate && (
+                                                {item?.milestonetext &&
+                                                  item?.actualsubmissiondate && (
                                                     <div className="card_header_data">
                                                       <span className="label">
-                                                        {item?.milestoneText} :
+                                                        {item?.milestonetext} :
                                                       </span>
                                                       <span className="label_data">
-                                                        {item?.actualSubmissionDate
-                                                          ? new Date(
-                                                              item?.actualSubmissionDate
-                                                            ).toLocaleDateString()
+                                                        {item?.actualsubmissiondate
+                                                          ? formatDate(
+                                                              item?.actualsubmissiondate
+                                                            )
                                                           : "Not Updated"}{" "}
                                                       </span>
                                                     </div>
@@ -359,9 +359,9 @@ const PODetails = () => {
                                                     </span>
                                                     <span className="label_data">
                                                       {item?.acknowledgementnt_date
-                                                        ? new Date(
+                                                        ? formatDate(
                                                             item?.acknowledgementnt_date
-                                                          ).toLocaleDateString()
+                                                          )
                                                         : "Not Updated"}
                                                     </span>
                                                   </div>
@@ -460,6 +460,7 @@ const PODetails = () => {
                                     type="file"
                                     className="form-control"
                                     onChange={handleFileChange}
+                                    accept=".pdf"
                                   />
                                 </div>
                               </div>

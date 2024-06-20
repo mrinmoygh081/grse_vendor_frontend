@@ -337,12 +337,16 @@ const SDBGSub = () => {
 
   const handleReturnClick = (referenceNo) => {
     const entry = entryState[referenceNo];
-    if (entry?.showRemarksInput && entry?.remarks.trim()) {
-      reConfirm(
-        { file: true },
-        () => financeEntry("RETURN_TO_DO", referenceNo),
-        "You're going to return the SDBG Entry to Dealing Officer to recheck. Please confirm!"
-      );
+    if (entry?.showRemarksInput) {
+      if (entry?.remarks && entry?.remarks.trim()) {
+        reConfirm(
+          { file: true },
+          () => financeEntry("RETURN_TO_DO", referenceNo),
+          "You're going to return the SDBG Entry to Dealing Officer to recheck. Please confirm!"
+        );
+      } else {
+        toast.warn("Remarks cannot be blank.");
+      }
     } else {
       setEntryState((prevState) => ({
         ...prevState,
@@ -800,10 +804,6 @@ const SDBGSub = () => {
                                                         {data?.action_type}
                                                       </td> */}
                                                       <td className="table_center">
-                                                        {/* {data?.created_at &&
-                                                          new Date(
-                                                            data?.created_at
-                                                          ).toLocaleString()} */}
                                                         {data?.created_at &&
                                                           formatDate(
                                                             data?.created_at
@@ -1663,10 +1663,10 @@ const SDBGSub = () => {
                     type="button"
                   >
                     {entryState[formDatainput?.reference_no]?.showRemarksInput
-                      ? "Confirm Return to Dealing Officer"
-                      : "Return to Dealing Officer"}
+                      ? "Confirm Return to Dept"
+                      : "Return to Dept"}
                   </button>
-                  <button
+                  {/* <button
                     onClick={() =>
                       reConfirm(
                         { file: true },
@@ -1679,7 +1679,7 @@ const SDBGSub = () => {
                     type="button"
                   >
                     REJECT
-                  </button>
+                  </button> */}
                 </div>
               </div>
             </div>

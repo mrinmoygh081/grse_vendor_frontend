@@ -302,7 +302,9 @@ const Checklist = () => {
                                     {items &&
                                       items.map((item, i) => (
                                         <tr key={i}>
-                                          {formatDate(item?.created_at)}
+                                          <td>
+                                            {formatDate(item?.created_at)}
+                                          </td>
                                           <td>{item?.net_claim_amount}</td>
                                           <td>{item?.net_payable_amount}</td>
                                           <td
