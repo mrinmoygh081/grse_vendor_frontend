@@ -129,7 +129,7 @@ const POs = () => {
                   onClick={generateExcel}
                   className="btn fw-bold btn-primary"
                 >
-                  Download Po Details
+                  Download POs
                 </button>
               </div>
             </div>

@@ -1,25 +1,27 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import MainHeader from "../components/MainHeader";
 import SidebarDashboard from "../components/SidebarDashboard";
 import Footer from "../components/Footer";
 import { apiCallBack } from "../utils/fetchAPIs";
 import { checkTypeArr } from "../utils/smallFun";
-
-const formatDate = (timestamp) => {
-  if (!timestamp || timestamp === "0") return "N/A";
-  const date = new Date(Number(timestamp) * 1000);
-  return date.toLocaleDateString("en-US");
-};
+import { poHandler } from "../redux/slices/poSlice";
+import { FiSearch } from "react-icons/fi";
+import { formatDate } from "../utils/getDateTimeNow";
+import SkeletonLoader from "../components/SkeletonLoader";
+import "jspdf-autotable";
+import * as XLSX from "xlsx";
 
 const BGfinance = () => {
   const { id } = useParams();
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const { token } = useSelector((state) => state.auth);
   const [paymentdata, setPaymentdata] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
+  const [selectedStatus, setSelectedStatus] = useState("All");
   const [error, setError] = useState(null);
 
   const createPayment = async () => {
@@ -38,12 +40,23 @@ const BGfinance = () => {
     }
   };
 
+  const formatDatee = (timestamp) => {
+    if (!timestamp || timestamp === "0") return "";
+    const date = new Date(Number(timestamp) * 1000);
+    return date.toLocaleDateString("en-US");
+  };
+
   useEffect(() => {
     if (token) createPayment();
   }, [token]);
 
-  const handleRowClick = (fileId) => {
-    navigate(`/sdbg/${fileId}`);
+  const handleRowClick = (poNumber) => {
+    let po = {
+      poNumber,
+      // poType
+    };
+    dispatch(poHandler(po));
+    navigate(`/sdbg/${poNumber}`);
   };
 
   const filteredData = paymentdata.filter(
@@ -53,94 +66,54 @@ const BGfinance = () => {
       (file.purchasing_doc_no &&
         file.purchasing_doc_no
           .toLowerCase()
-          .includes(searchQuery.toLowerCase()))
+          .includes(searchQuery.toLowerCase()) &&
+        (selectedStatus === "All" || file.status === selectedStatus))
   );
 
-  const renderTable = () => {
-    if (loading) {
-      return (
-        <div>
-          <div className="page_heading mt-5 mb-3">
-            <h3>BG Finance Dashboard</h3>
-          </div>
-          <table className="table table-striped table-bordered table_height">
-            <thead>
-              <tr className="border-0">
-                <th className="min-w-150px">BG Ref No</th>
-                <th className="min-w-150px">PO No</th>
-                <th className="min-w-150px">Vendor Name</th>
-                <th className="min-w-150px">BG File No</th>
-                <th className="min-w-150px">Status</th>
-              </tr>
-            </thead>
-            <tbody>
-              {Array.from({ length: 5 }).map((_, index) => (
-                <tr key={index}>
-                  <td>
-                    <div className="skeleton-box"></div>
-                  </td>
-                  <td>
-                    <div className="skeleton-box"></div>
-                  </td>
-                  <td>
-                    <div className="skeleton-box"></div>
-                  </td>
-                  <td>
-                    <div className="skeleton-box"></div>
-                  </td>
-                  <td>
-                    <div className="skeleton-box"></div>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      );
-    }
+  const generateExcel = () => {
+    const data = [
+      [
+        "BG Ref No",
+        "BG File No",
+        "Confirmation",
+        "Status",
+        "PO No",
+        "BG No",
+        "BG Date",
+        "BG Amount",
+        "Validity Date",
+        "Claim Date",
+        "BG Received Date",
+      ],
+      ...filteredData.map((file) => [
+        file.reference_no,
+        file.bg_file_no,
+        file.conformation,
+        file.status,
+        file.purchasing_doc_no,
+        file.bg_no,
+        formatDatee(file.bg_date),
+        file.bg_amount,
+        formatDatee(file.validity_date),
+        formatDatee(file.claim_date),
+        formatDatee(file.bg_received_date),
+      ]),
+    ];
 
-    // if (error) {
-    //   return <div>Error: {error}</div>;
-    // }
+    const wb = XLSX.utils.book_new();
+    const ws = XLSX.utils.aoa_to_sheet(data);
+    XLSX.utils.book_append_sheet(wb, ws, "Po Details");
 
-    return (
-      <div>
-        <div className="page_heading mt-5 mb-3">
-          <h3>BG Finance Dashboard</h3>
-        </div>
-        {filteredData.length === 0 ? (
-          <div>No data found</div>
-        ) : (
-          <table className="table table-striped table-bordered table_height">
-            <thead>
-              <tr className="border-0">
-                <th className="min-w-150px">BG Ref No</th>
-                <th className="min-w-150px">PO No</th>
-                <th className="min-w-150px">Vendor Name</th>
-                <th className="min-w-150px">BG File No</th>
-                <th className="min-w-150px">Status</th>
-              </tr>
-            </thead>
-            <tbody style={{ maxHeight: "100%" }}>
-              {checkTypeArr(filteredData) &&
-                filteredData.map((file, index) => (
-                  <tr
-                    key={index}
-                    onClick={() => handleRowClick(file.purchasing_doc_no)}
-                    style={{ cursor: "pointer" }}
-                  >
-                    <td>{file.reference_no}</td>
-                    <td>{file.purchasing_doc_no}</td>
-                    <td>{file.vendor_name}</td>
-                    <td>{/* BG File No data can go here if available */}</td>
-                    <td>{file.status}</td>
-                  </tr>
-                ))}
-            </tbody>
-          </table>
-        )}
-      </div>
-    );
+    const excelBuffer = XLSX.write(wb, { bookType: "xlsx", type: "array" });
+    const excelBlob = new Blob([excelBuffer], {
+      type: "application/octet-stream",
+    });
+
+    const downloadLink = document.createElement("a");
+    downloadLink.href = URL.createObjectURL(excelBlob);
+    downloadLink.download = "bg_dashboard.xlsx";
+
+    downloadLink.click();
   };
 
   return (
@@ -149,33 +122,130 @@ const BGfinance = () => {
         <SidebarDashboard />
         <div className="d-flex flex-column flex-row-fluid">
           <MainHeader title="BG Dashboard" id={id} />
-          <div className="content d-flex flex-column flex-column-fluid">
-            <div className="post d-flex flex-column-fluid">
-              <div className="container">
-                <div className="row g-5 g-xl-8">
-                  <div className="col-12">
-                    <div className="card-body p-3">
-                      <div className="d-flex justify-content-between align-items-center mb-3">
-                        <div>
-                          <strong>NO Of Data: {filteredData.length}</strong>
-                        </div>
-                        <div>
-                          <input
-                            type="text"
-                            className="form-control"
-                            placeholder="Search...."
-                            value={searchQuery}
-                            onChange={(e) => setSearchQuery(e.target.value)}
-                          />
-                        </div>
-                      </div>
-                      <div className="tab-content">
-                        <div className="table-responsive">{renderTable()}</div>
-                      </div>
-                    </div>
+          <div className="card">
+            <div className="searchfun">
+              <div className="card_headline">
+                <div>
+                  <div className="search_top">
+                    <label htmlFor="">Search</label>
+                  </div>
+                  <div className="input_search">
+                    <input
+                      type="text"
+                      className="form-control"
+                      value={searchQuery}
+                      onChange={(e) => setSearchQuery(e.target.value)}
+                      placeholder="Search..."
+                    />
+                    <button className="search_btn">
+                      <FiSearch />
+                    </button>
                   </div>
                 </div>
               </div>
+              <div className="card_headline">
+                <div>
+                  <button
+                    onClick={generateExcel}
+                    className="btn fw-bold btn-primary"
+                  >
+                    Download BG
+                  </button>
+                </div>
+              </div>
+              <div className="card_headline">
+                <div>
+                  <div className="search_top">
+                    <label htmlFor="">Select Current Status</label>
+                  </div>
+                  <div className="input_search">
+                    <select
+                      className="form-select"
+                      value={selectedStatus}
+                      onChange={(e) => setSelectedStatus(e.target.value)}
+                    >
+                      <option value="All">All</option>
+                      <option value="FORWARD_TO_FINANCE">
+                        FORWARD_TO_FINANCE
+                      </option>
+                      <option value="HOLD">HOLD</option>
+                      <option value="SUBMITTED">SUBMITTED</option>
+                      <option value="APPROVED">APPROVED</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div className="table-info">
+              {loading ? (
+                <SkeletonLoader />
+              ) : (
+                <tr className="row-count">
+                  {/* <td colSpan={10}>
+                    {" "}
+                    Number of AG {filteredData.length}{" "}
+                    {filteredData.length === 1 ? "row" : "rows"}
+                  </td> */}
+                </tr>
+              )}
+            </div>
+            <div className="table-responsive">
+              {loading ? (
+                <SkeletonLoader />
+              ) : checkTypeArr(filteredData) && filteredData.length > 0 ? (
+                <table className="table table-striped table-bordered table_height">
+                  <thead>
+                    <tr className="row-count">
+                      <td colSpan={11}>
+                        {" "}
+                        Number of BG {filteredData.length}{" "}
+                        {filteredData.length === 1 ? "" : ""}
+                      </td>
+                    </tr>
+                    <tr className="border-0">
+                      <th className="min-w-150px">BG Ref No</th>
+                      <th className="min-w-150px">BG File No</th>
+                      <th className="min-w-150px">Conformation</th>
+                      <th className="min-w-150px">Status</th>
+                      <th className="min-w-150px">PO No</th>
+                      <th className="min-w-150px">BG No</th>
+                      <th className="min-w-150px">BG Date</th>
+                      <th className="min-w-150px">BG Amount</th>
+                      <th className="min-w-150px">Validity Date</th>
+                      <th className="min-w-150px">Claim Date</th>
+                      <th className="min-w-150px">BG Received Date</th>
+                    </tr>
+                  </thead>
+                  <tbody style={{ maxHeight: "100%" }}>
+                    {filteredData.map((file, index) => (
+                      <tr key={index}>
+                        <td>
+                          <button
+                            onClick={() =>
+                              handleRowClick(file.purchasing_doc_no)
+                            }
+                            className="btn_simple"
+                          >
+                            <u>{file.reference_no}</u>
+                          </button>
+                        </td>
+                        <td>{file.bg_file_no}</td>
+                        <td>{file.conformation}</td>
+                        <td>{file.status}</td>
+                        <td>{file.purchasing_doc_no}</td>
+                        <td>{file.bg_no}</td>
+                        <td>{formatDatee(file.bg_date)}</td>
+                        <td>{file.bg_amount}</td>
+                        <td>{formatDatee(file.validity_date)}</td>
+                        <td>{formatDatee(file.claim_date)}</td>
+                        <td>{formatDatee(file.bg_received_date)}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              ) : (
+                <div className="no-data-found">No Data Found</div>
+              )}
             </div>
           </div>
           <Footer />

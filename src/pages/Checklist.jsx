@@ -11,6 +11,7 @@ import { formatDate } from "../utils/getDateTimeNow";
 import { clrLegend } from "../utils/clrLegend";
 import Select from "react-select";
 import { groupedByActionType, groupedByBtnNum } from "../utils/groupedByReq";
+import { TailSpin } from "react-loader-spinner";
 
 const Checklist = () => {
   const { id } = useParams();
@@ -26,16 +27,17 @@ const Checklist = () => {
     assign_to_fi: null,
     btn_num: "",
   });
-  console.log(groupedBG, "groupedBGgroupedBG");
   const navigate = useNavigate();
   const [slug, setSlug] = useState("");
   const [paymentData, setPaymentData] = useState("");
+  const [loading, setLoading] = useState(true); // Add loading state
 
   useEffect(() => {
     const fetchData = async () => {
       await getEmpList();
       await getData();
       await createPayment();
+      setLoading(false); // Set loading to false after data is fetched
     };
 
     fetchData();
@@ -178,7 +180,19 @@ const Checklist = () => {
                             ADD
                           </button>
                         </div>
-                        <div className="table-responsive">
+                        <div className="table-responsive position-relative">
+                          {loading && (
+                            <div className="spinner-overlay">
+                              <TailSpin
+                                height="50"
+                                width="50"
+                                color="#4fa94d"
+                                ariaLabel="tail-spin-loading"
+                                radius="1"
+                                visible={true}
+                              />
+                            </div>
+                          )}
                           <table className="table table-striped table-bordered table_height">
                             <thead>
                               <tr className="border-0">
@@ -189,7 +203,6 @@ const Checklist = () => {
                                 <th>Action</th>
                               </tr>
                             </thead>
-
                             <tbody style={{ maxHeight: "100%" }}>
                               {Object.keys(groupedBG).map((it, index) => {
                                 let items = groupedBG[it];
@@ -200,7 +213,6 @@ const Checklist = () => {
                                       <td colSpan={4}>
                                         <b>{it}</b>
                                       </td>
-
                                       <td>
                                         <div className="view-button-container">
                                           <button
@@ -287,14 +299,9 @@ const Checklist = () => {
                                         </div>
                                       </td>
                                     </tr>
-
                                     {items &&
                                       items.map((item, i) => (
                                         <tr key={i}>
-                                          {console.log(
-                                            item,
-                                            "itemitemitemitemitemitemitem"
-                                          )}
                                           {formatDate(item?.created_at)}
                                           <td>{item?.net_claim_amount}</td>
                                           <td>{item?.net_payable_amount}</td>
