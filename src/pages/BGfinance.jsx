@@ -198,7 +198,7 @@ const BGfinance = () => {
                 <table className="table table-striped table-bordered table_height">
                   <thead>
                     <tr className="row-count">
-                      <td colSpan={11} style="text-align: left;">
+                      <td colSpan={11} style={{ textAlign: "left" }}>
                         {" "}
                         Number of BG {filteredData.length}{" "}
                         {filteredData.length === 1 ? "" : ""}
