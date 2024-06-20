@@ -11,6 +11,7 @@ import { logoutHandler } from "../redux/slices/loginSlice";
 import "jspdf-autotable";
 import * as XLSX from "xlsx";
 import UniqueLoader from "../components/UniqueLoader";
+import { formatDate } from "../utils/getDateTimeNow";
 
 const POs = () => {
   const dispatch = useDispatch();
@@ -218,29 +219,23 @@ const POs = () => {
                       </td>
                       <td>
                         {po?.SD?.SdContractualSubmissionDate
-                          ? new Date(
-                              po.SD.SdContractualSubmissionDate
-                            ).toLocaleDateString()
+                          ? formatDate(po?.SD?.SdContractualSubmissionDate)
                           : "--"}{" "}
                         |{" "}
                         {po?.SD?.SdActualSubmissionDate
-                          ? new Date(
-                              po.SD.SdActualSubmissionDate
-                            ).toLocaleDateString()
+                          ? formatDate(po?.SD?.SdActualSubmissionDate)
                           : "--"}{" "}
                         | {po?.SD?.SdLastStatus || "--"}
                       </td>
                       <td>
                         {po?.Drawing?.DrawingContractualSubmissionDate
-                          ? new Date(
-                              po.Drawing.DrawingContractualSubmissionDate
-                            ).toLocaleDateString()
+                          ? formatDate(
+                              po?.Drawing?.DrawingContractualSubmissionDate
+                            )
                           : "--"}{" "}
                         |{" "}
                         {po?.Drawing?.DrawingActualSubmissionDate
-                          ? new Date(
-                              po.Drawing.DrawingActualSubmissionDate
-                            ).toLocaleDateString()
+                          ? formatDate(po?.Drawing?.DrawingActualSubmissionDate)
                           : "--"}{" "}
                         | {po?.Drawing?.DrawingLastStatus || "--"}
                       </td>
