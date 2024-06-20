@@ -358,7 +358,7 @@ const QAPSub = () => {
                               </p>
                               <button
                                 onClick={() => setIsPopupAssign(true)}
-                                className="btn fw-bold btn-primary me-3"
+                                className="btn btn-sm fw-bold btn-primary me-3"
                               >
                                 ASSIGN
                               </button>
@@ -370,7 +370,7 @@ const QAPSub = () => {
                               setFormData({ ...formData, reference_no: null });
                               setIsPopup(true);
                             }}
-                            className="btn fw-bold btn-primary"
+                            className="btn btn-sm fw-bold btn-primary"
                           >
                             ACTION
                           </button>

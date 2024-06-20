@@ -29,6 +29,9 @@ input[type="number"] {
 .orange {
   color: orange;
 }
+.yellow {
+  color: rgb(219, 205, 0);
+}
 .bold {
   font-weight: 700;
 }

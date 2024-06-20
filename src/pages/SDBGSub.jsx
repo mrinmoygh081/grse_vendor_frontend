@@ -362,52 +362,6 @@ const SDBGSub = () => {
     }));
   };
 
-  // const SdbgEntryUpdate = async (referenceNo) => {
-  //   setIsLoading(true);
-  //   let payload = {
-  //     purchasing_doc_no: id,
-  //     reference_no: referenceNo,
-  //   };
-
-  //   const response1 = await apiCallBack(
-  //     "POST",
-  //     `/po/sdbg/getspecificbg`,
-  //     payload,
-  //     token
-  //   );
-
-  //   const data1 = await response1.json();
-
-  //   if (data1?.status && checkTypeArr(data1?.data)) {
-  //     setFormDatainput(data1?.data[data1?.data.length - 1]);
-  //     setSdbgEntry(data1?.data[data1?.data.length - 1]);
-  //     console.log(data1?.message);
-  //     setIsLoading(false);
-  //   } else {
-  //     setIsLoading(false);
-  //     toast.warn(data1?.message);
-  //   }
-
-  //   const response2 = await apiCallBack(
-  //     "GET",
-  //     `po/sdbg/getSdbgSave?reference_no=${referenceNo}`,
-  //     null,
-  //     token
-  //   );
-
-  //   const data2 = await response2.json();
-
-  //   if (data2?.status && checkTypeArr(data2?.data)) {
-  //     setFormDatainput(data2?.data[data2?.data.length - 1]);
-  //     setSdbgEntry(data2?.data[data2?.data.length - 1]);
-  //     console.log(data2?.message);
-  //     setIsLoading(false);
-  //   } else {
-  //     setIsLoading(false);
-  //     toast.warn(data2?.message);
-  //   }
-  // };
-
   const SdbgEntryUpdate = async (referenceNo) => {
     setIsLoading(true);
     let payload = {
@@ -468,74 +422,6 @@ const SDBGSub = () => {
       setIsLoading(false);
     }
   };
-
-  // const SdbgEntryUpdate = async (referenceNo) => {
-  //   try {
-  //     setIsLoading(true);
-
-  //     let payload = {
-  //       purchasing_doc_no: id,
-  //       reference_no: referenceNo,
-  //     };
-
-  //     // Attempt the second API call first
-  //     const response2 = await apiCallBack(
-  //       "GET",
-  //       `po/sdbg/getSdbgSave?reference_no=${referenceNo}`,
-  //       null,
-  //       token
-  //     );
-
-  //     console.log("Response from API 2:", response2); // Add this log to inspect response
-
-  //     // Check if response2 is valid and process data
-  //     if (response2 && typeof response2.json === "function") {
-  //       const data2 = await response2.json();
-  //       console.log("Data from API 2:", data2); // Add this log to inspect data
-
-  //       if (data2?.status && checkTypeArr(data2?.data)) {
-  //         setFormDatainput(data2.data[data2.data.length - 1]);
-  //         console.log(data2.message);
-  //         return; // Exit the function early since we have the data
-  //       } else {
-  //         toast.warn(data2?.message);
-  //       }
-  //     } else {
-  //       throw new Error(
-  //         "Invalid response from apiCallBack for the second API call"
-  //       );
-  //     }
-
-  //     // If the second API call did not return the needed data, fall back to the first API call
-  //     const response1 = await apiCallBack(
-  //       "POST",
-  //       `/po/sdbg/getspecificbg`,
-  //       payload,
-  //       token
-  //     );
-
-  //     // Check if response1 is valid and process data
-  //     if (response1 && typeof response1.json === "function") {
-  //       const data1 = await response1.json();
-
-  //       if (data1?.status && checkTypeArr(data1?.data)) {
-  //         setFormDatainput(data1.data[data1.data.length - 1]);
-  //         console.log(data1.message);
-  //       } else {
-  //         toast.warn(data1?.message);
-  //       }
-  //     } else {
-  //       throw new Error(
-  //         "Invalid response from apiCallBack for the first API call"
-  //       );
-  //     }
-  //   } catch (error) {
-  //     console.error("Error in SdbgEntryUpdate:", error);
-  //     toast.error("An error occurred while updating SDBG entry.");
-  //   } finally {
-  //     setIsLoading(false);
-  //   }
-  // };
 
   useEffect(() => {
     if (allsdbg && allsdbg.length > 0) {
@@ -1358,18 +1244,22 @@ const SDBGSub = () => {
                 <div className="mb-3">
                   <label className="form-label">BG File No</label>
                   &nbsp;&nbsp;
-                  <input
-                    type="text"
-                    className="form-control"
-                    name="department"
-                    value={sdbgEntryForFi?.bg_file_no || ""}
-                    onChange={(e) =>
-                      setSdbgEntryForFi({
-                        ...sdbgEntryForFi,
-                        bg_file_no: e.target.value,
-                      })
-                    }
-                  />
+                  {formDatainput?.bg_file_no ? (
+                    <p>{formDatainput?.bg_file_no}</p>
+                  ) : (
+                    <input
+                      type="text"
+                      className="form-control"
+                      name="department"
+                      value={sdbgEntryForFi?.bg_file_no || ""}
+                      onChange={(e) =>
+                        setSdbgEntryForFi({
+                          ...sdbgEntryForFi,
+                          bg_file_no: e.target.value,
+                        })
+                      }
+                    />
+                  )}
                 </div>
               </div>
               <div className="col-md-6 col-12">
