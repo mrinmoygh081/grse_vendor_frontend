@@ -8,6 +8,7 @@ import { useSelector } from "react-redux";
 import { apiCallBack } from "../utils/fetchAPIs";
 import { convertToEpoch, formatDate } from "../utils/getDateTimeNow";
 import { toast } from "react-toastify";
+import DynamicButton from "../Helpers/DynamicButton";
 
 const BGExtensionSub = () => {
   const [isPopup, setIsPopup] = useState(false);
@@ -52,7 +53,7 @@ const BGExtensionSub = () => {
       try {
         const empListData = await apiCallBack(
           "POST",
-          `po/sdbg/sdbgfilterData`,
+          `po/sdbg/bger`,
           payload,
           token
         );
@@ -111,12 +112,17 @@ const BGExtensionSub = () => {
                                 placeholderText="End Date"
                               />
                             </div>
-                            <button
+                            {/* <button
                               className="btn fw-bold btn-sm btn-primary me-2"
                               onClick={() => handleSearch(startDate, endDate)}
                             >
                               SEARCH
-                            </button>
+                            </button> */}
+                            <DynamicButton
+                              label="SEARCH"
+                              onClick={() => handleSearch(startDate, endDate)}
+                              className="btn fw-bold btn-sm btn-primary me-2"
+                            />
                           </div>
                           <Select
                             className="me-2"

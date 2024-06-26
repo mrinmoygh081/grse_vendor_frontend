@@ -61,13 +61,15 @@ const BTNfinance = () => {
 
   const filteredData = paymentdata.filter(
     (file) =>
-      (file.reference_no &&
-        file.reference_no.toLowerCase().includes(searchQuery.toLowerCase())) ||
-      (file.purchasing_doc_no &&
-        file.purchasing_doc_no
-          .toLowerCase()
-          .includes(searchQuery.toLowerCase()) &&
-        (selectedStatus === "All" || file.status === selectedStatus))
+      ((file.btn_num &&
+        file.btn_num.toLowerCase().includes(searchQuery.toLowerCase())) ||
+        (file.invoice_no &&
+          file.invoice_no.toLowerCase().includes(searchQuery.toLowerCase())) ||
+        (file.purchasing_doc_no &&
+          file.purchasing_doc_no
+            .toLowerCase()
+            .includes(searchQuery.toLowerCase()))) &&
+      (selectedStatus === "All" || file.status === selectedStatus)
   );
 
   const generateExcel = () => {
@@ -148,12 +150,15 @@ const BTNfinance = () => {
                       onChange={(e) => setSelectedStatus(e.target.value)}
                     >
                       <option value="All">All</option>
+                      <option value="SUBMITTED">SUBMITTED</option>
+                      <option value="SUBMITTED_BY_DO">SUBMITTED_BY_DO</option>
+                      <option value="FORWARD_TO_FINANCE">
+                        FORWARD_TO_FINANCE
+                      </option>
                       <option value="FORWARDED_TO_FI_STAFF">
                         FORWARDED_TO_FI_STAFF
                       </option>
-                      <option value="HOLD">HOLD</option>
-                      <option value="SUBMITTED">SUBMITTED</option>
-                      <option value="APPROVED">APPROVED</option>
+                      <option value="RETURN_TO_DO">RETURN_TO_DO</option>
                     </select>
                   </div>
                 </div>
@@ -179,7 +184,9 @@ const BTNfinance = () => {
                 <table className="table table-striped table-bordered table_height">
                   <thead>
                     <tr className="row-count">
-                      <td colSpan={6}>Number of BTN {filteredData.length}</td>
+                      <td colSpan={6} style={{ textAlign: "left" }}>
+                        Number of BTN {filteredData.length}
+                      </td>
                     </tr>
                     <tr className="border-0">
                       <th className="min-w-150px">BTN Num</th>

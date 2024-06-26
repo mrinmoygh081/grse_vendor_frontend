@@ -387,6 +387,7 @@ const QAPSub = () => {
                                   <th>DateTime </th>
                                   <th>Action Type </th>
                                   <th>File Info</th>
+                                  <th>Supporting Documents</th>
                                   <th>Action By</th>
                                   <th className="min-w-150px">Remarks</th>
                                   <th>Status</th>
@@ -405,28 +406,8 @@ const QAPSub = () => {
                                   return (
                                     <Fragment key={index}>
                                       <tr>
-                                        <td colSpan={6}>
+                                        <td colSpan={8}>
                                           <b>{it}</b>
-                                        </td>
-                                        <td>
-                                          {(userType === 1 ||
-                                            user?.department_id === 3) &&
-                                            !allApproved && (
-                                              <td className="border-0">
-                                                <button
-                                                  onClick={() => {
-                                                    setIsPopup(true);
-                                                    setFormData({
-                                                      ...formData,
-                                                      reference_no: it,
-                                                    });
-                                                  }}
-                                                  className="btn fw-bold btn-sm btn-primary me-3"
-                                                >
-                                                  ACTION
-                                                </button>
-                                              </td>
-                                            )}
                                         </td>
                                       </tr>
                                       {items &&
@@ -435,10 +416,7 @@ const QAPSub = () => {
                                             {/* <td className="table_centerr">
                                               {qap.reference_no}
                                             </td> */}
-                                            {console.log(
-                                              items,
-                                              "........................................."
-                                            )}
+
                                             <td className="table_center">
                                               {/* {qap?.created_at &&
                                                 new Date(
@@ -465,6 +443,22 @@ const QAPSub = () => {
                                                 </a>
                                               )}
                                             </td>
+                                            <td>
+                                              {qap.supporting_doc &&
+                                                JSON.parse(
+                                                  qap.supporting_doc
+                                                ).map((doc, idx) => (
+                                                  <div key={idx}>
+                                                    <a
+                                                      href={`${process.env.REACT_APP_PDF_URL}qap/supporting_doc/${doc.file_name}`}
+                                                      target="_blank"
+                                                      rel="noreferrer"
+                                                    >
+                                                      click Here
+                                                    </a>
+                                                  </div>
+                                                ))}
+                                            </td>
                                             <td>{qap.created_by_id}</td>
                                             <td>{qap.remarks}</td>
                                             <td
@@ -474,7 +468,27 @@ const QAPSub = () => {
                                             >
                                               {qap.status}
                                             </td>
-                                            <td></td>
+                                            <td>
+                                              {(userType === 1 ||
+                                                user?.department_id === 3) &&
+                                                !allApproved && (
+                                                  <td className="border-0">
+                                                    <button
+                                                      onClick={() => {
+                                                        setIsPopup(true);
+                                                        setFormData({
+                                                          ...formData,
+                                                          reference_no: it,
+                                                        });
+                                                      }}
+                                                      className="btn fw-bold btn-sm btn-primary me-3"
+                                                    >
+                                                      ACTION
+                                                    </button>
+                                                  </td>
+                                                )}
+                                            </td>
+
                                             {/* { && (
                                               <td>
                                                 {qap?.status === SUBMITTED && (

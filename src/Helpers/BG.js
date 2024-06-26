@@ -51,7 +51,7 @@ export const BGEntry = async (formDatainput, token) => {
     bg_type,
     department,
   } = formDatainput;
-  console.log(formDatainput);
+  console.log(formDatainput, "lllaaaaaaaaaaaaaaaaa");
 
   if (
     purchasing_doc_no === "" ||
