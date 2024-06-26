@@ -66,7 +66,7 @@ const SDBGSub = () => {
     purchasing_doc_no: id,
     assigned_from: user?.vendor_code,
     assigned_to: null,
-    remarks: "Assigned to Finance Employee",
+    remarks: "Assigned to Fi Employee",
     status: "ASSIGNED",
   });
 
@@ -230,7 +230,6 @@ const SDBGSub = () => {
     }
   };
 
-  console.log("KJDL", formDatainput);
   const uploadSDBGSave = async () => {
     let status = await BGEntrySave(formDatainput, token);
     if (status) {
@@ -484,6 +483,16 @@ const SDBGSub = () => {
       `BG Date: ${
         entry?.bg_date
           ? new Date(entry?.bg_date * 1000).toLocaleDateString()
+          : ""
+      }`
+    );
+    y += 10;
+    pdf.text(
+      20,
+      y,
+      `BG Received Date: ${
+        entry?.bg_recived_date
+          ? new Date(entry?.bg_recived_date * 1000).toLocaleDateString()
           : ""
       }`
     );
@@ -1071,6 +1080,29 @@ const SDBGSub = () => {
                     />
                   </div>
                 </div>
+
+                <div className="col-md-6 col-12">
+                  <div className="mb-3">
+                    <label className="form-label">BG Received Date</label>
+                    &nbsp;&nbsp;
+                    <span className="mandatorystart">*</span>
+                    <DatePicker
+                      selected={
+                        formDatainput.bg_recived_date
+                          ? new Date(formDatainput.bg_recived_date * 1000)
+                          : null
+                      }
+                      onChange={(date) => {
+                        setFormDatainput((prevData) => ({
+                          ...prevData,
+                          bg_recived_date: new Date(convertToEpoch(date)),
+                        }));
+                      }}
+                      dateFormat="dd/MM/yyyy"
+                      className="form-control"
+                    />
+                  </div>
+                </div>
                 <div className="col-md-6 col-12">
                   <div className="mb-3">
                     <label className="form-label">BG Amount</label>&nbsp;&nbsp;
@@ -1271,12 +1303,7 @@ const SDBGSub = () => {
               <div className="col-md-6 col-12">
                 <div className="mb-3">
                   <label className="form-label">BG Entry Date</label>
-
                   <p>
-                    {" "}
-                    {/* {formDatainput?.created_at
-                      ? new Date(formDatainput?.created_at).toLocaleDateString()
-                      : ""} */}
                     <td
                       style={{
                         border: "none",
@@ -1354,6 +1381,16 @@ const SDBGSub = () => {
                       ? new Date(
                           formDatainput?.bg_date * 1000
                         ).toLocaleDateString()
+                      : ""}
+                  </p>
+                </div>
+              </div>
+              <div className="col-md-6 col-12">
+                <div className="mb-3">
+                  <label className="form-label">BG Received Date</label>
+                  <p>
+                    {formDatainput?.bg_recived_date
+                      ? formatDate(formDatainput?.bg_recived_date * 1000)
                       : ""}
                   </p>
                 </div>
@@ -1510,7 +1547,7 @@ const SDBGSub = () => {
                         { file: true },
                         () =>
                           financeEntry("APPROVED", formDatainput?.reference_no),
-                        "You're going to Accept the SDBG Entry. Please confirm!"
+                        "You're going to receiving the SDBG Entry. Please confirm!"
                       )
                     }
                     className="btn fw-bold btn-success me-3"
@@ -1518,7 +1555,7 @@ const SDBGSub = () => {
                   >
                     RECEIVED
                   </button>
-                  <button
+                  {/* <button
                     className="btn fw-bold btn-info me-3"
                     type="button"
                     onClick={() =>
@@ -1531,7 +1568,7 @@ const SDBGSub = () => {
                   >
                     HOLD
                   </button>
-                  {/* <button
+                  <button
                     onClick={() =>
                       reConfirm(
                         { file: true },

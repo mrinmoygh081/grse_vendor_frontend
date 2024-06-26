@@ -13,6 +13,7 @@ export const bgInputs = {
   bank_pin_code: "",
   bg_no: "",
   bg_date: "",
+  bg_recived_date: "",
   bg_ammount: "",
   department: "",
   yard_no: "",
@@ -250,6 +251,7 @@ export const BGEntrySave = async (formDatainput, token) => {
     yard_no,
     bg_no,
     bg_date,
+    bg_recived_date,
     bg_ammount,
     validity_date,
     claim_priod,
@@ -271,6 +273,7 @@ export const BGEntrySave = async (formDatainput, token) => {
     yard_no,
     bg_no,
     bg_date: convertToEpochh(new Date(bg_date * 1000)),
+    bg_recived_date: convertToEpochh(new Date(bg_recived_date * 1000)),
     bg_ammount,
     validity_date: convertToEpochh(new Date(validity_date * 1000)),
     claim_priod: convertToEpochh(new Date(claim_priod * 1000)),
@@ -279,7 +282,7 @@ export const BGEntrySave = async (formDatainput, token) => {
     status: "SAVED",
     remarks: "BG has been saved.",
   };
-  console.log("form", form);
+  // console.log("form", form);
 
   const d = await postAPI("/po/sdbg/insertSdbgSave", form, token);
 
