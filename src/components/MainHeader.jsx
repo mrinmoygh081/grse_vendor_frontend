@@ -45,8 +45,8 @@ const MainHeader = ({ title }) => {
                   </Link>
                 </li>
               </>
-            )}
-            {user?.user_type !== 1 && (
+            )} */}
+            {user?.user_type === 0 && (
               <>
                 <li className="nav-item">
                   <Link className="nav-link text-black" to={`/bg-extension`}>
@@ -54,7 +54,7 @@ const MainHeader = ({ title }) => {
                   </Link>
                 </li>
               </>
-            )} */}
+            )}
             {user?.user_type !== 1 && (
               <>
                 <li className="nav-item">

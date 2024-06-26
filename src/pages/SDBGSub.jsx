@@ -31,6 +31,7 @@ import jsPDF from "jspdf";
 import { checkTypeArr } from "../utils/smallFun";
 import { convertToEpoch, formatDate } from "../utils/getDateTimeNow";
 import logoimage from "../images/logo.png";
+import DynamicButton from "../Helpers/DynamicButton";
 
 const SDBGSub = () => {
   const dispatch = useDispatch();
@@ -51,7 +52,7 @@ const SDBGSub = () => {
     sdbgFile: null,
     remarks: "",
   });
-
+  console.log(allsdbg, "allsdbg");
   const [entryState, setEntryState] = useState({});
   const GRSE_LOGO_BASE64 =
     "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUA...";
@@ -236,6 +237,8 @@ const SDBGSub = () => {
     if (status) {
       setIsPopup(false);
       setIsEntryPopup(false);
+      // let bg = { ...bgInputs, purchasing_doc_no: id };
+      // setFormDatainput(bg);
       getSDBG();
     }
   };
@@ -1180,20 +1183,31 @@ const SDBGSub = () => {
 
                 <div className="col-12">
                   <div className="mb-3 d-flex justify-content-between">
-                    <button
+                    {/* <button
                       onClick={() => uploadSDBGEntry("FORWARD_TO_FINANCE")}
                       className="btn fw-bold btn-primary"
                       type="submit"
                     >
                       FORWARD TO FINANCE
-                    </button>
-                    <button
+                    </button> */}
+                    <DynamicButton
+                      label="FORWARD TO FINANCE"
+                      onClick={() => uploadSDBGEntry("FORWARD_TO_FINANCE")}
+                      className="btn-primary"
+                      confirmMessage="You're going to forward the SDBG to Finance Dept. Please confirm!"
+                    />
+                    {/* <button
                       onClick={() => uploadSDBGSave("SAVED")}
                       className="btn fw-bold btn-info custom-save-button"
                       type="submit"
                     >
                       SAVE
-                    </button>
+                    </button> */}
+                    <DynamicButton
+                      label="SAVE"
+                      onClick={() => uploadSDBGSave("SAVED")}
+                      className="btn-info custom-save-button"
+                    />
                     <button
                       className="btn fw-bold btn-success"
                       onClick={handleDownloadPDF}
@@ -1616,13 +1630,18 @@ const SDBGSub = () => {
 
                   <div className="col-12">
                     <div className="mb-3 d-flex justify-content-between">
-                      <button
+                      {/* <button
                         onClick={() => assignSDBGByFinance()}
                         className="btn fw-bold btn-primary"
                         type="button"
                       >
                         ASSIGN
-                      </button>
+                      </button> */}
+                      <DynamicButton
+                        label="ASSIGN"
+                        onClick={assignSDBGByFinance}
+                        className="btn fw-bold btn-primary"
+                      />
                     </div>
                   </div>
                 </div>
