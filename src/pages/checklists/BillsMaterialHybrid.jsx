@@ -29,6 +29,9 @@ const BillsMaterialHybrid = () => {
 
   const [data, setData] = useState(null);
   const [form, setForm] = useState(initialData);
+  const [invType, setInvType] = useState({
+    inv_type: "",
+  });
 
   const calNetClaimAmount = (invoice_value, debit_note, credit_note) => {
     invoice_value = parseFloat(invoice_value) || 0;
@@ -106,7 +109,9 @@ const BillsMaterialHybrid = () => {
   }, [data]);
 
   const getGrnIcgrnHandler = async () => {
-    let response = await getGrnIcgrnByInvoice(id, form.invoice_no, token);
+    let inv_no = form.invoice_no || form.e_invoice_no;
+    console.log("inv_no", inv_no);
+    let response = await getGrnIcgrnByInvoice(id, inv_no, token);
     if (response?.status) {
       const { gate_entry_no, grn_nos, icgrn_nos, invoice_date, total_price } =
         response.data;
@@ -123,7 +128,24 @@ const BillsMaterialHybrid = () => {
     }
   };
 
-  console.log("form", form);
+  useEffect(() => {
+    setForm({
+      ...form,
+      invoice_no: "",
+      invoice_filename: "",
+      invoice_value: "",
+      e_invoice_no: "",
+      e_invoice_filename: "",
+      gate_entry_no: "",
+      gate_entry_date: "",
+      get_entry_filename: "",
+      total_icgrn_value: "",
+      grn_nos: "",
+      icgrn_nos: "",
+    });
+  }, [invType?.inv_type]);
+
+  // console.log("form", form);
 
   return (
     <>
@@ -171,82 +193,145 @@ const BillsMaterialHybrid = () => {
                                             inputTypeChange(e, form, setForm)
                                           }
                                         >
-                                          <option value="1"> 1</option>
-                                          <option value="2"> 2</option>
-                                          <option value="3"> 3</option>
-                                          <option value="4"> 4</option>
-                                          <option value="5"> 5</option>
-                                          <option value="6"> 6</option>
-                                          <option value="7"> 7</option>
-                                          <option value="8"> 8</option>
-                                          <option value="9"> 9</option>
-                                          <option value="10"> 10</option>
+                                          <option value="1"> 1 </option>
+                                          <option value="2"> 2 </option>
+                                          <option value="3"> 3 </option>
+                                          <option value="4"> 4 </option>
+                                          <option value="5"> 5 </option>
+                                          <option value="6"> 6 </option>
+                                          <option value="7"> 7 </option>
+                                          <option value="8"> 8 </option>
+                                          <option value="9"> 9 </option>
+                                          <option value="10"> 10 </option>
+                                          <option value="11"> 11 </option>
+                                          <option value="12"> 12 </option>
+                                          <option value="13"> 13 </option>
+                                          <option value="14"> 14 </option>
+                                          <option value="15"> 15 </option>
+                                          <option value="16"> 16 </option>
+                                          <option value="17"> 17 </option>
+                                          <option value="18"> 18 </option>
+                                          <option value="19"> 19 </option>
+                                          <option value="20"> 20 </option>
+                                          <option value="21"> 21 </option>
+                                          <option value="22"> 22 </option>
+                                          <option value="23"> 23 </option>
+                                          <option value="24"> 24 </option>
+                                          <option value="25"> 25 </option>
+                                          <option value="26"> 26 </option>
+                                          <option value="27"> 27 </option>
+                                          <option value="28"> 28 </option>
+                                          <option value="29"> 29 </option>
+                                          <option value="30"> 30 </option>
                                         </select>
                                       </td>
                                     </tr>
                                     <tr>
-                                      <td>Invoice No:</td>
+                                      <td>Choose Invoice Type</td>
                                       <td className="btn_value">
-                                        <input
-                                          type="text"
-                                          className="form-control me-3"
-                                          name="invoice_no"
-                                          value={form?.invoice_no}
+                                        <select
+                                          name="inv_type"
+                                          id=""
+                                          className="form-select"
                                           onChange={(e) =>
-                                            setForm({
-                                              ...form,
-                                              invoice_no: e.target.value,
-                                            })
+                                            inputTypeChange(
+                                              e,
+                                              invType,
+                                              setInvType
+                                            )
                                           }
-                                        />
-                                        <input
-                                          type="file"
-                                          className="form-control"
-                                          name="invoice_filename"
-                                          onChange={(e) =>
-                                            inputFileChange(e, form, setForm)
-                                          }
-                                          accept=".pdf"
-                                        />
-                                        <button
-                                          type="button"
-                                          className="btn btn-primary btn-sm m-4"
-                                          onClick={getGrnIcgrnHandler}
                                         >
-                                          CHECK
-                                        </button>
+                                          <option value="">
+                                            Choose Invoice Type
+                                          </option>
+                                          <option value="inv">
+                                            Invoice Number
+                                          </option>
+                                          <option value="e_inv">
+                                            E-Invoice Number
+                                          </option>
+                                        </select>
                                       </td>
                                     </tr>
-                                    <tr>
-                                      <td>E-Invoice No :</td>
-                                      <td className="btn_value">
-                                        <input
-                                          type="text"
-                                          className="form-control me-2"
-                                          name="e_invoice_no"
-                                          value={form?.e_invoice_no}
-                                          onChange={(e) =>
-                                            inputTypeChange(e, form, setForm)
-                                          }
-                                        />
-                                        <input
-                                          type="file"
-                                          className="form-control"
-                                          name="e_invoice_filename"
-                                          onChange={(e) =>
-                                            inputFileChange(e, form, setForm)
-                                          }
-                                          accept=".pdf"
-                                        />
-                                        {/* <button
-                                          type="button"
-                                          className="btn btn-primary btn-sm m-4"
-                                          onClick={getGrnIcgrnHandler}
-                                        >
-                                          CHECK
-                                        </button> */}
-                                      </td>
-                                    </tr>
+                                    {invType?.inv_type === "inv" && (
+                                      <tr>
+                                        <td>Invoice No:</td>
+                                        <td>
+                                          <div className="btn_value">
+                                            <input
+                                              type="text"
+                                              className="form-control me-3"
+                                              name="invoice_no"
+                                              value={form?.invoice_no}
+                                              onChange={(e) =>
+                                                setForm({
+                                                  ...form,
+                                                  invoice_no: e.target.value,
+                                                })
+                                              }
+                                            />
+                                            <input
+                                              type="file"
+                                              className="form-control"
+                                              name="invoice_filename"
+                                              onChange={(e) =>
+                                                inputFileChange(
+                                                  e,
+                                                  form,
+                                                  setForm
+                                                )
+                                              }
+                                              accept=".pdf"
+                                            />
+                                            <button
+                                              type="button"
+                                              className="btn btn-primary btn-sm m-4"
+                                              onClick={getGrnIcgrnHandler}
+                                            >
+                                              CHECK
+                                            </button>
+                                          </div>
+                                          <p>
+                                            In case of ink -signed invoice
+                                            vendor should mandatorily send Hard
+                                            Copy of Invoice to Dealing within 2
+                                            working days
+                                          </p>
+                                        </td>
+                                      </tr>
+                                    )}
+                                    {invType?.inv_type === "e_inv" && (
+                                      <tr>
+                                        <td>E-Invoice No :</td>
+                                        <td className="btn_value">
+                                          <input
+                                            type="text"
+                                            className="form-control me-2"
+                                            name="e_invoice_no"
+                                            value={form?.e_invoice_no}
+                                            onChange={(e) =>
+                                              inputTypeChange(e, form, setForm)
+                                            }
+                                          />
+                                          <input
+                                            type="file"
+                                            className="form-control"
+                                            name="e_invoice_filename"
+                                            onChange={(e) =>
+                                              inputFileChange(e, form, setForm)
+                                            }
+                                            accept=".pdf"
+                                          />
+                                          <button
+                                            type="button"
+                                            className="btn btn-primary btn-sm m-4"
+                                            onClick={getGrnIcgrnHandler}
+                                          >
+                                            CHECK
+                                          </button>
+                                        </td>
+                                      </tr>
+                                    )}
 
                                     <tr>
                                       <td>Additional PO:</td>
