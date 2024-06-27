@@ -96,7 +96,7 @@ const BTNMaterialVendorInfo = ({ navigate, id }) => {
                   </td>
                 </tr>
                 <tr>
-                  <td>Invoice no:</td>
+                  <td>Digitally Signed Invoice:</td>
                   <td className="btn_value">
                     <b className="me-3">{data?.invoice_no}</b>
                     {data?.invoice_filename && (

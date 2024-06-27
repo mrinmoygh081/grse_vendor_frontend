@@ -119,7 +119,7 @@ const AdvanceBillHybridEdit = () => {
                                     {data ? (
                                       <>
                                         <tr>
-                                          <td>Invoice No:</td>
+                                          <td>Digitally Signed Invoice:</td>
                                           <td className="btn_value">
                                             {data.invoice_no}
                                           </td>
