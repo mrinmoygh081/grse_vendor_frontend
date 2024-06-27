@@ -366,6 +366,24 @@ const PODetails = () => {
                                                     </span>
                                                   </div>
                                                 )}
+
+                                                {item?.acknowledgement_text && (
+                                                  <div className="card_header_data">
+                                                    <span className="label">
+                                                      {
+                                                        item.acknowledgement_text
+                                                      }{" "}
+                                                      :
+                                                    </span>
+                                                    <span className="label_data">
+                                                      {item.acknowledgement_date
+                                                        ? formatDate(
+                                                            item.acknowledgement_date
+                                                          )
+                                                        : "Not Updated"}
+                                                    </span>
+                                                  </div>
+                                                )}
                                               </Fragment>
                                             ))}
                                         </div>

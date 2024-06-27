@@ -8,13 +8,17 @@ import { useSelector } from "react-redux";
 import { apiCallBack } from "../utils/fetchAPIs";
 import { convertToEpoch, formatDate } from "../utils/getDateTimeNow";
 import { toast } from "react-toastify";
-import DynamicButton from "../Helpers/DynamicButton";
+import SkeletonLoader from "../loader/SkeletonLoader";
 
 const BGExtensionSub = () => {
   const [isPopup, setIsPopup] = useState(false);
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
   const [tableData, setTableData] = useState([]);
+  const [selectedRow, setSelectedRow] = useState(null);
+  const [selectedDate, setSelectedDate] = useState(null);
+  const [selectedAction, setSelectedAction] = useState(null);
+  const [loading, setLoading] = useState(false); // Add loading state
   const { token } = useSelector((state) => state.auth);
 
   const handlePopupToggle = () => {
@@ -22,20 +26,20 @@ const BGExtensionSub = () => {
   };
 
   const predefinedRanges = [
-    { value: "lastMonth", label: "Last Month" },
-    { value: "lastTwoMonths", label: "Last Two Months" },
+    { value: "upcomingOneMonth", label: "Upcoming One Month" },
+    { value: "upcomingTwoMonths", label: "Upcoming Two Months" },
   ];
 
   const handleRangeChange = (selectedOption) => {
     const today = new Date();
     let start, end;
 
-    if (selectedOption.value === "lastMonth") {
-      start = new Date(today.getFullYear(), today.getMonth() - 1, 1);
-      end = new Date(today.getFullYear(), today.getMonth(), 0);
-    } else if (selectedOption.value === "lastTwoMonths") {
-      start = new Date(today.getFullYear(), today.getMonth() - 2, 1);
-      end = new Date(today.getFullYear(), today.getMonth(), 0);
+    if (selectedOption.value === "upcomingOneMonth") {
+      start = new Date(today.getFullYear(), today.getMonth(), 1);
+      end = new Date(today.getFullYear(), today.getMonth() + 1, 0);
+    } else if (selectedOption.value === "upcomingTwoMonths") {
+      start = new Date(today.getFullYear(), today.getMonth(), 1);
+      end = new Date(today.getFullYear(), today.getMonth() + 2, 0);
     }
 
     setStartDate(start);
@@ -45,6 +49,7 @@ const BGExtensionSub = () => {
 
   const handleSearch = async (start = startDate, end = endDate) => {
     if (start && end) {
+      setLoading(true); // Start loading
       const payload = {
         startDate: convertToEpoch(new Date(start)),
         endDate: convertToEpoch(new Date(end)),
@@ -57,22 +62,37 @@ const BGExtensionSub = () => {
           payload,
           token
         );
-        if (empListData) {
-          setTableData(empListData);
+        if (empListData?.data) {
+          setTableData(empListData.data);
         } else {
           console.error("Error fetching data:", empListData.message);
         }
       } catch (error) {
         console.error("Error fetching employee list:", error.message);
+      } finally {
+        setLoading(false); // End loading
       }
     } else {
       toast.warning("Please select both start and end dates.");
     }
   };
 
-  const handleSave = (index) => {
-    // Implement the save logic here
-    console.log(`Save clicked for row ${index}`);
+  const handleSave = (index, action) => {
+    setSelectedRow(index);
+    setSelectedAction(action);
+    setIsPopup(true);
+  };
+
+  const handlePopupSave = () => {
+    // Implement the save logic here, e.g., send selectedDate and selectedAction to the backend
+    console.log(`Action: ${selectedAction}, Date: ${selectedDate}`);
+    setIsPopup(false); // Close the popup after saving
+  };
+
+  const formatDatee = (timestamp) => {
+    if (!timestamp || timestamp === "0") return "";
+    const date = new Date(Number(timestamp) * 1000);
+    return date.toLocaleDateString("en-US");
   };
 
   return (
@@ -98,6 +118,7 @@ const BGExtensionSub = () => {
                                 endDate={endDate}
                                 className="form-control me-2"
                                 placeholderText="Start Date"
+                                aria-label="Start Date"
                               />
                             </div>
                             <div className="me-2">
@@ -110,19 +131,16 @@ const BGExtensionSub = () => {
                                 minDate={startDate}
                                 className="form-control me-2"
                                 placeholderText="End Date"
+                                aria-label="End Date"
                               />
                             </div>
-                            {/* <button
+                            <button
                               className="btn fw-bold btn-sm btn-primary me-2"
                               onClick={() => handleSearch(startDate, endDate)}
+                              aria-label="Search"
                             >
                               SEARCH
-                            </button> */}
-                            <DynamicButton
-                              label="SEARCH"
-                              onClick={() => handleSearch(startDate, endDate)}
-                              className="btn fw-bold btn-sm btn-primary me-2"
-                            />
+                            </button>
                           </div>
                           <Select
                             className="me-2"
@@ -132,6 +150,7 @@ const BGExtensionSub = () => {
                             styles={{
                               container: (base) => ({ ...base, width: 200 }),
                             }}
+                            aria-label="Select Range"
                           />
                         </div>
                         <div className="table-responsive">
@@ -146,23 +165,33 @@ const BGExtensionSub = () => {
                               </tr>
                             </thead>
                             <tbody>
-                              {tableData?.length > 0 ? (
+                              {loading ? (
+                                <tr>
+                                  <td colSpan="5">
+                                    <SkeletonLoader />
+                                  </td>
+                                </tr>
+                              ) : tableData?.length > 0 ? (
                                 tableData.map((item, index) => (
                                   <tr key={index}>
                                     <td className="table_center">
                                       {item.purchasing_doc_no}
                                     </td>
                                     <td>{item.reference_no}</td>
-                                    <td>{item.bgFileNo}</td>
+                                    <td>{item.bg_file_no || ""}</td>
                                     <td>
                                       {item.validity_date &&
-                                        formatDate(item.validity_date)}
+                                        formatDatee(item.validity_date)}
                                     </td>
                                     <td>
                                       <div className="d-flex">
                                         <select
                                           name="action"
                                           className="form-select me-2"
+                                          aria-label="Action"
+                                          onChange={(e) =>
+                                            setSelectedAction(e.target.value)
+                                          }
                                         >
                                           <option value="Extension">
                                             Extension
@@ -173,7 +202,10 @@ const BGExtensionSub = () => {
                                         </select>
                                         <button
                                           className="btn btn-primary"
-                                          onClick={() => handleSave(index)}
+                                          onClick={() =>
+                                            handleSave(index, selectedAction)
+                                          }
+                                          aria-label="Save"
                                         >
                                           SAVE
                                         </button>
@@ -207,12 +239,13 @@ const BGExtensionSub = () => {
             <div className="card-header border-0 pt-5">
               <h3 className="card-title align-items-start flex-column">
                 <span className="card-label fw-bold fs-3 mb-1">
-                  Upload Shipping Documents
+                  {selectedAction} Date
                 </span>
               </h3>
               <button
                 className="btn fw-bold btn-danger"
                 onClick={handlePopupToggle}
+                aria-label="Close Popup"
               >
                 Close
               </button>
@@ -222,28 +255,25 @@ const BGExtensionSub = () => {
                 <div className="col-12">
                   <div className="mb-3">
                     <label className="form-label">
-                      Shipping File Type <span className="star">*</span>
+                      Select Date <span className="star">*</span>
                     </label>
-                    <input type="text" className="form-control" />
+                    <DatePicker
+                      selected={selectedDate}
+                      onChange={(date) => setSelectedDate(date)}
+                      className="form-control"
+                      aria-label="Selected Date"
+                    />
                   </div>
                 </div>
                 <div className="col-12">
                   <div className="mb-3">
-                    <label className="form-label">
-                      Shipping File <span className="star">*</span>
-                    </label>
-                    <input type="file" className="form-control" />
-                  </div>
-                </div>
-                <div className="col-12">
-                  <div className="mb-3">
-                    <label className="form-label">Remarks</label>
-                    <textarea rows="4" className="form-control"></textarea>
-                  </div>
-                </div>
-                <div className="col-12">
-                  <div className="mb-3">
-                    <button className="btn fw-bold btn-primary">UPDATE</button>
+                    <button
+                      className="btn fw-bold btn-primary"
+                      onClick={handlePopupSave}
+                      aria-label="Save Date"
+                    >
+                      SAVE
+                    </button>
                   </div>
                 </div>
               </div>
