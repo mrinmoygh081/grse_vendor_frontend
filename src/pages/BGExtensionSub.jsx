@@ -16,9 +16,9 @@ const BGExtensionSub = () => {
   const [endDate, setEndDate] = useState(null);
   const [tableData, setTableData] = useState([]);
   const [selectedRow, setSelectedRow] = useState(null);
-  const [selectedDate, setSelectedDate] = useState(null);
-  const [selectedAction, setSelectedAction] = useState(null);
-  const [loading, setLoading] = useState(false); // Add loading state
+  const [remarkstext, setRemarkstext] = useState("");
+  const [selectedAction, setSelectedAction] = useState("");
+  const [loading, setLoading] = useState(false);
   const { token } = useSelector((state) => state.auth);
 
   const handlePopupToggle = () => {
@@ -77,16 +77,80 @@ const BGExtensionSub = () => {
     }
   };
 
-  const handleSave = (index, action) => {
+  const handleSave = (index) => {
     setSelectedRow(index);
-    setSelectedAction(action);
     setIsPopup(true);
   };
 
-  const handlePopupSave = () => {
-    // Implement the save logic here, e.g., send selectedDate and selectedAction to the backend
-    console.log(`Action: ${selectedAction}, Date: ${selectedDate}`);
-    setIsPopup(false); // Close the popup after saving
+  // const handlePopupSave = async () => {
+  //   if (selectedRow !== null && selectedAction) {
+  //     const selectedData = tableData[selectedRow];
+  //     const payload = {
+  //       reference_no: selectedData.reference_no,
+  //       purchasing_doc_no: selectedData.purchasing_doc_no,
+  //       bg_file_no: selectedData.bg_file_no,
+  //       recommendation_type: selectedAction,
+  //       remarks: remarkstext,
+  //     };
+
+  //     try {
+  //       const response = await apiCallBack(
+  //         "POST",
+  //         `po/sdbg/recommendationBger`,
+  //         payload,
+  //         token
+  //       );
+
+  //       if (response.success) {
+  //         toast.success("Recommendation saved successfully!");
+  //         setIsPopup(false); // Close the popup after saving
+  //         handleSearch(startDate, endDate); // Refresh the table data
+  //       } else {
+  //         console.error("Error saving recommendation:", response.message);
+  //         toast.error("Error saving recommendation. Please try again.");
+  //       }
+  //     } catch (error) {
+  //       console.error("Error saving recommendation:", error.message);
+  //       toast.error("Error saving recommendation. Please try again.");
+  //     }
+  //   } else {
+  //     toast.warning("Please select an action and provide remarks.");
+  //   }
+  // };
+
+  const handlePopupSave = async () => {
+    if (!selectedAction || !remarkstext) {
+      toast.warning("Please select an action and enter remarks.");
+      return;
+    }
+
+    const selectedRowData = tableData[selectedRow];
+    const payload = {
+      reference_no: selectedRowData.reference_no,
+      purchasing_doc_no: selectedRowData.purchasing_doc_no,
+      bg_file_no: selectedRowData.bg_file_no,
+      recommendation_type: selectedAction,
+      remarks: remarkstext,
+    };
+
+    try {
+      const response = await apiCallBack(
+        "POST",
+        "po/sdbg/recommendationBger",
+        payload,
+        token
+      );
+
+      if (response?.status) {
+        toast.success(response.message || "Success");
+      } else {
+        toast.warning(response.message || "An error occurred");
+      }
+    } catch (error) {
+      toast.error("Error saving data: " + error.message);
+    } finally {
+      setIsPopup(false); // Close the popup after saving
+    }
   };
 
   const formatDatee = (timestamp) => {
@@ -193,18 +257,19 @@ const BGExtensionSub = () => {
                                             setSelectedAction(e.target.value)
                                           }
                                         >
-                                          <option value="Extension">
+                                          <option value="">
+                                            Select Action
+                                          </option>
+                                          <option value="EXTENSION">
                                             Extension
                                           </option>
-                                          <option value="Release">
+                                          <option value="RELEASE">
                                             Release
                                           </option>
                                         </select>
                                         <button
                                           className="btn btn-primary"
-                                          onClick={() =>
-                                            handleSave(index, selectedAction)
-                                          }
+                                          onClick={() => handleSave(index)}
                                           aria-label="Save"
                                         >
                                           SAVE
@@ -239,7 +304,7 @@ const BGExtensionSub = () => {
             <div className="card-header border-0 pt-5">
               <h3 className="card-title align-items-start flex-column">
                 <span className="card-label fw-bold fs-3 mb-1">
-                  {selectedAction} Date
+                  {selectedAction} Remarks
                 </span>
               </h3>
               <button
@@ -255,22 +320,24 @@ const BGExtensionSub = () => {
                 <div className="col-12">
                   <div className="mb-3">
                     <label className="form-label">
-                      Select Date <span className="star">*</span>
+                      Remarks <span className="star">*</span>
                     </label>
-                    <DatePicker
-                      selected={selectedDate}
-                      onChange={(date) => setSelectedDate(date)}
+                    <textarea
+                      value={remarkstext}
+                      onChange={(e) => setRemarkstext(e.target.value)}
                       className="form-control"
-                      aria-label="Selected Date"
+                      aria-label="Remarks"
+                      rows="3"
                     />
                   </div>
                 </div>
                 <div className="col-12">
                   <div className="mb-3">
                     <button
+                      type="button"
                       className="btn fw-bold btn-primary"
                       onClick={handlePopupSave}
-                      aria-label="Save Date"
+                      aria-label="Save Remarks"
                     >
                       SAVE
                     </button>
