@@ -245,17 +245,17 @@ const BillsMaterialHybrid = () => {
                                             Choose Invoice Type
                                           </option>
                                           <option value="inv">
-                                            Invoice Number
+                                            Digitally signed Invoice
                                           </option>
                                           <option value="e_inv">
-                                            E-Invoice Number
+                                            E-Invoice
                                           </option>
                                         </select>
                                       </td>
                                     </tr>
                                     {invType?.inv_type === "inv" && (
                                       <tr>
-                                        <td>Invoice No:</td>
+                                        <td>Digitally Signed Invoice:</td>
                                         <td>
                                           <div className="btn_value">
                                             <input
@@ -263,6 +263,7 @@ const BillsMaterialHybrid = () => {
                                               className="form-control me-3"
                                               name="invoice_no"
                                               value={form?.invoice_no}
+                                              placeholder="invoice number"
                                               onChange={(e) =>
                                                 setForm({
                                                   ...form,
@@ -308,6 +309,7 @@ const BillsMaterialHybrid = () => {
                                             type="text"
                                             className="form-control me-2"
                                             name="e_invoice_no"
+                                            placeholder="E-Invoice number"
                                             value={form?.e_invoice_no}
                                             onChange={(e) =>
                                               inputTypeChange(e, form, setForm)
@@ -696,7 +698,8 @@ const BillsMaterialHybrid = () => {
                                             className="form-check-label"
                                             htmlFor="agree_to_declaration"
                                           >
-                                            I Agree To Declaration
+                                            I hereby declare that all the
+                                            entries are correct.
                                           </label>
                                         </div>
                                       </td>

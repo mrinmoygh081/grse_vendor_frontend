@@ -30,7 +30,6 @@ import { groupedByActionType, groupedByRefNo } from "../utils/groupedByReq";
 import jsPDF from "jspdf";
 import { checkTypeArr } from "../utils/smallFun";
 import { convertToEpoch, formatDate } from "../utils/getDateTimeNow";
-import logoimage from "../images/logo.png";
 import DynamicButton from "../Helpers/DynamicButton";
 
 const SDBGSub = () => {
@@ -52,7 +51,6 @@ const SDBGSub = () => {
     sdbgFile: null,
     remarks: "",
   });
-  console.log(allsdbg, "allsdbg");
   const [entryState, setEntryState] = useState({});
   const GRSE_LOGO_BASE64 =
     "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUA...";
@@ -221,6 +219,9 @@ const SDBGSub = () => {
   };
 
   const uploadSDBGEntry = async () => {
+    if (!formDatainput?.isConfirmedBG) {
+      return toast.warn("Only confirmed BG can be forwarded to Fi Dept.");
+    }
     let status = await BGEntry(formDatainput, token);
     if (status) {
       setIsPopup(false);
@@ -1210,6 +1211,27 @@ const SDBGSub = () => {
                       <option value="PBG">PBG</option>
                       <option value="ADVANCED BG">ADVANCED BG</option>
                     </select>
+                  </div>
+                </div>
+                <div className="col-12">
+                  <div className="form-check pb-3">
+                    <input
+                      type="checkbox"
+                      className="form-check-input"
+                      id="isConfirmedBG"
+                      name="isConfirmedBG"
+                      value={formDatainput?.isConfirmedBG}
+                      required
+                      onClick={(e) =>
+                        setFormDatainput({
+                          ...formDatainput,
+                          isConfirmedBG: e.target.checked,
+                        })
+                      }
+                    />
+                    <label className="form-check-label" htmlFor="isConfirmedBG">
+                      Confirmed BG is being forwarded.
+                    </label>
                   </div>
                 </div>
 

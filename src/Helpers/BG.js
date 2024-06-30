@@ -27,6 +27,7 @@ export const bgInputs = {
   remarks: "",
   assigned_to: "",
   depertment: "",
+  isConfirmedBG: false,
 };
 
 export const BGEntry = async (formDatainput, token) => {
@@ -51,7 +52,6 @@ export const BGEntry = async (formDatainput, token) => {
     bg_type,
     department,
   } = formDatainput;
-  console.log(formDatainput, "lllaaaaaaaaaaaaaaaaa");
 
   if (
     purchasing_doc_no === "" ||
