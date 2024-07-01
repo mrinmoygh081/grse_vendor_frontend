@@ -9,7 +9,7 @@ import { checkTypeArr } from "../utils/smallFun";
 import { poHandler } from "../redux/slices/poSlice";
 import { FiSearch } from "react-icons/fi";
 import { formatDate } from "../utils/getDateTimeNow";
-import SkeletonLoader from "../components/SkeletonLoader";
+import SkeletonLoader from "../loader/SkeletonLoader";
 import "jspdf-autotable";
 import * as XLSX from "xlsx";
 
@@ -164,19 +164,19 @@ const BTNfinance = () => {
                 </div>
               </div>
             </div>
-            <div className="table-info">
+            {/* <div className="table-info">
               {loading ? (
                 <SkeletonLoader />
               ) : (
                 <tr className="row-count">
                   <td colSpan={6}>
                     {" "}
-                    {/* Number of BTN {filteredData.length}{" "}
-                    {filteredData.length === 1 ? "row" : "rows"} */}
+                    Number of BTN {filteredData.length}{" "}
+                    {filteredData.length === 1 ? "row" : "rows"}
                   </td>
                 </tr>
               )}
-            </div>
+            </div> */}
             <div className="table-responsive">
               {loading ? (
                 <SkeletonLoader />

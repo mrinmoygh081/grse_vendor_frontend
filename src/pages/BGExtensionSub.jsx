@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import DatePicker from "react-datepicker";
 import Select from "react-select";
 import "react-datepicker/dist/react-datepicker.css";
@@ -9,6 +9,7 @@ import { apiCallBack } from "../utils/fetchAPIs";
 import { convertToEpoch, formatDate } from "../utils/getDateTimeNow";
 import { toast } from "react-toastify";
 import SkeletonLoader from "../loader/SkeletonLoader";
+import DynamicButton from "../Helpers/DynamicButton";
 
 const BGExtensionSub = () => {
   const [isPopup, setIsPopup] = useState(false);
@@ -19,7 +20,7 @@ const BGExtensionSub = () => {
   const [remarkstext, setRemarkstext] = useState("");
   const [selectedAction, setSelectedAction] = useState("");
   const [loading, setLoading] = useState(false);
-  const { token } = useSelector((state) => state.auth);
+  const { token, user } = useSelector((state) => state.auth);
 
   const handlePopupToggle = () => {
     setIsPopup(!isPopup);
@@ -45,6 +46,33 @@ const BGExtensionSub = () => {
     setStartDate(start);
     setEndDate(end);
     handleSearch(start, end); // Fetch data for the new date range
+  };
+
+  useEffect(() => {
+    if (user.department_id === 15 && user.internal_role_id === 1) {
+      fetchTableData();
+    }
+  }, [user.department_id, user.internal_role_id]);
+
+  const fetchTableData = async () => {
+    setLoading(true); // Start loading
+    try {
+      const response = await apiCallBack(
+        "GET",
+        `po/sdbg/getBGForFinance`,
+        {},
+        token
+      );
+      if (response?.data) {
+        setTableData(response.data);
+      } else {
+        console.error("Error fetching data:", response.message);
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error.message);
+    } finally {
+      setLoading(false); // End loading
+    }
   };
 
   const handleSearch = async (start = startDate, end = endDate) => {
@@ -143,8 +171,10 @@ const BGExtensionSub = () => {
 
       if (response?.status) {
         toast.success(response.message || "Success");
+        setRemarkstext("");
       } else {
         toast.warning(response.message || "An error occurred");
+        setRemarkstext("");
       }
     } catch (error) {
       toast.error("Error saving data: " + error.message);
@@ -171,52 +201,62 @@ const BGExtensionSub = () => {
                   <div className="row g-5 g-xl-8">
                     <div className="col-12">
                       <div className="card-body p-3">
-                        <div className="d-flex align-items-center justify-content-between mb-3">
-                          <div className="d-flex">
-                            <div className="me-2">
-                              <DatePicker
-                                selected={startDate}
-                                onChange={(date) => setStartDate(date)}
-                                selectsStart
-                                startDate={startDate}
-                                endDate={endDate}
-                                className="form-control me-2"
-                                placeholderText="Start Date"
-                                aria-label="Start Date"
+                        {!(
+                          user.department_id === 15 &&
+                          user.internal_role_id === 1
+                        ) && (
+                          <div className="d-flex align-items-center justify-content-between mb-3">
+                            <div className="d-flex">
+                              <div className="me-2">
+                                <DatePicker
+                                  selected={startDate}
+                                  onChange={(date) => setStartDate(date)}
+                                  selectsStart
+                                  startDate={startDate}
+                                  endDate={endDate}
+                                  className="form-control me-2"
+                                  placeholderText="Start Date"
+                                  aria-label="Start Date"
+                                />
+                              </div>
+                              <div className="me-2">
+                                <DatePicker
+                                  selected={endDate}
+                                  onChange={(date) => setEndDate(date)}
+                                  selectsEnd
+                                  startDate={startDate}
+                                  endDate={endDate}
+                                  minDate={startDate}
+                                  className="form-control me-2"
+                                  placeholderText="End Date"
+                                  aria-label="End Date"
+                                />
+                              </div>
+                              {/* <button
+                                className="btn fw-bold btn-sm btn-primary me-2"
+                                onClick={() => handleSearch(startDate, endDate)}
+                                aria-label="Search"
+                              >
+                                SEARCH
+                              </button> */}
+                              <DynamicButton
+                                label="SEARCH"
+                                onClick={() => handleSearch(startDate, endDate)}
+                                className="btn fw-bold btn-sm btn-primary me-2"
                               />
                             </div>
-                            <div className="me-2">
-                              <DatePicker
-                                selected={endDate}
-                                onChange={(date) => setEndDate(date)}
-                                selectsEnd
-                                startDate={startDate}
-                                endDate={endDate}
-                                minDate={startDate}
-                                className="form-control me-2"
-                                placeholderText="End Date"
-                                aria-label="End Date"
-                              />
-                            </div>
-                            <button
-                              className="btn fw-bold btn-sm btn-primary me-2"
-                              onClick={() => handleSearch(startDate, endDate)}
-                              aria-label="Search"
-                            >
-                              SEARCH
-                            </button>
+                            <Select
+                              className="me-2"
+                              options={predefinedRanges}
+                              onChange={handleRangeChange}
+                              placeholder="Select Range"
+                              styles={{
+                                container: (base) => ({ ...base, width: 200 }),
+                              }}
+                              aria-label="Select Range"
+                            />
                           </div>
-                          <Select
-                            className="me-2"
-                            options={predefinedRanges}
-                            onChange={handleRangeChange}
-                            placeholder="Select Range"
-                            styles={{
-                              container: (base) => ({ ...base, width: 200 }),
-                            }}
-                            aria-label="Select Range"
-                          />
-                        </div>
+                        )}
                         <div className="table-responsive">
                           <table className="table table-striped table-bordered table_height">
                             <thead>
@@ -224,14 +264,32 @@ const BGExtensionSub = () => {
                                 <th>PO Num</th>
                                 <th>BG Ref Num</th>
                                 <th>BG File No</th>
-                                <th>Validity Date</th>
-                                <th>Action</th>
+                                {user.department_id === 15 &&
+                                  user.internal_role_id === 1 && (
+                                    <th>Recommendation Type</th>
+                                  )}
+                                {user.department_id === 15 &&
+                                  user.internal_role_id === 1 && (
+                                    <th>Remarks</th>
+                                  )}
+                                {user.department_id === 15 &&
+                                  user.internal_role_id === 1 && (
+                                    <th>Status</th>
+                                  )}
+                                {!(
+                                  user.department_id === 15 &&
+                                  user.internal_role_id === 1
+                                ) && <th>Validity Date</th>}
+                                {!(
+                                  user.department_id === 15 &&
+                                  user.internal_role_id === 1
+                                ) && <th>Action</th>}
                               </tr>
                             </thead>
                             <tbody>
                               {loading ? (
                                 <tr>
-                                  <td colSpan="5">
+                                  <td colSpan="6">
                                     <SkeletonLoader />
                                   </td>
                                 </tr>
@@ -243,39 +301,63 @@ const BGExtensionSub = () => {
                                     </td>
                                     <td>{item.reference_no}</td>
                                     <td>{item.bg_file_no || ""}</td>
-                                    <td>
-                                      {item.validity_date &&
-                                        formatDatee(item.validity_date)}
-                                    </td>
-                                    <td>
-                                      <div className="d-flex">
-                                        <select
-                                          name="action"
-                                          className="form-select me-2"
-                                          aria-label="Action"
-                                          onChange={(e) =>
-                                            setSelectedAction(e.target.value)
-                                          }
-                                        >
-                                          <option value="">
-                                            Select Action
-                                          </option>
-                                          <option value="EXTENSION">
-                                            Extension
-                                          </option>
-                                          <option value="RELEASE">
-                                            Release
-                                          </option>
-                                        </select>
-                                        <button
-                                          className="btn btn-primary"
-                                          onClick={() => handleSave(index)}
-                                          aria-label="Save"
-                                        >
-                                          SAVE
-                                        </button>
-                                      </div>
-                                    </td>
+                                    {user.department_id === 15 &&
+                                      user.internal_role_id === 1 && (
+                                        <td>
+                                          {item.recommendation_type || ""}
+                                        </td>
+                                      )}
+                                    {user.department_id === 15 &&
+                                      user.internal_role_id === 1 && (
+                                        <td>{item.remarks || ""}</td>
+                                      )}
+                                    {user.department_id === 15 &&
+                                      user.internal_role_id === 1 && (
+                                        <td>{item.status || ""}</td>
+                                      )}
+                                    {!(
+                                      user.department_id === 15 &&
+                                      user.internal_role_id === 1
+                                    ) && (
+                                      <td>
+                                        {item.validity_date &&
+                                          formatDatee(item.validity_date)}
+                                      </td>
+                                    )}
+                                    {!(
+                                      user.department_id === 15 &&
+                                      user.internal_role_id === 1
+                                    ) && (
+                                      <td>
+                                        <div className="d-flex">
+                                          <select
+                                            name="action"
+                                            className="form-select me-2"
+                                            aria-label="Action"
+                                            onChange={(e) =>
+                                              setSelectedAction(e.target.value)
+                                            }
+                                          >
+                                            <option value="">
+                                              Select Action
+                                            </option>
+                                            <option value="EXTENSION">
+                                              Extension
+                                            </option>
+                                            <option value="RELEASE">
+                                              Release
+                                            </option>
+                                          </select>
+                                          <button
+                                            className="btn btn-primary"
+                                            onClick={() => handleSave(index)}
+                                            aria-label="Save"
+                                          >
+                                            SAVE
+                                          </button>
+                                        </div>
+                                      </td>
+                                    )}
                                   </tr>
                                 ))
                               ) : (
@@ -304,7 +386,7 @@ const BGExtensionSub = () => {
             <div className="card-header border-0 pt-5">
               <h3 className="card-title align-items-start flex-column">
                 <span className="card-label fw-bold fs-3 mb-1">
-                  {selectedAction} Remarks
+                  {selectedAction}
                 </span>
               </h3>
               <button
@@ -333,14 +415,19 @@ const BGExtensionSub = () => {
                 </div>
                 <div className="col-12">
                   <div className="mb-3">
-                    <button
+                    {/* <button
                       type="button"
                       className="btn fw-bold btn-primary"
                       onClick={handlePopupSave}
                       aria-label="Save Remarks"
                     >
-                      SAVE
-                    </button>
+                      submit
+                    </button> */}
+                    <DynamicButton
+                      label="submit"
+                      onClick={handlePopupSave}
+                      className="btn-primary"
+                    />
                   </div>
                 </div>
               </div>

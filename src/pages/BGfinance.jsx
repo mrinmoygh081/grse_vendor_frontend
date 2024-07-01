@@ -9,7 +9,7 @@ import { checkTypeArr } from "../utils/smallFun";
 import { poHandler } from "../redux/slices/poSlice";
 import { FiSearch } from "react-icons/fi";
 import { formatDate } from "../utils/getDateTimeNow";
-import SkeletonLoader from "../components/SkeletonLoader";
+import SkeletonLoader from "../loader/SkeletonLoader";
 import "jspdf-autotable";
 import * as XLSX from "xlsx";
 import { APPROVED, FORWARD_TO_FINANCE, HOLD } from "../constants/BGconstants";
@@ -189,19 +189,19 @@ const BGfinance = () => {
                 </div>
               </div>
             </div>
-            <div className="table-info">
+            {/* <div className="table-info">
               {loading ? (
                 <SkeletonLoader />
               ) : (
                 <tr className="row-count">
-                  {/* <td colSpan={10}>
+                  <td colSpan={10}>
                     {" "}
                     Number of AG {filteredData.length}{" "}
                     {filteredData.length === 1 ? "row" : "rows"}
-                  </td> */}
+                  </td>
                 </tr>
               )}
-            </div>
+            </div> */}
             <div className="table-responsive">
               {loading ? (
                 <SkeletonLoader />
