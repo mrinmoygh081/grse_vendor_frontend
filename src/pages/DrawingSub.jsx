@@ -12,6 +12,7 @@ import { groupedByRefNo } from "../utils/groupedByReq";
 import { formatDate } from "../utils/getDateTimeNow";
 import Select from "react-select";
 import { logOutFun } from "../utils/logOutFun";
+import DynamicButton from "../Helpers/DynamicButton";
 
 const DrawingSub = () => {
   const [isPopup, setIsPopup] = useState(false);
@@ -477,13 +478,18 @@ const DrawingSub = () => {
 
                   <div className="col-12">
                     <div className="mb-3 d-flex justify-content-between">
-                      <button
+                      {/* <button
                         onClick={() => assignDrawing()}
                         className="btn fw-bold btn-primary"
                         type="button"
                       >
                         ASSIGN
-                      </button>
+                      </button> */}
+                      <DynamicButton
+                        label="ASSIGN"
+                        onClick={() => assignDrawing()}
+                        className="btn fw-bold btn-primary"
+                      />
                     </div>
                   </div>
                 </div>
@@ -582,38 +588,50 @@ const DrawingSub = () => {
                         user?.department_id === 2 &&
                         (user?.internal_role_id === 1 ||
                           user?.internal_role_id === 2) && (
-                          <button
-                            onClick={() =>
-                              reConfirm(
-                                { file: true },
-                                () => updateDrawing("APPROVED"),
-                                "Please confirm your approving the drawing."
-                              )
-                            }
+                          // <button
+                          //   onClick={() =>
+                          //     reConfirm(
+                          //       { file: true },
+                          //       () => updateDrawing("APPROVED"),
+                          //       "Please confirm your approving the drawing."
+                          //     )
+                          //   }
+                          //   className="btn fw-bold btn-success"
+                          //   type="button"
+                          // >
+                          //   APPROVE
+                          // </button>
+                          <DynamicButton
+                            label="APPROVE"
+                            onClick={() => updateDrawing("APPROVED")}
                             className="btn fw-bold btn-success"
-                            type="button"
-                          >
-                            APPROVE
-                          </button>
+                            confirmMessage="Please confirm your approving the drawing."
+                          />
                         )}
 
                       {userType === 2 &&
                         user?.department_id === 2 &&
                         (user?.internal_role_id === 1 ||
                           user?.internal_role_id === 2) && (
-                          <button
-                            onClick={() =>
-                              reConfirm(
-                                { file: true },
-                                () => updateDrawing("REJECTED"),
-                                "Drawing file rejected!!"
-                              )
-                            }
+                          // <button
+                          //   onClick={() =>
+                          //     reConfirm(
+                          //       { file: true },
+                          //       () => updateDrawing("REJECTED"),
+                          //       "Drawing file rejected!!"
+                          //     )
+                          //   }
+                          //   className="btn fw-bold btn-danger"
+                          //   type="button"
+                          // >
+                          //   REJECT
+                          // </button>
+                          <DynamicButton
+                            label="REJECT"
+                            onClick={() => updateDrawing("REJECTED")}
                             className="btn fw-bold btn-danger"
-                            type="button"
-                          >
-                            REJECT
-                          </button>
+                            confirmMessage="Drawing file rejected!!"
+                          />
                         )}
                     </div>
                   </div>

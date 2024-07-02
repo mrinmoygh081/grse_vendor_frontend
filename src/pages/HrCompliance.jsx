@@ -15,6 +15,7 @@ import {
   USER_VENDOR,
 } from "../constants/userConstants";
 import { checkTypeArr } from "../utils/smallFun";
+import { formatDate } from "../utils/getDateTimeNow";
 
 const HrCompliance = () => {
   const inputFileRef = useRef(null);
@@ -179,10 +180,12 @@ const HrCompliance = () => {
                                       <Fragment key={index}>
                                         <tr>
                                           <td className="table_center">
-                                            {item?.created_at &&
+                                            {/* {item?.created_at &&
                                               new Date(
                                                 item?.created_at
-                                              ).toLocaleString()}
+                                              ).toLocaleString()} */}
+                                            {item.created_at &&
+                                              formatDate(item.created_at)}
                                           </td>
                                           <td className="table_center">
                                             {item.file_name && (

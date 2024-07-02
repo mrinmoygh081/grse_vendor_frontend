@@ -8,6 +8,7 @@ import { apiCallBack } from "../utils/fetchAPIs";
 import { toast } from "react-toastify";
 import moment from "moment";
 import { checkTypeArr } from "../utils/smallFun";
+import { formatDate } from "../utils/getDateTimeNow";
 
 const Inspectionreleasenote = () => {
   const inputFileRef = useRef(null);
@@ -122,9 +123,11 @@ const Inspectionreleasenote = () => {
                                     return (
                                       <tr key={index}>
                                         <td className="table_center">
-                                          {moment(item.created_at)
+                                          {/* {moment(item.created_at)
                                             .utc()
-                                            .format("DD/MM/YY (HH:mm)")}
+                                            .format("DD/MM/YY (HH:mm)")} */}
+                                          {item.created_at &&
+                                            formatDate(item.created_at)}
                                         </td>
                                         <td>
                                           {item.file_name && (

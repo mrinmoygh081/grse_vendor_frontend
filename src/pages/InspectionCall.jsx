@@ -7,6 +7,7 @@ import { useSelector } from "react-redux";
 import { apiCallBack } from "../utils/fetchAPIs";
 import { toast } from "react-toastify";
 import { checkTypeArr } from "../utils/smallFun";
+import { formatDate } from "../utils/getDateTimeNow";
 
 const InspectionCall = () => {
   const [isPopup, setIsPopup] = useState(false);
@@ -123,10 +124,12 @@ const InspectionCall = () => {
                                   inspectioncall.map((inspection) => (
                                     <tr key={inspection.id}>
                                       <td className="table_center">
-                                        {inspection?.created_at &&
+                                        {/* {inspection?.created_at &&
                                           new Date(
                                             inspection?.created_at
-                                          ).toLocaleString()}
+                                          ).toLocaleString()} */}
+                                        {inspection.created_at &&
+                                          formatDate(inspection.created_at)}
                                       </td>
                                       <td>
                                         {inspection.file_name && (

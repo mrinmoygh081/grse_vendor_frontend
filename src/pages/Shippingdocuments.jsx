@@ -9,6 +9,7 @@ import { toast } from "react-toastify";
 import moment from "moment";
 import { REQUESTED, SUBMITTED } from "../constants/BGconstants";
 import { checkTypeArr } from "../utils/smallFun";
+import { formatDate } from "../utils/getDateTimeNow";
 
 const Shippingdocuments = () => {
   const inputFileRef = useRef(null);
@@ -196,9 +197,11 @@ const Shippingdocuments = () => {
                                   data.map((item, index) => (
                                     <tr key={index}>
                                       <td className="table_center">
-                                        {moment(item.created_at)
+                                        {/* {moment(item.created_at)
                                           .utc()
-                                          .format("YYYY-MM-DD")}
+                                          .format("YYYY-MM-DD")} */}
+                                        {item.created_at &&
+                                          formatDate(item.created_at)}
                                       </td>
                                       <td>
                                         {item.file_name && (

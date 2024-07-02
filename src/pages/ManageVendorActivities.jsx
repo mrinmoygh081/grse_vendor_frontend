@@ -8,6 +8,7 @@ import { apiCallBack } from "../utils/fetchAPIs";
 import { toast } from "react-toastify";
 import moment from "moment";
 import { checkTypeArr } from "../utils/smallFun";
+import { formatDate } from "../utils/getDateTimeNow";
 
 const ManageVendorActivities = () => {
   const inputFileRef = useRef(null);
@@ -122,9 +123,11 @@ const ManageVendorActivities = () => {
                                   inspectioncall.map((inspection) => (
                                     <tr key={inspection.id}>
                                       <td className="table_center">
-                                        {moment(inspection.created_at)
+                                        {/* {moment(inspection.created_at)
                                           .utc()
-                                          .format("DD/MM/YY (HH:mm)")}
+                                          .format("DD/MM/YY (HH:mm)")} */}
+                                        {inspection.created_at &&
+                                          formatDate(inspection.created_at)}
                                       </td>
                                       <td className="">
                                         {inspection.file_name && (
