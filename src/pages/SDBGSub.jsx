@@ -1091,15 +1091,16 @@ const SDBGSub = () => {
                     &nbsp;&nbsp;
                     <span className="mandatorystart">*</span>
                     <DatePicker
-                      selected={
-                        formDatainput.bg_recived_date
-                          ? new Date(formDatainput.bg_recived_date * 1000)
-                          : null
-                      }
+                      // selected={
+                      //   formDatainput.bg_recived_date
+                      //     ? new Date(formDatainput.bg_recived_date * 1000)
+                      //     : null
+                      // }
+                      selected={parseDateFromEpoch(formDatainput.bg_recived_date)}
                       onChange={(date) => {
                         setFormDatainput((prevData) => ({
                           ...prevData,
-                          bg_recived_date: new Date(convertToEpoch(date)),
+                          bg_recived_date: convertToEpoch(date),
                         }));
                       }}
                       dateFormat="dd/MM/yyyy"
