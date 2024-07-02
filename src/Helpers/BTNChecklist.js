@@ -141,6 +141,8 @@ export const actionHandlerByDO = async (
     if (!doForm?.other_deduction || doForm?.other_deduction === "") {
       return toast.warn("Please fill other decuction.");
     }
+   
+   
     const response = await apiCallBack(
       "POST",
       "po/btn/BillsMaterialHybridByDO",

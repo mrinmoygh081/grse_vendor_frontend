@@ -39,7 +39,7 @@ export const calculatePenalty = (
   // Calculate the penalty percentage
   let penaltyPercentage = weeksDelayed * percentage;
 
-  // Ensure penalty does not exceed 5%
+  // Ensure penalty does not exceed 1%
   penaltyPercentage = Math.min(penaltyPercentage, maxPercentage);
 
   // Calculate the penalty amount

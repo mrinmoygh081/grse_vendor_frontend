@@ -188,10 +188,9 @@ const BillsMaterialHybridEdit = () => {
       const icgrnData = data?.icgrn_total;
 
       if (a_sdbg_date && c_sdbg_date && icgrnData) {
-        console.log("c_sdbg_date");
         p_sdbg = calculatePenalty(
           convertToEpoch(new Date(c_sdbg_date)) * 1000,
-          a_sdbg_date,
+          Number(a_sdbg_date),
           icgrnData,
           0.25,
           2
@@ -201,7 +200,7 @@ const BillsMaterialHybridEdit = () => {
       if (a_drawing_date && c_drawing_date && icgrnData) {
         p_drg = calculatePenalty(
           convertToEpoch(new Date(c_drawing_date)) * 1000,
-          a_drawing_date,
+          Number(a_drawing_date),
           icgrnData,
           0.25,
           1
@@ -211,7 +210,7 @@ const BillsMaterialHybridEdit = () => {
       if (a_qap_date && c_qap_date && icgrnData) {
         p_qap = calculatePenalty(
           convertToEpoch(new Date(c_qap_date)) * 1000,
-          a_qap_date,
+          Number(a_qap_date),
           icgrnData,
           0.25,
           2
@@ -220,7 +219,7 @@ const BillsMaterialHybridEdit = () => {
       if (a_ilms_date && c_ilms_date && icgrnData) {
         p_ilms = calculatePenalty(
           convertToEpoch(new Date(c_ilms_date)) * 1000,
-          a_ilms_date,
+          Number(a_ilms_date),
           icgrnData,
           0.25,
           2
@@ -501,9 +500,7 @@ const BillsMaterialHybridEdit = () => {
                                         </td>
                                       </tr>
                                       <tr>
-                                        <td>
-                                          Amount Before Statutory Deduction
-                                        </td>
+                                        <td>Net payable amount</td>
                                         <td>
                                           <b>
                                             &#8377;{" "}
