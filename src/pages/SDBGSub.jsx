@@ -1230,7 +1230,8 @@ const SDBGSub = () => {
                       }
                     />
                     <label className="form-check-label" htmlFor="isConfirmedBG">
-                      Confirmed BG is being forwarded.
+                      Correct and Confirmed BG in Prescribed Format is being
+                      forwarded.
                     </label>
                   </div>
                 </div>

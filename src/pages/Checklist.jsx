@@ -199,7 +199,7 @@ const Checklist = () => {
                                 <th>Date</th>
                                 <th>BTN Type</th>
                                 <th>Net Claim Amount</th>
-                                <th>Net Payable Amount</th>
+                                <th>Amount Before Statutory Deduction</th>
                                 <th>Status</th>
                                 <th>Action</th>
                               </tr>

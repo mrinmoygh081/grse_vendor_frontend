@@ -501,7 +501,9 @@ const BillsMaterialHybridEdit = () => {
                                         </td>
                                       </tr>
                                       <tr>
-                                        <td>Net payable amount</td>
+                                        <td>
+                                          Amount Before Statutory Deduction
+                                        </td>
                                         <td>
                                           <b>
                                             &#8377;{" "}

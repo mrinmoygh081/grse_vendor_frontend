@@ -292,12 +292,12 @@ const BillsMaterialHybrid = () => {
                                               CHECK
                                             </button>
                                           </div>
-                                          <p>
+                                          {/* <p>
                                             In case of ink -signed invoice
                                             vendor should mandatorily send Hard
                                             Copy of Invoice to Dealing within 2
                                             working days
-                                          </p>
+                                          </p> */}
                                         </td>
                                       </tr>
                                     )}

@@ -74,7 +74,7 @@ const BTNfinance = () => {
 
   const generateExcel = () => {
     const data = [
-      ["BTN Num", "Invoice No", "Po No", "Vendor No", "Value", "Status"],
+      ["BTN Num", "Invoice No", "Po No", "Action By", "Value", "Status"],
       ...filteredData.map((file) => [
         file.btn_num,
         file.invoice_no,
@@ -190,14 +190,14 @@ const BTNfinance = () => {
                     </tr>
                     <tr className="border-0">
                       <th className="min-w-150px">BTN Num</th>
-                      <th className="min-w-150px">Invoice No</th>
-                      <th className="min-w-150px">Po No</th>
-                      <th className="min-w-150px">Vendor No</th>
-                      <th className="min-w-150px">Value</th>
+                      <th className="min-w-150px">PO No</th>
+                      <th className="min-w-150px">Action By</th>
+                      <th className="min-w-150px">Value incl GST</th>
                       <th className="min-w-150px">Status</th>
                     </tr>
                   </thead>
                   <tbody style={{ maxHeight: "100%" }}>
+                    {console.log("filteredData", filteredData)}
                     {filteredData.map((file, index) => (
                       <tr key={index}>
                         <td>
@@ -210,7 +210,6 @@ const BTNfinance = () => {
                             <u>{file.btn_num}</u>
                           </button>
                         </td>
-                        <td>{file.invoice_no}</td>
                         <td>{file.purchasing_doc_no}</td>
                         <td>{file.vendor_code}</td>
                         <td>{file.net_claim_amount}</td>
