@@ -305,7 +305,9 @@ const BillsMaterialHybridEdit = () => {
                                             onChange={(val) =>
                                               setDoForm({
                                                 ...doForm,
-                                                assign_to: val.value,
+                                                assign_to: val
+                                                  ? val.value
+                                                  : null,
                                               })
                                             }
                                           />
