@@ -12,6 +12,7 @@ import { clrLegend } from "../utils/clrLegend";
 import Select from "react-select";
 import { groupedByActionType, groupedByBtnNum } from "../utils/groupedByReq";
 import { TailSpin } from "react-loader-spinner";
+import { activityOptions } from "../data/btnData";
 
 const Checklist = () => {
   const { id } = useParams();
@@ -26,6 +27,7 @@ const Checklist = () => {
     purchasing_doc_no: id,
     assign_to_fi: null,
     btn_num: "",
+    activity: "",
   });
   const navigate = useNavigate();
   const [slug, setSlug] = useState("");
@@ -362,6 +364,28 @@ const Checklist = () => {
                                             setAssign({
                                               ...assign,
                                               assign_to_fi: val?.value,
+                                            })
+                                          }
+                                        />
+                                      </div>
+                                    </div>
+                                    <div className="col-12">
+                                      <div className="mb-3">
+                                        <label htmlFor="activity">
+                                          Activity
+                                        </label>
+                                        <Select
+                                          className="basic-single"
+                                          classNamePrefix="select"
+                                          isClearable
+                                          isSearchable
+                                          name="activity"
+                                          id="activity"
+                                          options={activityOptions}
+                                          onChange={(val) =>
+                                            setAssign({
+                                              ...assign,
+                                              activity: val?.value,
                                             })
                                           }
                                         />
