@@ -9,3 +9,5 @@ export const USER_SUPER_ADMIN = 6;
 export const USER_PPNC_DEPARTMENT = 14;
 export const ASSIGNER = 1;
 export const STAFF = 2;
+export const NODALOFFICER = 1;
+export const GENERALUSER = 2;

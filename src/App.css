@@ -17,6 +17,9 @@ input[type="number"] {
 .form-label span.star {
   color: red;
 }
+.fs-16 {
+  font-size: 16px;
+}
 .red {
   color: red;
 }

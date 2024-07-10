@@ -77,7 +77,7 @@ const QAPSub = () => {
     if (res?.status) {
       const options = res.data.map((item) => ({
         value: item.emp_id,
-        label: `${item.empName} (${item.emp_id})`,
+        label: `${item.empname} (${item.emp_id})`,
       }));
       setEmpOption((prev) => ({ ...prev, emps: options }));
     } else {

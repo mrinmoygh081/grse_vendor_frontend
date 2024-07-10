@@ -4,9 +4,11 @@ import { toast } from "react-toastify";
 import { useDispatch } from "react-redux";
 import { postAPI } from "../utils/fetchAPIs";
 import { loginHandler } from "../redux/slices/loginSlice";
+import { useNavigate } from "react-router-dom";
 
 export default function Login() {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
   const [loginData, setLoginData] = useState({
     vendor_code: "",
@@ -95,13 +97,26 @@ export default function Login() {
                   <button
                     type="submit"
                     className="btn btn-lg btn-primary w-100 mb-5"
+                    disabled={isLoading}
                   >
                     {!isLoading ? (
-                      <span className="indicator-label">Continue</span>
+                      <span className="indicator-label">LOGIN</span>
                     ) : (
                       <span className="indicator-label">Please wait...</span>
                     )}
                   </button>
+
+                  <p className="fs-16">
+                    If you're not registered. Please{" "}
+                    <button
+                      type="button"
+                      className="btn_simple"
+                      onClick={() => navigate("/registration")}
+                    >
+                      <u>SIGNUP</u>
+                    </button>{" "}
+                    before login.
+                  </p>
                 </div>
               </form>
             </div>
