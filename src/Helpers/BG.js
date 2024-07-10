@@ -28,9 +28,10 @@ export const bgInputs = {
   assigned_to: "",
   depertment: "",
   isConfirmedBG: false,
+  extension: false,
 };
 
-export const BGEntry = async (formDatainput, token) => {
+export const BGEntry = async (formDatainput, token, flag) => {
   const convertToEpochh = (date) => {
     return Math.floor(new Date(date).getTime() / 1000);
   };
@@ -40,17 +41,15 @@ export const BGEntry = async (formDatainput, token) => {
     bank_name,
     branch_name,
     bank_addr1,
-    bank_addr2,
-    bank_addr3,
     bank_city,
     bank_pin_code,
     bg_no,
     bg_date,
+    bg_recived_date,
     bg_ammount,
     validity_date,
     claim_priod,
     bg_type,
-    department,
   } = formDatainput;
 
   if (
@@ -59,17 +58,15 @@ export const BGEntry = async (formDatainput, token) => {
     bank_name === "" ||
     branch_name === "" ||
     bank_addr1 === "" ||
-    bank_addr2 === "" ||
-    bank_addr3 === "" ||
     bank_city === "" ||
     bank_pin_code === "" ||
     bg_no === "" ||
     bg_date === "" ||
     bg_ammount === "" ||
+    bg_recived_date === "" ||
     validity_date === "" ||
     claim_priod === "" ||
-    bg_type === "" ||
-    department === ""
+    bg_type === ""
   ) {
     toast.warn("Please enter the required fields!");
     return false;
@@ -94,11 +91,15 @@ export const BGEntry = async (formDatainput, token) => {
     // extension_date4: convertToEpoch(extension_date4),
     // extension_date5: convertToEpoch(extension_date5),
     // extension_date6: convertToEpoch(extension_date6),
-    // claim_priod: convertToEpoch(claim_priod),
     claim_priod: convertToEpochh(new Date(formDatainput.claim_priod * 1000)),
     reference_no: reference_no,
-    status: "FORWARD_TO_FINANCE",
-    remarks: "Forwarded to Finance Department",
+    status: flag,
+    remarks:
+      flag === "FORWARD_TO_FINANCE"
+        ? "Forwarded to Fi Dept"
+        : flag === "EXTENDED"
+        ? "BG Extended"
+        : "",
   };
   const d = await postAPI("/po/sdbg/sdbgSubmitByDealingOfficer", form, token);
   if (d?.status) {

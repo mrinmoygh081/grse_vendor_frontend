@@ -161,7 +161,7 @@ const BillsMaterialHybridEdit = () => {
       const icgrnData = data?.icgrn_total;
       const cc = convertToEpoch(new Date(contractual_ld)) * 1000;
       const aa = convertToEpoch(new Date(ld_ge_date)) * 1000;
-      let p_amt = calculatePenalty(cc, aa, icgrnData, 0.5, 5);
+      let p_amt = calculatePenalty(cc, aa, icgrnData, 0.5, 10);
       console.log("p_amt", p_amt, cc, aa, icgrnData);
       setDoForm({ ...doForm, ld_amount: p_amt });
     }

@@ -8,6 +8,7 @@ import { apiCallBack } from "../utils/fetchAPIs";
 import { toast } from "react-toastify";
 import { checkTypeArr } from "../utils/smallFun";
 import { formatDate } from "../utils/getDateTimeNow";
+import DynamicButton from "../Helpers/DynamicButton";
 
 const InspectionCall = () => {
   const [isPopup, setIsPopup] = useState(false);
@@ -250,13 +251,18 @@ const InspectionCall = () => {
                   </div>
                   <div className="col-12">
                     <div className="mb-3 d-flex justify-content-between">
-                      <button
+                      {/* <button
                         onClick={() => updateInspectionCall()}
                         className="btn fw-bold btn-primary"
                         type="button"
                       >
                         SUBMIT
-                      </button>
+                      </button> */}
+                      <DynamicButton
+                        label="SUBMIT"
+                        onClick={() => updateInspectionCall()}
+                        className="btn fw-bold btn-primary"
+                      />
                     </div>
                   </div>
                 </div>

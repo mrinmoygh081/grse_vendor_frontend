@@ -11,6 +11,7 @@ import { reConfirm } from "../utils/reConfirm";
 import { clrLegend } from "../utils/clrLegend";
 import { formatDate } from "../utils/getDateTimeNow";
 import { groupedByIlms } from "../utils/groupedByReq";
+import DynamicButton from "../Helpers/DynamicButton";
 
 const IlmsSub = () => {
   const [isPopup, setIsPopup] = useState(false);
@@ -293,13 +294,18 @@ const IlmsSub = () => {
                 </div>
                 <div className="col-12">
                   <div className="mb-3 d-flex justify-content-between">
-                    <button
+                    {/* <button
                       onClick={() => submitHandler("SUBMITTED")}
                       className="btn fw-bold btn-primary"
                       type="button"
                     >
                       SUBMIT
-                    </button>
+                    </button> */}
+                    <DynamicButton
+                      label="SUBMIT"
+                      onClick={() => submitHandler("SUBMITTED")}
+                      className="btn fw-bold btn-primary"
+                    />
 
                     <div className="d-flex gap-3">
                       {userType !== 1 && (

@@ -575,13 +575,18 @@ const DrawingSub = () => {
                 </div>
                 <div className="col-12">
                   <div className="mb-3 d-flex justify-content-between">
-                    <button
+                    {/* <button
                       onClick={() => updateDrawing("SUBMITTED")}
                       className="btn fw-bold btn-primary"
                       type="button"
                     >
                       SUBMIT
-                    </button>
+                    </button> */}
+                    <DynamicButton
+                      label="SUBMIT"
+                      onClick={() => updateDrawing("SUBMITTED")}
+                      className="btn fw-bold btn-primary"
+                    />
 
                     <div className="d-flex gap-3">
                       {userType === 2 &&

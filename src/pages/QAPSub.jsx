@@ -12,6 +12,7 @@ import { clrLegend } from "../utils/clrLegend";
 import { SUBMITTED, ACCEPTED } from "../constants/BGconstants";
 import { groupedByRefNo } from "../utils/groupedByReq";
 import { formatDate } from "../utils/getDateTimeNow";
+import DynamicButton from "../Helpers/DynamicButton";
 
 const QAPSub = () => {
   const inputRef = useRef(null);
@@ -629,14 +630,19 @@ const QAPSub = () => {
                     {userType !== 1 ? (
                       <>
                         <div>
-                          <button
+                          {/* <button
                             onClick={() => savedQAPHandler()}
                             className="btn fw-bold btn-primary me-2"
                             type="button"
                           >
                             SAVE
-                          </button>
-                          <button
+                          </button> */}
+                          <DynamicButton
+                            label="SAVE"
+                            onClick={() => savedQAPHandler()}
+                            className="btn fw-bold btn-primary me-2"
+                          />
+                          {/* <button
                             onClick={() =>
                               reConfirm(
                                 { file: true },
@@ -648,8 +654,14 @@ const QAPSub = () => {
                             type="button"
                           >
                             SUBMIT
-                          </button>
-                          <button
+                          </button> */}
+                          <DynamicButton
+                            label="SUBMIT"
+                            onClick={() => updateQAP("SUBMITTED")}
+                            className="btn fw-bold btn-warning me-2"
+                            confirmMessage="Please confirm your sending info to Vendor."
+                          />
+                          {/* <button
                             onClick={() =>
                               reConfirm(
                                 { file: true },
@@ -661,8 +673,14 @@ const QAPSub = () => {
                             type="button"
                           >
                             ACCEPT
-                          </button>
-                          <button
+                          </button> */}
+                          <DynamicButton
+                            label="ACCEPT"
+                            onClick={() => updateQAP("ACCEPTED")}
+                            className="btn fw-bold btn-success me-2"
+                            confirmMessage="Please confirm your accepting the QAP. You're not approving it now."
+                          />
+                          {/* <button
                             onClick={() =>
                               reConfirm(
                                 { file: true },
@@ -674,9 +692,15 @@ const QAPSub = () => {
                             type="button"
                           >
                             REJECT
-                          </button>
+                          </button> */}
+                          <DynamicButton
+                            label="REJECT"
+                            onClick={() => updateQAP("REJECTED")}
+                            className="btn fw-bold btn-danger"
+                            confirmMessage="Please confirm your rejecting the QAP."
+                          />
                         </div>
-                        <button
+                        {/* <button
                           onClick={() =>
                             reConfirm(
                               { file: true },
@@ -688,17 +712,28 @@ const QAPSub = () => {
                           type="button"
                         >
                           APPROVE
-                        </button>
+                        </button> */}
+                        <DynamicButton
+                          label="APPROVE"
+                          onClick={() => updateQAP("APPROVED")}
+                          className="btn fw-bold btn-success"
+                          confirmMessage="Please confirm your approving the QAP."
+                        />
                       </>
                     ) : (
                       <>
-                        <button
+                        {/* <button
                           onClick={() => updateQAP("SUBMITTED")}
                           className="btn fw-bold btn-primary"
                           type="button"
                         >
                           SUBMIT
-                        </button>
+                        </button> */}
+                        <DynamicButton
+                          label="SUBMIT"
+                          onClick={() => updateQAP("SUBMITTED")}
+                          className="btn fw-bold btn-primary"
+                        />
                       </>
                     )}
                   </div>
@@ -740,7 +775,9 @@ const QAPSub = () => {
                         name="empCategory"
                         id="empCategory"
                         options={empOption.depts}
-                        onChange={(val) => setSelectedDept(val.value)}
+                        onChange={(val) =>
+                          setSelectedDept(val ? val.value : null)
+                        }
                       />
                     </div>
                   </div>
@@ -757,7 +794,10 @@ const QAPSub = () => {
                         id="empName"
                         options={empOption.emps}
                         onChange={(val) =>
-                          setAssign({ ...assign, assigned_to: val.value })
+                          setAssign({
+                            ...assign,
+                            assigned_to: val ? val.value : null,
+                          })
                         }
                       />
                     </div>
@@ -787,13 +827,18 @@ const QAPSub = () => {
                         user.department_id === 3 &&
                         user.internal_role_id === 1 && (
                           <>
-                            <button
+                            {/* <button
                               onClick={() => assignQAP()}
                               className="btn fw-bold btn-primary"
                               type="button"
                             >
                               ASSIGN
-                            </button>
+                            </button> */}
+                            <DynamicButton
+                              label="ASSIGN"
+                              onClick={() => assignQAP()}
+                              className="btn fw-bold btn-primary"
+                            />
                           </>
                         )}
                     </div>

@@ -10,6 +10,7 @@ import moment from "moment";
 import { REQUESTED, SUBMITTED } from "../constants/BGconstants";
 import { checkTypeArr } from "../utils/smallFun";
 import { formatDate } from "../utils/getDateTimeNow";
+import DynamicButton from "../Helpers/DynamicButton";
 
 const Shippingdocuments = () => {
   const inputFileRef = useRef(null);
@@ -312,13 +313,18 @@ const Shippingdocuments = () => {
                 </div>
                 <div className="col-12">
                   <div className="mb-3 d-flex justify-content-between">
-                    <button
+                    {/* <button
                       onClick={() => shippingdocumentsBtn("SUBMITTED")}
                       className="btn fw-bold btn-primary"
                       type="button"
                     >
                       SUBMIT
-                    </button>
+                    </button> */}
+                    <DynamicButton
+                      label="SUBMIT"
+                      onClick={() => shippingdocumentsBtn("SUBMITTED")}
+                      className="btn fw-bold btn-primary"
+                    />
                   </div>
                 </div>
               </div>
@@ -365,13 +371,18 @@ const Shippingdocuments = () => {
                 </div>
                 <div className="col-12">
                   <div className="mb-3 d-flex justify-content-between">
-                    <button
+                    {/* <button
                       onClick={() => shippingdocumentsBtn("REQUESTED")}
                       className="btn fw-bold btn-primary"
                       type="button"
                     >
                       SUBMIT
-                    </button>
+                    </button> */}
+                    <DynamicButton
+                      label="SUBMIT"
+                      onClick={() => shippingdocumentsBtn("REQUESTED")}
+                      className="btn fw-bold btn-primary"
+                    />
                   </div>
                 </div>
               </div>

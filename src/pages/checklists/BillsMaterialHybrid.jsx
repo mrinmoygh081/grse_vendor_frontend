@@ -437,7 +437,7 @@ const BillsMaterialHybrid = () => {
                                       </td>
                                     </tr>
                                     <tr>
-                                      <td>Net claim amount:</td>
+                                      <td>Net Basic amount:</td>
                                       <td className="btn_value">
                                         <b>{form?.net_claim_amount}</b>
                                       </td>

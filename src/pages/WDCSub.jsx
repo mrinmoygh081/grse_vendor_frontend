@@ -22,6 +22,7 @@ import { APPROVED, REJECTED, SUBMITTED } from "../constants/BGconstants";
 import { groupedByRefNo } from "../utils/groupedByReq";
 import { inputOnWheelPrevent } from "../utils/inputOnWheelPrevent";
 import { FaPlus } from "react-icons/fa";
+import DynamicButton from "../Helpers/DynamicButton";
 
 const WDCSub = () => {
   let line_item_fields = {
@@ -1172,13 +1173,18 @@ const WDCSub = () => {
                     </div>
                     <div className="col-12">
                       <div className="mb-3 d-flex justify-content-between">
-                        <button
+                        {/* <button
                           onClick={() => submitHandler("SUBMITTED", null)}
                           className="btn fw-bold btn-primary"
                           type="button"
                         >
                           SUBMIT
-                        </button>
+                        </button> */}
+                        <DynamicButton
+                          label="SUBMIT"
+                          onClick={() => submitHandler("SUBMITTED", null)}
+                          className="btn fw-bold btn-primary"
+                        />
                       </div>
                     </div>
                   </>
@@ -1501,13 +1507,18 @@ const WDCSub = () => {
                     </div>
                     <div className="col-12">
                       <div className="mb-3 d-flex justify-content-between">
-                        <button
+                        {/* <button
                           onClick={() => submitHandlerWdc("SUBMITTED", null)}
                           className="btn fw-bold btn-primary"
                           type="button"
                         >
                           SUBMIT
-                        </button>
+                        </button> */}
+                        <DynamicButton
+                          label="SUBMIT"
+                          onClick={() => submitHandlerWdc("SUBMITTED", null)}
+                          className="btn fw-bold btn-primary"
+                        />
                       </div>
                     </div>
                   </>
@@ -1747,13 +1758,18 @@ const WDCSub = () => {
                   >
                     SUBMIT
                   </button> */}
-                    <button
+                    {/* <button
                       onClick={() => submitHandlerAction("APPROVED", null)}
                       className="btn fw-bold btn-primary"
                       type="button"
                     >
                       SUBMIT
-                    </button>
+                    </button> */}
+                    <DynamicButton
+                      label="SUBMIT"
+                      onClick={() => submitHandlerAction("APPROVED", null)}
+                      className="btn fw-bold btn-primary"
+                    />
                   </div>
                 </div>
               </form>
@@ -1925,13 +1941,18 @@ const WDCSub = () => {
                       <label className="form-label">Remarks</label>
                       <p>{viewData?.remarks}</p>
                     </div>
-                    <button
+                    {/* <button
                       onClick={() => submitHandlerActionJcc("APPROVED", null)}
                       className="btn fw-bold btn-primary"
                       type="button"
                     >
                       SUBMIT
-                    </button>
+                    </button> */}
+                    <DynamicButton
+                      label="SUBMIT"
+                      onClick={() => submitHandlerActionJcc("APPROVED", null)}
+                      className="btn fw-bold btn-primary"
+                    />
                   </div>
                 </div>
               </form>

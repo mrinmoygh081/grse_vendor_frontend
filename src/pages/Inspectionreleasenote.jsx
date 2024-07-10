@@ -9,6 +9,7 @@ import { toast } from "react-toastify";
 import moment from "moment";
 import { checkTypeArr } from "../utils/smallFun";
 import { formatDate } from "../utils/getDateTimeNow";
+import DynamicButton from "../Helpers/DynamicButton";
 
 const Inspectionreleasenote = () => {
   const inputFileRef = useRef(null);
@@ -242,13 +243,18 @@ const Inspectionreleasenote = () => {
                 </div>
                 <div className="col-12">
                   <div className="mb-3 d-flex justify-content-between">
-                    <button
+                    {/* <button
                       onClick={() => actionHandler("SUBMITTED")}
                       className="btn fw-bold btn-primary"
                       type="button"
                     >
                       SUBMIT
-                    </button>
+                    </button> */}
+                    <DynamicButton
+                      label="SUBMIT"
+                      onClick={() => actionHandler("SUBMITTED")}
+                      className="btn fw-bold btn-primary"
+                    />
                   </div>
                 </div>
               </div>

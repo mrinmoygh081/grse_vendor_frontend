@@ -1,23 +1,15 @@
 import React from "react";
 
-const SkeletonLoader = () => {
+const SkeletonLoader = ({ col, row }) => {
   return (
     <div className="skeleton-loaderone">
-      <div className="skeleton-item">
-        <div className="skeleton-cell"></div>
-        <div className="skeleton-cell"></div>
-        <div className="skeleton-cell"></div>
-        <div className="skeleton-cell"></div>
-        <div className="skeleton-cell"></div>
-      </div>
-      <div className="skeleton-item">
-        <div className="skeleton-cell"></div>
-        <div className="skeleton-cell"></div>
-        <div className="skeleton-cell"></div>
-        <div className="skeleton-cell"></div>
-        <div className="skeleton-cell"></div>
-      </div>
-      {/* Add more skeleton items as needed */}
+      {Array.from({ length: row }, (_, i) => (
+        <div className="skeleton-item" key={i}>
+          {Array.from({ length: col }, (_, index) => (
+            <div className="skeleton-cell" key={index}></div>
+          ))}
+        </div>
+      ))}
     </div>
   );
 };

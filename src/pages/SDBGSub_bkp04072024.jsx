@@ -22,7 +22,6 @@ import {
   ACTION_RM,
   FORWARD_TO_FINANCE,
   SUBMITTED,
-  APPROVED,
 } from "../constants/BGconstants";
 import { logOutFun } from "../utils/logOutFun";
 import { logoutHandler } from "../redux/slices/loginSlice";
@@ -44,12 +43,12 @@ const SDBGSub = () => {
   const inputFileRef = useRef(null);
   const { id } = useParams();
   const [isPopup, setIsPopup] = useState(false);
-  const [isExtended, setIsExtended] = useState(false);
   const [isEntryPopup, setIsEntryPopup] = useState(false);
   const [isAssignPopup, setIsAssignPopup] = useState(false);
   const [isCheckEntryPopup, setIsCheckEntryPopup] = useState(false);
   const [allsdbg, setAllsdbg] = useState([]);
   const [groupedBG, setGroupedBG] = useState([]);
+  const [expandedReferences, setExpandedReferences] = useState({});
 
   const [sdbgEntryForFi, setSdbgEntryForFi] = useState({
     bg_file_no: "",
@@ -87,7 +86,6 @@ const SDBGSub = () => {
   };
 
   const getSDBG = async () => {
-    setIsLoading(true);
     const data = await apiCallBack(
       "GET",
       `po/sdbg/getSDBGData?poNo=${id}`,
@@ -96,10 +94,8 @@ const SDBGSub = () => {
     );
     if (data?.status) {
       setAllsdbg(data?.data);
-      setIsLoading(false);
     } else if (data?.response?.data?.message === "INVALID_EXPIRED_TOKEN") {
       logOutFun(dispatch, logoutHandler, poRemoveHandler);
-      setIsLoading(false);
     }
   };
 
@@ -230,11 +226,11 @@ const SDBGSub = () => {
     }
   };
 
-  const uploadSDBGEntry = async (flag) => {
+  const uploadSDBGEntry = async () => {
     if (!formDatainput?.isConfirmedBG) {
       return toast.warn("Only confirmed BG can be forwarded to Fi Dept.");
     }
-    let status = await BGEntry(formDatainput, token, flag);
+    let status = await BGEntry(formDatainput, token);
     if (status) {
       setIsPopup(false);
       setIsEntryPopup(false);
@@ -297,6 +293,7 @@ const SDBGSub = () => {
 
   const financeEntry = async (flag, referenceNo) => {
     const entry = entryState[referenceNo];
+    let action_type = "SDBG SUBMISSION";
     let payloadRemarks = entry?.remarks;
     const { bg_file_no } = sdbgEntryForFi;
 
@@ -324,6 +321,7 @@ const SDBGSub = () => {
       purchasing_doc_no: id,
       status: flag,
       remarks: payloadRemarks,
+      action_type,
       reference_no: referenceNo,
       bg_file_no,
     };
@@ -560,6 +558,13 @@ const SDBGSub = () => {
     return pdf;
   };
 
+  const toggleReferenceVisibility = (reference) => {
+    setExpandedReferences((prevState) => ({
+      ...prevState,
+      [reference]: !prevState[reference],
+    }));
+  };
+
   return (
     <>
       <div className="d-flex flex-column flex-root">
@@ -574,11 +579,11 @@ const SDBGSub = () => {
                     <div className="col-12">
                       <div className="screen_header">
                         {/* Not Vendor */}
-                        {user?.user_type !== ASSIGNER && (
+                        {user?.user_type !== 1 && (
                           <>
                             {/* Finance Head (deptid = 15 and internal_role_Id 1) */}
-                            {user?.department_id === USER_GRSE_FINANCE &&
-                              user?.internal_role_id === ASSIGNER && (
+                            {user?.department_id === 15 &&
+                              user?.internal_role_id === 1 && (
                                 <>
                                   <p className="m-0 p-2">
                                     {!currentAssign?.assigned_to
@@ -596,7 +601,7 @@ const SDBGSub = () => {
                           </>
                         )}
                         {/* Vendor  */}
-                        {user?.user_type === ASSIGNER && (
+                        {user?.user_type === 1 && (
                           <>
                             <button
                               onClick={() => setIsPopup(true)}
@@ -621,89 +626,66 @@ const SDBGSub = () => {
                                   <th className="min-w-150px">Action By</th>
                                   <th className="min-w-150px">Remarks</th>
                                   <th>Status</th>
-                                  {(isDO ||
-                                    user?.department_id ===
-                                      USER_GRSE_FINANCE) && (
+                                  {(isDO || user?.department_id === 15) && (
                                     <th className="min-w-150px">Action</th>
                                   )}
                                 </tr>
                               </thead>
                               <tbody style={{ maxHeight: "100%" }}>
-                                {isLoading ? (
-                                  <>
-                                    <tr></tr>
-                                    <tr>
-                                      <td colSpan={10}>
-                                        <SkeletonLoader col={4} row={6} />
-                                      </td>
-                                    </tr>
-                                  </>
-                                ) : (
-                                  <>
-                                    {Object.keys(groupedBG).map((it, index) => {
-                                      let items = groupedBG[it];
-                                      return (
-                                        <Fragment key={index}>
-                                          <tr>
-                                            <td colSpan={10}>
-                                              <b>{it}</b>
-                                            </td>
-                                          </tr>
-                                          {items &&
-                                            groupedByRefNo(items) &&
-                                            Object.keys(
-                                              groupedByRefNo(items)
-                                            ).map((item, ind) => {
-                                              let ite =
-                                                groupedByRefNo(items)[item];
-                                              return (
-                                                <Fragment key={ind}>
-                                                  <tr>
-                                                    <td colSpan={5}>
-                                                      <b>{item}</b>
-                                                    </td>
-                                                    <td>
-                                                      {isDO &&
-                                                        ite.some(
-                                                          (data) =>
-                                                            data.status !==
-                                                            "ASSIGNED"
-                                                        ) && (
-                                                          <span>
-                                                            <button
-                                                              onClick={() => {
-                                                                setIsEntryPopup(
-                                                                  true
-                                                                );
-                                                                setFormDatainput(
-                                                                  {
-                                                                    ...formDatainput,
-                                                                    reference_no:
-                                                                      item,
-                                                                  }
-                                                                );
-                                                                SdbgEntryUpdate(
-                                                                  item
-                                                                );
-                                                              }}
-                                                              className="btn fw-bold btn-primary btn-sm"
-                                                            >
-                                                              ACTION
-                                                            </button>
-                                                          </span>
-                                                        )}
-
-                                                      {ite &&
-                                                        ite.some(
-                                                          (data) =>
-                                                            user?.department_id ===
-                                                              USER_GRSE_FINANCE &&
-                                                            data.status !==
-                                                              "ASSIGNED"
-                                                        ) && (
+                                {Object.keys(groupedBG).map((it, index) => {
+                                  let items = groupedBG[it];
+                                  return (
+                                    <Fragment key={index}>
+                                      <tr>
+                                        <td
+                                          colSpan={10}
+                                          onClick={() =>
+                                            toggleReferenceVisibility(it)
+                                          }
+                                          // style={{ cursor: "pointer" }}
+                                        >
+                                          <b>{it}</b>
+                                        </td>
+                                      </tr>
+                                      {items &&
+                                        groupedByRefNo(items) &&
+                                        Object.keys(groupedByRefNo(items)).map(
+                                          (item, ind) => {
+                                            let ite =
+                                              groupedByRefNo(items)[item];
+                                            const isExpanded =
+                                              expandedReferences[item];
+                                            return (
+                                              <Fragment key={ind}>
+                                                <tr>
+                                                  <td
+                                                    colSpan={5}
+                                                    onClick={() =>
+                                                      toggleReferenceVisibility(
+                                                        item
+                                                      )
+                                                    }
+                                                    style={{
+                                                      cursor: "pointer",
+                                                    }}
+                                                  >
+                                                    <b>
+                                                      <span className="hover-underline">
+                                                        {item}
+                                                      </span>
+                                                    </b>
+                                                  </td>
+                                                  <td>
+                                                    {isDO &&
+                                                      ite.some(
+                                                        (data) =>
+                                                          data.status !==
+                                                          "ASSIGNED"
+                                                      ) && (
+                                                        <span>
                                                           <button
                                                             onClick={() => {
-                                                              setIsCheckEntryPopup(
+                                                              setIsEntryPopup(
                                                                 true
                                                               );
                                                               setFormDatainput({
@@ -715,85 +697,81 @@ const SDBGSub = () => {
                                                                 item
                                                               );
                                                             }}
-                                                            className="btn btn-sm fw-bold btn-primary me-3"
+                                                            className="btn fw-bold btn-primary btn-sm"
                                                           >
                                                             ACTION
                                                           </button>
-                                                        )}
-                                                    </td>
-                                                  </tr>
-                                                  {ite &&
-                                                    ite.map((data, dex) => (
-                                                      <tr key={dex}>
-                                                        <td className="table_center">
-                                                          {data?.created_at &&
-                                                            formatDate(
-                                                              data?.created_at
-                                                            )}
-                                                        </td>
-                                                        <td>
-                                                          <a
-                                                            href={`${process.env.REACT_APP_PDF_URL}/submitSDBG/${data.file_name}`}
-                                                            target="_blank"
-                                                            rel="noreferrer"
-                                                          >
-                                                            Check File
-                                                          </a>
-                                                        </td>
-                                                        <td>
-                                                          {
-                                                            data?.created_by_name
-                                                          }{" "}
-                                                          ({data?.created_by_id}
-                                                          )
-                                                        </td>
-                                                        <td>{data?.remarks}</td>
-                                                        <td
-                                                          className={`${clrLegend(
-                                                            data?.status
-                                                          )} bold`}
+                                                        </span>
+                                                      )}
+                                                    {ite &&
+                                                      ite.some(
+                                                        (data) =>
+                                                          user?.department_id ===
+                                                            15 &&
+                                                          data.status !==
+                                                            "ASSIGNED"
+                                                      ) && (
+                                                        <button
+                                                          onClick={() => {
+                                                            setIsCheckEntryPopup(
+                                                              true
+                                                            );
+                                                            setFormDatainput({
+                                                              ...formDatainput,
+                                                              reference_no:
+                                                                item,
+                                                            });
+                                                            SdbgEntryUpdate(
+                                                              item
+                                                            );
+                                                          }}
+                                                          className="btn btn-sm fw-bold btn-primary me-3"
                                                         >
-                                                          {data?.status}
-                                                        </td>
-                                                        <td>
-                                                          {isDO &&
-                                                            data?.status ===
-                                                              APPROVED && (
-                                                              <button
-                                                                onClick={() => {
-                                                                  setIsEntryPopup(
-                                                                    true
-                                                                  );
-                                                                  setFormDatainput(
-                                                                    {
-                                                                      ...formDatainput,
-                                                                      reference_no:
-                                                                        item,
-                                                                    }
-                                                                  );
-                                                                  setIsExtended(
-                                                                    true
-                                                                  );
-                                                                  SdbgEntryUpdate(
-                                                                    item
-                                                                  );
-                                                                }}
-                                                                className="btn fw-bold btn-primary btn-sm"
-                                                              >
-                                                                BG EXT
-                                                              </button>
-                                                            )}
-                                                        </td>
-                                                      </tr>
-                                                    ))}
-                                                </Fragment>
-                                              );
-                                            })}
-                                        </Fragment>
-                                      );
-                                    })}
-                                  </>
-                                )}
+                                                          ACTION
+                                                        </button>
+                                                      )}
+                                                  </td>
+                                                </tr>
+                                                {isExpanded &&
+                                                  ite.map((data, dex) => (
+                                                    <tr key={dex}>
+                                                      <td className="table_center">
+                                                        {data?.created_at &&
+                                                          formatDate(
+                                                            data?.created_at
+                                                          )}
+                                                      </td>
+                                                      <td>
+                                                        <a
+                                                          href={`${process.env.REACT_APP_PDF_URL}/submitSDBG/${data.file_name}`}
+                                                          target="_blank"
+                                                          rel="noreferrer"
+                                                        >
+                                                          Check File
+                                                        </a>
+                                                      </td>
+                                                      <td>
+                                                        {data?.created_by_name}{" "}
+                                                        ({data?.created_by_id})
+                                                      </td>
+                                                      <td>{data?.remarks}</td>
+                                                      <td
+                                                        className={`${clrLegend(
+                                                          data?.status
+                                                        )} bold`}
+                                                      >
+                                                        {data?.status}
+                                                      </td>
+                                                      <td></td>
+                                                    </tr>
+                                                  ))}
+                                              </Fragment>
+                                            );
+                                          }
+                                        )}
+                                    </Fragment>
+                                  );
+                                })}
                               </tbody>
                             </table>
                           </div>
@@ -896,7 +874,14 @@ const SDBGSub = () => {
                   >
                     SUBMIT
                   </button>
-                  {userType !== USER_VENDOR && (
+                  {userType !== 1 && (
+                    // <button
+                    //   onClick={() => updateSDBG("Approved")}
+                    //   className="btn fw-bold btn-primary"
+                    //   type="submit"
+                    // >
+                    //   Approved
+                    // </button>
                     <DynamicButton
                       label="Approved"
                       onClick={() => updateSDBG("Approved")}
@@ -916,7 +901,7 @@ const SDBGSub = () => {
           <div className="card card-xxl-stretch mb-5 mb-xxl-8">
             <div className="card-header border-0 pt-5">
               <h3 className="card-title align-items-start flex-column">
-                <span className="card-label fw-bold fs-3 mb-1">BG Entry</span>
+                <span className="card-label fw-bold fs-3 mb-1">BG ry</span>
               </h3>
               <button
                 className="btn fw-bold btn-danger"
@@ -924,18 +909,13 @@ const SDBGSub = () => {
                   setIsEntryPopup(false);
                   let bg = { ...bgInputs, purchasing_doc_no: id };
                   setFormDatainput(bg);
-                  setIsExtended(false);
                 }}
               >
                 Close
               </button>
             </div>
             {isLoading ? (
-              <div className="row">
-                <div className="col-12">
-                  <SkeletonLoader row={10} col={2} />
-                </div>
-              </div>
+              <SkeletonLoader row={10} />
             ) : (
               <div className="row">
                 <div className="col-md-6 col-12">
@@ -1233,49 +1213,50 @@ const SDBGSub = () => {
 
                 <div className="col-12">
                   <div className="mb-3 d-flex justify-content-between">
-                    {isExtended ? (
-                      <>
-                        <DynamicButton
-                          label="EXTENSION"
-                          onClick={() => uploadSDBGEntry("EXTENDED")}
-                          className="btn-primary"
-                          confirmMessage="You're going to forward the SDBG to Finance Dept. Please confirm!"
-                        />
-                      </>
-                    ) : (
-                      <>
-                        <DynamicButton
-                          label="FORWARD TO FINANCE"
-                          onClick={() => uploadSDBGEntry("FORWARD_TO_FINANCE")}
-                          className="btn-primary"
-                          confirmMessage="You're going to forward the SDBG to Finance Dept. Please confirm!"
-                        />
-                        <DynamicButton
-                          label="SAVE"
-                          onClick={() => uploadSDBGSave("SAVED")}
-                          className="btn-info custom-save-button"
-                        />
-                        <button
-                          className="btn fw-bold btn-success"
-                          onClick={handleDownloadPDF}
-                        >
-                          Download BG Entry
-                        </button>
-                        <button
-                          onClick={() =>
-                            reConfirm(
-                              { file: true },
-                              () => rejectSDBG("REJECTED"),
-                              "You're going to Reject the SDBG. Please confirm!"
-                            )
-                          }
-                          className="btn fw-bold btn-danger"
-                          type="submit"
-                        >
-                          REJECTED
-                        </button>
-                      </>
-                    )}
+                    {/* <button
+                      onClick={() => uploadSDBGEntry("FORWARD_TO_FINANCE")}
+                      className="btn fw-bold btn-primary"
+                      type="submit"
+                    >
+                      FORWARD TO FINANCE
+                    </button> */}
+                    <DynamicButton
+                      label="FORWARD TO FINANCE"
+                      onClick={() => uploadSDBGEntry("FORWARD_TO_FINANCE")}
+                      className="btn-primary"
+                      confirmMessage="You're going to forward the SDBG to Finance Dept. Please confirm!"
+                    />
+                    {/* <button
+                      onClick={() => uploadSDBGSave("SAVED")}
+                      className="btn fw-bold btn-info custom-save-button"
+                      type="submit"
+                    >
+                      SAVE
+                    </button> */}
+                    <DynamicButton
+                      label="SAVE"
+                      onClick={() => uploadSDBGSave("SAVED")}
+                      className="btn-info custom-save-button"
+                    />
+                    <button
+                      className="btn fw-bold btn-success"
+                      onClick={handleDownloadPDF}
+                    >
+                      Download BG Entry
+                    </button>
+                    <button
+                      onClick={() =>
+                        reConfirm(
+                          { file: true },
+                          () => rejectSDBG("REJECTED"),
+                          "You're going to Reject the SDBG. Please confirm!"
+                        )
+                      }
+                      className="btn fw-bold btn-danger"
+                      type="submit"
+                    >
+                      REJECTED
+                    </button>
                   </div>
                 </div>
               </div>
@@ -1285,7 +1266,7 @@ const SDBGSub = () => {
       )}
 
       {/* for finance officer  */}
-      {user?.department_id === USER_GRSE_FINANCE && (
+      {user?.department_id === 15 && (
         <div className={isCheckEntryPopup ? "popup active" : "popup"}>
           <div className="card card-xxl-stretch mb-5 mb-xxl-8">
             <div className="card-header border-0 pt-5">

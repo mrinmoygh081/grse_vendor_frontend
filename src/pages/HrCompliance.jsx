@@ -16,6 +16,7 @@ import {
 } from "../constants/userConstants";
 import { checkTypeArr } from "../utils/smallFun";
 import { formatDate } from "../utils/getDateTimeNow";
+import DynamicButton from "../Helpers/DynamicButton";
 
 const HrCompliance = () => {
   const inputFileRef = useRef(null);
@@ -331,13 +332,18 @@ const HrCompliance = () => {
                 </div>
                 <div className="col-12">
                   <div className="mb-3 d-flex justify-content-between">
-                    <button
+                    {/* <button
                       onClick={() => actionHandler("SUBMITTED")}
                       className="btn fw-bold btn-primary"
                       type="button"
                     >
                       SUBMIT
-                    </button>
+                    </button> */}
+                    <DynamicButton
+                      label="SUBMIT"
+                      onClick={() => actionHandler("SUBMITTED")}
+                      className="btn fw-bold btn-primary"
+                    />
 
                     {/* <div className="d-flex gap-3">
                       {userType !== USER_VENDOR &&

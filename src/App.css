@@ -609,3 +609,26 @@ input[type="number"] {
     background-color: #e0e0e0;
   }
 }
+
+.hover-underline {
+  position: relative;
+}
+
+.hover-underline::after {
+  content: "";
+  position: absolute;
+  width: 0;
+  height: 2px;
+  display: block;
+  margin-top: 5px;
+  right: 0;
+  background: black;
+  transition: width 0.3s ease;
+  -webkit-transition: width 0.3s ease;
+}
+
+.hover-underline:hover::after {
+  width: 100%;
+  left: 0;
+  background: black;
+}
