@@ -5,6 +5,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { reConfirm } from "../utils/reConfirm";
 import { logoutHandler } from "../redux/slices/loginSlice";
 import { poRemoveHandler } from "../redux/slices/poSlice";
+import { ASSIGNER } from "../constants/userConstants";
 
 const MainHeader = ({ title }) => {
   const dispatch = useDispatch();
@@ -60,6 +61,15 @@ const MainHeader = ({ title }) => {
                 <li className="nav-item">
                   <Link className="nav-link text-black" to={`/dashboard/bg`}>
                     DASHBOARD
+                  </Link>
+                </li>
+              </>
+            )}
+            {user?.user_type !== 1 && user?.internal_role_id === ASSIGNER && (
+              <>
+                <li className="nav-item">
+                  <Link className="nav-link text-black" to={`/authorisation`}>
+                    Settings
                   </Link>
                 </li>
               </>
