@@ -129,6 +129,23 @@ function GoodsReceiptSlip() {
                     <td className="text-start">:</td>
                     <td>{apiData.invoiceNo}</td>
                   </tr>
+                  <tr>
+                    <td className="fw-bold">Invoice Date</td>
+                    <td className="text-start">:</td>
+                    <td>
+                      {" "}
+                      {/* {apiData.invoiceDate &&
+                        new Date(apiData.invoiceDate).toLocaleDateString(
+                          "en-GB",
+                          {
+                            day: "2-digit",
+                            month: "2-digit",
+                            year: "numeric",
+                          }
+                        )} */}
+                      {formatDate(apiData?.invoiceDate)}
+                    </td>
+                  </tr>
                 </tbody>
               </table>
             </div>

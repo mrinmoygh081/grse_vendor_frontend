@@ -118,6 +118,21 @@ function InspectionReport() {
                     <td>{apiData?.invoiceNo}</td>
                   </tr>
                   <tr>
+                    <td>Invoice Date</td>
+                    <td className="text-start">:</td>
+                    <td>
+                      {apiData.invoiceDate &&
+                        new Date(apiData.invoiceDate).toLocaleDateString(
+                          "en-GB",
+                          {
+                            day: "2-digit",
+                            month: "2-digit",
+                            year: "numeric",
+                          }
+                        )}
+                    </td>
+                  </tr>
+                  <tr>
                     <td>Purchase Order No</td>
                     <td>:</td>
                     <td>{apiData?.purchasing_doc_no}</td>

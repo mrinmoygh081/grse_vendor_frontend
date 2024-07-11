@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import logo from "../../images/logo.png";
 import { useSelector } from "react-redux";
 import { useLocation, useParams } from "react-router-dom";
+import { formatDate } from "../../utils/getDateTimeNow";
 
 function Gateentrypdf() {
   const location = useLocation();
@@ -107,7 +108,7 @@ function Gateentrypdf() {
                       {/* {entry_date?.entry_date
                         ? new Date(apiData?.entry_date).toLocaleDateString()
                         : ""} */}
-                      {apiData.entry_date &&
+                      {/* {apiData.entry_date &&
                         new Date(apiData.entry_date).toLocaleDateString(
                           "en-GB",
                           {
@@ -115,7 +116,8 @@ function Gateentrypdf() {
                             month: "2-digit",
                             year: "numeric",
                           }
-                        )}
+                        )} */}
+                      {formatDate(apiData?.entry_date)}
                     </td>
                   </tr>
 
