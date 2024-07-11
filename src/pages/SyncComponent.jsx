@@ -4,7 +4,8 @@ import { useDispatch } from "react-redux";
 import { logoutHandler } from "../redux/slices/loginSlice";
 import { poRemoveHandler } from "../redux/slices/poSlice";
 import { reConfirm } from "../utils/reConfirm";
-import { ToastContainer, toast } from "react-toastify";
+import { toast } from "react-toastify";
+import { apiCallBack } from "../utils/fetchAPIs";
 
 const SyncComponent = () => {
   const [syncing, setSyncing] = useState(false);
@@ -17,17 +18,21 @@ const SyncComponent = () => {
     window.location.href = "/";
   };
 
-  const handleSync = async (endpoint) => {
+  const handleSync = async () => {
     setSyncing(true);
     setSyncMessage("");
     try {
-      const response = await axios.post(endpoint);
-      toast.success(response.data.message || "Sync successful");
-      if (response.data.status) {
-        const uploadResponse = await axios.post(
-          `${process.env.REACT_APP_BACKEND_API}/sync/sync_upload`
-        );
-        toast.success(uploadResponse.data.message || "Data has been synced");
+      const resp = await apiCallBack("POST", "sync/sync_unzip", null, null);
+      console.log(resp);
+      if (resp.status) {
+        const upRes = await apiCallBack("POST", "sync/sync_upload", null, null);
+        if (upRes?.status) {
+          toast.success(upRes.message || "Data has been synced");
+        } else {
+          toast.info(upRes.message);
+        }
+      } else {
+        toast.info(resp.message);
       }
     } catch (error) {
       toast.error(
@@ -37,11 +42,13 @@ const SyncComponent = () => {
     setSyncing(false);
   };
 
-  const handleFileSync = async (endpoint) => {
+  const handleFileSync = async () => {
     setSyncing(true);
     setSyncMessage("");
     try {
-      const response = await axios.post(endpoint);
+      const response = await axios.post(
+        `${process.env.REACT_APP_BACKEND_API}/sync/sync_file_upload`
+      );
       toast.success(response.data.message || "File sync successful");
     } catch (error) {
       toast.error(
@@ -66,7 +73,7 @@ const SyncComponent = () => {
             style={{ width: "60px", marginRight: "10px" }}
           />
           <h1 className="card-title mt-3" style={{ marginBottom: "10px" }}>
-            Garden Reach Shipbuilders & Engineers Ltd. (A GOVT.OF INDIA
+            Garden Reach Shipbuilders & Engineers Ltd. <br /> (A GOVT.OF INDIA
             UNDERTAKING)
           </h1>
         </div>
@@ -75,24 +82,27 @@ const SyncComponent = () => {
             <div className="col-md-6">
               <ol>
                 <li>
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+                  Copy The Zip File named as sync_data.zip stored in the other
+                  server in a specific path
+                  (/var/www/html/obps/obps_backend/sync/zipData/
+                  {"<Latest Date>"})
                 </li>
                 <li>
-                  Quisque scelerisque diam non nisi semper, et elementum lorem
-                  ornare.
+                  Transfer the sync_data.zip file from the other server to the
+                  this server where this website is running on.
                 </li>
-                <li>Maecenas placerat facilisis mollis.</li>
-                <li>Duis sagittis ligula in sodales vehicula.</li>
-                <li>Vivamus pretium suscipit leo at tincidunt.</li>
-                <li>Etiam cursus laoreet ultricies.</li>
+                <li>
+                  Open a specic folder path to this server
+                  (/var/www/html/obps/obps_backend/sync/otherServerData/Data){" "}
+                </li>
+                <li>Create a Directory named as today's date (DD-MM-YYYY)</li>
+                <li>
+                  Paste the copied sync_data.zip inside the today's date folder
+                </li>
               </ol>
               <button
                 className="btn btn-primary btn-sm mt-2"
-                onClick={() =>
-                  handleSync(
-                    `${process.env.REACT_APP_BACKEND_API}/sync/sync_unzip`
-                  )
-                }
+                onClick={() => handleSync()}
                 disabled={syncing}
               >
                 Sync Data
@@ -110,11 +120,7 @@ const SyncComponent = () => {
               <button
                 className="btn btn-secondary btn-sm mt-2"
                 disabled={syncing}
-                onClick={() =>
-                  handleFileSync(
-                    `${process.env.REACT_APP_BACKEND_API}/sync/sync_file_upload`
-                  )
-                }
+                onClick={() => handleFileSync()}
               >
                 Sync File
               </button>
