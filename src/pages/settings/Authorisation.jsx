@@ -1,25 +1,46 @@
 import React, { useEffect, useState } from "react";
-import DatePicker from "react-datepicker";
-import Select from "react-select";
 import "react-datepicker/dist/react-datepicker.css";
 import Footer from "../../components/Footer";
 import MainHeader from "../../components/MainHeader";
 import SkeletonLoader from "../../loader/SkeletonLoader";
-import DynamicButton from "../../Helpers/DynamicButton";
 import { checkTypeArr } from "../../utils/smallFun";
 import { apiCallBack } from "../../utils/fetchAPIs";
 import { toast } from "react-toastify";
+import { useSelector } from "react-redux";
+import { FaCheck, FaTimes } from "react-icons/fa";
+import DynamicButton from "../../Helpers/DynamicButton";
 
 const Authorisation = () => {
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState([]);
+  const { token } = useSelector((state) => state.auth);
 
   const getData = async () => {
-    const d = await apiCallBack("GET", "auth2/getListPendingEmp", null, null);
-    console.log(d);
+    setLoading(true);
+    const d = await apiCallBack("GET", "auth2/getListPendingEmp", null, token);
+    setLoading(false);
     if (d?.status) {
+      setData(d.data);
     } else {
       toast.info(d.message);
+    }
+  };
+
+  const handleAction = async (user_code, status) => {
+    setLoading(true);
+    const payload = { user_code, status };
+    const d = await apiCallBack(
+      "POST",
+      "auth2/acceptedPendingEmp",
+      payload,
+      token
+    );
+    setLoading(false);
+    if (d?.status) {
+      toast.success("Action successful!");
+      getData();
+    } else {
+      toast.error(d.message);
     }
   };
 
@@ -43,9 +64,12 @@ const Authorisation = () => {
                           <table className="table table-striped table-bordered table_height">
                             <thead>
                               <tr className="border-0">
-                                <th>PO Num</th>
-                                <th>BG Ref Num</th>
-                                <th>BG File No</th>
+                                <th>Name</th>
+                                <th>Department Name</th>
+                                <th>Email</th>
+                                <th>Internal Role</th>
+                                <th>Vendor Code</th>
+                                <th>Action</th>
                               </tr>
                             </thead>
                             <tbody>
@@ -55,19 +79,38 @@ const Authorisation = () => {
                                     <SkeletonLoader />
                                   </td>
                                 </tr>
-                              ) : checkTypeArr(data) ? (
+                              ) : checkTypeArr(data) && data.length > 0 ? (
                                 data.map((item, index) => (
                                   <tr key={index}>
-                                    <td className="table_center">
-                                      {item.purchasing_doc_no}
+                                    <td>{item.name}</td>
+                                    <td>{item.depertment_name}</td>
+                                    <td>{item.email || ""}</td>
+                                    <td>{item.internal_role || ""}</td>
+                                    <td>{item.vendor_code || ""}</td>
+                                    <td>
+                                      <DynamicButton
+                                        label={<FaCheck />}
+                                        onClick={() =>
+                                          handleAction(item.vendor_code, 1)
+                                        }
+                                        className="btn btn-sm btn-success me-2"
+                                        confirmMessage="Are you sure you want to approve this user?"
+                                      />
+
+                                      <DynamicButton
+                                        label={<FaTimes />}
+                                        onClick={() =>
+                                          handleAction(item.vendor_code, 2)
+                                        }
+                                        className="btn btn-sm btn-danger"
+                                        confirmMessage="Are you sure you want to reject this user?"
+                                      />
                                     </td>
-                                    <td>{item.reference_no}</td>
-                                    <td>{item.bg_file_no || ""}</td>
                                   </tr>
                                 ))
                               ) : (
                                 <tr>
-                                  <td colSpan="5" className="text-center">
+                                  <td colSpan="6" className="text-center">
                                     No data available
                                   </td>
                                 </tr>
