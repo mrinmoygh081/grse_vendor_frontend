@@ -19,6 +19,7 @@ export default function Registration() {
   const [showOtp, setShowOtp] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [subDepartments, setSubDepartments] = useState([]);
+  const [timer, setTimer] = useState(1800); // 30 minutes timer in seconds
   const { token } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
   const navigate = useNavigate(); // Initialize useNavigate
@@ -28,6 +29,19 @@ export default function Registration() {
       fetchSubDepartments();
     }
   }, [regData.department]);
+
+  useEffect(() => {
+    if (showOtp && timer > 0) {
+      const countdown = setInterval(() => {
+        setTimer((prevTimer) => prevTimer - 1);
+      }, 1000);
+
+      return () => clearInterval(countdown);
+    } else if (timer === 0) {
+      toast.warn("OTP expired. Please request a new OTP.");
+      setShowOtp(false);
+    }
+  }, [showOtp, timer]);
 
   const fetchSubDepartments = async () => {
     setIsLoading(true);
@@ -72,6 +86,7 @@ export default function Registration() {
     if (res?.status) {
       toast.success("OTP sent via mail. Please check your inbox.");
       setShowOtp(true);
+      setTimer(1800); // Reset the timer to 30 minutes
     } else {
       toast.warn(res?.message);
     }
@@ -127,6 +142,12 @@ export default function Registration() {
 
   const handleChange = (e) => {
     setRegData({ ...regData, [e.target.name]: e.target.value });
+  };
+
+  const formatTime = (seconds) => {
+    const minutes = Math.floor(seconds / 60);
+    const remainingSeconds = seconds % 60;
+    return `${minutes}:${remainingSeconds < 10 ? "0" : ""}${remainingSeconds}`;
   };
 
   return (
@@ -265,19 +286,26 @@ export default function Registration() {
                 </>
               )}
               {showOtp && !showPassword && (
-                <div className="fv-row mb-3">
-                  <label className="form-label fs-6 fw-bolder text-dark">
-                    OTP
-                  </label>
-                  <input
-                    className="form-control form-control-lg form-control-solid"
-                    type="text"
-                    name="otp"
-                    value={regData.otp}
-                    onChange={handleChange}
-                    autoComplete="off"
-                  />
-                </div>
+                <>
+                  <div className="fv-row mb-3">
+                    <label className="form-label fs-6 fw-bolder text-dark">
+                      OTP
+                    </label>
+                    <input
+                      className="form-control form-control-lg form-control-solid"
+                      type="text"
+                      name="otp"
+                      value={regData.otp}
+                      onChange={handleChange}
+                      autoComplete="off"
+                    />
+                  </div>
+                  <div className="text-center mb-3">
+                    <span className="text-dark">
+                      Time Remaining: {formatTime(timer)}
+                    </span>
+                  </div>
+                </>
               )}
               {showPassword && (
                 <>

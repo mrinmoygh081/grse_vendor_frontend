@@ -5,7 +5,10 @@ import Header from "../../components/Header";
 import Footer from "../../components/Footer";
 import { useSelector } from "react-redux";
 import { USER_VENDOR } from "../../constants/userConstants";
-import { actionHandlerByDO } from "../../Helpers/BTNChecklist";
+import {
+  actionHandlerByDO,
+  getGrnIcgrnByInvoice,
+} from "../../Helpers/BTNChecklist";
 import {
   calculateNetPay,
   calculatePenalty,
@@ -14,7 +17,11 @@ import {
 } from "../../utils/smallFun";
 import { apiCallBack } from "../../utils/fetchAPIs";
 import { inputOnWheelPrevent } from "../../utils/inputOnWheelPrevent";
-import { convertToEpoch, formatDate } from "../../utils/getDateTimeNow";
+import {
+  convertToEpoch,
+  formatDashedDate,
+  formatDate,
+} from "../../utils/getDateTimeNow";
 import Select from "react-select";
 import BTNMaterialVendorInfo from "../../components/BTNMaterialVendorInfo";
 import { initialDOData, initialData } from "../../data/btnData";
@@ -134,11 +141,26 @@ const BillsMaterialHybridEdit = () => {
     }
   };
 
+  const getGateEntryInfo = async () => {
+    let response = await getGrnIcgrnByInvoice(id, data.invoice_no, token);
+    console.log(response, "bikky7788888");
+    if (response.status && response?.data?.invoice_date) {
+      const invoice_date = formatDashedDate(response?.data?.invoice_date);
+      setDoForm({
+        ...doForm,
+        ld_ge_date: invoice_date,
+      });
+    }
+  };
+
   useEffect(() => {
     getBTNData();
     getDataByBTN();
     getEmp();
-  }, []);
+    if (data?.invoice_no) {
+      getGateEntryInfo();
+    }
+  }, [data?.invoice_no]);
 
   // useEffect(() => {
   //   const { contractual_ld, ld_ge_date } = doForm;
@@ -195,7 +217,6 @@ const BillsMaterialHybridEdit = () => {
           0.25,
           2
         );
-        console.log("p_sdbg", p_sdbg);
       }
       if (a_drawing_date && c_drawing_date && icgrnData) {
         p_drg = calculatePenalty(
@@ -205,7 +226,6 @@ const BillsMaterialHybridEdit = () => {
           0.25,
           1
         );
-        console.log("kkkkkkkkk", p_drg);
       }
       if (a_qap_date && c_qap_date && icgrnData) {
         p_qap = calculatePenalty(
@@ -326,18 +346,27 @@ const BillsMaterialHybridEdit = () => {
                                             <label htmlFor="GED">
                                               Gate Entry Date:
                                             </label>
-                                            <input
+                                            <p>
+                                              <b>
+                                                {doForm?.ld_ge_date &&
+                                                  formatDate(
+                                                    doForm?.ld_ge_date
+                                                  )}
+                                              </b>
+                                            </p>
+                                            {/* <input
                                               type="date"
                                               className="form-control "
                                               id="GED"
                                               value={doForm?.ld_ge_date}
-                                              onChange={(e) =>
+                                              onChange={(e) => {
+                                                console.log(e.target.value);
                                                 setDoForm({
                                                   ...doForm,
                                                   ld_ge_date: e.target.value,
-                                                })
-                                              }
-                                            />
+                                                });
+                                              }}
+                                            /> */}
                                           </div>
                                           <div className="me-3">
                                             <label htmlFor="CLD">

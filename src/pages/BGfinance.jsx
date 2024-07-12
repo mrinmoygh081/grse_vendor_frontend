@@ -225,6 +225,7 @@ const BGfinance = () => {
                       <th className="min-w-150px">BG Date</th>
                       <th className="min-w-150px">BG Amount</th>
                       <th className="min-w-150px">Validity Date</th>
+                      <th className="min-w-150px">Bank Guarantee No</th>
                       <th className="min-w-150px">Claim Date</th>
                       <th className="min-w-150px">BG Received Date</th>
                     </tr>
