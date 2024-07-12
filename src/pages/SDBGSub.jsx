@@ -693,33 +693,38 @@ const SDBGSub = () => {
                                                           </span>
                                                         )}
 
-                                                      {ite &&
+                                                      {((ite &&
                                                         ite.some(
                                                           (data) =>
                                                             user?.department_id ===
                                                               USER_GRSE_FINANCE &&
                                                             data.status !==
                                                               "ASSIGNED"
-                                                        ) && (
-                                                          <button
-                                                            onClick={() => {
-                                                              setIsCheckEntryPopup(
-                                                                true
-                                                              );
-                                                              setFormDatainput({
-                                                                ...formDatainput,
-                                                                reference_no:
-                                                                  item,
-                                                              });
-                                                              SdbgEntryUpdate(
-                                                                item
-                                                              );
-                                                            }}
-                                                            className="btn btn-sm fw-bold btn-primary me-3"
-                                                          >
-                                                            ACTION
-                                                          </button>
-                                                        )}
+                                                        )) ||
+                                                        user.user_type ===
+                                                          USER_VENDOR) && (
+                                                        <button
+                                                          onClick={() => {
+                                                            setIsCheckEntryPopup(
+                                                              true
+                                                            );
+                                                            setFormDatainput({
+                                                              ...formDatainput,
+                                                              reference_no:
+                                                                item,
+                                                            });
+                                                            SdbgEntryUpdate(
+                                                              item
+                                                            );
+                                                          }}
+                                                          className="btn btn-sm fw-bold btn-primary me-3"
+                                                        >
+                                                          {user?.user_type ===
+                                                          USER_VENDOR
+                                                            ? "VIEW"
+                                                            : "ACTION"}
+                                                        </button>
+                                                      )}
                                                     </td>
                                                   </tr>
                                                   {ite &&
@@ -1285,7 +1290,8 @@ const SDBGSub = () => {
       )}
 
       {/* for finance officer  */}
-      {user?.department_id === USER_GRSE_FINANCE && (
+      {(user?.department_id === USER_GRSE_FINANCE ||
+        user.user_type === USER_VENDOR) && (
         <div className={isCheckEntryPopup ? "popup active" : "popup"}>
           <div className="card card-xxl-stretch mb-5 mb-xxl-8">
             <div className="card-header border-0 pt-5">
@@ -1296,162 +1302,179 @@ const SDBGSub = () => {
               </h3>
               <button
                 className="btn fw-bold btn-danger"
-                onClick={() => setIsCheckEntryPopup(false)}
+                onClick={() => {
+                  setIsCheckEntryPopup(false);
+                  let bg = { ...bgInputs, purchasing_doc_no: id };
+                  setFormDatainput(bg);
+                  setIsExtended(false);
+                }}
               >
                 Close
               </button>
             </div>
-
-            <div className="row">
-              <div className="col-md-6 col-12">
-                <div className="mb-3">
-                  <label className="form-label">BG File No</label>
-                  &nbsp;&nbsp;
-                  {formDatainput?.bg_file_no ? (
-                    <p>{formDatainput?.bg_file_no}</p>
-                  ) : (
-                    <input
-                      type="text"
-                      className="form-control"
-                      name="department"
-                      value={sdbgEntryForFi?.bg_file_no || ""}
-                      onChange={(e) =>
-                        setSdbgEntryForFi({
-                          ...sdbgEntryForFi,
-                          bg_file_no: e.target.value,
-                        })
-                      }
-                    />
-                  )}
+            {isLoading ? (
+              <div className="row">
+                <div className="col-12">
+                  <SkeletonLoader row={10} col={2} />
                 </div>
               </div>
-              <div className="col-md-6 col-12">
-                <div className="mb-3">
-                  <label className="form-label">Reference No</label>
-                  <p>{formDatainput?.reference_no}</p>
+            ) : (
+              <div className="row">
+                <div className="col-md-6 col-12">
+                  <div className="mb-3">
+                    <label className="form-label">BG File No</label>
+                    &nbsp;&nbsp;
+                    {formDatainput?.bg_file_no ? (
+                      <p>{formDatainput?.bg_file_no}</p>
+                    ) : (
+                      <>
+                        {user?.department_id === USER_GRSE_FINANCE ? (
+                          <input
+                            type="text"
+                            className="form-control"
+                            name="department"
+                            value={sdbgEntryForFi?.bg_file_no || ""}
+                            onChange={(e) =>
+                              setSdbgEntryForFi({
+                                ...sdbgEntryForFi,
+                                bg_file_no: e.target.value,
+                              })
+                            }
+                          />
+                        ) : (
+                          <p>Waiting for Action from GRSE</p>
+                        )}
+                      </>
+                    )}
+                  </div>
                 </div>
-              </div>
-              <div className="col-md-6 col-12">
-                <div className="mb-3">
-                  <label className="form-label">BG Entry Date</label>
-                  <p>
-                    <td
-                      style={{
-                        border: "none",
-                        background: "none",
-                      }}
-                    >
-                      {formDatainput?.created_at
-                        ? formatDate(formDatainput.created_at)
+                <div className="col-md-6 col-12">
+                  <div className="mb-3">
+                    <label className="form-label">Reference No</label>
+                    <p>{formDatainput?.reference_no}</p>
+                  </div>
+                </div>
+                <div className="col-md-6 col-12">
+                  <div className="mb-3">
+                    <label className="form-label">BG Entry Date</label>
+                    <p>
+                      <td
+                        style={{
+                          border: "none",
+                          background: "none",
+                        }}
+                      >
+                        {formDatainput?.created_at
+                          ? formatDate(formDatainput.created_at)
+                          : ""}
+                      </td>
+                    </p>
+                  </div>
+                </div>
+                <div className="col-md-6 col-12">
+                  <div className="mb-3">
+                    <label className="form-label">Bankers Name</label>
+                    <p>{formDatainput?.bank_name}</p>
+                  </div>
+                </div>
+                <div className="col-md-6 col-12">
+                  <div className="mb-3">
+                    <label className="form-label">Bankers Branch</label>
+                    <p>{formDatainput?.branch_name}</p>
+                  </div>
+                </div>
+                <div className="col-md-6 col-12">
+                  <div className="mb-3">
+                    <label className="form-label">Bankers Address1</label>
+                    <p>{formDatainput?.bank_addr1}</p>
+                  </div>
+                </div>
+                {formDatainput?.bank_addr2 && (
+                  <>
+                    <div className="col-md-6 col-12">
+                      <div className="mb-3">
+                        <label className="form-label">Bankers Address2</label>
+                        <p>{formDatainput?.bank_addr2}</p>
+                      </div>
+                    </div>
+                  </>
+                )}
+                {formDatainput?.bank_addr3 && (
+                  <>
+                    <div className="col-md-6 col-12">
+                      <div className="mb-3">
+                        <label className="form-label">Bankers Address3</label>
+                        <p>{formDatainput?.bank_addr3}</p>
+                      </div>
+                    </div>
+                  </>
+                )}
+                <div className="col-md-6 col-12">
+                  <div className="mb-3">
+                    <label className="form-label">Bankers City</label>
+                    <p>{formDatainput?.bank_city}</p>
+                  </div>
+                </div>
+                <div className="col-md-6 col-12">
+                  <div className="mb-3">
+                    <label className="form-label">Bank Pincode</label>
+                    <p>{formDatainput?.bank_pin_code}</p>
+                  </div>
+                </div>
+                <div className="col-md-6 col-12">
+                  <div className="mb-3">
+                    <label className="form-label">Bank Guarantee No</label>
+                    <p>{formDatainput?.bg_no}</p>
+                  </div>
+                </div>
+                <div className="col-md-6 col-12">
+                  <div className="mb-3">
+                    <label className="form-label">BG Date</label>
+                    <p>
+                      {formDatainput?.bg_date
+                        ? new Date(
+                            formDatainput?.bg_date * 1000
+                          ).toLocaleDateString()
                         : ""}
-                    </td>
-                  </p>
-                </div>
-              </div>
-              <div className="col-md-6 col-12">
-                <div className="mb-3">
-                  <label className="form-label">Bankers Name</label>
-                  <p>{formDatainput?.bank_name}</p>
-                </div>
-              </div>
-              <div className="col-md-6 col-12">
-                <div className="mb-3">
-                  <label className="form-label">Bankers Branch</label>
-                  <p>{formDatainput?.branch_name}</p>
-                </div>
-              </div>
-              <div className="col-md-6 col-12">
-                <div className="mb-3">
-                  <label className="form-label">Bankers Address1</label>
-                  <p>{formDatainput?.bank_addr1}</p>
-                </div>
-              </div>
-              {formDatainput?.bank_addr2 && (
-                <>
-                  <div className="col-md-6 col-12">
-                    <div className="mb-3">
-                      <label className="form-label">Bankers Address2</label>
-                      <p>{formDatainput?.bank_addr2}</p>
-                    </div>
+                    </p>
                   </div>
-                </>
-              )}
-              {formDatainput?.bank_addr3 && (
-                <>
-                  <div className="col-md-6 col-12">
-                    <div className="mb-3">
-                      <label className="form-label">Bankers Address3</label>
-                      <p>{formDatainput?.bank_addr3}</p>
-                    </div>
+                </div>
+                <div className="col-md-6 col-12">
+                  <div className="mb-3">
+                    <label className="form-label">BG Received Date</label>
+                    <p>
+                      {formDatainput?.bg_recived_date
+                        ? formatDate(formDatainput?.bg_recived_date * 1000)
+                        : ""}
+                    </p>
                   </div>
-                </>
-              )}
-              <div className="col-md-6 col-12">
-                <div className="mb-3">
-                  <label className="form-label">Bankers City</label>
-                  <p>{formDatainput?.bank_city}</p>
                 </div>
-              </div>
-              <div className="col-md-6 col-12">
-                <div className="mb-3">
-                  <label className="form-label">Bank Pincode</label>
-                  <p>{formDatainput?.bank_pin_code}</p>
+                <div className="col-md-6 col-12">
+                  <div className="mb-3">
+                    <label className="form-label">BG Amount</label>
+                    <p>{formDatainput?.bg_ammount}</p>
+                  </div>
                 </div>
-              </div>
-              <div className="col-md-6 col-12">
-                <div className="mb-3">
-                  <label className="form-label">Bank Guarantee No</label>
-                  <p>{formDatainput?.bg_no}</p>
+                <div className="col-md-6 col-12">
+                  <div className="mb-3">
+                    <label className="form-label">BG Type</label>
+                    <p>{formDatainput?.bg_type}</p>
+                  </div>
                 </div>
-              </div>
-              <div className="col-md-6 col-12">
-                <div className="mb-3">
-                  <label className="form-label">BG Date</label>
-                  <p>
-                    {formDatainput?.bg_date
-                      ? new Date(
-                          formDatainput?.bg_date * 1000
-                        ).toLocaleDateString()
-                      : ""}
-                  </p>
-                </div>
-              </div>
-              <div className="col-md-6 col-12">
-                <div className="mb-3">
-                  <label className="form-label">BG Received Date</label>
-                  <p>
-                    {formDatainput?.bg_recived_date
-                      ? formatDate(formDatainput?.bg_recived_date * 1000)
-                      : ""}
-                  </p>
-                </div>
-              </div>
-              <div className="col-md-6 col-12">
-                <div className="mb-3">
-                  <label className="form-label">BG Amount</label>
-                  <p>{formDatainput?.bg_ammount}</p>
-                </div>
-              </div>
-              <div className="col-md-6 col-12">
-                <div className="mb-3">
-                  <label className="form-label">BG Type</label>
-                  <p>{formDatainput?.bg_type}</p>
-                </div>
-              </div>
 
-              {/* <div className="col-md-6 col-12">
+                {/* <div className="col-md-6 col-12">
                 <div className="mb-3">
                   <label className="form-label">Department</label>
                   <p>{formDatainput?.department}</p>
                 </div>
               </div> */}
-              <div className="col-md-6 col-12">
-                <div className="mb-3">
-                  <label className="form-label">PO Number</label>
-                  <p>{formDatainput?.purchasing_doc_no}</p>
+                <div className="col-md-6 col-12">
+                  <div className="mb-3">
+                    <label className="form-label">PO Number</label>
+                    <p>{formDatainput?.purchasing_doc_no}</p>
+                  </div>
                 </div>
-              </div>
-              {/* <div className="col-md-6 col-12">
+                {/* <div className="col-md-6 col-12">
                 <div className="mb-3">
                   <label className="form-label">PO Date</label>
                   <p>
@@ -1460,44 +1483,170 @@ const SDBGSub = () => {
                   </p>
                 </div>
               </div> */}
-              <div className="col-md-6 col-12">
-                <div className="mb-3">
-                  <label className="form-label">Yard No</label>
-                  <p>{formDatainput?.yard_no}</p>
+                <div className="col-md-6 col-12">
+                  <div className="mb-3">
+                    <label className="form-label">Yard No</label>
+                    <p>{formDatainput?.yard_no}</p>
+                  </div>
                 </div>
-              </div>
-              <div className="col-md-6 col-12">
-                <div className="mb-3">
-                  <label className="form-label">Department</label>
-                  <p>{formDatainput?.department}</p>
+                <div className="col-md-6 col-12">
+                  <div className="mb-3">
+                    <label className="form-label">Department</label>
+                    <p>{formDatainput?.department}</p>
+                  </div>
                 </div>
-              </div>
-              <div className="col-md-6 col-12">
-                <div className="mb-3">
-                  <label className="form-label">Validity Date</label>
-                  <p>
-                    {formDatainput?.validity_date
-                      ? new Date(
-                          formDatainput?.validity_date * 1000
-                        ).toLocaleDateString()
-                      : ""}
-                  </p>
+                <div className="col-md-6 col-12">
+                  <div className="mb-3">
+                    <label className="form-label">Validity Date</label>
+                    <p>
+                      {formDatainput?.validity_date
+                        ? new Date(
+                            formDatainput?.validity_date * 1000
+                          ).toLocaleDateString()
+                        : ""}
+                    </p>
+                  </div>
                 </div>
-              </div>
-              <div className="col-md-6 col-12">
-                <div className="mb-3">
-                  <label className="form-label">Claim Period</label>
-                  <p>
-                    {formDatainput?.claim_priod
-                      ? new Date(
-                          formDatainput?.validity_date * 1000
-                        ).toLocaleDateString()
-                      : ""}
-                  </p>
+                <div className="col-md-6 col-12">
+                  <div className="mb-3">
+                    <label className="form-label">Claim Period</label>
+                    <p>
+                      {formDatainput?.claim_priod
+                        ? new Date(
+                            formDatainput?.claim_priod * 1000
+                          ).toLocaleDateString()
+                        : ""}
+                    </p>
+                  </div>
                 </div>
-              </div>
+                <div className="col-md-6 col-12">
+                  <div className="mb-3">
+                    <label className="form-label">Extension Date 1</label>
+                    <p>
+                      <td
+                        style={{
+                          border: "none",
+                          background: "none",
+                        }}
+                      >
+                        {formDatainput?.extension_date1 &&
+                        formDatainput.extension_date1 !== "0"
+                          ? formatDate(formDatainput.extension_date1 * 1000)
+                          : ""}
+                      </td>
+                    </p>
+                  </div>
+                </div>
+                <div className="col-md-6 col-12">
+                  <div className="mb-3">
+                    <label className="form-label">Extension Date 2</label>
+                    <p>
+                      <td
+                        style={{
+                          border: "none",
+                          background: "none",
+                        }}
+                      >
+                        {formDatainput?.extension_date2 &&
+                        formDatainput.extension_date2 !== "0"
+                          ? formatDate(formDatainput.extension_date2 * 1000)
+                          : ""}
+                      </td>
+                    </p>
+                  </div>
+                </div>
+                <div className="col-md-6 col-12">
+                  <div className="mb-3">
+                    <label className="form-label">Extension Date 3</label>
+                    <p>
+                      <td
+                        style={{
+                          border: "none",
+                          background: "none",
+                        }}
+                      >
+                        {formDatainput?.extension_date3 &&
+                        formDatainput.extension_date3 !== "0"
+                          ? formatDate(formDatainput.extension_date3 * 1000)
+                          : ""}
+                      </td>
+                    </p>
+                  </div>
+                </div>
+                <div className="col-md-6 col-12">
+                  <div className="mb-3">
+                    <label className="form-label">Extension Date 4</label>
+                    <p>
+                      <td
+                        style={{
+                          border: "none",
+                          background: "none",
+                        }}
+                      >
+                        {formDatainput?.extension_date4 &&
+                        formDatainput.extension_date4 !== "0"
+                          ? formatDate(formDatainput.extension_date4 * 1000)
+                          : ""}
+                      </td>
+                    </p>
+                  </div>
+                </div>
+                <div className="col-md-6 col-12">
+                  <div className="mb-3">
+                    <label className="form-label">Extension Date 5</label>
+                    <p>
+                      <td
+                        style={{
+                          border: "none",
+                          background: "none",
+                        }}
+                      >
+                        {formDatainput?.extension_date5 &&
+                        formDatainput.extension_date5 !== "0"
+                          ? formatDate(formDatainput.extension_date5 * 1000)
+                          : ""}
+                      </td>
+                    </p>
+                  </div>
+                </div>
+                <div className="col-md-6 col-12">
+                  <div className="mb-3">
+                    <label className="form-label">Extension Date 6</label>
+                    <p>
+                      <td
+                        style={{
+                          border: "none",
+                          background: "none",
+                        }}
+                      >
+                        {formDatainput?.extension_date6 &&
+                        formDatainput.extension_date6 !== "0"
+                          ? formatDate(formDatainput.extension_date6 * 1000)
+                          : ""}
+                      </td>
+                    </p>
+                  </div>
+                </div>
+                <div className="col-md-6 col-12">
+                  <div className="mb-3">
+                    <label className="form-label">Release Date</label>
+                    <p>
+                      <td
+                        style={{
+                          border: "none",
+                          background: "none",
+                        }}
+                      >
+                        {formDatainput?.release_date &&
+                        formDatainput.release_date !== "0"
+                          ? formatDate(formDatainput.release_date * 1000)
+                          : ""}
+                      </td>
+                    </p>
+                  </div>
+                </div>
 
-              {/* <div className="col-md-6 col-12">
+                {/* <div className="col-md-6 col-12">
                 <div className="mb-3">
                   <label className="form-label">Vendor Name</label>
                   <p>{formDatainput?.vendor_name}</p>
@@ -1509,57 +1658,58 @@ const SDBGSub = () => {
                   <p>{formDatainput?.vendor_address1}</p>
                 </div>
               </div> */}
-              {formDatainput?.vendor_address2 && (
-                <>
-                  <div className="col-md-6 col-12">
-                    <div className="mb-3">
-                      <label className="form-label">Vendor Address2</label>
-                      <p>{formDatainput?.vendor_address2}</p>
+                {formDatainput?.vendor_address2 && (
+                  <>
+                    <div className="col-md-6 col-12">
+                      <div className="mb-3">
+                        <label className="form-label">Vendor Address2</label>
+                        <p>{formDatainput?.vendor_address2}</p>
+                      </div>
                     </div>
-                  </div>
-                </>
-              )}
-              {formDatainput?.vendor_address3 && (
-                <>
-                  <div className="col-md-6 col-12">
-                    <div className="mb-3">
-                      <label className="form-label">Vendor Address3</label>
-                      <p>{formDatainput?.vendor_address3}</p>
+                  </>
+                )}
+                {formDatainput?.vendor_address3 && (
+                  <>
+                    <div className="col-md-6 col-12">
+                      <div className="mb-3">
+                        <label className="form-label">Vendor Address3</label>
+                        <p>{formDatainput?.vendor_address3}</p>
+                      </div>
                     </div>
-                  </div>
-                </>
-              )}
-              {/* <div className="col-md-6 col-12">
+                  </>
+                )}
+                {/* <div className="col-md-6 col-12">
                 <div className="mb-3">
                   <label className="form-label">Vendor City</label>
                   <p>{formDatainput?.vendor_city}</p>
                 </div>
               </div> */}
-              {/* <div className="col-md-6 col-12">
+                {/* <div className="col-md-6 col-12">
                 <div className="mb-3">
                   <label className="form-label">Vendor Pincode</label>
                   <p>{formDatainput?.vendor_pin_code}</p>
                 </div>
               </div> */}
-              <div className="col-md-6 col-12">
-                {entryState[formDatainput?.reference_no]?.showRemarksInput && (
-                  <div className="col-12 mb-3">
-                    <label className="form-label">Remarks</label>
-                    <textarea
-                      className="form-control"
-                      value={entryState[formDatainput?.reference_no]?.remarks}
-                      onChange={(e) =>
-                        handleRemarksChange(
-                          formDatainput?.reference_no,
-                          e.target.value
-                        )
-                      }
-                    />
-                  </div>
-                )}
-              </div>
+                <div className="col-md-6 col-12">
+                  {entryState[formDatainput?.reference_no]
+                    ?.showRemarksInput && (
+                    <div className="col-12 mb-3">
+                      <label className="form-label">Remarks</label>
+                      <textarea
+                        className="form-control"
+                        value={entryState[formDatainput?.reference_no]?.remarks}
+                        onChange={(e) =>
+                          handleRemarksChange(
+                            formDatainput?.reference_no,
+                            e.target.value
+                          )
+                        }
+                      />
+                    </div>
+                  )}
+                </div>
 
-              {/* {showRemarksInput && (
+                {/* {showRemarksInput && (
               <div className="col-12 mb-3">
                 <label className="form-label">Remarks</label>
                 <textarea
@@ -1569,24 +1719,28 @@ const SDBGSub = () => {
                 />
               </div>
             )} */}
-
-              <div className="col-12">
-                <div className="mb-3 d-flex justify-content-between">
-                  <button
-                    onClick={() =>
-                      reConfirm(
-                        { file: true },
-                        () =>
-                          financeEntry("APPROVED", formDatainput?.reference_no),
-                        "You're going to receiving the SDBG Entry. Please confirm!"
-                      )
-                    }
-                    className="btn fw-bold btn-success me-3"
-                    type="button"
-                  >
-                    RECEIVED
-                  </button>
-                  {/* <button
+                {user?.department_id === USER_GRSE_FINANCE && (
+                  <>
+                    <div className="col-12">
+                      <div className="mb-3 d-flex justify-content-between">
+                        <button
+                          onClick={() =>
+                            reConfirm(
+                              { file: true },
+                              () =>
+                                financeEntry(
+                                  "APPROVED",
+                                  formDatainput?.reference_no
+                                ),
+                              "You're going to receiving the SDBG Entry. Please confirm!"
+                            )
+                          }
+                          className="btn fw-bold btn-success me-3"
+                          type="button"
+                        >
+                          RECEIVED
+                        </button>
+                        {/* <button
                     className="btn fw-bold btn-info me-3"
                     type="button"
                     onClick={() =>
@@ -1613,18 +1767,19 @@ const SDBGSub = () => {
                     Return to Dealing Officer handleReturnClick
                   </button> */}
 
-                  <button
-                    onClick={() =>
-                      handleReturnClick(formDatainput?.reference_no)
-                    }
-                    className="btn fw-bold btn-primary"
-                    type="button"
-                  >
-                    {entryState[formDatainput?.reference_no]?.showRemarksInput
-                      ? "Confirm Return to Dept"
-                      : "Return to Dept"}
-                  </button>
-                  {/* <button
+                        <button
+                          onClick={() =>
+                            handleReturnClick(formDatainput?.reference_no)
+                          }
+                          className="btn fw-bold btn-primary"
+                          type="button"
+                        >
+                          {entryState[formDatainput?.reference_no]
+                            ?.showRemarksInput
+                            ? "Confirm Return to Dept"
+                            : "Return to Dept"}
+                        </button>
+                        {/* <button
                     onClick={() =>
                       reConfirm(
                         { file: true },
@@ -1638,9 +1793,12 @@ const SDBGSub = () => {
                   >
                     REJECT
                   </button> */}
-                </div>
+                      </div>
+                    </div>
+                  </>
+                )}
               </div>
-            </div>
+            )}
           </div>
         </div>
       )}
