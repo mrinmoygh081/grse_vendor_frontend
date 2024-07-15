@@ -73,14 +73,21 @@ const BTNfinance = () => {
 
   const generateExcel = () => {
     const data = [
-      ["BTN Num", "Invoice No", "Po No", "Action By", "Value", "Status"],
+      [
+        "BTN Num",
+        "Vendor Name",
+        "Vendor Code",
+        "PO No",
+        "Invoice No",
+        "Yard No",
+      ],
       ...filteredData.map((file) => [
         file.btn_num,
-        file.invoice_no,
-        file.purchasing_doc_no,
+        file.vendor_name,
         file.vendor_code,
-        file.net_claim_amount,
-        file.status,
+        file.purchasing_doc_no,
+        file.invoice_no,
+        file.yard,
       ]),
     ];
 

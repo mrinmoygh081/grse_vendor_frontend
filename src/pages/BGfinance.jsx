@@ -91,7 +91,7 @@ const BGfinance = () => {
         "Confirmation",
         "Status",
         "PO No",
-        "BG No",
+        "Bank Guarantee No",
         "BG Date",
         "BG Amount",
         "Validity Date",
@@ -101,15 +101,19 @@ const BGfinance = () => {
       ...filteredData.map((file) => [
         file.reference_no,
         file.bg_file_no,
-        file.conformation,
+        file.status === FORWARD_TO_FINANCE || file.status === HOLD
+          ? "NO"
+          : file.status === APPROVED
+          ? "YES"
+          : "",
         file.status,
         file.purchasing_doc_no,
         file.bg_no,
         formatDatee(file.bg_date),
-        file.bg_amount,
+        file.bg_ammount,
         formatDatee(file.validity_date),
-        formatDatee(file.claim_date),
-        formatDatee(file.bg_received_date),
+        formatDatee(file.claim_priod),
+        formatDatee(file.bg_recived_date),
       ]),
     ];
 
@@ -221,11 +225,10 @@ const BGfinance = () => {
                       <th className="min-w-150px">Confirmation</th>
                       <th className="min-w-150px">Status</th>
                       <th className="min-w-150px">PO No</th>
-                      <th className="min-w-150px">BG No</th>
+                      <th className="min-w-150px">Bank Guarantee No</th>
                       <th className="min-w-150px">BG Date</th>
                       <th className="min-w-150px">BG Amount</th>
                       <th className="min-w-150px">Validity Date</th>
-                      <th className="min-w-150px">Bank Guarantee No</th>
                       <th className="min-w-150px">Claim Date</th>
                       <th className="min-w-150px">BG Received Date</th>
                     </tr>
@@ -258,7 +261,6 @@ const BGfinance = () => {
                         <td>{formatDatee(file.bg_date)}</td>
                         <td>{file.bg_ammount}</td>
                         <td>{formatDatee(file.validity_date)}</td>
-                        <td>{formatDatee("")}</td>
                         <td>{formatDatee(file.claim_priod)}</td>
                         <td>{formatDatee(file.bg_recived_date)}</td>
                       </tr>
