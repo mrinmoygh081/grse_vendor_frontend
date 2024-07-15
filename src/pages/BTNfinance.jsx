@@ -54,7 +54,7 @@ const BTNfinance = () => {
   };
 
   const handleViewInvoice = (invoiceFilename) => {
-    const pdfUrl = `${process.env.REACT_APP_PDF_URL}/submitSDBG/${invoiceFilename}`;
+    const pdfUrl = `${process.env.REACT_APP_PDF_URL}/btns/${invoiceFilename}`;
     window.open(pdfUrl, "_blank");
   };
 

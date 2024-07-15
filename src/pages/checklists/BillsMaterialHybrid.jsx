@@ -20,6 +20,7 @@ import { apiCallBack } from "../../utils/fetchAPIs";
 import { formatDate } from "../../utils/getDateTimeNow";
 import { toast } from "react-toastify";
 import { initialData } from "../../data/btnData";
+import DynamicButton from "../../Helpers/DynamicButton";
 
 const BillsMaterialHybrid = () => {
   const navigate = useNavigate();
@@ -737,9 +738,25 @@ const BillsMaterialHybrid = () => {
                               </div>
                               <div className="text-center">
                                 {user?.user_type === USER_VENDOR && (
-                                  <button
-                                    type="button"
-                                    className="btn fw-bold btn-primary me-3"
+                                  // <button
+                                  //   type="button"
+                                  //   className="btn fw-bold btn-primary me-3"
+                                  //   onClick={() =>
+                                  //     actionHandlerBTN(
+                                  //       "BillsMaterialHybrid",
+                                  //       token,
+                                  //       id,
+                                  //       form,
+                                  //       setForm,
+                                  //       initialData,
+                                  //       navigate
+                                  //     )
+                                  //   }
+                                  // >
+                                  //   SUBMIT
+                                  // </button>
+                                  <DynamicButton
+                                    label="SUBMIT"
                                     onClick={() =>
                                       actionHandlerBTN(
                                         "BillsMaterialHybrid",
@@ -751,12 +768,11 @@ const BillsMaterialHybrid = () => {
                                         navigate
                                       )
                                     }
-                                  >
-                                    SUBMIT
-                                  </button>
+                                    className="btn fw-bold btn-primary me-3"
+                                  />
                                 )}
                                 <button
-                                  className="btn fw-bold btn-primary me-3"
+                                  className="btn btn-sm btn-primary me-3"
                                   type="button"
                                   onClick={() =>
                                     navigate(

@@ -25,6 +25,8 @@ import {
 import Select from "react-select";
 import BTNMaterialVendorInfo from "../../components/BTNMaterialVendorInfo";
 import { initialDOData, initialData } from "../../data/btnData";
+import DynamicButton from "../../Helpers/DynamicButton";
+import { toast } from "react-toastify";
 
 const BillsMaterialHybridEdit = () => {
   const navigate = useNavigate();
@@ -32,6 +34,7 @@ const BillsMaterialHybridEdit = () => {
   const { user, token } = useSelector((state) => state.auth);
   const { id } = useParams();
   const { state } = useLocation();
+  console.log(state, "state btn");
 
   const [impDates, setImpDates] = useState(null);
   const [data, setData] = useState(null);
@@ -275,6 +278,29 @@ const BillsMaterialHybridEdit = () => {
       });
     }
   }, [impDates, data]);
+
+  const rejectBTN = async () => {
+    try {
+      const response = await apiCallBack(
+        "POST",
+        "po/btn/BillsMaterialHybridByDO",
+        { btn_num: state, status: "reject" },
+        token
+      );
+      if (response.status) {
+        // Show success toast message
+        console.log("Rejected successfully");
+        toast.success("Rejected successfully");
+        navigate(`/invoice-and-payment-process/${id}`);
+      } else {
+        // Show error toast message
+        console.error("Error rejecting the BTN");
+        toast.error("Error rejecting the BTN");
+      }
+    } catch (error) {
+      console.error("Error rejecting the BTN:", error);
+    }
+  };
 
   return (
     <>
@@ -549,33 +575,57 @@ const BillsMaterialHybridEdit = () => {
                                   PO and recommanded for release of payment
                                   subject to satutatory deduction.
                                 </p>
-                                <div className="text-center">
-                                  <button
-                                    type="button"
-                                    className="btn fw-bold btn-primary me-3"
-                                    onClick={() =>
-                                      actionHandlerByDO(
-                                        doForm,
-                                        setDoForm,
-                                        initialData,
-                                        navigate,
-                                        id,
-                                        token
-                                      )
-                                    }
-                                  >
-                                    SUBMIT
-                                  </button>
-                                  <button
-                                    className="btn fw-bold btn-primary"
-                                    onClick={() =>
-                                      navigate(
-                                        `/invoice-and-payment-process/${id}`
-                                      )
-                                    }
-                                  >
-                                    BACK
-                                  </button>
+                                <div className="row">
+                                  <div className="col-6 text-start">
+                                    {/* <button
+                                      type="button"
+                                      className="btn fw-bold btn-primary me-3"
+                                      onClick={() =>
+                                        actionHandlerByDO(
+                                          doForm,
+                                          setDoForm,
+                                          initialData,
+                                          navigate,
+                                          id,
+                                          token
+                                        )
+                                      }
+                                    >
+                                      SUBMIT
+                                    </button> */}
+                                    <DynamicButton
+                                      label="Approved"
+                                      onClick={() =>
+                                        actionHandlerByDO(
+                                          doForm,
+                                          setDoForm,
+                                          initialData,
+                                          navigate,
+                                          id,
+                                          token
+                                        )
+                                      }
+                                      className="btn fw-bold btn-primary me-3"
+                                    />
+                                    <button
+                                      className="btn btn-sm btn-primary me-3"
+                                      onClick={() =>
+                                        navigate(
+                                          `/invoice-and-payment-process/${id}`
+                                        )
+                                      }
+                                    >
+                                      BACK
+                                    </button>
+                                  </div>
+                                  <div className="col-6 text-end">
+                                    <button
+                                      className="btn fw-bold btn-danger"
+                                      onClick={() => rejectBTN()}
+                                    >
+                                      REJECT
+                                    </button>
+                                  </div>
                                 </div>
                               </div>
                             </div>
