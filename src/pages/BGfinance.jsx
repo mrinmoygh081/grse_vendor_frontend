@@ -258,6 +258,7 @@ const BGfinance = () => {
                         <td>{formatDatee(file.bg_date)}</td>
                         <td>{file.bg_ammount}</td>
                         <td>{formatDatee(file.validity_date)}</td>
+                        <td>{formatDatee("")}</td>
                         <td>{formatDatee(file.claim_priod)}</td>
                         <td>{formatDatee(file.bg_recived_date)}</td>
                       </tr>

@@ -8,7 +8,7 @@ import { apiCallBack } from "../utils/fetchAPIs";
 import { checkTypeArr } from "../utils/smallFun";
 import { poHandler } from "../redux/slices/poSlice";
 import { FiSearch } from "react-icons/fi";
-import { formatDate } from "../utils/getDateTimeNow";
+import { FaFilePdf } from "react-icons/fa";
 import SkeletonLoader from "../loader/SkeletonLoader";
 import "jspdf-autotable";
 import * as XLSX from "xlsx";
@@ -40,12 +40,6 @@ const BTNfinance = () => {
     }
   };
 
-  const formatDatee = (timestamp) => {
-    if (!timestamp || timestamp === "0") return "";
-    const date = new Date(Number(timestamp) * 1000);
-    return date.toLocaleDateString("en-US");
-  };
-
   useEffect(() => {
     if (token) createPayment();
   }, [token]);
@@ -57,6 +51,11 @@ const BTNfinance = () => {
     };
     dispatch(poHandler(po));
     navigate(`/invoice-and-payment-process/${poNumber}`);
+  };
+
+  const handleViewInvoice = (invoiceFilename) => {
+    const pdfUrl = `${process.env.REACT_APP_PDF_URL}/submitSDBG/${invoiceFilename}`;
+    window.open(pdfUrl, "_blank");
   };
 
   const filteredData = paymentdata.filter(
@@ -164,19 +163,6 @@ const BTNfinance = () => {
                 </div>
               </div>
             </div>
-            {/* <div className="table-info">
-              {loading ? (
-                <SkeletonLoader />
-              ) : (
-                <tr className="row-count">
-                  <td colSpan={6}>
-                    {" "}
-                    Number of BTN {filteredData.length}{" "}
-                    {filteredData.length === 1 ? "row" : "rows"}
-                  </td>
-                </tr>
-              )}
-            </div> */}
             <div className="table-responsive">
               {loading ? (
                 <SkeletonLoader />
@@ -190,10 +176,12 @@ const BTNfinance = () => {
                     </tr>
                     <tr className="border-0">
                       <th className="min-w-150px">BTN Num</th>
-                      <th className="min-w-150px">PO No</th>
-                      <th className="min-w-150px">Action By</th>
-                      <th className="min-w-150px">Value incl GST</th>
-                      <th className="min-w-150px">Status</th>
+                      <th className="min-w-150px">Vendor Name</th>
+                      <th className="min-w-150px">Vendor Code</th>
+                      <th className="min-w-150px">PO No.</th>
+                      <th className="min-w-150px">Invoice No.</th>
+                      <th className="min-w-150px">Yard No</th>
+                      <th className="min-w-150px">Invoice View Option</th>
                     </tr>
                   </thead>
                   <tbody style={{ maxHeight: "100%" }}>
@@ -210,10 +198,21 @@ const BTNfinance = () => {
                             <u>{file.btn_num}</u>
                           </button>
                         </td>
-                        <td>{file.purchasing_doc_no}</td>
+                        <td>{file.vendor_name}</td>
                         <td>{file.vendor_code}</td>
-                        <td>{file.net_claim_amount}</td>
-                        <td>{file.status}</td>
+                        <td>{file.purchasing_doc_no}</td>
+                        <td>{file.invoice_no}</td>
+                        <td>{file.yard}</td>
+                        <td>
+                          <button
+                            onClick={() =>
+                              handleViewInvoice(file.invoice_filename)
+                            }
+                            className="btn_view"
+                          >
+                            <FaFilePdf /> VIEW
+                          </button>
+                        </td>
                       </tr>
                     ))}
                   </tbody>

@@ -6,6 +6,7 @@ import { poRemoveHandler } from "../redux/slices/poSlice";
 import { reConfirm } from "../utils/reConfirm";
 import { toast } from "react-toastify";
 import { apiCallBack } from "../utils/fetchAPIs";
+import DynamicButton from "../Helpers/DynamicButton";
 
 const SyncComponent = () => {
   const [syncing, setSyncing] = useState(false);
@@ -100,13 +101,18 @@ const SyncComponent = () => {
                   Paste the copied sync_data.zip inside the today's date folder
                 </li>
               </ol>
-              <button
+              {/* <button
                 className="btn btn-primary btn-sm mt-2"
                 onClick={() => handleSync()}
                 disabled={syncing}
               >
                 Sync Data
-              </button>
+              </button> */}
+              <DynamicButton
+                label="Sync Data"
+                onClick={() => handleSync()}
+                className="btn btn-primary btn-sm mt-2"
+              />
             </div>
             <div className="col-md-6">
               <ol>
@@ -117,13 +123,18 @@ const SyncComponent = () => {
                 <li>Refer to the documentation for detailed instructions.</li>
                 <li>Log out and log in again if the sync fails repeatedly.</li>
               </ol>
-              <button
+              {/* <button
                 className="btn btn-secondary btn-sm mt-2"
                 disabled={syncing}
                 onClick={() => handleFileSync()}
               >
                 Sync File
-              </button>
+              </button> */}
+              <DynamicButton
+                label=" Sync File"
+                onClick={() => handleFileSync()}
+                className="btn btn-secondary btn-sm mt-2"
+              />
             </div>
           </div>
           {syncMessage && (
