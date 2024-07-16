@@ -1834,7 +1834,10 @@ const SDBGSub = () => {
                         id="empName"
                         options={empOption}
                         onChange={(val) =>
-                          setAssign({ ...assign, assigned_to: val.value })
+                          setAssign({
+                            ...assign,
+                            assigned_to: val ? val.value : null,
+                          })
                         }
                       />
                     </div>

@@ -43,6 +43,8 @@ const BillsMaterialHybridEdit = () => {
   const [doForm, setDoForm] = useState(initialDOData);
   // const [options, setOptions] = useState([]);
   const [emp, setEmp] = useState(null);
+  const [showRemarks, setShowRemarks] = useState(false);
+  const [remarks, setRemarks] = useState("");
 
   // const calNetClaimAmount = (invoice_value, debit_note, credit_note) => {
   //   if (typeof invoice_value !== "number") {
@@ -279,26 +281,51 @@ const BillsMaterialHybridEdit = () => {
     }
   }, [impDates, data]);
 
+  // const rejectBTN = async () => {
+  //   try {
+  //     const response = await apiCallBack(
+  //       "POST",
+  //       "po/btn/BillsMaterialHybridByDO",
+  //       { btn_num: state, status: "REJECTED" },
+  //       token
+  //     );
+  //     if (response.status) {
+  //       // Show success toast message
+  //       console.log("Rejected successfully");
+  //       toast.success("Rejected successfully");
+  //       // navigate(`/invoice-and-payment-process/${id}`);
+  //     } else {
+  //       // Show error toast message
+  //       console.error("Error rejecting the BTN");
+  //       toast.error("Error rejecting the BTN");
+  //     }
+  //   } catch (error) {
+  //     console.error("Error rejecting the BTN:", error);
+  //   }
+  // };
+
   const rejectBTN = async () => {
     try {
+      let payload = {
+        btn_num: state,
+        status: "REJECTED",
+        rejectedMessage: remarks,
+      };
       const response = await apiCallBack(
         "POST",
         "po/btn/BillsMaterialHybridByDO",
-        { btn_num: state, status: "reject" },
+        payload,
         token
       );
       if (response.status) {
-        // Show success toast message
-        console.log("Rejected successfully");
         toast.success("Rejected successfully");
         navigate(`/invoice-and-payment-process/${id}`);
       } else {
-        // Show error toast message
-        console.error("Error rejecting the BTN");
         toast.error("Error rejecting the BTN");
       }
     } catch (error) {
       console.error("Error rejecting the BTN:", error);
+      toast.error("Error rejecting the BTN");
     }
   };
 
@@ -619,12 +646,36 @@ const BillsMaterialHybridEdit = () => {
                                     </button>
                                   </div>
                                   <div className="col-6 text-end">
-                                    <button
-                                      className="btn fw-bold btn-danger"
-                                      onClick={() => rejectBTN()}
-                                    >
-                                      REJECT
-                                    </button>
+                                    {showRemarks ? (
+                                      <>
+                                        <input
+                                          type="text"
+                                          placeholder="Enter remarks"
+                                          value={remarks}
+                                          onChange={(e) =>
+                                            setRemarks(e.target.value)
+                                          }
+                                          className="form-control mb-2"
+                                        />
+                                        <DynamicButton
+                                          label="Submit Rejection"
+                                          className="btn fw-bold btn-danger"
+                                          onClick={rejectBTN}
+                                        />
+                                      </>
+                                    ) : (
+                                      // <DynamicButton
+                                      //   label="REJECT"
+                                      //   className="btn fw-bold btn-danger"
+                                      //   onClick={() => setShowRemarks(true)}
+                                      // />
+                                      <button
+                                        className="btn fw-bold btn-danger"
+                                        onClick={() => setShowRemarks(true)}
+                                      >
+                                        REJECT
+                                      </button>
+                                    )}
                                   </div>
                                 </div>
                               </div>
