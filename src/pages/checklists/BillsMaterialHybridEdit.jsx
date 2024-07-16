@@ -318,10 +318,10 @@ const BillsMaterialHybridEdit = () => {
         token
       );
       if (response.status) {
-        toast.success("Rejected successfully");
+        toast.success(response.message || "Rejected successfully");
         navigate(`/invoice-and-payment-process/${id}`);
       } else {
-        toast.error("Error rejecting the BTN");
+        toast.error(response.message || "Error rejecting the BTN");
       }
     } catch (error) {
       console.error("Error rejecting the BTN:", error);
