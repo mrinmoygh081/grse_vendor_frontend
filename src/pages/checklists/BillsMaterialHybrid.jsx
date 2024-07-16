@@ -550,13 +550,17 @@ const BillsMaterialHybrid = () => {
                                     <tr>
                                       <td>Gate Entry Acknowledgement no.</td>
                                       <td className="btn_value">
-                                        {form.gate_entry_no}
+                                        {form.gate_entry_no
+                                          ? form.gate_entry_no
+                                          : "NA"}
                                       </td>
                                     </tr>
                                     <tr>
                                       <td>Gate Entry Date</td>
                                       <td className="btn_value">
-                                        {form.gate_entry_date}
+                                        {form.gate_entry_date
+                                          ? form.gate_entry_date
+                                          : "NA"}
                                       </td>
                                     </tr>
                                     <tr>
@@ -572,7 +576,7 @@ const BillsMaterialHybrid = () => {
                                         </p>
                                       </td> */}
                                       <td className="btn_value">
-                                        {form.grn_nos}
+                                        {form.grn_nos ? form.grn_nos : "NA"}
                                       </td>
                                     </tr>
                                     <tr>
@@ -590,13 +594,17 @@ const BillsMaterialHybrid = () => {
                                               )
                                             )}
                                         </p> */}
-                                        {form.icgrn_nos}
+                                        {form.icgrn_nos ? form.icgrn_nos : "NA"}
                                       </td>
                                     </tr>
                                     <tr>
                                       <td>Total ICGRN Value</td>
                                       <td className="btn_value">
-                                        <b>{form.total_price}</b>
+                                        <b>
+                                          {form.total_price
+                                            ? form.total_price
+                                            : "NA"}
+                                        </b>
                                       </td>
                                     </tr>
                                     <tr>
@@ -604,19 +612,21 @@ const BillsMaterialHybrid = () => {
                                         Contractual Drawing submission date
                                       </td>
                                       <td className="btn_value">
-                                        {console.log(form?.c_drawing_date)}
                                         <b>
-                                          {form?.c_drawing_date &&
-                                            formatDate(form?.c_drawing_date)}
+                                          {form?.c_drawing_date
+                                            ? formatDate(form.c_drawing_date)
+                                            : "NA"}
                                         </b>
                                       </td>
                                     </tr>
+
                                     <tr>
                                       <td>Actual Drawing submission date</td>
                                       <td className="btn_value">
                                         <b>
-                                          {form?.a_drawing_date &&
-                                            formatDate(form?.a_drawing_date)}
+                                          {form?.a_drawing_date
+                                            ? formatDate(form.a_drawing_date)
+                                            : "NA"}
                                         </b>
                                       </td>
                                     </tr>
@@ -624,8 +634,9 @@ const BillsMaterialHybrid = () => {
                                       <td>Contractual QAP submission date</td>
                                       <td className="btn_value">
                                         <b>
-                                          {form?.c_qap_date &&
-                                            formatDate(form?.c_qap_date)}
+                                          {form?.c_qap_date
+                                            ? formatDate(form.c_qap_date)
+                                            : "NA"}
                                         </b>
                                       </td>
                                     </tr>
@@ -633,8 +644,9 @@ const BillsMaterialHybrid = () => {
                                       <td>Actual QAP submission date</td>
                                       <td className="btn_value">
                                         <b>
-                                          {form?.a_qap_date &&
-                                            formatDate(form?.a_qap_date)}
+                                          {form?.a_qap_date
+                                            ? formatDate(form.a_qap_date)
+                                            : "NA"}
                                         </b>
                                       </td>
                                     </tr>
@@ -642,8 +654,9 @@ const BillsMaterialHybrid = () => {
                                       <td>Contractual ILMS submission date</td>
                                       <td className="btn_value">
                                         <b>
-                                          {form?.c_ilms_date &&
-                                            formatDate(form?.c_ilms_date)}
+                                          {form?.c_ilms_date
+                                            ? formatDate(form.c_ilms_date)
+                                            : "NA"}
                                         </b>
                                       </td>
                                     </tr>
@@ -651,8 +664,9 @@ const BillsMaterialHybrid = () => {
                                       <td>Actual ILMS submission date</td>
                                       <td className="btn_value">
                                         <b>
-                                          {form?.a_ilms_date &&
-                                            formatDate(form?.a_ilms_date)}
+                                          {form?.a_ilms_date
+                                            ? formatDate(form.a_ilms_date)
+                                            : "NA"}
                                         </b>
                                       </td>
                                     </tr>

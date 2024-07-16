@@ -86,19 +86,21 @@ const BTNMaterialVendorInfo = ({ navigate, id }) => {
                 <tr>
                   <td>Yard Number:</td>
                   <td className="btn_value">
-                    <b className="me-3">{data?.yard}</b>
+                    <b className="me-3">{data?.yard ? data.yard : "NA"}</b>
                   </td>
                 </tr>
                 <tr>
                   <td>Stage:</td>
                   <td className="btn_value">
-                    <b className="me-3">{data?.stage}</b>
+                    <b className="me-3">{data?.stage ? data.stage : "NA"}</b>
                   </td>
                 </tr>
                 <tr>
                   <td>Digitally Signed Invoice:</td>
                   <td className="btn_value">
-                    <b className="me-3">{data?.invoice_no}</b>
+                    <b className="me-3">
+                      {data?.invoice_no ? data.invoice_no : "NA"}
+                    </b>
                     {data?.invoice_filename && (
                       <a
                         href={`${process.env.REACT_APP_PDF_URL}btns/${data?.invoice_filename}`}
@@ -113,13 +115,17 @@ const BTNMaterialVendorInfo = ({ navigate, id }) => {
                 <tr>
                   <td>Basic value:</td>
                   <td className="btn_value">
-                    <b className="me-3">{data?.invoice_value}</b>
+                    <b className="me-3">
+                      {data?.invoice_value ? data.invoice_value : "NA"}
+                    </b>
                   </td>
                 </tr>
                 <tr>
                   <td>E-Invoice :</td>
                   <td className="btn_value">
-                    <b className="me-3">{data?.e_invoice_no}</b>
+                    <b className="me-3">
+                      {data?.e_invoice_no ? data.e_invoice_no : "NA"}
+                    </b>
                     {data?.e_invoice_filename &&
                       data?.e_invoice_filename !== "" && (
                         <a
@@ -136,65 +142,76 @@ const BTNMaterialVendorInfo = ({ navigate, id }) => {
                   <td>Debit/Credit Note:</td>
                   <td className="btn_value">
                     {data?.debit_credit_filename &&
-                      data?.debit_credit_filename !== "" && (
-                        <a
-                          href={`${process.env.REACT_APP_PDF_URL}btns/${data?.debit_credit_filename}`}
-                          target="_blank"
-                          rel="noreferrer"
-                        >
-                          VIEW
-                        </a>
-                      )}
+                    data?.debit_credit_filename !== "" ? (
+                      <a
+                        href={`${process.env.REACT_APP_PDF_URL}btns/${data?.debit_credit_filename}`}
+                        target="_blank"
+                        rel="noreferrer"
+                      >
+                        VIEW
+                      </a>
+                    ) : (
+                      "NA"
+                    )}
                   </td>
                 </tr>
+
                 <tr>
                   <td>Debit Note value:</td>
                   <td className="btn_value">
-                    <b className="me-3">{data?.debit_note}</b>
+                    <b className="me-3">
+                      {data?.debit_note ? data.debit_note : "NA"}
+                    </b>
                   </td>
                 </tr>
                 <tr>
                   <td>Credit Note value:</td>
                   <td className="btn_value">
-                    <b className="me-3">{data?.credit_note}</b>
+                    <b className="me-3">
+                      {data?.credit_note ? data.credit_note : "NA"}
+                    </b>
                   </td>
                 </tr>
                 <tr>
                   <td>Net claim amount:</td>
                   <td className="btn_value">
-                    <b>{data?.net_claim_amount}</b>
+                    <b>
+                      {" "}
+                      {data?.net_claim_amount ? data.net_claim_amount : "NA"}
+                    </b>
                   </td>
                 </tr>
                 <tr>
                   <td>CGST:</td>
                   <td className="btn_value">
-                    <b>{data?.cgst}</b>
+                    <b>{data?.cgst ? data.cgst : "NA"}</b>
                   </td>
                 </tr>
                 <tr>
                   <td>SGST:</td>
                   <td className="btn_value">
-                    <b>{data?.sgst}</b>
+                    <b>{data?.sgst ? data.sgst : "NA"}</b>
                   </td>
                 </tr>
                 <tr>
                   <td>IGST:</td>
                   <td className="btn_value">
-                    <b>{data?.igst}</b>
+                    <b>{data?.igst ? data.igst : "NA"}</b>
                   </td>
                 </tr>
                 <tr>
                   <td>Net Claim Amount with GST:</td>
                   <td className="btn_value">
-                    <b>{data?.net_with_gst}</b>
+                    <b>{data?.net_with_gst ? data.net_with_gst : "NA"}</b>
                   </td>
                 </tr>
                 <tr>
                   <td>Contractual SDBG Submission Date</td>
                   <td className="btn_value">
                     <b className="me-3">
-                      {impDates?.c_sdbg_date &&
-                        formatDate(impDates?.c_sdbg_date)}
+                      {impDates?.c_sdbg_date
+                        ? formatDate(impDates.c_sdbg_date)
+                        : "NA"}
                     </b>
                     {data?.c_sdbg_filename && data?.c_sdbg_filename !== "" && (
                       <a
@@ -211,8 +228,9 @@ const BTNMaterialVendorInfo = ({ navigate, id }) => {
                   <td>Actual SDBG Submission Date</td>
                   <td className="btn_value">
                     <b className="me-3">
-                      {impDates?.a_sdbg_date &&
-                        formatDate(impDates?.a_sdbg_date)}
+                      {impDates?.a_sdbg_date
+                        ? formatDate(impDates.a_sdbg_date)
+                        : "NA"}
                     </b>
                   </td>
                 </tr>
@@ -220,17 +238,20 @@ const BTNMaterialVendorInfo = ({ navigate, id }) => {
                   <td>Demand raised by production/PP&C if any</td>
                   <td className="btn_value">
                     {data?.demand_raise_filename &&
-                      data?.demand_raise_filename !== "" && (
-                        <a
-                          href={`${process.env.REACT_APP_PDF_URL}btns/${data?.demand_raise_filename}`}
-                          target="_blank"
-                          rel="noreferrer"
-                        >
-                          VIEW
-                        </a>
-                      )}
+                    data.demand_raise_filename !== "" ? (
+                      <a
+                        href={`${process.env.REACT_APP_PDF_URL}btns/${data.demand_raise_filename}`}
+                        target="_blank"
+                        rel="noreferrer"
+                      >
+                        VIEW
+                      </a>
+                    ) : (
+                      "NA"
+                    )}
                   </td>
                 </tr>
+
                 <tr>
                   <td>Gate Entry Acknowledgement no.</td>
                   <td className="btn_value">
@@ -241,7 +262,7 @@ const BTNMaterialVendorInfo = ({ navigate, id }) => {
                             {item.acc_no}
                           </span>
                         ))} */}
-                      {form?.gate_entry_no}
+                      {form?.gate_entry_no ? form.gate_entry_no : "NA"}
                     </b>
                   </td>
                 </tr>
@@ -255,7 +276,7 @@ const BTNMaterialVendorInfo = ({ navigate, id }) => {
                             {item.gate_date}
                           </span>
                         ))} */}
-                      {form?.gate_entry_date}
+                      {form?.gate_entry_date ? form.gate_entry_date : "NA"}
                     </b>
                     {data?.get_entry_filename &&
                       data?.get_entry_filename !== "" && (
@@ -280,7 +301,7 @@ const BTNMaterialVendorInfo = ({ navigate, id }) => {
                           </b>
                         );
                       })} */}
-                    <b>{form?.grn_nos}</b>
+                    <b>{form?.grn_nos ? form.grn_nos : "NA"}</b>
                   </td>
                 </tr>
                 <tr>
@@ -290,7 +311,7 @@ const BTNMaterialVendorInfo = ({ navigate, id }) => {
                       data?.icgrn_nos.map((item, i) => {
                         return (
                           <b className="me-3" key={i}>
-                            {item?.icgrn_nos}
+                            {item?.icgrn_nos ? item.icgrn_nos : "NA"}
                           </b>
                         );
                       })}
@@ -299,15 +320,20 @@ const BTNMaterialVendorInfo = ({ navigate, id }) => {
                 <tr>
                   <td>Total ICGRN Value</td>
                   <td className="btn_value">
-                    <b className="me-3">{data?.icgrn_total}</b>
+                    <b className="me-3">
+                      {data?.icgrn_total ? data.icgrn_total : "NA"}
+                    </b>
                   </td>
                 </tr>
                 <tr>
                   <td>Contractual Drawing submission date</td>
                   <td className="btn_value">
                     <b>
-                      {impDates?.c_drawing_date &&
-                        formatDate(impDates?.c_drawing_date)}
+                      {/* {impDates?.c_drawing_date &&
+                        formatDate(impDates?.c_drawing_date)} */}
+                      {impDates?.c_drawing_date
+                        ? formatDate(impDates.c_drawing_date)
+                        : "NA"}
                     </b>
                   </td>
                 </tr>
@@ -315,8 +341,11 @@ const BTNMaterialVendorInfo = ({ navigate, id }) => {
                   <td>Actual Drawing submission date</td>
                   <td className="btn_value">
                     <b>
-                      {impDates?.a_drawing_date &&
-                        formatDate(impDates?.a_drawing_date)}
+                      {/* {impDates?.a_drawing_date &&
+                        formatDate(impDates?.a_drawing_date)} */}
+                      {impDates?.a_drawing_date
+                        ? formatDate(impDates.a_drawing_date)
+                        : "NA"}
                     </b>
                   </td>
                 </tr>
@@ -324,15 +353,21 @@ const BTNMaterialVendorInfo = ({ navigate, id }) => {
                   <td>Contractual QAP submission date</td>
                   <td className="btn_value">
                     <b>
-                      {impDates?.c_qap_date && formatDate(impDates?.c_qap_date)}
+                      {impDates?.c_qap_date
+                        ? formatDate(impDates.c_qap_date)
+                        : "NA"}
                     </b>
                   </td>
                 </tr>
+
                 <tr>
                   <td>Actual QAP submission date</td>
                   <td className="btn_value">
                     <b>
-                      {impDates?.a_qap_date && formatDate(impDates?.a_qap_date)}
+                      {/* {impDates?.a_qap_date && formatDate(impDates?.a_qap_date)} */}
+                      {impDates?.a_qap_date
+                        ? formatDate(impDates.a_qap_date)
+                        : "NA"}
                     </b>
                   </td>
                 </tr>
@@ -340,8 +375,11 @@ const BTNMaterialVendorInfo = ({ navigate, id }) => {
                   <td>Contractual ILMS submission date</td>
                   <td className="btn_value">
                     <b>
-                      {impDates?.c_ilms_date &&
-                        formatDate(impDates?.c_ilms_date)}
+                      {/* {impDates?.c_ilms_date &&
+                        formatDate(impDates?.c_ilms_date)} */}
+                      {impDates?.c_ilms_date
+                        ? formatDate(impDates.c_ilms_date)
+                        : "NA"}
                     </b>
                   </td>
                 </tr>
@@ -349,22 +387,27 @@ const BTNMaterialVendorInfo = ({ navigate, id }) => {
                   <td>Actual ILMS submission date</td>
                   <td className="btn_value">
                     <b>
-                      {impDates?.a_ilms_date &&
-                        formatDate(impDates?.a_ilms_date)}
+                      {/* {impDates?.a_ilms_date &&
+                        formatDate(impDates?.a_ilms_date)} */}
+                      {impDates?.a_ilms_date
+                        ? formatDate(impDates.a_ilms_date)
+                        : "NA"}
                     </b>
                   </td>
                 </tr>
                 <tr>
                   <td>PBG</td>
                   <td className="btn_value">
-                    {data?.pbg_filename && data?.pbg_filename !== "" && (
+                    {data?.pbg_filename && data.pbg_filename !== "" ? (
                       <a
-                        href={`${process.env.REACT_APP_PDF_URL}btns/${data?.pbg_filename}`}
+                        href={`${process.env.REACT_APP_PDF_URL}btns/${data.pbg_filename}`}
                         target="_blank"
                         rel="noreferrer"
                       >
                         VIEW
                       </a>
+                    ) : (
+                      "NA"
                     )}
                   </td>
                 </tr>

@@ -12,6 +12,7 @@ import { FaFilePdf } from "react-icons/fa";
 import SkeletonLoader from "../loader/SkeletonLoader";
 import "jspdf-autotable";
 import * as XLSX from "xlsx";
+import { clrLegend } from "../utils/clrLegend";
 
 const BTNfinance = () => {
   const { id } = useParams();
@@ -188,6 +189,7 @@ const BTNfinance = () => {
                       <th className="min-w-150px">PO No.</th>
                       <th className="min-w-150px">Invoice No.</th>
                       <th className="min-w-150px">Yard No</th>
+                      <th className="min-w-150px">Status</th>
                       <th className="min-w-150px">Invoice View Option</th>
                     </tr>
                   </thead>
@@ -210,6 +212,10 @@ const BTNfinance = () => {
                         <td>{file.purchasing_doc_no}</td>
                         <td>{file.invoice_no}</td>
                         <td>{file.yard}</td>
+                        {/* <td>{file.status}</td> */}
+                        <td className={`${clrLegend(file?.status)} bold`}>
+                          {file.status}
+                        </td>
                         <td>
                           <button
                             onClick={() =>
