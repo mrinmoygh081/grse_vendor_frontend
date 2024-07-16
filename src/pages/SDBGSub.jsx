@@ -760,7 +760,7 @@ const SDBGSub = () => {
                                                         >
                                                           {data?.status}
                                                         </td>
-                                                        <td>
+                                                        {/* <td>
                                                           {isDO &&
                                                             data?.status ===
                                                               APPROVED && (
@@ -788,7 +788,7 @@ const SDBGSub = () => {
                                                                 BG EXT
                                                               </button>
                                                             )}
-                                                        </td>
+                                                        </td> */}
                                                       </tr>
                                                     ))}
                                                 </Fragment>
