@@ -208,10 +208,19 @@ const BTNMaterialVendorInfo = ({ navigate, id }) => {
                 <tr>
                   <td>Contractual SDBG Submission Date</td>
                   <td className="btn_value">
-                    <b className="me-3">
+                    {/* <b className="me-3">
                       {impDates?.c_sdbg_date
                         ? formatDate(impDates.c_sdbg_date)
                         : "NA"}
+                    </b> */}
+                    <b className="me-3">
+                      {impDates?.c_sdbg_date &&
+                        formatDate(impDates?.c_sdbg_date)}
+                      {!impDates?.c_sdbg_date
+                        ? "NA"
+                        : impDates?.c_sdbg_date && !impDates?.a_sdbg_date
+                        ? "(NOT SUBMITTED)"
+                        : ""}
                     </b>
                     {data?.c_sdbg_filename && data?.c_sdbg_filename !== "" && (
                       <a
