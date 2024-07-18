@@ -555,8 +555,12 @@ const SDBGSub = () => {
     // y += 10;
     // pdf.text(20, y, `Vendor City: ${entry?.vendor_city || ""}`);
     // y += 10;
-    // pdf.text(20, y, `Vendor Pincode: ${entry?.vendor_pin_code || ""}`);
-    // y += 10;
+    pdf.text(
+      20,
+      y,
+      `Correct and Confirmed BG in Prescribed Format is being forwarded.`
+    );
+    y += 10;
     return pdf;
   };
 
