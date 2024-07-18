@@ -8,6 +8,7 @@ import { useSelector } from "react-redux";
 import { groupByDocumentType } from "../utils/groupedByReq";
 import moment from "moment";
 import { formatDate } from "../utils/getDateTimeNow";
+import SkeletonLoader from "../loader/SkeletonLoader";
 
 const DisplayStoreActions = () => {
   const navigate = useNavigate();
@@ -17,15 +18,11 @@ const DisplayStoreActions = () => {
   const [groupByPdfData, setGroupByPdfData] = useState([]);
   const [payloadData, setPayloadData] = useState({});
   const [searchQuery, setSearchQuery] = useState("");
+  const [isLoading, setIsLoading] = useState(true); // Set to true initially to show loader
 
   const { id } = useParams();
   const { token } = useSelector((state) => state.auth);
   const { poType } = useSelector((state) => state.selectedPO);
-
-  console.log(
-    allPdfData,
-    "poTypepoTypepoTypepoTypepoTypepoTypepoTypepoTypepoType"
-  );
 
   const getIcgrnData = async () => {
     try {
@@ -76,6 +73,8 @@ const DisplayStoreActions = () => {
       }
     } catch (error) {
       console.error("Error fetching ICGRN list:", error);
+    } finally {
+      setIsLoading(false); // Set loading to false after fetching data
     }
   };
 
@@ -107,7 +106,6 @@ const DisplayStoreActions = () => {
     }
     if (item.documentType === "grn_report") {
       setPayloadData({
-        // matDocNo: item.matDocNo,
         matDocNo: item.matDocNo,
       });
     }
@@ -177,76 +175,81 @@ const DisplayStoreActions = () => {
                                 </tr>
                               </thead>
                               <tbody style={{ maxHeight: "100%" }}>
-                                {Object.keys(filteredPdfData).map(
-                                  (it, index) => {
-                                    let items = filteredPdfData[it];
-                                    return (
-                                      <Fragment key={index}>
-                                        <tr>
-                                          <td
-                                            colSpan={4}
-                                            className="fw-bold p-2"
-                                            style={{ fontSize: "15px" }}
-                                          >
-                                            {doc_Type_Name[it]}
-                                          </td>
-                                        </tr>
-                                        {items &&
-                                          items.map((item, index) => (
-                                            <tr key={index}>
-                                              <td>
-                                                {" "}
-                                                {item.docNo ||
-                                                  item.btn ||
-                                                  item.issueNo ||
-                                                  item.reservationNumber ||
-                                                  item.gateEntryNo ||
-                                                  item.matDocNo ||
-                                                  item.serviceEntryNumber}
-                                              </td>
-                                              <td>
-                                                {/* {item.dateTime &&
-                                                  new Date(
-                                                    item.dateTime
-                                                  ).toLocaleDateString()} */}
-                                                {item.dateTime &&
-                                                  new Date(
-                                                    item.dateTime
-                                                  ).toLocaleDateString(
-                                                    "en-GB",
-                                                    {
-                                                      day: "2-digit",
-                                                      month: "2-digit",
-                                                      year: "numeric",
-                                                    }
-                                                  )}
-
-                                                {/* {item?.dateTime &&
-                                                  formatDate(item?.dateTime)} */}
-                                              </td>
-                                              <td>
-                                                <a
-                                                  href={`${
-                                                    doc_routes[
-                                                      item.documentType
-                                                    ]
-                                                  }/${JSON.stringify(
-                                                    payloadData
-                                                  )}`}
-                                                  target="_blank"
-                                                  rel="noreferrer"
-                                                  onClick={() =>
-                                                    CheckFileHandler(item)
-                                                  }
-                                                >
-                                                  VIEW
-                                                </a>
+                                {isLoading ? (
+                                  <>
+                                    <tr></tr>
+                                    <tr>
+                                      <td colSpan={10}>
+                                        <SkeletonLoader col={3} row={6} />
+                                      </td>
+                                    </tr>
+                                  </>
+                                ) : (
+                                  <>
+                                    {Object.keys(filteredPdfData).map(
+                                      (it, index) => {
+                                        let items = filteredPdfData[it];
+                                        return (
+                                          <Fragment key={index}>
+                                            <tr>
+                                              <td
+                                                colSpan={4}
+                                                className="fw-bold p-2"
+                                                style={{ fontSize: "15px" }}
+                                              >
+                                                {doc_Type_Name[it]}
                                               </td>
                                             </tr>
-                                          ))}
-                                      </Fragment>
-                                    );
-                                  }
+                                            {items &&
+                                              items.map((item, index) => (
+                                                <tr key={index}>
+                                                  <td>
+                                                    {item.docNo ||
+                                                      item.btn ||
+                                                      item.issueNo ||
+                                                      item.reservationNumber ||
+                                                      item.gateEntryNo ||
+                                                      item.matDocNo ||
+                                                      item.serviceEntryNumber}
+                                                  </td>
+                                                  <td>
+                                                    {item.dateTime &&
+                                                      new Date(
+                                                        item.dateTime
+                                                      ).toLocaleDateString(
+                                                        "en-GB",
+                                                        {
+                                                          day: "2-digit",
+                                                          month: "2-digit",
+                                                          year: "numeric",
+                                                        }
+                                                      )}
+                                                  </td>
+                                                  <td>
+                                                    <a
+                                                      href={`${
+                                                        doc_routes[
+                                                          item.documentType
+                                                        ]
+                                                      }/${JSON.stringify(
+                                                        payloadData
+                                                      )}`}
+                                                      target="_blank"
+                                                      rel="noreferrer"
+                                                      onClick={() =>
+                                                        CheckFileHandler(item)
+                                                      }
+                                                    >
+                                                      VIEW
+                                                    </a>
+                                                  </td>
+                                                </tr>
+                                              ))}
+                                          </Fragment>
+                                        );
+                                      }
+                                    )}
+                                  </>
                                 )}
                               </tbody>
                             </table>

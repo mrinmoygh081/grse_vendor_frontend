@@ -1435,10 +1435,13 @@ const SDBGSub = () => {
                   <div className="mb-3">
                     <label className="form-label">BG Date</label>
                     <p>
-                      {formDatainput?.bg_date
+                      {/* {formDatainput?.bg_date
                         ? new Date(
                             formDatainput?.bg_date * 1000
                           ).toLocaleDateString()
+                        : ""} */}
+                      {formDatainput?.bg_date
+                        ? formatDate(formDatainput.bg_date * 1000)
                         : ""}
                     </p>
                   </div>
@@ -1503,10 +1506,13 @@ const SDBGSub = () => {
                   <div className="mb-3">
                     <label className="form-label">Validity Date</label>
                     <p>
-                      {formDatainput?.validity_date
+                      {/* {formDatainput?.validity_date
                         ? new Date(
                             formDatainput?.validity_date * 1000
                           ).toLocaleDateString()
+                        : ""} */}
+                      {formDatainput?.validity_date
+                        ? formatDate(formDatainput?.validity_date * 1000)
                         : ""}
                     </p>
                   </div>

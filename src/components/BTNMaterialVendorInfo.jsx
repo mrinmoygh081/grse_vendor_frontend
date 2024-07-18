@@ -302,22 +302,22 @@ const BTNMaterialVendorInfo = ({ navigate, id }) => {
                 <tr>
                   <td>GRN No</td>
                   <td className="btn_value">
-                    {/* {checkTypeArr(data?.grn_nos) &&
-                      data?.grn_nos.map((item, i) => {
+                    {checkTypeArr(form?.grn_nos) &&
+                      form?.grn_nos.map((item, i) => {
                         return (
                           <b className="me-3" key={i}>
-                            {item?.grn_nos}
+                            {item?.grn_no}
                           </b>
                         );
-                      })} */}
-                    <b>{form?.grn_nos ? form.grn_nos : "NA"}</b>
+                      })}
+                    {/* <b>{form?.grn_nos ? form.grn_nos : "NA"}</b> */}
                   </td>
                 </tr>
                 <tr>
                   <td>ICGRN No</td>
                   <td className="btn_value">
-                    {checkTypeArr(data?.icgrn_nos) &&
-                      data?.icgrn_nos.map((item, i) => {
+                    {checkTypeArr(form?.icgrn_nos) &&
+                      form?.icgrn_nos.map((item, i) => {
                         return (
                           <b className="me-3" key={i}>
                             {item?.icgrn_nos ? item.icgrn_nos : "NA"}

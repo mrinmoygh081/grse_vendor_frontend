@@ -571,36 +571,32 @@ const BillsMaterialHybrid = () => {
                                     </tr>
                                     <tr>
                                       <td>GRN No </td>
-                                      {/* <td className="btn_value">
+                                      <td className="btn_value">
                                         <p>
-                                          {checkTypeArr(data?.grn_nos) &&
-                                            data?.grn_nos.map((item, i) => (
+                                          {checkTypeArr(form?.grn_nos) &&
+                                            form?.grn_nos.map((item, i) => (
                                               <b key={i} className="mx-2">
                                                 {item?.grn_no}
                                               </b>
                                             ))}
                                         </p>
-                                      </td> */}
-                                      <td className="btn_value">
-                                        {form.grn_nos ? form.grn_nos : "NA"}
                                       </td>
+                                      {/* <td className="btn_value">
+                                        {form.grn_nos ? form.grn_nos : "NA"}
+                                      </td> */}
                                     </tr>
                                     <tr>
                                       <td>ICGRN no </td>
                                       <td className="btn_value">
-                                        {/* <p>
-                                          {checkTypeArr(
-                                            data?.icgrn_nos?.icgrn
-                                          ) &&
-                                            data?.icgrn_nos?.icgrn.map(
-                                              (item, i) => (
-                                                <b key={i} className="mx-2">
-                                                  {item?.icgrn_no}
-                                                </b>
-                                              )
-                                            )}
-                                        </p> */}
-                                        {form.icgrn_nos ? form.icgrn_nos : "NA"}
+                                        <p>
+                                          {checkTypeArr(form?.icgrn_nos) &&
+                                            form?.icgrn_nos?.map((item, i) => (
+                                              <b key={i} className="mx-2">
+                                                {item?.icgrn_no}
+                                              </b>
+                                            ))}
+                                        </p>
+                                        {/* {form.icgrn_nos ? form.icgrn_nos : "NA"} */}
                                       </td>
                                     </tr>
                                     <tr>
