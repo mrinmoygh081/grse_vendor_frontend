@@ -81,6 +81,7 @@ const BTNfinance = () => {
         "PO No",
         "Invoice No",
         "Yard No",
+        "Status",
       ],
       ...filteredData.map((file) => [
         file.btn_num,
@@ -89,6 +90,7 @@ const BTNfinance = () => {
         file.purchasing_doc_no,
         file.invoice_no,
         file.yard,
+        file.status,
       ]),
     ];
 
@@ -157,7 +159,7 @@ const BTNfinance = () => {
                       onChange={(e) => setSelectedStatus(e.target.value)}
                     >
                       <option value="All">All</option>
-                      <option value="SUBMITTED">SUBMITTED</option>
+                      <option value="RECEIVED">RECEIVED</option>
                       <option value="SUBMITTED_BY_DO">SUBMITTED_BY_DO</option>
                       <option value="FORWARD_TO_FINANCE">
                         FORWARD_TO_FINANCE
@@ -166,6 +168,9 @@ const BTNfinance = () => {
                         FORWARDED_TO_FI_STAFF
                       </option>
                       <option value="RETURN_TO_DO">RETURN_TO_DO</option>
+                      <option value="REJECTED">REJECTED</option>
+                      <option value="BANK">BANK</option>
+                      <option value="HOLD">HOLD</option>
                     </select>
                   </div>
                 </div>
