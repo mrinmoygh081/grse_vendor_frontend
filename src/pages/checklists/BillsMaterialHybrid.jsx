@@ -503,6 +503,12 @@ const BillsMaterialHybrid = () => {
                                         <b className="me-3">
                                           {form?.c_sdbg_date &&
                                             formatDate(form?.c_sdbg_date)}
+                                          {!form?.c_sdbg_date
+                                            ? "NA"
+                                            : form?.c_sdbg_date &&
+                                              !form?.a_sdbg_date
+                                            ? "(NOT SUBMITTED)"
+                                            : ""}
                                         </b>
                                         {checkTypeArr(data?.sdbg_filename)
                                           ? data?.sdbg_filename.map(
@@ -519,7 +525,7 @@ const BillsMaterialHybrid = () => {
                                                 );
                                               }
                                             )
-                                          : "SDBG NOT SUBMITTED."}
+                                          : ""}
                                       </td>
                                     </tr>
                                     <tr>
