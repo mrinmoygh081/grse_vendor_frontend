@@ -588,11 +588,19 @@ const BillsMaterialHybrid = () => {
                                     <tr>
                                       <td>ICGRN no </td>
                                       <td className="btn_value">
-                                        <p>
+                                        {/* <p>
                                           {checkTypeArr(form?.icgrn_nos) &&
                                             form?.icgrn_nos?.map((item, i) => (
                                               <b key={i} className="mx-2">
-                                                {item?.icgrn_no}
+                                                {item?.icgrn_nos}
+                                              </b>
+                                            ))}
+                                        </p> */}
+                                        <p>
+                                          {checkTypeArr(form?.grn_nos) &&
+                                            form?.grn_nos.map((item, i) => (
+                                              <b key={i} className="mx-2">
+                                                {item?.grn_no}
                                               </b>
                                             ))}
                                         </p>
