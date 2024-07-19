@@ -164,9 +164,7 @@ const BTNfinance = () => {
                       <option value="FORWARD_TO_FINANCE">
                         FORWARD_TO_FINANCE
                       </option>
-                      <option value="FORWARDED_TO_FI_STAFF">
-                        FORWARDED_TO_FI_STAFF
-                      </option>
+                      <option value="RECEIVED">RECEIVED</option>
                       <option value="RETURN_TO_DO">RETURN_TO_DO</option>
                       <option value="REJECTED">REJECTED</option>
                       <option value="BANK">BANK</option>
