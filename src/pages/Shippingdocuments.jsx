@@ -11,6 +11,7 @@ import { REQUESTED, SUBMITTED } from "../constants/BGconstants";
 import { checkTypeArr } from "../utils/smallFun";
 import { formatDate } from "../utils/getDateTimeNow";
 import DynamicButton from "../Helpers/DynamicButton";
+import SkeletonLoader from "../loader/SkeletonLoader";
 
 const Shippingdocuments = () => {
   const inputFileRef = useRef(null);
@@ -25,6 +26,7 @@ const Shippingdocuments = () => {
     remarks: "",
   });
   const [selectedFileType, setSelectedFileType] = useState("");
+  const [isLoading, setIsLoading] = useState(true);
 
   const optionss = [
     {
@@ -78,6 +80,8 @@ const Shippingdocuments = () => {
       }
     } catch (error) {
       console.error("Error fetching drawing list:", error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -194,32 +198,45 @@ const Shippingdocuments = () => {
                                 </tr>
                               </thead>
                               <tbody style={{ maxHeight: "100%" }}>
-                                {checkTypeArr(data) &&
-                                  data.map((item, index) => (
-                                    <tr key={index}>
-                                      <td className="table_center">
-                                        {/* {moment(item.created_at)
-                                          .utc()
-                                          .format("YYYY-MM-DD")} */}
-                                        {item.created_at &&
-                                          formatDate(item.created_at)}
+                                {isLoading ? (
+                                  <>
+                                    <tr></tr>
+                                    <tr>
+                                      <td colSpan={10}>
+                                        <SkeletonLoader col={3} row={6} />
                                       </td>
-                                      <td>
-                                        {item.file_name && (
-                                          <a
-                                            href={`${process.env.REACT_APP_PDF_URL}shippingDocuments/${item.file_name}`}
-                                            target="_blank"
-                                            rel="noreferrer"
-                                          >
-                                            Click Here
-                                          </a>
-                                        )}
-                                      </td>
-                                      <td>{item.file_type_name}</td>
-                                      <td>{item.updated_by}</td>
-                                      <td>{item.remarks}</td>
                                     </tr>
-                                  ))}
+                                  </>
+                                ) : (
+                                  <>
+                                    {checkTypeArr(data) &&
+                                      data.map((item, index) => (
+                                        <tr key={index}>
+                                          <td className="table_center">
+                                            {/* {moment(item.created_at)
+                                              .utc()
+                                              .format("YYYY-MM-DD")} */}
+                                            {item.created_at &&
+                                              formatDate(item.created_at)}
+                                          </td>
+                                          <td>
+                                            {item.file_name && (
+                                              <a
+                                                href={`${process.env.REACT_APP_PDF_URL}shippingDocuments/${item.file_name}`}
+                                                target="_blank"
+                                                rel="noreferrer"
+                                              >
+                                                Click Here
+                                              </a>
+                                            )}
+                                          </td>
+                                          <td>{item.file_type_name}</td>
+                                          <td>{item.updated_by}</td>
+                                          <td>{item.remarks}</td>
+                                        </tr>
+                                      ))}
+                                  </>
+                                )}
                               </tbody>
                             </table>
                           </div>
@@ -313,13 +330,6 @@ const Shippingdocuments = () => {
                 </div>
                 <div className="col-12">
                   <div className="mb-3 d-flex justify-content-between">
-                    {/* <button
-                      onClick={() => shippingdocumentsBtn("SUBMITTED")}
-                      className="btn fw-bold btn-primary"
-                      type="button"
-                    >
-                      SUBMIT
-                    </button> */}
                     <DynamicButton
                       label="SUBMIT"
                       onClick={() => shippingdocumentsBtn("SUBMITTED")}
@@ -371,13 +381,6 @@ const Shippingdocuments = () => {
                 </div>
                 <div className="col-12">
                   <div className="mb-3 d-flex justify-content-between">
-                    {/* <button
-                      onClick={() => shippingdocumentsBtn("REQUESTED")}
-                      className="btn fw-bold btn-primary"
-                      type="button"
-                    >
-                      SUBMIT
-                    </button> */}
                     <DynamicButton
                       label="SUBMIT"
                       onClick={() => shippingdocumentsBtn("REQUESTED")}

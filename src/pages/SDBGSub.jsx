@@ -310,7 +310,7 @@ const SDBGSub = () => {
     }
 
     if (flag === "APPROVED") {
-      payloadRemarks = "APPROVED by Finance Officer";
+      payloadRemarks = "RECEIVED  by Finance Officer";
     } else if (flag === "RETURN_TO_DO") {
       payloadRemarks =
         payloadRemarks ||
