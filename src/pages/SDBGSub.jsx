@@ -38,6 +38,7 @@ import {
   USER_VENDOR,
 } from "../constants/userConstants";
 import SkeletonLoader from "../loader/SkeletonLoader";
+import { FaDownload } from "react-icons/fa";
 
 const SDBGSub = () => {
   const dispatch = useDispatch();
@@ -927,6 +928,12 @@ const SDBGSub = () => {
               <h3 className="card-title align-items-start flex-column">
                 <span className="card-label fw-bold fs-3 mb-1">BG Entry</span>
               </h3>
+              <FaDownload
+                size={32} // Increased the size
+                onClick={handleDownloadPDF}
+                style={{ cursor: "pointer", color: "green" }} // Changed the color to green
+              />
+
               <button
                 className="btn fw-bold btn-danger"
                 onClick={() => {
@@ -1264,12 +1271,12 @@ const SDBGSub = () => {
                           onClick={() => uploadSDBGSave("SAVED")}
                           className="btn-info custom-save-button"
                         />
-                        <button
+                        {/* <button
                           className="btn fw-bold btn-success"
                           onClick={handleDownloadPDF}
                         >
                           Download BG Entry
-                        </button>
+                        </button> */}
                         <button
                           onClick={() =>
                             reConfirm(

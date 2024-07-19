@@ -143,7 +143,9 @@ function GoodsReceiptSlip() {
                             year: "numeric",
                           }
                         )} */}
-                      {formatDate(apiData?.invoiceDate)}
+                      {apiData?.invoiceDate
+                        ? formatDate(apiData.invoiceDate)
+                        : ""}
                     </td>
                   </tr>
                 </tbody>
