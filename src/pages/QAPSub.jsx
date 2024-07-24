@@ -13,6 +13,7 @@ import { SUBMITTED, ACCEPTED } from "../constants/BGconstants";
 import { groupedByRefNo } from "../utils/groupedByReq";
 import { formatDate } from "../utils/getDateTimeNow";
 import DynamicButton from "../Helpers/DynamicButton";
+import SkeletonLoader from "../loader/SkeletonLoader";
 
 const QAPSub = () => {
   const inputRef = useRef(null);
@@ -23,7 +24,7 @@ const QAPSub = () => {
   const [isPopupAssign, setIsPopupAssign] = useState(false);
   const [allqap, setAllqap] = useState([]);
   const [groupedData, setGroupedData] = useState([]);
-
+  const [isLoading, setIsLoading] = useState(false);
   console.log(allqap, "allqap");
   console.log(groupedData, "groupedData");
 
@@ -103,6 +104,7 @@ const QAPSub = () => {
   }, [selectedDept]);
 
   const getData = async () => {
+    setIsLoading(true);
     try {
       const data = await apiCallBack(
         "GET",
@@ -112,9 +114,11 @@ const QAPSub = () => {
       );
       if (data?.status) {
         setAllqap(data?.data);
+        setIsLoading(false);
       }
     } catch (error) {
       console.error("Error fetching drawing list:", error);
+      setIsLoading(false);
     }
   };
 
@@ -399,98 +403,114 @@ const QAPSub = () => {
                                 </tr>
                               </thead>
                               <tbody style={{ maxHeight: "100%" }}>
-                                {Object.keys(groupedData).map((it, index) => {
-                                  let items = groupedData[it];
-                                  const allApproved = items.every(
-                                    (item) => item.status === "ASSIGNED"
-                                  );
-                                  return (
-                                    <Fragment key={index}>
-                                      <tr>
-                                        <td colSpan={8}>
-                                          <b>{it}</b>
-                                        </td>
-                                      </tr>
-                                      {items &&
-                                        items.map((qap, index) => (
-                                          <tr key={index}>
-                                            {/* <td className="table_centerr">
+                                {isLoading ? (
+                                  <>
+                                    <tr></tr>
+                                    <tr>
+                                      <td colSpan={10}>
+                                        <SkeletonLoader col={7} row={6} />
+                                      </td>
+                                    </tr>
+                                  </>
+                                ) : (
+                                  <>
+                                    {Object.keys(groupedData).map(
+                                      (it, index) => {
+                                        let items = groupedData[it];
+                                        const allApproved = items.every(
+                                          (item) => item.status === "ASSIGNED"
+                                        );
+                                        return (
+                                          <Fragment key={index}>
+                                            <tr>
+                                              <td colSpan={8}>
+                                                <b>{it}</b>
+                                              </td>
+                                            </tr>
+                                            {items &&
+                                              items.map((qap, index) => (
+                                                <tr key={index}>
+                                                  {/* <td className="table_centerr">
                                               {qap.reference_no}
                                             </td> */}
 
-                                            <td className="table_center">
-                                              {/* {qap?.created_at &&
+                                                  <td className="table_center">
+                                                    {/* {qap?.created_at &&
                                                 new Date(
                                                   qap?.created_at
                                                 ).toLocaleString()} */}
-                                              <td
-                                                style={{
-                                                  border: "none",
-                                                  background: "none",
-                                                }}
-                                              >
-                                                {formatDate(qap?.created_at)}
-                                              </td>
-                                            </td>
-                                            <td>{qap.action_type}</td>
-                                            <td>
-                                              {qap.file_name && (
-                                                <a
-                                                  href={`${process.env.REACT_APP_PDF_URL}qap/${qap.file_name}`}
-                                                  target="_blank"
-                                                  rel="noreferrer"
-                                                >
-                                                  click Here
-                                                </a>
-                                              )}
-                                            </td>
-                                            <td>
-                                              {qap.supporting_doc &&
-                                                JSON.parse(
-                                                  qap.supporting_doc
-                                                ).map((doc, idx) => (
-                                                  <div key={idx}>
-                                                    <a
-                                                      href={`${process.env.REACT_APP_PDF_URL}qap/supporting_doc/${doc.file_name}`}
-                                                      target="_blank"
-                                                      rel="noreferrer"
-                                                    >
-                                                      click Here
-                                                    </a>
-                                                  </div>
-                                                ))}
-                                            </td>
-                                            <td>{qap.created_by_id}</td>
-                                            <td>{qap.remarks}</td>
-                                            <td
-                                              className={`${clrLegend(
-                                                qap?.status
-                                              )} bold`}
-                                            >
-                                              {qap.status}
-                                            </td>
-                                            <td>
-                                              {(userType === 1 ||
-                                                user?.department_id === 3) &&
-                                                !allApproved && (
-                                                  <td className="border-0">
-                                                    <button
-                                                      onClick={() => {
-                                                        setIsPopup(true);
-                                                        setFormData({
-                                                          ...formData,
-                                                          reference_no: it,
-                                                        });
+                                                    <td
+                                                      style={{
+                                                        border: "none",
+                                                        background: "none",
                                                       }}
-                                                      className="btn fw-bold btn-sm btn-primary me-3"
                                                     >
-                                                      ACTION
-                                                    </button>
+                                                      {formatDate(
+                                                        qap?.created_at
+                                                      )}
+                                                    </td>
                                                   </td>
-                                                )}
-                                            </td>
+                                                  <td>{qap.action_type}</td>
+                                                  <td>
+                                                    {qap.file_name && (
+                                                      <a
+                                                        href={`${process.env.REACT_APP_PDF_URL}qap/${qap.file_name}`}
+                                                        target="_blank"
+                                                        rel="noreferrer"
+                                                      >
+                                                        click Here
+                                                      </a>
+                                                    )}
+                                                  </td>
+                                                  <td>
+                                                    {qap.supporting_doc &&
+                                                      JSON.parse(
+                                                        qap.supporting_doc
+                                                      ).map((doc, idx) => (
+                                                        <div key={idx}>
+                                                          <a
+                                                            href={`${process.env.REACT_APP_PDF_URL}qap/supporting_doc/${doc.file_name}`}
+                                                            target="_blank"
+                                                            rel="noreferrer"
+                                                          >
+                                                            click Here
+                                                          </a>
+                                                        </div>
+                                                      ))}
+                                                  </td>
+                                                  <td>{qap.created_by_id}</td>
+                                                  <td>{qap.remarks}</td>
+                                                  <td
+                                                    className={`${clrLegend(
+                                                      qap?.status
+                                                    )} bold`}
+                                                  >
+                                                    {qap.status}
+                                                  </td>
+                                                  <td>
+                                                    {(userType === 1 ||
+                                                      user?.department_id ===
+                                                        3) &&
+                                                      !allApproved && (
+                                                        <td className="border-0">
+                                                          <button
+                                                            onClick={() => {
+                                                              setIsPopup(true);
+                                                              setFormData({
+                                                                ...formData,
+                                                                reference_no:
+                                                                  it,
+                                                              });
+                                                            }}
+                                                            className="btn fw-bold btn-sm btn-primary me-3"
+                                                          >
+                                                            ACTION
+                                                          </button>
+                                                        </td>
+                                                      )}
+                                                  </td>
 
-                                            {/* { && (
+                                                  {/* { && (
                                               <td>
                                                 {qap?.status === SUBMITTED && (
                                                   <button
@@ -505,11 +525,14 @@ const QAPSub = () => {
                                                 )}
                                               </td>
                                             )} */}
-                                          </tr>
-                                        ))}
-                                    </Fragment>
-                                  );
-                                })}
+                                                </tr>
+                                              ))}
+                                          </Fragment>
+                                        );
+                                      }
+                                    )}
+                                  </>
+                                )}
                               </tbody>
                             </table>
                           </div>

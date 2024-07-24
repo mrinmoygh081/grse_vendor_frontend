@@ -207,69 +207,76 @@ const BGfinance = () => {
               )}
             </div> */}
             <div className="table-responsive">
-              {loading ? (
-                <SkeletonLoader />
-              ) : checkTypeArr(filteredData) && filteredData.length > 0 ? (
-                <table className="table table-striped table-bordered table_height">
-                  <thead>
-                    <tr className="row-count">
-                      <td colSpan={11} style={{ textAlign: "left" }}>
-                        {" "}
-                        Number of BG {filteredData.length}{" "}
-                        {filteredData.length === 1 ? "" : ""}
-                      </td>
-                    </tr>
-                    <tr className="border-0">
-                      <th className="min-w-150px">BG Ref No</th>
-                      <th className="min-w-150px">BG File No</th>
-                      <th className="min-w-150px">Confirmation</th>
-                      <th className="min-w-150px">Status</th>
-                      <th className="min-w-150px">PO No</th>
-                      <th className="min-w-150px">Bank Guarantee No</th>
-                      <th className="min-w-150px">BG Date</th>
-                      <th className="min-w-150px">BG Amount</th>
-                      <th className="min-w-150px">Validity Date</th>
-                      <th className="min-w-150px">Claim Date</th>
-                      <th className="min-w-150px">BG Received Date</th>
-                    </tr>
-                  </thead>
-                  <tbody style={{ maxHeight: "100%" }}>
-                    {filteredData.map((file, index) => (
-                      <tr key={index}>
-                        <td>
-                          <button
-                            onClick={() =>
-                              handleRowClick(file.purchasing_doc_no)
-                            }
-                            className="btn_simple"
-                          >
-                            <u>{file.reference_no}</u>
-                          </button>
+              <table className="table table-striped table-bordered table_height">
+                <thead>
+                  <tr className="row-count">
+                    <td colSpan={11} style={{ textAlign: "left" }}>
+                      {" "}
+                      Number of BG {filteredData.length}{" "}
+                      {filteredData.length === 1 ? "" : ""}
+                    </td>
+                  </tr>
+                  <tr className="border-0">
+                    <th className="min-w-150px">BG Ref No</th>
+                    <th className="min-w-150px">BG File No</th>
+                    <th className="min-w-150px">Confirmation</th>
+                    <th className="min-w-150px">Status</th>
+                    <th className="min-w-150px">PO No</th>
+                    <th className="min-w-150px">Bank Guarantee No</th>
+                    <th className="min-w-150px">BG Date</th>
+                    <th className="min-w-150px">BG Amount</th>
+                    <th className="min-w-150px">Validity Date</th>
+                    <th className="min-w-150px">Claim Date</th>
+                    <th className="min-w-150px">BG Received Date</th>
+                  </tr>
+                </thead>
+                <tbody style={{ maxHeight: "100%" }}>
+                  {loading ? (
+                    <>
+                      <tr></tr>
+                      <tr>
+                        <td colSpan={10}>
+                          <SkeletonLoader col={11} row={6} />
                         </td>
-                        <td>{file.bg_file_no}</td>
-                        <td>
-                          {(file.status === FORWARD_TO_FINANCE ||
-                            file.status === HOLD) &&
-                            "NO"}
-                          {file.status === APPROVED && "YES"}
-                        </td>
-                        <td className={`${clrLegend(file?.status)} bold`}>
-                          {file.status}
-                        </td>
-                        <td>{file.purchasing_doc_no}</td>
-                        <td>{file.bg_no}</td>
-                        <td>{formatDatee(file.bg_date)}</td>
-                        <td>{file.bg_ammount}</td>
-                        <td>{formatDatee(file.validity_date)}</td>
-                        <td>{formatDatee(file.claim_priod)}</td>
-                        <td>{formatDatee(file.bg_recived_date)}</td>
                       </tr>
-                    ))}
-                  </tbody>
-                </table>
-              ) : (
-                <div className="no-data-found">No Data Found</div>
-              )}
+                    </>
+                  ) : (
+                    <>
+                      {filteredData.map((file, index) => (
+                        <tr key={index}>
+                          <td>
+                            <button
+                              onClick={() =>
+                                handleRowClick(file.purchasing_doc_no)
+                              }
+                              className="btn_simple"
+                            >
+                              <u>{file.reference_no}</u>
+                            </button>
+                          </td>
+                          <td>{file.bg_file_no}</td>
+                          <td>
+                            {(file.status === FORWARD_TO_FINANCE ||
+                              file.status === HOLD) &&
+                              "NO"}
+                            {file.status === APPROVED && "YES"}
+                          </td>
+                          <td className={`${clrLegend(file?.status)} bold`}>
+                            {file.status}
+                          </td>
+                          <td>{file.purchasing_doc_no}</td>
+                          <td>{file.bg_no}</td>
+                          <td>{formatDatee(file.bg_date)}</td>
+                          <td>{file.bg_ammount}</td>
+                          <td>{formatDatee(file.validity_date)}</td>
+                          <td>{formatDatee(file.claim_priod)}</td>
+                          <td>{formatDatee(file.bg_recived_date)}</td>
+                        </tr>
+                      ))}
+                    </>
+                  )}
+                </tbody>
+              </table>
             </div>
           </div>
           <Footer />

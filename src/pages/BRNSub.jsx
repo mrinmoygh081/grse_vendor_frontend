@@ -9,6 +9,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import { useSelector } from "react-redux";
 import { apiCallBack } from "../utils/fetchAPIs";
 import { toast } from "react-toastify";
+import DynamicButton from "../Helpers/DynamicButton";
 
 const BRNSub = () => {
   const [isPopup, setIsPopup] = useState(false);
@@ -197,13 +198,18 @@ const BRNSub = () => {
                         ></textarea>
                       </div>
                       <div className="col-12 mt-3">
-                        <button
+                        {/* <button
                           type="button"
                           onClick={handleSubmit}
                           className="btn btn-primary"
                         >
                           SUBMIT
-                        </button>
+                        </button> */}
+                        <DynamicButton
+                          label="SUBMIT"
+                          className="btn btn-primary"
+                          onClick={handleSubmit}
+                        />
                       </div>
                     </div>
                   </div>

@@ -12,6 +12,7 @@ import { clrLegend } from "../utils/clrLegend";
 import { formatDate } from "../utils/getDateTimeNow";
 import { groupedByIlms } from "../utils/groupedByReq";
 import DynamicButton from "../Helpers/DynamicButton";
+import SkeletonLoader from "../loader/SkeletonLoader";
 
 const IlmsSub = () => {
   const [isPopup, setIsPopup] = useState(false);
@@ -22,6 +23,7 @@ const IlmsSub = () => {
     remarks: "",
   });
   const [groupedIlms, setGroupeIlms] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
   const [selectedActionTypeName, setSelectedActionTypeName] = useState("");
   const { id } = useParams();
   const { user, token, userType } = useSelector((state) => state.auth);
@@ -29,6 +31,7 @@ const IlmsSub = () => {
   console.log(user, "useruser");
 
   const getData = async () => {
+    setIsLoading(true);
     try {
       const data = await apiCallBack(
         "GET",
@@ -39,9 +42,11 @@ const IlmsSub = () => {
       console.log(data);
       if (data?.status) {
         setAllData(data?.data);
+        setIsLoading(false);
       }
     } catch (error) {
       console.error("Error fetching drawing list:", error);
+      setIsLoading(false);
     }
   };
 
@@ -150,68 +155,84 @@ const IlmsSub = () => {
                                 </tr>
                               </thead>
                               <tbody style={{ maxHeight: "100%" }}>
-                                {Object.keys(groupedIlms).map((it, index) => {
-                                  let items = groupedIlms[it];
-                                  let firstItem = items[0];
-                                  return (
-                                    <Fragment key={index}>
-                                      <tr>
-                                        <td colSpan={5}>
-                                          <b>{it}</b>
-                                        </td>
-                                        {user.department_id === 2 &&
-                                          firstItem.status === "SUBMITTED" && (
-                                            <td>
-                                              <button
-                                                onClick={() => {
-                                                  setIsPopup(true);
-                                                  setreferenceNo(
-                                                    firstItem.reference_no
-                                                  );
-                                                }}
-                                                className="btn fw-bold btn-primary mx-3"
-                                              >
-                                                ACTION
-                                              </button>
-                                            </td>
-                                          )}
-                                      </tr>
-                                      {items.map((item, i) => (
-                                        <tr key={i}>
-                                          <td
-                                            style={{
-                                              border: "none",
-                                              background: "none",
-                                            }}
-                                          >
-                                            {formatDate(item?.created_at)}
-                                          </td>
-                                          <td>
-                                            {item.file_name && (
-                                              <a
-                                                href={`${process.env.REACT_APP_PDF_URL}submitILMS/${item.file_name}`}
-                                                target="_blank"
-                                                rel="noreferrer"
-                                              >
-                                                Click Here
-                                              </a>
-                                            )}
-                                          </td>
-                                          <td>{item?.created_by_id}</td>
-                                          <td>{item?.remarks}</td>
-                                          <td
-                                            className={`${clrLegend(
-                                              item?.status
-                                            )} bold`}
-                                          >
-                                            {item.status}
-                                          </td>
-                                          <td></td>
-                                        </tr>
-                                      ))}
-                                    </Fragment>
-                                  );
-                                })}
+                                {isLoading ? (
+                                  <>
+                                    <tr></tr>
+                                    <tr>
+                                      <td colSpan={10}>
+                                        <SkeletonLoader col={5} row={6} />
+                                      </td>
+                                    </tr>
+                                  </>
+                                ) : (
+                                  <>
+                                    {Object.keys(groupedIlms).map(
+                                      (it, index) => {
+                                        let items = groupedIlms[it];
+                                        let firstItem = items[0];
+                                        return (
+                                          <Fragment key={index}>
+                                            <tr>
+                                              <td colSpan={5}>
+                                                <b>{it}</b>
+                                              </td>
+                                              {user.department_id === 2 &&
+                                                firstItem.status ===
+                                                  "SUBMITTED" && (
+                                                  <td>
+                                                    <button
+                                                      onClick={() => {
+                                                        setIsPopup(true);
+                                                        setreferenceNo(
+                                                          firstItem.reference_no
+                                                        );
+                                                      }}
+                                                      className="btn fw-bold btn-primary mx-3"
+                                                    >
+                                                      ACTION
+                                                    </button>
+                                                  </td>
+                                                )}
+                                            </tr>
+                                            {items.map((item, i) => (
+                                              <tr key={i}>
+                                                <td
+                                                  style={{
+                                                    border: "none",
+                                                    background: "none",
+                                                  }}
+                                                >
+                                                  {formatDate(item?.created_at)}
+                                                </td>
+                                                <td>
+                                                  {item.file_name && (
+                                                    <a
+                                                      href={`${process.env.REACT_APP_PDF_URL}submitILMS/${item.file_name}`}
+                                                      target="_blank"
+                                                      rel="noreferrer"
+                                                    >
+                                                      Click Here
+                                                    </a>
+                                                  )}
+                                                </td>
+                                                <td>{item?.created_by_id}</td>
+                                                <td>{item?.remarks}</td>
+                                                <td
+                                                  className={`${clrLegend(
+                                                    item?.status
+                                                  )} bold`}
+                                                >
+                                                  {item.status}
+                                                </td>
+                                                <td></td>
+                                              </tr>
+                                            ))}
+                                          </Fragment>
+                                        );
+                                      }
+                                    )}
+                                  </>
+                                )}
                               </tbody>
                             </table>
                           </div>

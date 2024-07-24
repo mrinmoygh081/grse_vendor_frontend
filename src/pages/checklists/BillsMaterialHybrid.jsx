@@ -33,6 +33,7 @@ const BillsMaterialHybrid = () => {
   const [invType, setInvType] = useState({
     inv_type: "",
   });
+  const [loading, setLoading] = useState(true);
 
   const calNetClaimAmount = (invoice_value, debit_note, credit_note) => {
     invoice_value = parseFloat(invoice_value) || 0;
@@ -73,6 +74,7 @@ const BillsMaterialHybrid = () => {
     }
   }, [form?.net_claim_amount, form?.cgst, form?.sgst, form?.igst]);
   const getData = async () => {
+    setLoading(true);
     try {
       const d = await apiCallBack(
         "GET",
@@ -83,9 +85,11 @@ const BillsMaterialHybrid = () => {
       if (d?.status) {
         console.log(d);
         setData(d?.data);
+        setLoading(false);
       }
     } catch (error) {
       console.error("Error fetching WDC list:", error);
+      setLoading(false);
     }
   };
 
@@ -109,23 +113,51 @@ const BillsMaterialHybrid = () => {
     }
   }, [data]);
 
+  // const getGrnIcgrnHandler = async () => {
+  //   let inv_no = form.invoice_no || form.e_invoice_no;
+  //   console.log("inv_no", inv_no);
+  //   let response = await getGrnIcgrnByInvoice(id, inv_no, token);
+  //   if (response?.status) {
+  //     const { gate_entry_no, grn_nos, icgrn_nos, invoice_date, total_price } =
+  //       response.data;
+  //     setForm({
+  //       ...form,
+  //       gate_entry_no: gate_entry_no,
+  //       gate_entry_date: formatDate(invoice_date),
+  //       grn_nos: grn_nos,
+  //       icgrn_nos: icgrn_nos,
+  //       total_price: total_price,
+  //     });
+  //   } else {
+  //     toast.warn(response.message);
+  //   }
+  // };
+
   const getGrnIcgrnHandler = async () => {
-    let inv_no = form.invoice_no || form.e_invoice_no;
-    console.log("inv_no", inv_no);
-    let response = await getGrnIcgrnByInvoice(id, inv_no, token);
-    if (response?.status) {
-      const { gate_entry_no, grn_nos, icgrn_nos, invoice_date, total_price } =
-        response.data;
-      setForm({
-        ...form,
-        gate_entry_no: gate_entry_no,
-        gate_entry_date: formatDate(invoice_date),
-        grn_nos: grn_nos,
-        icgrn_nos: icgrn_nos,
-        total_price: total_price,
-      });
-    } else {
-      toast.warn(response.message);
+    try {
+      let inv_no = form.invoice_no || form.e_invoice_no;
+      console.log("inv_no", inv_no);
+      let response = await getGrnIcgrnByInvoice(id, inv_no, token);
+
+      if (response && response.status && response.data) {
+        const { gate_entry_no, grn_nos, icgrn_nos, invoice_date, total_price } =
+          response.data;
+        setForm({
+          ...form,
+          gate_entry_no: gate_entry_no,
+          gate_entry_date: formatDate(invoice_date),
+          grn_nos: grn_nos,
+          icgrn_nos: icgrn_nos,
+          total_price: total_price,
+        });
+      } else if (response && response.message) {
+        toast.warn(response.message);
+      } else {
+        toast.warn("Unexpected response structure");
+      }
+    } catch (error) {
+      console.error("Error fetching data", error);
+      toast.error("Error fetching data");
     }
   };
 
@@ -285,13 +317,18 @@ const BillsMaterialHybrid = () => {
                                               }
                                               accept=".pdf"
                                             />
-                                            <button
+                                            {/* <button
                                               type="button"
                                               className="btn btn-primary btn-sm m-4"
                                               onClick={getGrnIcgrnHandler}
                                             >
                                               CHECK
-                                            </button>
+                                            </button> */}
+                                            <DynamicButton
+                                              label="CHECK"
+                                              onClick={getGrnIcgrnHandler}
+                                              className="btn btn-primary btn-sm m-4"
+                                            />
                                           </div>
                                           {/* <p>
                                             In case of ink -signed invoice
@@ -325,13 +362,18 @@ const BillsMaterialHybrid = () => {
                                             }
                                             accept=".pdf"
                                           />
-                                          <button
+                                          {/* <button
                                             type="button"
                                             className="btn btn-primary btn-sm m-4"
                                             onClick={getGrnIcgrnHandler}
                                           >
                                             CHECK
-                                          </button>
+                                          </button> */}
+                                          <DynamicButton
+                                            label="CHECK"
+                                            onClick={getGrnIcgrnHandler}
+                                            className="btn btn-primary btn-sm m-4"
+                                          />
                                         </td>
                                       </tr>
                                     )}
@@ -497,7 +539,7 @@ const BillsMaterialHybrid = () => {
                                         <b>{form?.net_with_gst}</b>
                                       </td>
                                     </tr>
-                                    <tr>
+                                    {/* <tr>
                                       <td>Contractual SDBG Submission Date</td>
                                       <td className="btn_value">
                                         <b className="me-3">
@@ -524,6 +566,39 @@ const BillsMaterialHybrid = () => {
                                                   </a>
                                                 );
                                               }
+                                            )
+                                          : ""}
+                                      </td>
+                                    </tr> */}
+                                    <tr>
+                                      <td>Contractual SDBG Submission Date</td>
+                                      <td className="btn_value">
+                                        <b className="me-3">
+                                          {loading
+                                            ? "Loading..."
+                                            : form?.c_sdbg_date
+                                            ? formatDate(form?.c_sdbg_date)
+                                            : "NA"}
+                                          {!form?.c_sdbg_date
+                                            ? ""
+                                            : form?.c_sdbg_date &&
+                                              !form?.a_sdbg_date
+                                            ? " (NOT SUBMITTED)"
+                                            : ""}
+                                        </b>
+                                        {!loading &&
+                                        checkTypeArr(data?.sdbg_filename)
+                                          ? data?.sdbg_filename.map(
+                                              (item, i) => (
+                                                <a
+                                                  href={`${process.env.REACT_APP_PDF_URL}submitSDBG/${item?.file_name}`}
+                                                  target="_blank"
+                                                  rel="noreferrer"
+                                                  key={i}
+                                                >
+                                                  VIEW
+                                                </a>
+                                              )
                                             )
                                           : ""}
                                       </td>
@@ -556,11 +631,21 @@ const BillsMaterialHybrid = () => {
                                     <tr>
                                       <td>Gate Entry Acknowledgement no.</td>
                                       <td className="btn_value">
-                                        {form.gate_entry_no
+                                        {loading
+                                          ? "Loading..."
+                                          : form.gate_entry_no
                                           ? form.gate_entry_no
                                           : "NA"}
                                       </td>
                                     </tr>
+                                    {/* <tr>
+                                      <td>Gate Entry Acknowledgement no.</td>
+                                      <td className="btn_value">
+                                        {form.gate_entry_no
+                                          ? form.gate_entry_no
+                                          : "NA"}
+                                      </td>
+                                    </tr> */}
                                     <tr>
                                       <td>Gate Entry Date</td>
                                       <td className="btn_value">

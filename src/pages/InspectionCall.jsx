@@ -9,6 +9,7 @@ import { toast } from "react-toastify";
 import { checkTypeArr } from "../utils/smallFun";
 import { formatDate } from "../utils/getDateTimeNow";
 import DynamicButton from "../Helpers/DynamicButton";
+import SkeletonLoader from "../loader/SkeletonLoader";
 
 const InspectionCall = () => {
   const [isPopup, setIsPopup] = useState(false);
@@ -22,8 +23,10 @@ const InspectionCall = () => {
     InspectioncallFile: null,
     remarks: "",
   });
+  const [isLoading, setIsLoading] = useState(false);
 
   const getData = async () => {
+    setIsLoading(true);
     try {
       const data = await apiCallBack(
         "GET",
@@ -33,9 +36,11 @@ const InspectionCall = () => {
       );
       if (data?.status) {
         setInspectioncall(data?.data);
+        setIsLoading(false);
       }
     } catch (error) {
       console.error("Error fetching drawing list:", error);
+      setIsLoading(false);
     }
   };
 
@@ -121,36 +126,49 @@ const InspectionCall = () => {
                                 </tr>
                               </thead>
                               <tbody style={{ maxHeight: "100%" }}>
-                                {checkTypeArr(inspectioncall) &&
-                                  inspectioncall.map((inspection) => (
-                                    <tr key={inspection.id}>
-                                      <td className="table_center">
-                                        {/* {inspection?.created_at &&
+                                {isLoading ? (
+                                  <>
+                                    <tr></tr>
+                                    <tr>
+                                      <td colSpan={10}>
+                                        <SkeletonLoader col={5} row={6} />
+                                      </td>
+                                    </tr>
+                                  </>
+                                ) : (
+                                  <>
+                                    {checkTypeArr(inspectioncall) &&
+                                      inspectioncall.map((inspection) => (
+                                        <tr key={inspection.id}>
+                                          <td className="table_center">
+                                            {/* {inspection?.created_at &&
                                           new Date(
                                             inspection?.created_at
                                           ).toLocaleString()} */}
-                                        {inspection.created_at &&
-                                          formatDate(inspection.created_at)}
-                                      </td>
-                                      <td>
-                                        {inspection.file_name && (
-                                          <a
-                                            href={`${process.env.REACT_APP_PDF_URL}inspectionCallLetter/${inspection.file_name}`}
-                                            target="_blank"
-                                            rel="noreferrer"
-                                          >
-                                            Click Here
-                                          </a>
-                                        )}
-                                      </td>
-                                      <td>
-                                        {inspection.updated_by} (
-                                        {inspection.created_by_id})
-                                      </td>
-                                      <td>{inspection.action_type}</td>
-                                      <td>{inspection.remarks}</td>
-                                    </tr>
-                                  ))}
+                                            {inspection.created_at &&
+                                              formatDate(inspection.created_at)}
+                                          </td>
+                                          <td>
+                                            {inspection.file_name && (
+                                              <a
+                                                href={`${process.env.REACT_APP_PDF_URL}inspectionCallLetter/${inspection.file_name}`}
+                                                target="_blank"
+                                                rel="noreferrer"
+                                              >
+                                                Click Here
+                                              </a>
+                                            )}
+                                          </td>
+                                          <td>
+                                            {inspection.updated_by} (
+                                            {inspection.created_by_id})
+                                          </td>
+                                          <td>{inspection.action_type}</td>
+                                          <td>{inspection.remarks}</td>
+                                        </tr>
+                                      ))}
+                                  </>
+                                )}
                               </tbody>
                             </table>
                           </div>

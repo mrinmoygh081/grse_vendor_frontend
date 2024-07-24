@@ -10,6 +10,7 @@ import moment from "moment";
 import { checkTypeArr } from "../utils/smallFun";
 import { formatDate } from "../utils/getDateTimeNow";
 import DynamicButton from "../Helpers/DynamicButton";
+import SkeletonLoader from "../loader/SkeletonLoader";
 
 const Inspectionreleasenote = () => {
   const inputFileRef = useRef(null);
@@ -23,8 +24,10 @@ const Inspectionreleasenote = () => {
     dataFile: null,
     remarks: "",
   });
+  const [isLoading, setIsLoading] = useState(false);
 
   const getData = async () => {
+    setIsLoading(true);
     try {
       const data = await apiCallBack(
         "GET",
@@ -34,9 +37,11 @@ const Inspectionreleasenote = () => {
       );
       if (data?.status) {
         setData(data?.data);
+        setIsLoading(false);
       }
     } catch (error) {
       console.error("Error fetching drawing list:", error);
+      setIsLoading(false);
     }
   };
 
@@ -119,37 +124,50 @@ const Inspectionreleasenote = () => {
                                 </tr>
                               </thead>
                               <tbody style={{ maxHeight: "100%" }}>
-                                {checkTypeArr(data) &&
-                                  data.map((item, index) => {
-                                    return (
-                                      <tr key={index}>
-                                        <td className="table_center">
-                                          {/* {moment(item.created_at)
+                                {isLoading ? (
+                                  <>
+                                    <tr></tr>
+                                    <tr>
+                                      <td colSpan={10}>
+                                        <SkeletonLoader col={4} row={6} />
+                                      </td>
+                                    </tr>
+                                  </>
+                                ) : (
+                                  <>
+                                    {checkTypeArr(data) &&
+                                      data.map((item, index) => {
+                                        return (
+                                          <tr key={index}>
+                                            <td className="table_center">
+                                              {/* {moment(item.created_at)
                                             .utc()
                                             .format("DD/MM/YY (HH:mm)")} */}
-                                          {item.created_at &&
-                                            formatDate(item.created_at)}
-                                        </td>
-                                        <td>
-                                          {item.file_name && (
-                                            <a
-                                              href={`${process.env.REACT_APP_PDF_URL}submitIRN/${item.file_name}`}
-                                              target="_blank"
-                                              rel="noreferrer"
-                                            >
-                                              Click Here
-                                            </a>
-                                          )}
-                                        </td>
-                                        <td>
-                                          {item.updated_by} (
-                                          {item.created_by_id})
-                                        </td>
-                                        <td>{item.action_type}</td>
-                                        <td>{item.remarks}</td>
-                                      </tr>
-                                    );
-                                  })}
+                                              {item.created_at &&
+                                                formatDate(item.created_at)}
+                                            </td>
+                                            <td>
+                                              {item.file_name && (
+                                                <a
+                                                  href={`${process.env.REACT_APP_PDF_URL}submitIRN/${item.file_name}`}
+                                                  target="_blank"
+                                                  rel="noreferrer"
+                                                >
+                                                  Click Here
+                                                </a>
+                                              )}
+                                            </td>
+                                            <td>
+                                              {item.updated_by} (
+                                              {item.created_by_id})
+                                            </td>
+                                            <td>{item.action_type}</td>
+                                            <td>{item.remarks}</td>
+                                          </tr>
+                                        );
+                                      })}
+                                  </>
+                                )}
                               </tbody>
                             </table>
                           </div>

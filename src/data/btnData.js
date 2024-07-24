@@ -42,10 +42,13 @@ export const initialDOData = {
   drg_penalty: "",
   qap_penalty: "",
   ilms_penalty: "",
+  o_ret_per: "0",
   other_deduction: "",
   total_deduction: "",
   net_payable_amount: "",
   assign_to: "",
+  max_ld: "5",
+  max_penalty: "1",
 };
 
 export const activityOptions = [

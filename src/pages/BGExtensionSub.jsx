@@ -232,13 +232,6 @@ const BGExtensionSub = () => {
                                   aria-label="End Date"
                                 />
                               </div>
-                              {/* <button
-                                className="btn fw-bold btn-sm btn-primary me-2"
-                                onClick={() => handleSearch(startDate, endDate)}
-                                aria-label="Search"
-                              >
-                                SEARCH
-                              </button> */}
                               <DynamicButton
                                 label="SEARCH"
                                 onClick={() => handleSearch(startDate, endDate)}
@@ -415,14 +408,6 @@ const BGExtensionSub = () => {
                 </div>
                 <div className="col-12">
                   <div className="mb-3">
-                    {/* <button
-                      type="button"
-                      className="btn fw-bold btn-primary"
-                      onClick={handlePopupSave}
-                      aria-label="Save Remarks"
-                    >
-                      submit
-                    </button> */}
                     <DynamicButton
                       label="submit"
                       onClick={handlePopupSave}

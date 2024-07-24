@@ -34,7 +34,6 @@ const BillsMaterialHybridEdit = () => {
   const { user, token } = useSelector((state) => state.auth);
   const { id } = useParams();
   const { state } = useLocation();
-  console.log(state, "state btn");
 
   const [impDates, setImpDates] = useState(null);
   const [data, setData] = useState(null);
@@ -112,31 +111,37 @@ const BillsMaterialHybridEdit = () => {
         doForm?.drg_penalty,
         doForm?.qap_penalty,
         doForm?.ilms_penalty,
-        doForm?.other_deduction,
+        doForm?.o_ret_per,
         doForm?.p_estimate_amount
       );
-      console.log("net_pay", report?.net_pay);
+      // console.log("net_pay", report?.net_pay);
       setDoForm({
         ...doForm,
         total_deduction: report?.deduct,
         net_payable_amount: report?.net_pay,
+        other_deduction: report?.other,
       });
     }
   }, [
     data?.icgrn_total,
     doForm?.ld_amount,
-    doForm?.other_deduction,
+    doForm?.o_ret_per,
     doForm?.p_estimate_amount,
   ]);
 
   const getEmp = async () => {
     try {
-      const data = await apiCallBack("GET", `po/wdc/grseEmpList`, null, token);
+      const data = await apiCallBack(
+        "GET",
+        `po/btn/getFinanceEmpList`,
+        null,
+        token
+      );
       if (data?.status) {
         let options = data.data.map((item, index) => {
           return {
-            value: item.code,
-            label: `${item.name} (${item.code})`,
+            value: item.usercode,
+            label: `${item.empname} (${item.usercode})`,
           };
         });
         setEmp(options);
@@ -148,7 +153,6 @@ const BillsMaterialHybridEdit = () => {
 
   const getGateEntryInfo = async () => {
     let response = await getGrnIcgrnByInvoice(id, data.invoice_no, token);
-    console.log(response, "bikky7788888");
     if (response.status && response?.data?.invoice_date) {
       const invoice_date = formatDashedDate(response?.data?.invoice_date);
       setDoForm({
@@ -167,32 +171,28 @@ const BillsMaterialHybridEdit = () => {
     }
   }, [data?.invoice_no]);
 
-  // useEffect(() => {
-  //   const { contractual_ld, ld_ge_date } = doForm;
-  //   if (contractual_ld && ld_ge_date && data?.icgrn_nos) {
-  //     let p_amt = calculatePenalty(
-  //       contractual_ld,
-  //       ld_ge_date,
-  //       data?.icgrn_nos,
-  //       0.5,
-  //       5
-  //     );
-  //     console.log("p_amt", p_amt, contractual_ld, ld_ge_date, data?.icgrn_nos);
-  //     setDoForm({ ...doForm, ld_amount: p_amt });
-  //   }
-  // }, [doForm?.contractual_ld, doForm?.ld_ge_date, data?.icgrn_nos]);
-
   useEffect(() => {
     const { contractual_ld, ld_ge_date } = doForm;
     if (contractual_ld && ld_ge_date && data?.icgrn_total) {
       const icgrnData = data?.icgrn_total;
       const cc = convertToEpoch(new Date(contractual_ld)) * 1000;
       const aa = convertToEpoch(new Date(ld_ge_date)) * 1000;
-      let p_amt = calculatePenalty(cc, aa, icgrnData, 0.5, 10);
-      console.log("p_amt", p_amt, cc, aa, icgrnData);
+      let p_amt = calculatePenalty(
+        cc,
+        aa,
+        icgrnData,
+        0.5,
+        Number(doForm?.max_ld)
+      );
+      // console.log("p_amt", p_amt, cc, aa, icgrnData);
       setDoForm({ ...doForm, ld_amount: p_amt });
     }
-  }, [doForm?.contractual_ld, doForm?.ld_ge_date, data?.icgrn_total]);
+  }, [
+    doForm?.contractual_ld,
+    doForm?.ld_ge_date,
+    data?.icgrn_total,
+    doForm?.max_ld,
+  ]);
 
   useEffect(() => {
     const {
@@ -214,22 +214,22 @@ const BillsMaterialHybridEdit = () => {
     if (data?.icgrn_total) {
       const icgrnData = data?.icgrn_total;
 
-      if (a_sdbg_date && c_sdbg_date && icgrnData) {
-        p_sdbg = calculatePenalty(
-          convertToEpoch(new Date(c_sdbg_date)) * 1000,
-          Number(a_sdbg_date),
-          icgrnData,
-          0.25,
-          2
-        );
-      }
+      // if (a_sdbg_date && c_sdbg_date && icgrnData) {
+      //   p_sdbg = calculatePenalty(
+      //     convertToEpoch(new Date(c_sdbg_date)) * 1000,
+      //     Number(a_sdbg_date),
+      //     icgrnData,
+      //     0.25,
+      //     Number(doForm?.max_penalty)
+      //   );
+      // }
       if (a_drawing_date && c_drawing_date && icgrnData) {
         p_drg = calculatePenalty(
           convertToEpoch(new Date(c_drawing_date)) * 1000,
           Number(a_drawing_date),
           icgrnData,
           0.25,
-          1
+          Number(doForm?.max_penalty)
         );
       }
       if (a_qap_date && c_qap_date && icgrnData) {
@@ -238,7 +238,7 @@ const BillsMaterialHybridEdit = () => {
           Number(a_qap_date),
           icgrnData,
           0.25,
-          2
+          Number(doForm?.max_penalty)
         );
       }
       if (a_ilms_date && c_ilms_date && icgrnData) {
@@ -247,11 +247,20 @@ const BillsMaterialHybridEdit = () => {
           Number(a_ilms_date),
           icgrnData,
           0.25,
-          2
+          Number(doForm?.max_penalty)
         );
       }
       p_estimate = Math.max(p_drg, p_qap, p_ilms);
     }
+    console.log(
+      "p_fjlkds",
+      p_drg,
+      p_qap,
+      p_ilms,
+      p_estimate,
+      doForm?.max_penalty,
+      form
+    );
     setDoForm({
       ...doForm,
       p_sdbg_amount: p_sdbg,
@@ -260,7 +269,14 @@ const BillsMaterialHybridEdit = () => {
       ilms_penalty: p_ilms,
       p_estimate_amount: p_estimate,
     });
-  }, [form, data?.icgrn_total]);
+  }, [form, data?.icgrn_total, doForm?.max_penalty]);
+
+  console.log(
+    "hel",
+    doForm.drg_penalty,
+    doForm.qap_penalty,
+    doForm?.p_estimate_amount
+  );
 
   useEffect(() => {
     if (data) {
@@ -280,29 +296,6 @@ const BillsMaterialHybridEdit = () => {
       });
     }
   }, [impDates, data]);
-
-  // const rejectBTN = async () => {
-  //   try {
-  //     const response = await apiCallBack(
-  //       "POST",
-  //       "po/btn/BillsMaterialHybridByDO",
-  //       { btn_num: state, status: "REJECTED" },
-  //       token
-  //     );
-  //     if (response.status) {
-  //       // Show success toast message
-  //       console.log("Rejected successfully");
-  //       toast.success("Rejected successfully");
-  //       // navigate(`/invoice-and-payment-process/${id}`);
-  //     } else {
-  //       // Show error toast message
-  //       console.error("Error rejecting the BTN");
-  //       toast.error("Error rejecting the BTN");
-  //     }
-  //   } catch (error) {
-  //     console.error("Error rejecting the BTN:", error);
-  //   }
-  // };
 
   const rejectBTN = async () => {
     try {
@@ -393,7 +386,27 @@ const BillsMaterialHybridEdit = () => {
                                         </td>
                                       </tr>
                                       <tr>
-                                        <td>Liquidated damage</td>
+                                        <td>
+                                          Liquidated damage{" "}
+                                          <div className="d-flex gap-2 align-items-center">
+                                            <span>Max LD </span>
+                                            <select
+                                              name="max_ld"
+                                              id=""
+                                              className="form-select"
+                                              style={{ maxWidth: "100px" }}
+                                              onChange={(e) =>
+                                                setDoForm({
+                                                  ...doForm,
+                                                  max_ld: e.target.value,
+                                                })
+                                              }
+                                            >
+                                              <option value="5">5%</option>
+                                              <option value="10">10%</option>
+                                            </select>
+                                          </div>
+                                        </td>
                                         <td className="btn_value">
                                           <div className="me-3">
                                             <label htmlFor="GED">
@@ -407,19 +420,6 @@ const BillsMaterialHybridEdit = () => {
                                                   )}
                                               </b>
                                             </p>
-                                            {/* <input
-                                              type="date"
-                                              className="form-control "
-                                              id="GED"
-                                              value={doForm?.ld_ge_date}
-                                              onChange={(e) => {
-                                                console.log(e.target.value);
-                                                setDoForm({
-                                                  ...doForm,
-                                                  ld_ge_date: e.target.value,
-                                                });
-                                              }}
-                                            /> */}
                                           </div>
                                           <div className="me-3">
                                             <label htmlFor="CLD">
@@ -545,15 +545,38 @@ const BillsMaterialHybridEdit = () => {
                                         </td>
                                       </tr>
                                       <tr>
-                                        <td>Estimated Penalty </td>
+                                        <td>
+                                          Estimated Penalty{" "}
+                                          <div className="d-flex gap-2 align-items-center">
+                                            <span>Max Penalty </span>
+                                            <select
+                                              name="max_penalty"
+                                              id=""
+                                              className="form-select"
+                                              style={{ maxWidth: "100px" }}
+                                              onChange={(e) =>
+                                                setDoForm({
+                                                  ...doForm,
+                                                  max_penalty: e.target.value,
+                                                })
+                                              }
+                                            >
+                                              <option value="1">1%</option>
+                                              <option value="2">2%</option>
+                                              <option value="3">3%</option>
+                                              <option value="4">4%</option>
+                                              <option value="5">5%</option>
+                                            </select>
+                                          </div>
+                                        </td>
                                         <td className="btn_value">
                                           <p>
                                             &#8377; {doForm?.p_estimate_amount}
                                           </p>
                                         </td>
                                       </tr>
-                                      <tr>
-                                        <td>Other deduction if any </td>
+                                      {/* <tr>
+                                        <td>deduction if any </td>
                                         <td className="btn_value">
                                           <input
                                             type="number"
@@ -571,7 +594,36 @@ const BillsMaterialHybridEdit = () => {
                                             onWheel={inputOnWheelPrevent}
                                           />
                                         </td>
+                                      </tr> */}
+                                      <tr>
+                                        <td>Retension if any (%)</td>
+                                        <td className="btn_value">
+                                          <input
+                                            type="number"
+                                            name="o_ret_per"
+                                            className="form-control"
+                                            value={doForm?.o_ret_per}
+                                            onChange={(e) => {
+                                              let value = e.target.value;
+                                              if (value > 100) value = 100;
+                                              if (value < 0) value = 0;
+                                              setDoForm({
+                                                ...doForm,
+                                                o_ret_per: value,
+                                              });
+                                            }}
+                                            onWheel={inputOnWheelPrevent}
+                                            min="0"
+                                            max="100"
+                                          />
+                                          <span className="ms-1">%</span>
+                                          <span className="ms-2">
+                                            Retension Amount:{" "}
+                                            {doForm?.other_deduction}
+                                          </span>
+                                        </td>
                                       </tr>
+
                                       <tr>
                                         <td>Total deductions</td>
                                         <td>

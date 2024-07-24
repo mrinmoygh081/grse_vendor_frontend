@@ -23,6 +23,7 @@ import { groupedByRefNo } from "../utils/groupedByReq";
 import { inputOnWheelPrevent } from "../utils/inputOnWheelPrevent";
 import { FaPlus } from "react-icons/fa";
 import DynamicButton from "../Helpers/DynamicButton";
+import SkeletonLoader from "../loader/SkeletonLoader";
 
 const WDCSub = () => {
   let line_item_fields = {
@@ -98,7 +99,7 @@ const WDCSub = () => {
   });
   const [isSubmitted, setIsSubmitted] = useState(false);
 
-  console.log(allData, "allData,,,,,,,,,,,,,,,");
+  const [isLoading, setIsLoading] = useState(false);
 
   const [dynamicFields, setDynamicFields] = useState([line_item_fields]);
   const [dynamicFieldsWdc, setDynamicFieldsWdc] = useState([
@@ -116,6 +117,7 @@ const WDCSub = () => {
   const filethreeInputRef = useRef(null);
 
   const getData = async () => {
+    setIsLoading(true);
     try {
       const data = await apiCallBack(
         "GET",
@@ -125,9 +127,11 @@ const WDCSub = () => {
       );
       if (data?.status) {
         setAllData(JSON.parse(data?.data));
+        setIsLoading(false);
       }
     } catch (error) {
       console.error("Error fetching WDC/JCC list:", error);
+      setIsLoading(false);
     }
   };
 
@@ -626,88 +630,73 @@ const WDCSub = () => {
                                 </tr>
                               </thead>
                               <tbody style={{ maxHeight: "100%" }}>
-                                {Object.keys(groupedData).map((it, index) => {
-                                  let items = groupedData[it];
-                                  return (
-                                    <Fragment key={index}>
-                                      <tr>
-                                        <td colSpan={19}>
-                                          <b>{it}</b>
-                                        </td>
-                                      </tr>
-                                      {checkTypeArr(items) &&
-                                        items.map((item, index) => (
-                                          <tr key={index}>
-                                            <td>{item?.action_type}</td>
+                                {isLoading ? (
+                                  <>
+                                    <tr></tr>
+                                    <tr>
+                                      <td colSpan={10}>
+                                        <SkeletonLoader col={4} row={6} />
+                                      </td>
+                                    </tr>
+                                  </>
+                                ) : (
+                                  <>
+                                    {Object.keys(groupedData).map(
+                                      (it, index) => {
+                                        let items = groupedData[it];
+                                        return (
+                                          <Fragment key={index}>
+                                            <tr>
+                                              <td colSpan={19}>
+                                                <b>{it}</b>
+                                              </td>
+                                            </tr>
+                                            {checkTypeArr(items) &&
+                                              items.map((item, index) => (
+                                                <tr key={index}>
+                                                  <td>{item?.action_type}</td>
 
-                                            <td>
-                                              {item?.created_at &&
-                                                formatDate(item?.created_at)}
-                                            </td>
-                                            <td>{item.created_by_id}</td>
-                                            {/* <td>
+                                                  <td>
+                                                    {item?.created_at &&
+                                                      formatDate(
+                                                        item?.created_at
+                                                      )}
+                                                  </td>
+                                                  <td>{item.created_by_id}</td>
+                                                  {/* <td>
                                               {item?.wdc_date &&
                                                 new Date(
                                                   item.wdc_date * 1000
                                                 ).toLocaleDateString()}
                                             </td> */}
-                                            <td>
-                                              {item?.line_item_array &&
-                                                item?.line_item_array
-                                                  .map(
-                                                    (lineItem) =>
-                                                      lineItem?.line_item_no
-                                                  )
-                                                  .join(", ")}
-                                            </td>
-                                            <td
-                                              className={`${clrLegend(
-                                                item?.status
-                                              )} bold`}
-                                            >
-                                              {item?.status}
-                                            </td>
-                                            <td className="d-flex">
-                                              {item?.action_type === "WDC" && (
-                                                <button
-                                                  onClick={() => {
-                                                    setViewData(item);
-                                                    setIsPopupView(true);
-                                                  }}
-                                                  className="btn btn-sm fw-bold btn-secondary m-1"
-                                                  type="button"
-                                                >
-                                                  View
-                                                </button>
-                                              )}
-                                              {item?.action_type === "JCC" && (
-                                                <button
-                                                  onClick={() => {
-                                                    setViewData(item);
-                                                    setIsPopupJccView(true);
-                                                  }}
-                                                  className="btn btn-sm fw-bold btn-secondary m-1"
-                                                  type="button"
-                                                >
-                                                  View
-                                                </button>
-                                              )}
-
-                                              {item.status === "SUBMITTED" &&
-                                                user.vendor_code ===
-                                                  item.assigned_to && (
-                                                  <>
+                                                  <td>
+                                                    {item?.line_item_array &&
+                                                      item?.line_item_array
+                                                        .map(
+                                                          (lineItem) =>
+                                                            lineItem?.line_item_no
+                                                        )
+                                                        .join(", ")}
+                                                  </td>
+                                                  <td
+                                                    className={`${clrLegend(
+                                                      item?.status
+                                                    )} bold`}
+                                                  >
+                                                    {item?.status}
+                                                  </td>
+                                                  <td className="d-flex">
                                                     {item?.action_type ===
                                                       "WDC" && (
                                                       <button
                                                         onClick={() => {
                                                           setViewData(item);
-                                                          setIsSecPopup(true);
+                                                          setIsPopupView(true);
                                                         }}
-                                                        className="btn btn-sm fw-bold btn-primary m-1"
+                                                        className="btn btn-sm fw-bold btn-secondary m-1"
                                                         type="button"
                                                       >
-                                                        Action
+                                                        View
                                                       </button>
                                                     )}
                                                     {item?.action_type ===
@@ -715,24 +704,67 @@ const WDCSub = () => {
                                                       <button
                                                         onClick={() => {
                                                           setViewData(item);
-                                                          setIsjccActionSecPopup(
+                                                          setIsPopupJccView(
                                                             true
                                                           );
                                                         }}
-                                                        className="btn btn-sm fw-bold btn-primary m-1"
+                                                        className="btn btn-sm fw-bold btn-secondary m-1"
                                                         type="button"
                                                       >
-                                                        Action
+                                                        View
                                                       </button>
                                                     )}
-                                                  </>
-                                                )}
-                                            </td>
-                                          </tr>
-                                        ))}
-                                    </Fragment>
-                                  );
-                                })}
+
+                                                    {item.status ===
+                                                      "SUBMITTED" &&
+                                                      user.vendor_code ===
+                                                        item.assigned_to && (
+                                                        <>
+                                                          {item?.action_type ===
+                                                            "WDC" && (
+                                                            <button
+                                                              onClick={() => {
+                                                                setViewData(
+                                                                  item
+                                                                );
+                                                                setIsSecPopup(
+                                                                  true
+                                                                );
+                                                              }}
+                                                              className="btn btn-sm fw-bold btn-primary m-1"
+                                                              type="button"
+                                                            >
+                                                              Action
+                                                            </button>
+                                                          )}
+                                                          {item?.action_type ===
+                                                            "JCC" && (
+                                                            <button
+                                                              onClick={() => {
+                                                                setViewData(
+                                                                  item
+                                                                );
+                                                                setIsjccActionSecPopup(
+                                                                  true
+                                                                );
+                                                              }}
+                                                              className="btn btn-sm fw-bold btn-primary m-1"
+                                                              type="button"
+                                                            >
+                                                              Action
+                                                            </button>
+                                                          )}
+                                                        </>
+                                                      )}
+                                                  </td>
+                                                </tr>
+                                              ))}
+                                          </Fragment>
+                                        );
+                                      }
+                                    )}
+                                  </>
+                                )}
                               </tbody>
                             </table>
                           </div>

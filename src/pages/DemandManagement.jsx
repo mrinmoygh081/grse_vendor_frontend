@@ -13,6 +13,8 @@ import ReactDatePicker from "react-datepicker";
 import { groupedByRefNo } from "../utils/groupedByReq";
 import { clrLegend } from "../utils/clrLegend";
 import { FaMinus, FaPlus } from "react-icons/fa";
+import SkeletonLoader from "../loader/SkeletonLoader";
+import DynamicButton from "../Helpers/DynamicButton";
 
 const DemandManagement = () => {
   let line_item_fields = {
@@ -41,11 +43,13 @@ const DemandManagement = () => {
   const [groupedData, setGroupedData] = useState([]);
   // const [dynamicFields, setDynamicFields] = useState([]);
   const [dynamicFields, setDynamicFields] = useState([line_item_fields]);
+  const [isLoading, setIsLoading] = useState(false);
 
   const { user, token } = useSelector((state) => state.auth);
   const [formData, setFormData] = useState(initialFormData);
 
   const getData = async () => {
+    setIsLoading(true);
     try {
       const data = await apiCallBack(
         "GET",
@@ -55,9 +59,11 @@ const DemandManagement = () => {
       );
       if (data?.status) {
         setData(data?.data);
+        setIsLoading(false);
       }
     } catch (error) {
       console.error("Error fetching drawing list:", error);
+      setIsLoading(false);
     }
   };
 
@@ -413,79 +419,107 @@ const DemandManagement = () => {
                                 </tr>
                               </thead>
                               <tbody style={{ maxHeight: "100%" }}>
-                                {Object.keys(groupedData).map((it, index) => {
-                                  let items = groupedData[it];
+                                {isLoading ? (
+                                  <>
+                                    <tr></tr>
+                                    <tr>
+                                      <td colSpan={10}>
+                                        <SkeletonLoader col={4} row={6} />
+                                      </td>
+                                    </tr>
+                                  </>
+                                ) : (
+                                  <>
+                                    {Object.keys(groupedData).map(
+                                      (it, index) => {
+                                        let items = groupedData[it];
 
-                                  return (
-                                    <Fragment key={index}>
-                                      <tr>
-                                        <td colSpan={10}>
-                                          <b>{it}</b>
-                                        </td>
-                                      </tr>
-                                      {items &&
-                                        items.map((item, i) => (
-                                          <tr key={i}>
-                                            <td className="table_center">
-                                              {item?.created_at &&
+                                        return (
+                                          <Fragment key={index}>
+                                            <tr>
+                                              <td colSpan={10}>
+                                                <b>{it}</b>
+                                              </td>
+                                            </tr>
+                                            {items &&
+                                              items.map((item, i) => (
+                                                <tr key={i}>
+                                                  <td className="table_center">
+                                                    {/* {item?.created_at &&
                                                 new Date(
                                                   item?.created_at
-                                                ).toLocaleString()}
-                                            </td>
-                                            <td>{item?.action_type}</td>
-                                            <td>
-                                              {" "}
-                                              {JSON.parse(item.demand).map(
-                                                (demandItem, index) => (
-                                                  <li key={index}>
-                                                    {demandItem.line_item_no}
-                                                  </li>
-                                                )
-                                              )}
-                                            </td>
-                                            <td>{item.created_by_id}</td>
-                                            <td>
-                                              {" "}
-                                              {JSON.parse(item.demand).map(
-                                                (demandItem, index) => (
-                                                  <li key={index}>
-                                                    {demandItem.request_amount}
-                                                  </li>
-                                                )
-                                              )}
-                                            </td>
-                                            <td>
-                                              {" "}
-                                              {JSON.parse(item.demand).map(
-                                                (demandItem, index) => (
-                                                  <li key={index}>
-                                                    {
-                                                      demandItem.recived_quantity
-                                                    }
-                                                  </li>
-                                                )
-                                              )}
-                                            </td>
-                                            <td>
-                                              {/* {item.delivery_date &&
+                                                ).toLocaleString()} */}
+                                                    {item.created_at &&
+                                                      formatDate(
+                                                        item.created_at
+                                                      )}
+                                                  </td>
+                                                  <td>{item?.action_type}</td>
+                                                  <td>
+                                                    {" "}
+                                                    {JSON.parse(
+                                                      item.demand
+                                                    ).map(
+                                                      (demandItem, index) => (
+                                                        <li key={index}>
+                                                          {
+                                                            demandItem.line_item_no
+                                                          }
+                                                        </li>
+                                                      )
+                                                    )}
+                                                  </td>
+                                                  <td>{item.created_by_id}</td>
+                                                  <td>
+                                                    {" "}
+                                                    {JSON.parse(
+                                                      item.demand
+                                                    ).map(
+                                                      (demandItem, index) => (
+                                                        <li key={index}>
+                                                          {
+                                                            demandItem.request_amount
+                                                          }
+                                                        </li>
+                                                      )
+                                                    )}
+                                                  </td>
+                                                  <td>
+                                                    {" "}
+                                                    {JSON.parse(
+                                                      item.demand
+                                                    ).map(
+                                                      (demandItem, index) => (
+                                                        <li key={index}>
+                                                          {
+                                                            demandItem.recived_quantity
+                                                          }
+                                                        </li>
+                                                      )
+                                                    )}
+                                                  </td>
+                                                  <td>
+                                                    {/* {item.delivery_date &&
                                                 new Date(
                                                   item.delivery_date
                                                 ).toLocaleDateString()} */}
-                                              {/* {item?.delivery_date &&
+                                                    {/* {item?.delivery_date &&
                                                 formatDate(item?.delivery_date)} */}
 
-                                              {item.delivery_date &&
-                                                formatDate(item.delivery_date)}
-                                            </td>
-                                            <td>{item.remarks}</td>
-                                            <td
-                                              className={`${clrLegend(
-                                                item?.status
-                                              )} bold`}
-                                            >
-                                              {item.status}
-                                            </td>
-                                            {/* <td>
+                                                    {item.delivery_date &&
+                                                      formatDate(
+                                                        item.delivery_date
+                                                      )}
+                                                  </td>
+                                                  <td>{item.remarks}</td>
+                                                  <td
+                                                    className={`${clrLegend(
+                                                      item?.status
+                                                    )} bold`}
+                                                  >
+                                                    {item.status}
+                                                  </td>
+                                                  {/* <td>
                                               {item.status === "SUBMITTED" && (
                                                 <>
                                                   <button
@@ -501,11 +535,14 @@ const DemandManagement = () => {
                                                 </>
                                               )}
                                             </td> */}
-                                          </tr>
-                                        ))}
-                                    </Fragment>
-                                  );
-                                })}
+                                                </tr>
+                                              ))}
+                                          </Fragment>
+                                        );
+                                      }
+                                    )}
+                                  </>
+                                )}
                               </tbody>
                             </table>
                           </div>
@@ -691,13 +728,18 @@ const DemandManagement = () => {
                       </div>
                       <div className="col-12">
                         <div className="mb-3 d-flex justify-content-between">
-                          <button
+                          {/* <button
                             onClick={() => submitHandler("SUBMITTED")}
                             className="btn fw-bold btn-primary"
                             type="button"
                           >
                             SUBMIT
-                          </button>
+                          </button> */}
+                          <DynamicButton
+                            label="SUBMIT"
+                            onClick={() => submitHandler("SUBMITTED")}
+                            className="btn fw-bold btn-primary"
+                          />
                         </div>
                       </div>
                     </>
@@ -815,13 +857,18 @@ const DemandManagement = () => {
                       </div>
                       <div className="col-12">
                         <div className="mb-3 d-flex justify-content-between">
-                          <button
+                          {/* <button
                             onClick={() => submitHandler("SUBMITTED")}
                             className="btn fw-bold btn-primary"
                             type="button"
                           >
                             SUBMIT
-                          </button>
+                          </button> */}
+                          <DynamicButton
+                            label="SUBMIT"
+                            onClick={() => submitHandler("SUBMITTED")}
+                            className="btn fw-bold btn-primary"
+                          />
                         </div>
                       </div>
                     </>

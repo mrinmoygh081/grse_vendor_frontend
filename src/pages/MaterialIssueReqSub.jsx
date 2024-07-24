@@ -7,6 +7,7 @@ import { useSelector } from "react-redux";
 import { apiCallBack } from "../utils/fetchAPIs";
 import { toast } from "react-toastify";
 import { reConfirm } from "../utils/reConfirm";
+import DynamicButton from "../Helpers/DynamicButton";
 
 const MaterialIssueReqSub = () => {
   const [isPopup, setIsPopup] = useState(false);
@@ -238,13 +239,18 @@ const MaterialIssueReqSub = () => {
                 </div>
                 <div className="col-12">
                   <div className="mb-3 d-flex justify-content-between">
-                    <button
+                    {/* <button
                       onClick={() => submitHandler("PENDING")}
                       className="btn fw-bold btn-primary"
                       type="button"
                     >
                       SUBMIT
-                    </button>
+                    </button> */}
+                    <DynamicButton
+                      label="SUBMIT"
+                      className="btn fw-bold btn-primary"
+                      onClick={() => submitHandler("PENDING")}
+                    />
 
                     {/* {userType !== 1 && (
                       <button

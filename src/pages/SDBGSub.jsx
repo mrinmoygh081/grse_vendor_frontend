@@ -639,7 +639,7 @@ const SDBGSub = () => {
                                     <tr></tr>
                                     <tr>
                                       <td colSpan={10}>
-                                        <SkeletonLoader col={4} row={6} />
+                                        <SkeletonLoader col={6} row={6} />
                                       </td>
                                     </tr>
                                   </>
@@ -899,13 +899,18 @@ const SDBGSub = () => {
               </div>
               <div className="col-12">
                 <div className="mb-3 d-flex justify-content-between">
-                  <button
+                  {/* <button
                     onClick={() => updateSDBG("SUBMITTED")}
                     className="btn fw-bold btn-primary"
                     type="submit"
                   >
                     SUBMIT
-                  </button>
+                  </button> */}
+                  <DynamicButton
+                    label="SUBMIT"
+                    onClick={() => updateSDBG("SUBMITTED")}
+                    className="btn fw-bold btn-primary"
+                  />
                   {userType !== USER_VENDOR && (
                     <DynamicButton
                       label="Approved"

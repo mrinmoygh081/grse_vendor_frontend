@@ -13,6 +13,8 @@ import Select from "react-select";
 import { groupedByActionType, groupedByBtnNum } from "../utils/groupedByReq";
 import { TailSpin } from "react-loader-spinner";
 import { activityOptions } from "../data/btnData";
+import SkeletonLoader from "../loader/SkeletonLoader";
+import DynamicButton from "../Helpers/DynamicButton";
 
 const Checklist = () => {
   const { id } = useParams();
@@ -87,6 +89,7 @@ const Checklist = () => {
         if (res?.status) {
           setIsAssignPopup(false);
           toast.success(`Successfully assigned to ${assign.assign_to_fi}`);
+          getData();
         } else {
           toast.warn(res?.message);
         }
@@ -183,18 +186,6 @@ const Checklist = () => {
                           </button>
                         </div>
                         <div className="table-responsive position-relative">
-                          {loading && (
-                            <div className="spinner-overlay">
-                              <TailSpin
-                                height="50"
-                                width="50"
-                                color="#4fa94d"
-                                ariaLabel="tail-spin-loading"
-                                radius="1"
-                                visible={true}
-                              />
-                            </div>
-                          )}
                           <table className="table table-striped table-bordered table_height">
                             <thead>
                               <tr className="border-0">
@@ -207,123 +198,146 @@ const Checklist = () => {
                               </tr>
                             </thead>
                             <tbody style={{ maxHeight: "100%" }}>
-                              {Object.keys(groupedBG).map((it, index) => {
-                                let items = groupedBG[it];
-                                let firstItem = items[0];
-                                return (
-                                  <Fragment key={index}>
-                                    <tr>
-                                      <td colSpan={5}>
-                                        <b>{it}</b>
-                                      </td>
-                                      <td>
-                                        <div className="view-button-container">
-                                          <button
-                                            className="btn btn-sm btn-secondary m-1"
-                                            onClick={() => {
-                                              let type = "";
-
-                                              if (
-                                                firstItem.btn_type ===
-                                                "hybrid-bill-material"
-                                              ) {
-                                                type = "hybrid-bill-material";
-                                              } else if (
-                                                firstItem.btn_type ===
-                                                "hybrid-bill-service"
-                                              ) {
-                                                type = "hybrid-bill-service";
-                                              } else if (
-                                                firstItem.btn_type ===
-                                                "advance-bill-hybrid"
-                                              ) {
-                                                type = "advance-bill-hybrid";
-                                              }
-
-                                              navigate(
-                                                `/checklist/${type}/view/${id}`,
-                                                {
-                                                  state: `${firstItem?.btn_num}`,
-                                                }
-                                              );
-                                            }}
-                                          >
-                                            VIEW
-                                          </button>
-                                          {user?.department_id === 15 &&
-                                            user?.internal_role_id === 1 && (
-                                              <button
-                                                onClick={() => {
-                                                  setAssign({
-                                                    ...assign,
-                                                    btn_num: firstItem?.btn_num,
-                                                  });
-                                                  setIsAssignPopup(true);
-                                                }}
-                                                className="btn fw-bold btn-sm btn-primary me-3 m-1"
-                                              >
-                                                ASSIGN
-                                              </button>
-                                            )}
-                                          {isDO && (
-                                            <button
-                                              className="btn btn-sm btn-primary m-1"
-                                              onClick={() => {
-                                                let type = "";
-
-                                                if (
-                                                  firstItem.btn_type ===
-                                                  "hybrid-bill-material"
-                                                ) {
-                                                  type = "hybrid-bill-material";
-                                                } else if (
-                                                  firstItem.btn_type ===
-                                                  "hybrid-bill-service"
-                                                ) {
-                                                  type = "hybrid-bill-service";
-                                                } else if (
-                                                  firstItem.btn_type ===
-                                                  "advance-bill-hybrid"
-                                                ) {
-                                                  type = "advance-bill-hybrid";
-                                                }
-
-                                                navigate(
-                                                  `/checklist/${type}/edit/${id}`,
-                                                  {
-                                                    state: `${firstItem?.btn_num}`,
-                                                  }
-                                                );
-                                              }}
-                                            >
-                                              Action
-                                            </button>
-                                          )}
-                                        </div>
-                                      </td>
-                                    </tr>
-                                    {items &&
-                                      items.map((item, i) => (
-                                        <tr key={i}>
+                              {loading ? (
+                                <>
+                                  <tr></tr>
+                                  <tr>
+                                    <td colSpan={10}>
+                                      <SkeletonLoader col={4} row={6} />
+                                    </td>
+                                  </tr>
+                                </>
+                              ) : (
+                                <>
+                                  {Object.keys(groupedBG).map((it, index) => {
+                                    let items = groupedBG[it];
+                                    let firstItem = items[0];
+                                    return (
+                                      <Fragment key={index}>
+                                        <tr>
+                                          <td colSpan={5}>
+                                            <b>{it}</b>
+                                          </td>
                                           <td>
-                                            {formatDate(item?.created_at)}
+                                            <div className="view-button-container">
+                                              <button
+                                                className="btn btn-sm btn-secondary m-1"
+                                                onClick={() => {
+                                                  let type = "";
+
+                                                  if (
+                                                    firstItem.btn_type ===
+                                                    "hybrid-bill-material"
+                                                  ) {
+                                                    type =
+                                                      "hybrid-bill-material";
+                                                  } else if (
+                                                    firstItem.btn_type ===
+                                                    "hybrid-bill-service"
+                                                  ) {
+                                                    type =
+                                                      "hybrid-bill-service";
+                                                  } else if (
+                                                    firstItem.btn_type ===
+                                                    "advance-bill-hybrid"
+                                                  ) {
+                                                    type =
+                                                      "advance-bill-hybrid";
+                                                  }
+
+                                                  navigate(
+                                                    `/checklist/${type}/view/${id}`,
+                                                    {
+                                                      state: `${firstItem?.btn_num}`,
+                                                    }
+                                                  );
+                                                }}
+                                              >
+                                                VIEW
+                                              </button>
+                                              {user?.department_id === 15 &&
+                                                user?.internal_role_id ===
+                                                  1 && (
+                                                  <button
+                                                    onClick={() => {
+                                                      setAssign({
+                                                        ...assign,
+                                                        btn_num:
+                                                          firstItem?.btn_num,
+                                                      });
+                                                      setIsAssignPopup(true);
+                                                    }}
+                                                    className="btn fw-bold btn-sm btn-primary me-3 m-1"
+                                                  >
+                                                    ASSIGN
+                                                  </button>
+                                                )}
+                                              {isDO && (
+                                                <button
+                                                  className="btn btn-sm btn-primary m-1"
+                                                  onClick={() => {
+                                                    let type = "";
+
+                                                    if (
+                                                      firstItem.btn_type ===
+                                                      "hybrid-bill-material"
+                                                    ) {
+                                                      type =
+                                                        "hybrid-bill-material";
+                                                    } else if (
+                                                      firstItem.btn_type ===
+                                                      "hybrid-bill-service"
+                                                    ) {
+                                                      type =
+                                                        "hybrid-bill-service";
+                                                    } else if (
+                                                      firstItem.btn_type ===
+                                                      "advance-bill-hybrid"
+                                                    ) {
+                                                      type =
+                                                        "advance-bill-hybrid";
+                                                    }
+
+                                                    navigate(
+                                                      `/checklist/${type}/edit/${id}`,
+                                                      {
+                                                        state: `${firstItem?.btn_num}`,
+                                                      }
+                                                    );
+                                                  }}
+                                                >
+                                                  Action
+                                                </button>
+                                              )}
+                                            </div>
                                           </td>
-                                          <td>{item?.btn_type}</td>
-                                          <td>{item?.net_claim_amount}</td>
-                                          <td>{item?.net_payable_amount}</td>
-                                          <td
-                                            className={`${clrLegend(
-                                              item?.status
-                                            )} bold`}
-                                          >
-                                            {item?.status}
-                                          </td>
-                                          <td></td>
                                         </tr>
-                                      ))}
-                                  </Fragment>
-                                );
-                              })}
+                                        {items &&
+                                          items.map((item, i) => (
+                                            <tr key={i}>
+                                              <td>
+                                                {formatDate(item?.created_at)}
+                                              </td>
+                                              <td>{item?.btn_type}</td>
+                                              <td>{item?.net_claim_amount}</td>
+                                              <td>
+                                                {item?.net_payable_amount}
+                                              </td>
+                                              <td
+                                                className={`${clrLegend(
+                                                  item?.status
+                                                )} bold`}
+                                              >
+                                                {item?.status}
+                                              </td>
+                                              <td></td>
+                                            </tr>
+                                          ))}
+                                      </Fragment>
+                                    );
+                                  })}
+                                </>
+                              )}
                             </tbody>
                           </table>
                           {isAssignPopup && (
@@ -393,13 +407,18 @@ const Checklist = () => {
                                     </div>
                                     <div className="col-12">
                                       <div className="mb-3 d-flex justify-content-between">
-                                        <button
+                                        {/* <button
                                           onClick={assignSDBGByFinance}
                                           className="btn fw-bold btn-primary"
                                           type="button"
                                         >
                                           ASSIGN
-                                        </button>
+                                        </button> */}
+                                        <DynamicButton
+                                          label="ASSIGN"
+                                          onClick={assignSDBGByFinance}
+                                          className="btn fw-bold btn-primary"
+                                        />
                                       </div>
                                     </div>
                                   </div>
@@ -421,28 +440,41 @@ const Checklist = () => {
                                 </tr>
                               </thead>
                               <tbody style={{ maxHeight: "100%" }}>
-                                {checkTypeArr(paymentData?.resustFiles) &&
-                                  paymentData?.resustFiles.map(
-                                    (file, index) => (
-                                      <tr key={index}>
-                                        <td>
-                                          {file.docuentDate &&
-                                            formatDate(file.docuentDate)}
-                                        </td>
-                                        <td>{file.vendor_code}</td>
-                                        <td>{file.documentNo}</td>
-                                        <td>
-                                          <a
-                                            href={`${process.env.REACT_APP_ROOT_URL}sapuploads/pymtadvice/${file?.fileName}`}
-                                            target="_blank"
-                                            rel="noreferrer"
-                                          >
-                                            VIEW
-                                          </a>
-                                        </td>
-                                      </tr>
-                                    )
-                                  )}
+                                {loading ? (
+                                  <>
+                                    <tr></tr>
+                                    <tr>
+                                      <td colSpan={10}>
+                                        <SkeletonLoader col={4} row={6} />
+                                      </td>
+                                    </tr>
+                                  </>
+                                ) : (
+                                  <>
+                                    {checkTypeArr(paymentData?.resustFiles) &&
+                                      paymentData?.resustFiles.map(
+                                        (file, index) => (
+                                          <tr key={index}>
+                                            <td>
+                                              {file.docuentDate &&
+                                                formatDate(file.docuentDate)}
+                                            </td>
+                                            <td>{file.vendor_code}</td>
+                                            <td>{file.documentNo}</td>
+                                            <td>
+                                              <a
+                                                href={`${process.env.REACT_APP_ROOT_URL}sapuploads/pymtadvice/${file?.fileName}`}
+                                                target="_blank"
+                                                rel="noreferrer"
+                                              >
+                                                VIEW
+                                              </a>
+                                            </td>
+                                          </tr>
+                                        )
+                                      )}
+                                  </>
+                                )}
                               </tbody>
                             </table>
                           </div>

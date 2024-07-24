@@ -17,6 +17,7 @@ export default function Registration() {
     subDepartment: "",
   });
   const [showOtp, setShowOtp] = useState(false);
+  const [departments, setDepartments] = useState([]);
   const [showPassword, setShowPassword] = useState(false);
   const [subDepartments, setSubDepartments] = useState([]);
   const [timer, setTimer] = useState(1800); // 30 minutes timer in seconds
@@ -42,6 +43,24 @@ export default function Registration() {
       setShowOtp(false);
     }
   }, [showOtp, timer]);
+  useEffect(() => {
+    fetchDepartments();
+  }, []);
+  const fetchDepartments = async () => {
+    setIsLoading(true);
+    const res = await apiCallBack(
+      "GET",
+      "getFilteredData?$tableName=depertment_master&$select=id,name",
+      null,
+      token
+    );
+    setIsLoading(false);
+    if (res?.status) {
+      setDepartments(res.data);
+    } else {
+      toast.warn(res?.message);
+    }
+  };
 
   const fetchSubDepartments = async () => {
     setIsLoading(true);
@@ -208,25 +227,11 @@ export default function Registration() {
                               onChange={handleChange}
                             >
                               <option value="">Choose Department Type</option>
-                              <option value="15">Finance Do</option>
-                              <option value="1">SDBG</option>
-                              <option value="2">Design</option>
-                              <option value="3">Quality Assurance</option>
-                              <option value="4">NO</option>
-                              <option value="5">Store</option>
-                              <option value="6">User</option>
-                              <option value="7">OTH</option>
-                              <option value="8">NCM</option>
-                              <option value="9">Payment Recommendation</option>
-                              <option value="10">Vendor</option>
-                              <option value="11">Payment Voucher</option>
-                              <option value="12">Admin</option>
-                              <option value="13">Super Admin</option>
-                              <option value="14">PPC</option>
-                              <option value="16">RIC</option>
-                              <option value="17">Purchase</option>
-                              <option value="18">HR</option>
-                              <option value="19">Synce</option>
+                              {departments.map((dept) => (
+                                <option key={dept.id} value={dept.id}>
+                                  {dept.name}
+                                </option>
+                              ))}
                             </select>
                           </div>
                           {regData.department === "3" && (

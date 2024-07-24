@@ -15,6 +15,7 @@ import { Link } from "react-router-dom";
 import { MdArchive } from "react-icons/md";
 import { checkTypeArr } from "../utils/smallFun";
 import { formatDate } from "../utils/getDateTimeNow";
+import DynamicButton from "../Helpers/DynamicButton";
 
 const PODetails = () => {
   const dispatch = useDispatch();
@@ -197,12 +198,11 @@ const PODetails = () => {
                               >
                                 Document Attachement
                               </button>
-                              <button
-                                className="btn btn-primary me-2"
+                              <DynamicButton
+                                label="Download PO"
+                                className="btn  btn-primary me-2"
                                 onClick={handleDownloadSAPPO}
-                              >
-                                Download PO
-                              </button>
+                              />
                               {user?.user_type !== 1 && (
                                 <>
                                   {/* <Link
@@ -484,12 +484,17 @@ const PODetails = () => {
                               </div>
                               <div className="col-12">
                                 <div className="mb-3">
-                                  <button
+                                  {/* <button
                                     className="btn fw-bold btn-primary"
                                     onClick={handleUploadTNCMinutes}
                                   >
                                     UPDATE
-                                  </button>
+                                  </button> */}
+                                  <DynamicButton
+                                    label="UPDATE"
+                                    className="btn fw-bold btn-primary"
+                                    onClick={handleUploadTNCMinutes}
+                                  />
                                 </div>
                               </div>
                             </div>

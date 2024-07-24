@@ -176,67 +176,74 @@ const BTNfinance = () => {
               </div>
             </div>
             <div className="table-responsive">
-              {loading ? (
-                <SkeletonLoader />
-              ) : checkTypeArr(filteredData) && filteredData.length > 0 ? (
-                <table className="table table-striped table-bordered table_height">
-                  <thead>
-                    <tr className="row-count">
-                      <td colSpan={6} style={{ textAlign: "left" }}>
-                        Number of BTN {filteredData.length}
-                      </td>
-                    </tr>
-                    <tr className="border-0">
-                      <th className="min-w-150px">BTN Num</th>
-                      <th className="min-w-150px">Vendor Name</th>
-                      <th className="min-w-150px">Vendor Code</th>
-                      <th className="min-w-150px">PO No.</th>
-                      <th className="min-w-150px">Invoice No.</th>
-                      <th className="min-w-150px">Yard No</th>
-                      <th className="min-w-150px">Status</th>
-                      <th className="min-w-150px">Invoice View Option</th>
-                    </tr>
-                  </thead>
-                  <tbody style={{ maxHeight: "100%" }}>
-                    {console.log("filteredData", filteredData)}
-                    {filteredData.map((file, index) => (
-                      <tr key={index}>
-                        <td>
-                          <button
-                            onClick={() =>
-                              handleRowClick(file.purchasing_doc_no)
-                            }
-                            className="btn_simple"
-                          >
-                            <u>{file.btn_num}</u>
-                          </button>
-                        </td>
-                        <td>{file.vendor_name}</td>
-                        <td>{file.vendor_code}</td>
-                        <td>{file.purchasing_doc_no}</td>
-                        <td>{file.invoice_no}</td>
-                        <td>{file.yard}</td>
-                        {/* <td>{file.status}</td> */}
-                        <td className={`${clrLegend(file?.status)} bold`}>
-                          {file.status}
-                        </td>
-                        <td>
-                          <button
-                            onClick={() =>
-                              handleViewInvoice(file.invoice_filename)
-                            }
-                            className="btn_view"
-                          >
-                            <FaFilePdf /> VIEW
-                          </button>
+              <table className="table table-striped table-bordered table_height">
+                <thead>
+                  <tr className="row-count">
+                    <td colSpan={6} style={{ textAlign: "left" }}>
+                      Number of BTN {filteredData.length}
+                    </td>
+                  </tr>
+                  <tr className="border-0">
+                    <th className="min-w-150px">BTN Num</th>
+                    <th className="min-w-150px">Vendor Name</th>
+                    <th className="min-w-150px">Vendor Code</th>
+                    <th className="min-w-150px">PO No.</th>
+                    <th className="min-w-150px">Invoice No.</th>
+                    <th className="min-w-150px">Yard No</th>
+                    <th className="min-w-150px">Status</th>
+                    <th className="min-w-150px">Invoice View Option</th>
+                  </tr>
+                </thead>
+                <tbody style={{ maxHeight: "100%" }}>
+                  {loading ? (
+                    <>
+                      <tr></tr>
+                      <tr>
+                        <td colSpan={10}>
+                          <SkeletonLoader col={8} row={6} />
                         </td>
                       </tr>
-                    ))}
-                  </tbody>
-                </table>
-              ) : (
-                <div className="no-data-found">No Data Found</div>
-              )}
+                    </>
+                  ) : (
+                    <>
+                      {console.log("filteredData", filteredData)}
+                      {filteredData.map((file, index) => (
+                        <tr key={index}>
+                          <td>
+                            <button
+                              onClick={() =>
+                                handleRowClick(file.purchasing_doc_no)
+                              }
+                              className="btn_simple"
+                            >
+                              <u>{file.btn_num}</u>
+                            </button>
+                          </td>
+                          <td>{file.vendor_name}</td>
+                          <td>{file.vendor_code}</td>
+                          <td>{file.purchasing_doc_no}</td>
+                          <td>{file.invoice_no}</td>
+                          <td>{file.yard}</td>
+                          {/* <td>{file.status}</td> */}
+                          <td className={`${clrLegend(file?.status)} bold`}>
+                            {file.status}
+                          </td>
+                          <td>
+                            <button
+                              onClick={() =>
+                                handleViewInvoice(file.invoice_filename)
+                              }
+                              className="btn_view"
+                            >
+                              <FaFilePdf /> VIEW
+                            </button>
+                          </td>
+                        </tr>
+                      ))}
+                    </>
+                  )}
+                </tbody>
+              </table>
             </div>
           </div>
           <Footer />

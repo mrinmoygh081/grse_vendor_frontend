@@ -13,6 +13,7 @@ import { formatDate } from "../utils/getDateTimeNow";
 import Select from "react-select";
 import { logOutFun } from "../utils/logOutFun";
 import DynamicButton from "../Helpers/DynamicButton";
+import SkeletonLoader from "../loader/SkeletonLoader";
 
 const DrawingSub = () => {
   const [isPopup, setIsPopup] = useState(false);
@@ -30,6 +31,7 @@ const DrawingSub = () => {
   const { poType } = useSelector((state) => state.selectedPO);
   const [isAssignPopup, setIsAssignPopup] = useState(false);
   const [referenceNo, setreferenceNo] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
   console.log(poType, "poType MMMMMMMMMMMMMMMMMMMM");
   const [assign, setAssign] = useState({
     purchasing_doc_no: id,
@@ -87,6 +89,7 @@ const DrawingSub = () => {
     }
   }, []);
   const getData = async () => {
+    setIsLoading(true);
     try {
       const data = await apiCallBack(
         "GET",
@@ -97,9 +100,11 @@ const DrawingSub = () => {
       // console.log(data);
       if (data?.status) {
         setAlldrawing(data?.data);
+        setIsLoading(false);
       }
     } catch (error) {
       console.error("Error fetching drawing list:", error);
+      setIsLoading(false);
     }
   };
 
@@ -350,77 +355,95 @@ const DrawingSub = () => {
                                 </tr>
                               </thead>
                               <tbody style={{ maxHeight: "100%" }}>
-                                {Object.keys(groupedData).map((it, index) => {
-                                  let items = groupedData[it];
-                                  return (
-                                    <Fragment key={index}>
-                                      <tr>
-                                        <td colSpan={10}>
-                                          <b>{it}</b>
-                                        </td>
-                                      </tr>
-                                      {items &&
-                                        items.map((item, i) => (
-                                          <tr key={i}>
-                                            {/* <td className="table_center">
+                                {isLoading ? (
+                                  <>
+                                    <tr></tr>
+                                    <tr>
+                                      <td colSpan={10}>
+                                        <SkeletonLoader col={5} row={6} />
+                                      </td>
+                                    </tr>
+                                  </>
+                                ) : (
+                                  <>
+                                    {Object.keys(groupedData).map(
+                                      (it, index) => {
+                                        let items = groupedData[it];
+                                        return (
+                                          <Fragment key={index}>
+                                            <tr>
+                                              <td colSpan={10}>
+                                                <b>{it}</b>
+                                              </td>
+                                            </tr>
+                                            {items &&
+                                              items.map((item, i) => (
+                                                <tr key={i}>
+                                                  {/* <td className="table_center">
                                               {item.reference_no}
                                             </td> */}
-                                            <td className="table_center">
-                                              {/* {item?.created_at &&
+                                                  <td className="table_center">
+                                                    {/* {item?.created_at &&
                                                 new Date(
                                                   item?.created_at
                                                 ).toLocaleString()} */}
-                                              {formatDate(item?.created_at)}
-                                            </td>
-                                            <td className="table_center">
-                                              {item.file_name && (
-                                                <a
-                                                  href={`${process.env.REACT_APP_PDF_URL}submitDrawing/${item.file_name}`}
-                                                  target="_blank"
-                                                  rel="noreferrer"
-                                                >
-                                                  Click Here
-                                                </a>
-                                              )}
-                                            </td>
-                                            <td className="table_center">
-                                              {item.created_by_id}
-                                            </td>
-                                            <td className="align-middle">
-                                              {item.remarks}
-                                            </td>
-                                            <td
-                                              className={`${clrLegend(
-                                                item?.status
-                                              )} bold`}
-                                            >
-                                              {item.status}
-                                            </td>
-                                            {(user.department_id === 2 ||
-                                              user.internal_role_id === 2) &&
-                                              poType !== "service" && (
-                                                <td>
-                                                  {item.status ===
-                                                    "SUBMITTED" && (
-                                                    <button
-                                                      onClick={() => {
-                                                        setIsPopup(true);
-                                                        setreferenceNo(
-                                                          item.reference_no
-                                                        );
-                                                      }}
-                                                      className="btn fw-bold btn-primary mx-3"
-                                                    >
-                                                      ACTION
-                                                    </button>
-                                                  )}
-                                                </td>
-                                              )}
-                                          </tr>
-                                        ))}
-                                    </Fragment>
-                                  );
-                                })}
+                                                    {formatDate(
+                                                      item?.created_at
+                                                    )}
+                                                  </td>
+                                                  <td className="table_center">
+                                                    {item.file_name && (
+                                                      <a
+                                                        href={`${process.env.REACT_APP_PDF_URL}submitDrawing/${item.file_name}`}
+                                                        target="_blank"
+                                                        rel="noreferrer"
+                                                      >
+                                                        Click Here
+                                                      </a>
+                                                    )}
+                                                  </td>
+                                                  <td className="table_center">
+                                                    {item.created_by_id}
+                                                  </td>
+                                                  <td className="align-middle">
+                                                    {item.remarks}
+                                                  </td>
+                                                  <td
+                                                    className={`${clrLegend(
+                                                      item?.status
+                                                    )} bold`}
+                                                  >
+                                                    {item.status}
+                                                  </td>
+                                                  {(user.department_id === 2 ||
+                                                    user.internal_role_id ===
+                                                      2) &&
+                                                    poType !== "service" && (
+                                                      <td>
+                                                        {item.status ===
+                                                          "SUBMITTED" && (
+                                                          <button
+                                                            onClick={() => {
+                                                              setIsPopup(true);
+                                                              setreferenceNo(
+                                                                item.reference_no
+                                                              );
+                                                            }}
+                                                            className="btn fw-bold btn-primary mx-3"
+                                                          >
+                                                            ACTION
+                                                          </button>
+                                                        )}
+                                                      </td>
+                                                    )}
+                                                </tr>
+                                              ))}
+                                          </Fragment>
+                                        );
+                                      }
+                                    )}
+                                  </>
+                                )}
                               </tbody>
                             </table>
                           </div>

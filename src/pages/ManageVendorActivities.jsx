@@ -10,6 +10,7 @@ import moment from "moment";
 import { checkTypeArr } from "../utils/smallFun";
 import { formatDate } from "../utils/getDateTimeNow";
 import DynamicButton from "../Helpers/DynamicButton";
+import SkeletonLoader from "../loader/SkeletonLoader";
 
 const ManageVendorActivities = () => {
   const inputFileRef = useRef(null);
@@ -23,8 +24,10 @@ const ManageVendorActivities = () => {
     remarks: "",
     actionType: "",
   });
+  const [isLoading, setIsLoading] = useState(false);
 
   const getData = async () => {
+    setIsLoading(true);
     try {
       const data = await apiCallBack(
         "GET",
@@ -34,9 +37,11 @@ const ManageVendorActivities = () => {
       );
       if (data?.status) {
         setInspectioncall(data?.data);
+        setIsLoading(false);
       }
     } catch (error) {
       console.error("Error fetching drawing list:", error);
+      setIsLoading(false);
     }
   };
 
@@ -120,37 +125,52 @@ const ManageVendorActivities = () => {
                                 </tr>
                               </thead>
                               <tbody style={{ maxHeight: "100%" }}>
-                                {checkTypeArr(inspectioncall) &&
-                                  inspectioncall.map((inspection) => (
-                                    <tr key={inspection.id}>
-                                      <td className="table_center">
-                                        {/* {moment(inspection.created_at)
+                                {isLoading ? (
+                                  <>
+                                    <tr></tr>
+                                    <tr>
+                                      <td colSpan={10}>
+                                        <SkeletonLoader col={4} row={6} />
+                                      </td>
+                                    </tr>
+                                  </>
+                                ) : (
+                                  <>
+                                    {checkTypeArr(inspectioncall) &&
+                                      inspectioncall.map((inspection) => (
+                                        <tr key={inspection.id}>
+                                          <td className="table_center">
+                                            {/* {moment(inspection.created_at)
                                           .utc()
                                           .format("DD/MM/YY (HH:mm)")} */}
-                                        {inspection.created_at &&
-                                          formatDate(inspection.created_at)}
-                                      </td>
-                                      <td className="">
-                                        {inspection.file_name && (
-                                          <a
-                                            href={`${process.env.REACT_APP_PDF_URL}vendorActivities/${inspection.file_name}`}
-                                            target="_blank"
-                                            rel="noreferrer"
-                                          >
-                                            Click Here
-                                          </a>
-                                        )}
-                                      </td>
-                                      <td className="">
-                                        {inspection.updated_by} (
-                                        {inspection.created_by_id})
-                                      </td>
-                                      <td className="">
-                                        {inspection.action_type}
-                                      </td>
-                                      <td className="">{inspection.remarks}</td>
-                                    </tr>
-                                  ))}
+                                            {inspection.created_at &&
+                                              formatDate(inspection.created_at)}
+                                          </td>
+                                          <td className="">
+                                            {inspection.file_name && (
+                                              <a
+                                                href={`${process.env.REACT_APP_PDF_URL}vendorActivities/${inspection.file_name}`}
+                                                target="_blank"
+                                                rel="noreferrer"
+                                              >
+                                                Click Here
+                                              </a>
+                                            )}
+                                          </td>
+                                          <td className="">
+                                            {inspection.updated_by} (
+                                            {inspection.created_by_id})
+                                          </td>
+                                          <td className="">
+                                            {inspection.action_type}
+                                          </td>
+                                          <td className="">
+                                            {inspection.remarks}
+                                          </td>
+                                        </tr>
+                                      ))}
+                                  </>
+                                )}
                               </tbody>
                             </table>
                           </div>

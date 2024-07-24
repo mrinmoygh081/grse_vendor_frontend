@@ -64,6 +64,13 @@ export const actionHandlerBTN = async (
       toast.warning("Please check the HSN code, GSTIN, Tax rate is as per PO.");
       return;
     }
+    if (
+      (parseFloat(debit_note) > 0 || parseFloat(credit_note) > 0) &&
+      !debit_credit_filename
+    ) {
+      toast.warning("Debit/Credit Note file is mandatory.");
+      return;
+    }
     if (total_price !== net_claim_amount) {
       toast.warning("Total price and net claim amount should be equal!");
       return;
@@ -141,8 +148,7 @@ export const actionHandlerByDO = async (
     if (!doForm?.other_deduction || doForm?.other_deduction === "") {
       return toast.warn("Please fill other decuction.");
     }
-   
-   
+
     const response = await apiCallBack(
       "POST",
       "po/btn/BillsMaterialHybridByDO",
