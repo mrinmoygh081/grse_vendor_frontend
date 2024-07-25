@@ -37,8 +37,6 @@ export const actionHandlerBTN = async (
       invoice_type,
       invoice_filename,
       invoice_value,
-      e_invoice_no,
-      e_invoice_filename,
       debit_note,
       credit_note,
       net_claim_amount,
@@ -63,6 +61,10 @@ export const actionHandlerBTN = async (
     }
     if (!hsn_gstn_icgrn) {
       toast.warning("Please check the HSN code, GSTIN, Tax rate is as per PO.");
+      return;
+    }
+    if (!invoice_filename) {
+      toast.warning("Invoice file is mandatory.");
       return;
     }
     if (
@@ -90,12 +92,8 @@ export const actionHandlerBTN = async (
     fDToSend.append("sgst", sgst);
     fDToSend.append("igst", igst);
     fDToSend.append("associated_po", JSON.stringify(associated_po));
-    if (invoice_filename) {
-      fDToSend.append("invoice_filename", invoice_filename);
-    }
-    if (e_invoice_filename) {
-      fDToSend.append("e_invoice_filename", e_invoice_filename);
-    }
+    fDToSend.append("invoice_filename", invoice_filename);
+
     if (debit_credit_filename) {
       fDToSend.append("debit_credit_filename", debit_credit_filename);
     }
@@ -185,7 +183,6 @@ export const actionHandlerServiceBTN = async (
       invoice_no,
       invoice_filename,
       invoice_value,
-      e_invoice_no,
       gst_rate,
       e_invoice_filename,
       debit_note,
@@ -216,7 +213,6 @@ export const actionHandlerServiceBTN = async (
     fDToSend.append("wdc_number", wdc_number);
     fDToSend.append("invoice_no", invoice_no);
     fDToSend.append("invoice_value", invoice_value);
-    fDToSend.append("e_invoice_no", e_invoice_no);
     fDToSend.append("debit_note", debit_note);
     fDToSend.append("credit_note", credit_note);
     fDToSend.append("credit_note", gst_rate);
@@ -279,7 +275,6 @@ export const actionHandlerAdvancebillHybrid = async (
       invoice_no,
       invoice_filename,
       invoice_value,
-      e_invoice_no,
       e_invoice_filename,
       debit_note,
       credit_note,
@@ -324,7 +319,6 @@ export const actionHandlerAdvancebillHybrid = async (
     fDToSend.append("purchasing_doc_no", id);
     fDToSend.append("invoice_no", invoice_no);
     fDToSend.append("invoice_value", invoice_value);
-    fDToSend.append("e_invoice_no", e_invoice_no);
     fDToSend.append("debit_note", debit_note);
     fDToSend.append("credit_note", credit_note);
     fDToSend.append("net_claim_amount", net_claim_amount);
