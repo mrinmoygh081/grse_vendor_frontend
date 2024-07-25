@@ -4,8 +4,6 @@ export const initialData = {
   invoice_no: "",
   invoice_filename: "",
   invoice_value: "",
-  e_invoice_no: "",
-  e_invoice_filename: "",
   debit_note: "",
   credit_note: "",
   net_claim_amount: 0,
@@ -31,6 +29,7 @@ export const initialData = {
       a_po: "",
     },
   ],
+  inv_type: "",
 };
 
 export const initialDOData = {

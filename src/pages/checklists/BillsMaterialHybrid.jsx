@@ -21,19 +21,18 @@ import { formatDate } from "../../utils/getDateTimeNow";
 import { toast } from "react-toastify";
 import { initialData } from "../../data/btnData";
 import DynamicButton from "../../Helpers/DynamicButton";
+import { D_S_INVOICE, E_INVOICE } from "../../constants/BTNContants";
 
 const BillsMaterialHybrid = () => {
   const navigate = useNavigate();
-  // const { isDO, poType } = useSelector((state) => state.selectedPO);
   const { user, token } = useSelector((state) => state.auth);
   const { id } = useParams();
 
   const [data, setData] = useState(null);
   const [form, setForm] = useState(initialData);
-  const [invType, setInvType] = useState({
-    inv_type: "",
-  });
-  const [loading, setLoading] = useState(true);
+  // const [invType, setInvType] = useState({
+  //   invoice_type: "",
+  // });
 
   const calNetClaimAmount = (invoice_value, debit_note, credit_note) => {
     invoice_value = parseFloat(invoice_value) || 0;
@@ -73,8 +72,9 @@ const BillsMaterialHybrid = () => {
       calNetClaimAmountwithGST(net_claim_amount, cgst, sgst, igst);
     }
   }, [form?.net_claim_amount, form?.cgst, form?.sgst, form?.igst]);
+
   const getData = async () => {
-    setLoading(true);
+    // setLoading(true);
     try {
       const d = await apiCallBack(
         "GET",
@@ -85,11 +85,11 @@ const BillsMaterialHybrid = () => {
       if (d?.status) {
         console.log(d);
         setData(d?.data);
-        setLoading(false);
+        // setLoading(false);
       }
     } catch (error) {
       console.error("Error fetching WDC list:", error);
-      setLoading(false);
+      // setLoading(false);
     }
   };
 
@@ -113,30 +113,9 @@ const BillsMaterialHybrid = () => {
     }
   }, [data]);
 
-  // const getGrnIcgrnHandler = async () => {
-  //   let inv_no = form.invoice_no || form.e_invoice_no;
-  //   console.log("inv_no", inv_no);
-  //   let response = await getGrnIcgrnByInvoice(id, inv_no, token);
-  //   if (response?.status) {
-  //     const { gate_entry_no, grn_nos, icgrn_nos, invoice_date, total_price } =
-  //       response.data;
-  //     setForm({
-  //       ...form,
-  //       gate_entry_no: gate_entry_no,
-  //       gate_entry_date: formatDate(invoice_date),
-  //       grn_nos: grn_nos,
-  //       icgrn_nos: icgrn_nos,
-  //       total_price: total_price,
-  //     });
-  //   } else {
-  //     toast.warn(response.message);
-  //   }
-  // };
-
   const getGrnIcgrnHandler = async () => {
     try {
-      let inv_no = form.invoice_no || form.e_invoice_no;
-      console.log("inv_no", inv_no);
+      let inv_no = form.invoice_no;
       let response = await getGrnIcgrnByInvoice(id, inv_no, token);
 
       if (response && response.status && response.data) {
@@ -167,8 +146,6 @@ const BillsMaterialHybrid = () => {
       invoice_no: "",
       invoice_filename: "",
       invoice_value: "",
-      e_invoice_no: "",
-      e_invoice_filename: "",
       gate_entry_no: "",
       gate_entry_date: "",
       get_entry_filename: "",
@@ -176,7 +153,7 @@ const BillsMaterialHybrid = () => {
       grn_nos: "",
       icgrn_nos: "",
     });
-  }, [invType?.inv_type]);
+  }, [form?.invoice_type]);
 
   // console.log("form", form);
 
@@ -263,30 +240,26 @@ const BillsMaterialHybrid = () => {
                                       <td>Choose Invoice Type</td>
                                       <td className="btn_value">
                                         <select
-                                          name="inv_type"
+                                          name="invoice_type"
                                           id=""
                                           className="form-select"
                                           onChange={(e) =>
-                                            inputTypeChange(
-                                              e,
-                                              invType,
-                                              setInvType
-                                            )
+                                            inputTypeChange(e, form, setForm)
                                           }
                                         >
                                           <option value="">
                                             Choose Invoice Type
                                           </option>
-                                          <option value="inv">
+                                          <option value={D_S_INVOICE}>
                                             Digitally signed Invoice
                                           </option>
-                                          <option value="e_inv">
+                                          <option value={E_INVOICE}>
                                             E-Invoice
                                           </option>
                                         </select>
                                       </td>
                                     </tr>
-                                    {invType?.inv_type === "inv" && (
+                                    {form?.invoice_type === D_S_INVOICE && (
                                       <tr>
                                         <td>Digitally Signed Invoice:</td>
                                         <td>
@@ -339,16 +312,16 @@ const BillsMaterialHybrid = () => {
                                         </td>
                                       </tr>
                                     )}
-                                    {invType?.inv_type === "e_inv" && (
+                                    {form?.invoice_type === E_INVOICE && (
                                       <tr>
                                         <td>E-Invoice No :</td>
                                         <td className="btn_value">
                                           <input
                                             type="text"
                                             className="form-control me-2"
-                                            name="e_invoice_no"
+                                            name="invoice_no"
                                             placeholder="E-Invoice number"
-                                            value={form?.e_invoice_no}
+                                            value={form?.invoice_no}
                                             onChange={(e) =>
                                               inputTypeChange(e, form, setForm)
                                             }
@@ -356,7 +329,7 @@ const BillsMaterialHybrid = () => {
                                           <input
                                             type="file"
                                             className="form-control"
-                                            name="e_invoice_filename"
+                                            name="invoice_filename"
                                             onChange={(e) =>
                                               inputFileChange(e, form, setForm)
                                             }
@@ -539,7 +512,7 @@ const BillsMaterialHybrid = () => {
                                         <b>{form?.net_with_gst}</b>
                                       </td>
                                     </tr>
-                                    {/* <tr>
+                                    <tr>
                                       <td>Contractual SDBG Submission Date</td>
                                       <td className="btn_value">
                                         <b className="me-3">
@@ -569,8 +542,8 @@ const BillsMaterialHybrid = () => {
                                             )
                                           : ""}
                                       </td>
-                                    </tr> */}
-                                    <tr>
+                                    </tr>
+                                    {/* <tr>
                                       <td>Contractual SDBG Submission Date</td>
                                       <td className="btn_value">
                                         <b className="me-3">
@@ -602,7 +575,7 @@ const BillsMaterialHybrid = () => {
                                             )
                                           : ""}
                                       </td>
-                                    </tr>
+                                    </tr> */}
                                     <tr>
                                       <td>Actual SDBG Submission Date</td>
                                       <td className="btn_value">
@@ -628,7 +601,7 @@ const BillsMaterialHybrid = () => {
                                         />
                                       </td>
                                     </tr>
-                                    <tr>
+                                    {/* <tr>
                                       <td>Gate Entry Acknowledgement no.</td>
                                       <td className="btn_value">
                                         {loading
@@ -637,15 +610,15 @@ const BillsMaterialHybrid = () => {
                                           ? form.gate_entry_no
                                           : "NA"}
                                       </td>
-                                    </tr>
-                                    {/* <tr>
+                                    </tr> */}
+                                    <tr>
                                       <td>Gate Entry Acknowledgement no.</td>
                                       <td className="btn_value">
                                         {form.gate_entry_no
                                           ? form.gate_entry_no
                                           : "NA"}
                                       </td>
-                                    </tr> */}
+                                    </tr>
                                     <tr>
                                       <td>Gate Entry Date</td>
                                       <td className="btn_value">

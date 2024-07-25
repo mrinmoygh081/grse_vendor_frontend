@@ -34,6 +34,7 @@ export const actionHandlerBTN = async (
       yard,
       stage,
       invoice_no,
+      invoice_type,
       invoice_filename,
       invoice_value,
       e_invoice_no,
@@ -80,8 +81,8 @@ export const actionHandlerBTN = async (
     fDToSend.append("stage", stage);
     fDToSend.append("purchasing_doc_no", id);
     fDToSend.append("invoice_no", invoice_no);
+    fDToSend.append("invoice_type", invoice_type);
     fDToSend.append("invoice_value", invoice_value);
-    fDToSend.append("e_invoice_no", e_invoice_no);
     fDToSend.append("debit_note", debit_note);
     fDToSend.append("credit_note", credit_note);
     fDToSend.append("hsn_gstn_icgrn", hsn_gstn_icgrn);
