@@ -16,7 +16,7 @@ const SyncComponent = () => {
   const logOutFun = () => {
     dispatch(logoutHandler());
     dispatch(poRemoveHandler());
-    window.location.href = "/";
+    // window.location.href = "/";
   };
 
   const handleSync = async () => {

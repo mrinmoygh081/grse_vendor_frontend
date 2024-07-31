@@ -12,6 +12,7 @@ import { reConfirm } from "../utils/reConfirm";
 import { inputOnWheelPrevent } from "../utils/inputOnWheelPrevent";
 import { clrLegend } from "../utils/clrLegend";
 import { BGEntry, BGEntrySave, bgInputs } from "../Helpers/BG";
+import { IoClose } from "react-icons/io5";
 import {
   ACTION_ABG,
   ACTION_DD,
@@ -929,27 +930,38 @@ const SDBGSub = () => {
       {isDO && (
         <div className={isEntryPopup ? "popup active" : "popup"}>
           <div className="card card-xxl-stretch mb-5 mb-xxl-8">
-            <div className="card-header border-0 pt-5">
-              <h3 className="card-title align-items-start flex-column">
+            <div
+              className="card-header border-0 pt-5"
+              style={{ display: "flex", alignItems: "center" }}
+            >
+              <h3
+                className="card-title flex-column"
+                style={{ marginRight: "10px" }}
+              >
                 <span className="card-label fw-bold fs-3 mb-1">BG Entry</span>
               </h3>
-              <FaDownload
-                size={32} // Increased the size
-                onClick={handleDownloadPDF}
-                style={{ cursor: "pointer", color: "green" }} // Changed the color to green
-              />
-
-              <button
-                className="btn fw-bold btn-danger"
-                onClick={() => {
-                  setIsEntryPopup(false);
-                  let bg = { ...bgInputs, purchasing_doc_no: id };
-                  setFormDatainput(bg);
-                  setIsExtended(false);
-                }}
-              >
-                Close
-              </button>
+              <div style={{ display: "flex", gap: "10px" }}>
+                <DynamicButton
+                  label="SAVE"
+                  onClick={() => uploadSDBGSave("SAVED")}
+                  className="btn btn-sm fw-bold btn-info"
+                />
+                <button className="btn fw-bold btn-success">
+                  <FaDownload size={20} onClick={handleDownloadPDF} />
+                </button>
+                <button
+                  className="btn btn-sm fw-bold btn-danger d-flex"
+                  onClick={() => {
+                    setIsEntryPopup(false);
+                    let bg = { ...bgInputs, purchasing_doc_no: id };
+                    setFormDatainput(bg);
+                    setIsExtended(false);
+                  }}
+                  style={{ fontSize: "24px" }}
+                >
+                  <IoClose />
+                </button>
+              </div>
             </div>
             {isLoading ? (
               <div className="row">
@@ -1141,11 +1153,12 @@ const SDBGSub = () => {
                   <div className="mb-3">
                     <label className="form-label">Yard No</label>
                     <input
-                      type="text"
+                      type="number"
                       className="form-control"
                       name="yard_no"
                       value={formDatainput?.yard_no || ""}
                       onChange={handleInputChange2}
+                      onWheel={(e) => inputOnWheelPrevent(e)}
                     />
                   </div>
                 </div>
@@ -1271,11 +1284,11 @@ const SDBGSub = () => {
                           className="btn-primary"
                           confirmMessage="You're going to forward the SDBG to Finance Dept. Please confirm!"
                         />
-                        <DynamicButton
+                        {/* <DynamicButton
                           label="SAVE"
                           onClick={() => uploadSDBGSave("SAVED")}
                           className="btn-info custom-save-button"
-                        />
+                        /> */}
                         {/* <button
                           className="btn fw-bold btn-success"
                           onClick={handleDownloadPDF}

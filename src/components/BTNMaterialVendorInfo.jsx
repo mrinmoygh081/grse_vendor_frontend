@@ -96,7 +96,10 @@ const BTNMaterialVendorInfo = ({ navigate, id }) => {
                   </td>
                 </tr>
                 <tr>
-                  <td>Digitally Signed Invoice:</td>
+                  <td>
+                    {data?.invoice_type ||
+                      "Digitally Signed Invoice / E-Invoice :"}
+                  </td>
                   <td className="btn_value">
                     <b className="me-3">
                       {data?.invoice_no ? data.invoice_no : "NA"}
@@ -113,29 +116,27 @@ const BTNMaterialVendorInfo = ({ navigate, id }) => {
                   </td>
                 </tr>
                 <tr>
+                  <td>Supporting Documents :</td>
+                  <td className="btn_value">
+                    {data?.invoice_supporting_doc ? (
+                      <a
+                        href={`${process.env.REACT_APP_PDF_URL}btns/${data?.invoice_supporting_doc}`}
+                        target="_blank"
+                        rel="noreferrer"
+                      >
+                        VIEW
+                      </a>
+                    ) : (
+                      "Not Submitted"
+                    )}
+                  </td>
+                </tr>
+                <tr>
                   <td>Basic value:</td>
                   <td className="btn_value">
                     <b className="me-3">
                       {data?.invoice_value ? data.invoice_value : "NA"}
                     </b>
-                  </td>
-                </tr>
-                <tr>
-                  <td>E-Invoice :</td>
-                  <td className="btn_value">
-                    <b className="me-3">
-                      {data?.e_invoice_no ? data.e_invoice_no : "NA"}
-                    </b>
-                    {data?.e_invoice_filename &&
-                      data?.e_invoice_filename !== "" && (
-                        <a
-                          href={`${process.env.REACT_APP_PDF_URL}btns/${data?.e_invoice_filename}`}
-                          target="_blank"
-                          rel="noreferrer"
-                        >
-                          VIEW
-                        </a>
-                      )}
                   </td>
                 </tr>
                 <tr>
@@ -302,11 +303,11 @@ const BTNMaterialVendorInfo = ({ navigate, id }) => {
                 <tr>
                   <td>GRN No</td>
                   <td className="btn_value">
-                    {checkTypeArr(form?.grn_nos) &&
-                      form?.grn_nos.map((item, i) => {
+                    {checkTypeArr(form?.icgrn_nos) &&
+                      form?.icgrn_nos.map((item, i) => {
                         return (
                           <b className="me-3" key={i}>
-                            {item?.grn_no}
+                            {item?.icgrn_nos}
                           </b>
                         );
                       })}

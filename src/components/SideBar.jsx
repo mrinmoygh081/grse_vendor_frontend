@@ -18,7 +18,7 @@ export default function SideBar({ id }) {
   const logOutFun = () => {
     dispatch(logoutHandler());
     dispatch(poRemoveHandler());
-    window.location.href = "/";
+    // window.location.href = "/";
     // Persistor.pause();
     // Persistor.flush().then(() => {
     //   return Persistor.purge();

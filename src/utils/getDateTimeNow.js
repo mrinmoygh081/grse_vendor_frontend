@@ -47,6 +47,9 @@ export const formatEpochToDate = (epochTimestamp) => {
 export const formatDate = (epochTime) => {
   // let date = new Date(epochTime);
   // console.log(epochTime);
+  if (!epochTime) {
+    return "--";
+  }
   const et = isNaN(epochTime) ? epochTime : parseInt(epochTime);
   // const et = isNaN(parseInt(epochTime)) ? epochTime : parseInt(epochTime);
   let date = new Date(et);

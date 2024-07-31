@@ -211,6 +211,8 @@ const BillsMaterialHybridEdit = () => {
     let p_ilms = 0;
     let p_estimate = 0;
 
+    console.log("icgrn_total", data?.icgrn_total);
+
     if (data?.icgrn_total) {
       const icgrnData = data?.icgrn_total;
 
@@ -250,7 +252,11 @@ const BillsMaterialHybridEdit = () => {
           Number(doForm?.max_penalty)
         );
       }
-      p_estimate = Math.max(p_drg, p_qap, p_ilms);
+      let p_total = p_drg + p_qap + p_ilms;
+      console.log("p_total", p_total);
+      let max_penalty_amount = (icgrnData * Number(doForm?.max_penalty)) / 100;
+      console.log("p_total", max_penalty_amount);
+      p_estimate = Math.min(p_total, max_penalty_amount);
     }
     console.log(
       "p_fjlkds",
@@ -270,13 +276,6 @@ const BillsMaterialHybridEdit = () => {
       p_estimate_amount: p_estimate,
     });
   }, [form, data?.icgrn_total, doForm?.max_penalty]);
-
-  console.log(
-    "hel",
-    doForm.drg_penalty,
-    doForm.qap_penalty,
-    doForm?.p_estimate_amount
-  );
 
   useEffect(() => {
     if (data) {

@@ -3,9 +3,10 @@ import { useDispatch, useSelector } from "react-redux";
 import { reConfirm } from "../utils/reConfirm";
 import { logoutHandler } from "../redux/slices/loginSlice";
 import { poRemoveHandler } from "../redux/slices/poSlice";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 
 export default function Header({ title, id }) {
+  const navigate = useNavigate();
   const user = useSelector((state) => state.auth);
 
   const dispatch = useDispatch();
@@ -13,7 +14,7 @@ export default function Header({ title, id }) {
   const logOutFun = () => {
     dispatch(logoutHandler());
     dispatch(poRemoveHandler());
-    window.location.href = "/";
+    // window.location.href = "/";
     // Persistor.pause();
     // Persistor.flush().then(() => {
     //   return Persistor.purge();
@@ -22,8 +23,10 @@ export default function Header({ title, id }) {
 
   useEffect(() => {
     (async () => {
+      console.log(id, typeof id);
       if (id === "null") {
         dispatch(poRemoveHandler());
+        navigate("/");
       }
     })();
   }, [id]);

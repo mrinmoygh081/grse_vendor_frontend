@@ -7,4 +7,8 @@ export const sidebarDashboardData = [
     title: "BTN",
     link: "/dashboard/btn",
   },
+  {
+    title: "QA",
+    link: "/dashboard/qa",
+  },
 ];

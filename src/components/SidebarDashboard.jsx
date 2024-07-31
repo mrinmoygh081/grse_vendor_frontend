@@ -1,5 +1,5 @@
 import React from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { logoutHandler } from "../redux/slices/loginSlice";
 import { Link, Outlet } from "react-router-dom";
 import { poRemoveHandler } from "../redux/slices/poSlice";
@@ -8,11 +8,25 @@ import { sidebarDashboardData } from "../data/sidebarDashboard";
 
 const SidebarDashboard = ({ title }) => {
   const dispatch = useDispatch();
+  const { user } = useSelector((state) => state.auth);
+  const getSidebarDashboardData = (department_id) => {
+    if (department_id === 3) {
+      return sidebarDashboardData.filter((item) => item.title === "QA");
+    } else if (department_id === 15) {
+      return sidebarDashboardData.filter(
+        (item) => item.title === "BG" || item.title === "BTN"
+      );
+    } else {
+      return sidebarDashboardData;
+    }
+  };
+
+  const sidebarData = getSidebarDashboardData(user?.department_id);
 
   const logOutFun = () => {
     dispatch(logoutHandler());
     dispatch(poRemoveHandler());
-    window.location.href = "/";
+    // window.location.href = "/";
   };
 
   return (
@@ -37,8 +51,8 @@ const SidebarDashboard = ({ title }) => {
           style={{ height: "calc(100vh - 100px)", paddingBottom: "40px" }}
         >
           <div className="menu menu-column menu-title-gray-800 menu-state-title-primary menu-state-icon-primary menu-state-bullet-primary menu-arrow-gray-500">
-            {sidebarDashboardData &&
-              sidebarDashboardData.map((item, i) => (
+            {sidebarData &&
+              sidebarData.map((item, i) => (
                 <div className="menu-item" key={i}>
                   <Link to={item?.link} className="menu-link">
                     <span className="menu-icon">

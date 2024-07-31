@@ -243,10 +243,14 @@ const PODetails = () => {
                                             PO Date:
                                           </span>
                                           <span className="label_data">
-                                            {po.AEDAT
+                                            {/* {po.AEDAT
                                               ? new Date(
                                                   po.AEDAT
                                                 ).toLocaleDateString()
+                                              : "Not Updated"} */}
+
+                                            {po?.AEDAT
+                                              ? formatDate(po?.AEDAT)
                                               : "Not Updated"}
 
                                             {/* {po.AEDAT} */}
@@ -305,7 +309,7 @@ const PODetails = () => {
                                               {currentStage || "Not available"}
                                             </span>
                                           </div>
-                                          {console.log(po.timeline, "kkkk")}
+
                                           {po?.timeline &&
                                             checkTypeArr(po.timeline) &&
                                             po.timeline.map((item, i) => (
@@ -317,11 +321,16 @@ const PODetails = () => {
                                                         {item?.mtext} :
                                                       </span>
                                                       <span className="label_data">
-                                                        {item?.plan_date
+                                                        {/* {item?.plan_date
                                                           ? new Date(
                                                               item?.plan_date
                                                             ).toLocaleDateString()
-                                                          : "Not Updated"}{" "}
+                                                          : "Not Updated"}{" "} */}
+                                                        {item?.plan_date
+                                                          ? formatDate(
+                                                              item?.plan_date
+                                                            )
+                                                          : "Not Updated"}
                                                         (
                                                         <span
                                                           className={`${clrLegend(

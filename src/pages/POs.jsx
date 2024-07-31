@@ -240,7 +240,7 @@ const POs = () => {
                         | {po?.Drawing?.DrawingLastStatus || "--"}
                       </td>
                       <td>
-                        {po?.QAP?.qapContractualSubmissionDate
+                        {/* {po?.QAP?.qapContractualSubmissionDate
                           ? new Date(
                               po.QAP.qapContractualSubmissionDate
                             ).toLocaleDateString()
@@ -251,10 +251,18 @@ const POs = () => {
                               po.QAP.qapActualSubmissionDate
                             ).toLocaleDateString()
                           : "--"}{" "}
+                        | {po?.QAP?.qapLastStatus || "--"} */}
+                        {po?.QAP?.qapContractualSubmissionDate
+                          ? formatDate(po?.QAP?.qapContractualSubmissionDate)
+                          : "--"}{" "}
+                        |{" "}
+                        {po?.QAP?.qapActualSubmissionDate
+                          ? formatDate(po?.QAP?.qapActualSubmissionDate)
+                          : "--"}{" "}
                         | {po?.QAP?.qapLastStatus || "--"}
                       </td>
                       <td>
-                        {po?.ILMS?.ilmsContractualSubmissionDate
+                        {/* {po?.ILMS?.ilmsContractualSubmissionDate
                           ? new Date(
                               po.ILMS.ilmsContractualSubmissionDate
                             ).toLocaleDateString()
@@ -264,6 +272,14 @@ const POs = () => {
                           ? new Date(
                               po.ILMS.ilmsActualSubmissionDate
                             ).toLocaleDateString()
+                          : "--"}{" "}
+                        | {po?.ILMS?.ilmsLastStatus || "--"} */}
+                        {po?.ILMS?.ilmsContractualSubmissionDate
+                          ? formatDate(po?.ILMS?.ilmsContractualSubmissionDate)
+                          : "--"}{" "}
+                        |{" "}
+                        {po?.ILMS?.ilmsActualSubmissionDate
+                          ? formatDate(po?.ILMS?.ilmsActualSubmissionDate)
                           : "--"}{" "}
                         | {po?.ILMS?.ilmsLastStatus || "--"}
                       </td>

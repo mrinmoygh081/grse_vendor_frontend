@@ -64,6 +64,7 @@ import BTNfinance from "./pages/BTNfinance";
 import SyncComponent from "./pages/SyncComponent";
 import { ASSIGNER } from "./constants/userConstants";
 import Authorisation from "./pages/settings/Authorisation";
+import QapDashboard from "./pages/dashboard/QapDashboard";
 
 function Layout() {
   const { token, isLoggedIn, user } = useSelector((state) => state.auth);
@@ -184,8 +185,18 @@ function Layout() {
         <Route path="/payment-advise/:id" element={<PaymentAdvisesSub />} />
         <Route path="/pbg-upload/:id" element={<PBGuploadSub />} />
         <Route path="/bg-extension" element={<BGExtensionSub />} />
-        <Route path="/dashboard/bg" element={<BGfinance />} />
+        {/* <Route path="/dashboard/bg" element={<BGfinance />} />
         <Route path="/dashboard/btn" element={<BTNfinance />} />
+        <Route path="/dashboard/qa" element={<QapDashboard />} /> */}
+        {user?.department_id === 3 && (
+          <Route path="/dashboard/qa" element={<QapDashboard />} />
+        )}
+        {user?.department_id === 15 && (
+          <>
+            <Route path="/dashboard/bg" element={<BGfinance />} />
+            <Route path="/dashboard/btn" element={<BTNfinance />} />
+          </>
+        )}
         <Route path="/claim-letter/:id" element={<ClaimLatterSub />} />
         {/* <Route path="/checklistedit/:id" element={<ChecklistSubEdit />} /> */}
         <Route path="/wdc/:id" element={<WDCSub />} />

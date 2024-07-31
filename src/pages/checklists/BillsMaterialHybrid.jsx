@@ -277,19 +277,12 @@ const BillsMaterialHybrid = () => {
                                                 })
                                               }
                                             />
-                                            <input
-                                              type="file"
-                                              className="form-control"
-                                              name="invoice_filename"
-                                              onChange={(e) =>
-                                                inputFileChange(
-                                                  e,
-                                                  form,
-                                                  setForm
-                                                )
-                                              }
-                                              accept=".pdf"
+                                            <DynamicButton
+                                              label="CHECK"
+                                              onClick={getGrnIcgrnHandler}
+                                              className="btn btn-primary btn-sm m-4"
                                             />
+
                                             {/* <button
                                               type="button"
                                               className="btn btn-primary btn-sm m-4"
@@ -297,11 +290,44 @@ const BillsMaterialHybrid = () => {
                                             >
                                               CHECK
                                             </button> */}
-                                            <DynamicButton
-                                              label="CHECK"
-                                              onClick={getGrnIcgrnHandler}
-                                              className="btn btn-primary btn-sm m-4"
-                                            />
+                                          </div>
+                                          <div className="btn_value">
+                                            <div className="me-4">
+                                              <label htmlFor="">
+                                                Invoice File
+                                              </label>
+                                              <input
+                                                type="file"
+                                                className="form-control"
+                                                name="invoice_filename"
+                                                onChange={(e) =>
+                                                  inputFileChange(
+                                                    e,
+                                                    form,
+                                                    setForm
+                                                  )
+                                                }
+                                                accept=".pdf"
+                                              />
+                                            </div>
+                                            <div>
+                                              <label htmlFor="">
+                                                Supporting Documents
+                                              </label>
+                                              <input
+                                                type="file"
+                                                className="form-control"
+                                                name="invoice_supporting_doc"
+                                                onChange={(e) =>
+                                                  inputFileChange(
+                                                    e,
+                                                    form,
+                                                    setForm
+                                                  )
+                                                }
+                                                accept=".pdf"
+                                              />
+                                            </div>
                                           </div>
                                           {/* <p>
                                             In case of ink -signed invoice
@@ -580,8 +606,61 @@ const BillsMaterialHybrid = () => {
                                       <td>Actual SDBG Submission Date</td>
                                       <td className="btn_value">
                                         <b className="me-3">
-                                          {form?.a_sdbg_date &&
-                                            formatDate(form?.a_sdbg_date)}
+                                          {form?.a_sdbg_date
+                                            ? formatDate(form?.a_sdbg_date)
+                                            : "NA"}
+                                        </b>
+                                      </td>
+                                    </tr>
+                                    <tr>
+                                      <td>Demand Draft</td>
+                                      <td>
+                                        <b>
+                                          {checkTypeArr(data?.dd_filename)
+                                            ? data?.dd_filename.map(
+                                                (item, i) => {
+                                                  return (
+                                                    <a
+                                                      href={`${process.env.REACT_APP_PDF_URL}submitSDBG/${item?.file_name}`}
+                                                      target="_blank"
+                                                      rel="noreferrer"
+                                                      key={i}
+                                                      style={{
+                                                        marginRight: "10px",
+                                                      }}
+                                                    >
+                                                      VIEW
+                                                    </a>
+                                                  );
+                                                }
+                                              )
+                                            : "NA"}
+                                        </b>
+                                      </td>
+                                    </tr>
+                                    <tr>
+                                      <td>Indeminity Bond</td>
+                                      <td>
+                                        <b>
+                                          {checkTypeArr(data?.ib_filename)
+                                            ? data?.ib_filename.map(
+                                                (item, i) => {
+                                                  return (
+                                                    <a
+                                                      href={`${process.env.REACT_APP_PDF_URL}submitSDBG/${item?.file_name}`}
+                                                      target="_blank"
+                                                      rel="noreferrer"
+                                                      key={i}
+                                                      style={{
+                                                        marginRight: "10px",
+                                                      }}
+                                                    >
+                                                      VIEW
+                                                    </a>
+                                                  );
+                                                }
+                                              )
+                                            : "NA"}
                                         </b>
                                       </td>
                                     </tr>
@@ -614,27 +693,29 @@ const BillsMaterialHybrid = () => {
                                     <tr>
                                       <td>Gate Entry Acknowledgement no.</td>
                                       <td className="btn_value">
-                                        {form.gate_entry_no
-                                          ? form.gate_entry_no
-                                          : "NA"}
+                                        <b>
+                                          {form.gate_entry_no &&
+                                            form.gate_entry_no}
+                                        </b>
                                       </td>
                                     </tr>
                                     <tr>
                                       <td>Gate Entry Date</td>
                                       <td className="btn_value">
-                                        {form.gate_entry_date
-                                          ? form.gate_entry_date
-                                          : "NA"}
+                                        <b>
+                                          {form.gate_entry_date &
+                                            form.gate_entry_date}
+                                        </b>
                                       </td>
                                     </tr>
                                     <tr>
                                       <td>GRN No </td>
                                       <td className="btn_value">
                                         <p>
-                                          {checkTypeArr(form?.grn_nos) &&
-                                            form?.grn_nos.map((item, i) => (
+                                          {checkTypeArr(form?.icgrn_nos) &&
+                                            form?.icgrn_nos.map((item, i) => (
                                               <b key={i} className="mx-2">
-                                                {item?.grn_no}
+                                                {item?.icgrn_nos}
                                               </b>
                                             ))}
                                         </p>

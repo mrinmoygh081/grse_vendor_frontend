@@ -18,7 +18,6 @@ export const selectedPO = createSlice({
       state.isDO = action.payload;
     },
     poRemoveHandler: (state, action) => {
-      // window.location.href = "/";
       state.po = null;
       state.poType = null;
       state.isDO = false;

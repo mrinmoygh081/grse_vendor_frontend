@@ -36,6 +36,7 @@ export const actionHandlerBTN = async (
       invoice_no,
       invoice_type,
       invoice_filename,
+      invoice_supporting_doc,
       invoice_value,
       debit_note,
       credit_note,
@@ -50,6 +51,11 @@ export const actionHandlerBTN = async (
       demand_raise_filename,
       associated_po,
     } = form;
+
+    if (!invoice_type || !invoice_type.trim() === "") {
+      toast.warning("Please choose Invoice Type.");
+      return;
+    }
 
     if (!invoice_value || !invoice_value.trim() === "") {
       toast.warning("Basic Value is mandatory.");
@@ -93,6 +99,7 @@ export const actionHandlerBTN = async (
     fDToSend.append("igst", igst);
     fDToSend.append("associated_po", JSON.stringify(associated_po));
     fDToSend.append("invoice_filename", invoice_filename);
+    fDToSend.append("invoice_supporting_doc", invoice_supporting_doc);
 
     if (debit_credit_filename) {
       fDToSend.append("debit_credit_filename", debit_credit_filename);
@@ -145,7 +152,7 @@ export const actionHandlerByDO = async (
       return toast.warn("Please select contractual delivery date.");
     }
     if (!doForm?.other_deduction || doForm?.other_deduction === "") {
-      return toast.warn("Please fill other decuction.");
+      return toast.warn("Please fill retension percentage.");
     }
 
     const response = await apiCallBack(

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Link } from "react-router-dom";
 import logoheader from "../images/logo.png";
 import { useDispatch, useSelector } from "react-redux";
@@ -6,21 +6,68 @@ import { reConfirm } from "../utils/reConfirm";
 import { logoutHandler } from "../redux/slices/loginSlice";
 import { poRemoveHandler } from "../redux/slices/poSlice";
 import { ASSIGNER } from "../constants/userConstants";
+import { toast } from "react-toastify";
 
 const MainHeader = ({ title }) => {
   const dispatch = useDispatch();
-  const { user } = useSelector((state) => state.auth);
+  const { user, isLoggedIn } = useSelector((state) => state.auth);
 
   const logOutFun = () => {
     dispatch(logoutHandler());
     dispatch(poRemoveHandler());
-    window.location.href = "/";
-    // Persistor.pause();
-    // Persistor.flush().then(() => {
-    //   return Persistor.purge();
-    // });
   };
 
+  const showUnauthorizedToast = () => {
+    // toast.warning("This is not an authorized user dashboard!");
+    toast.warning(
+      "This user does not have permission to access the dashboard!"
+    );
+  };
+
+  useEffect(() => {
+    if (!isLoggedIn) {
+      showUnauthorizedToast();
+    }
+  }, [isLoggedIn]);
+
+  const renderDashboardLinks = () => {
+    if (user?.department_id === 3) {
+      return (
+        <li className="nav-item">
+          <Link className="nav-link text-black" to={`/dashboard/qa`}>
+            DASHBOARD
+          </Link>
+        </li>
+      );
+    } else if (user?.department_id === 15) {
+      return (
+        <>
+          <li className="nav-item">
+            <Link className="nav-link text-black" to={`/dashboard/bg`}>
+              DASHBOARD
+            </Link>
+          </li>
+          {/* <li className="nav-item">
+            <Link className="nav-link text-black" to={`/dashboard/btn`}>
+              DASHBOARD
+            </Link>
+          </li> */}
+        </>
+      );
+    } else {
+      return (
+        <li className="nav-item">
+          <Link
+            className="nav-link text-black"
+            to="#"
+            onClick={showUnauthorizedToast}
+          >
+            DASHBOARD
+          </Link>
+        </li>
+      );
+    }
+  };
   return (
     <nav className="custom-navbar navbar navbar-expand-lg navbar-light bg-light">
       <div className="container">
@@ -33,57 +80,21 @@ const MainHeader = ({ title }) => {
         </div>
         <div className="" id="navbarNav">
           <ul className="navbar-nav ms-auto">
-            {/* <li className="nav-item">
-              <Link className="nav-link text-black" to="/">
-                Purchase Orders
-              </Link>
-            </li> */}
-            {/* {user?.user_type !== 1 && (
-              <>
-                <li className="nav-item">
-                  <Link className="nav-link text-black" to={`/log-report`}>
-                    LOGS
-                  </Link>
-                </li>
-              </>
-            )} */}
             {user?.user_type === 0 && (
-              <>
-                <li className="nav-item">
-                  <Link className="nav-link text-black" to={`/bg-extension`}>
-                    BG EXTENSION
-                  </Link>
-                </li>
-              </>
+              <li className="nav-item">
+                <Link className="nav-link text-black" to={`/bg-extension`}>
+                  BG EXTENSION
+                </Link>
+              </li>
             )}
-            {user?.user_type !== 1 && (
-              <>
-                <li className="nav-item">
-                  <Link className="nav-link text-black" to={`/dashboard/bg`}>
-                    DASHBOARD
-                  </Link>
-                </li>
-              </>
-            )}
+            {renderDashboardLinks()}
             {user?.user_type !== 1 && user?.internal_role_id === ASSIGNER && (
-              <>
-                <li className="nav-item">
-                  <Link className="nav-link text-black" to={`/authorisation`}>
-                    Settings
-                  </Link>
-                </li>
-              </>
+              <li className="nav-item">
+                <Link className="nav-link text-black" to={`/authorisation`}>
+                  Settings
+                </Link>
+              </li>
             )}
-            {/* <li className="nav-item">
-              <Link className="nav-link text-black" to="/bg-extension">
-                BG Extension
-              </Link>
-            </li>
-            <li className="nav-item">
-              <Link className="nav-link text-black" to="/checklist">
-                Checklists
-              </Link>
-            </li> */}
             <li>
               <div className="ps-4 log_in menu-item">
                 <b>
