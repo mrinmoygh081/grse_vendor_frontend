@@ -831,6 +831,9 @@ const BillsMaterialHybrid = () => {
                                                     href={`${process.env.REACT_APP_PDF_URL}submitSDBG/${item?.file_name}`}
                                                     target="_blank"
                                                     rel="noreferrer"
+                                                    style={{
+                                                      marginRight: "10px",
+                                                    }}
                                                   >
                                                     VIEW
                                                   </a>

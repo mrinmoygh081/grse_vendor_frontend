@@ -30,6 +30,7 @@ export const calculatePenalty = (
 
   // Calculate the difference in time in milliseconds
   const difference = actualTime - contractualTime;
+  console.log("difference", difference, percentage);
   if (difference < 0) return 0;
 
   // Calculate the number of weeks delayed
@@ -43,7 +44,7 @@ export const calculatePenalty = (
   // penaltyPercentage = Math.min(penaltyPercentage, maxPercentage);
 
   // Calculate the penalty amount
-  const penaltyAmount = (originalValue * penaltyPercentage) / 100;
+  const penaltyAmount = (Number(originalValue) * penaltyPercentage) / 100;
   // console.log(
   //   "penaltyAmount",
   //   penaltyAmount,

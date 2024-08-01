@@ -31,6 +31,10 @@ export const bgInputs = {
   extension: false,
 };
 
+export const bgFi = {
+  bg_file_no: "",
+};
+
 export const BGEntry = async (formDatainput, token, flag) => {
   const convertToEpochh = (date) => {
     return Math.floor(new Date(date).getTime() / 1000);

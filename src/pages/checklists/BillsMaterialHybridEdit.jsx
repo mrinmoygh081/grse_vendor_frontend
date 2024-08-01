@@ -258,15 +258,15 @@ const BillsMaterialHybridEdit = () => {
       console.log("p_total", max_penalty_amount);
       p_estimate = Math.min(p_total, max_penalty_amount);
     }
-    console.log(
-      "p_fjlkds",
-      p_drg,
-      p_qap,
-      p_ilms,
-      p_estimate,
-      doForm?.max_penalty,
-      form
-    );
+    // console.log(
+    //   "p_fjlkds",
+    //   p_drg,
+    //   p_qap,
+    //   p_ilms,
+    //   p_estimate,
+    //   doForm?.max_penalty,
+    //   form
+    // );
     setDoForm({
       ...doForm,
       p_sdbg_amount: p_sdbg,

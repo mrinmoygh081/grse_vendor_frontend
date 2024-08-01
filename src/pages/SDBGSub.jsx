@@ -11,7 +11,7 @@ import Select from "react-select";
 import { reConfirm } from "../utils/reConfirm";
 import { inputOnWheelPrevent } from "../utils/inputOnWheelPrevent";
 import { clrLegend } from "../utils/clrLegend";
-import { BGEntry, BGEntrySave, bgInputs } from "../Helpers/BG";
+import { BGEntry, BGEntrySave, bgFi, bgInputs } from "../Helpers/BG";
 import { IoClose } from "react-icons/io5";
 import {
   ACTION_ABG,
@@ -53,9 +53,8 @@ const SDBGSub = () => {
   const [allsdbg, setAllsdbg] = useState([]);
   const [groupedBG, setGroupedBG] = useState([]);
 
-  const [sdbgEntryForFi, setSdbgEntryForFi] = useState({
-    bg_file_no: "",
-  });
+  const [sdbgEntryForFi, setSdbgEntryForFi] = useState(bgFi);
+  console.log("sdbgEntryForFi", sdbgEntryForFi);
   const [selectedActionType, setSelectedActionType] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [formData, setFormData] = useState({
@@ -1330,15 +1329,17 @@ const SDBGSub = () => {
                 </span>
               </h3>
               <button
-                className="btn fw-bold btn-danger"
+                className="btn btn-sm fw-bold btn-danger d-flex"
                 onClick={() => {
                   setIsCheckEntryPopup(false);
                   let bg = { ...bgInputs, purchasing_doc_no: id };
                   setFormDatainput(bg);
                   setIsExtended(false);
+                  setSdbgEntryForFi(bgFi);
                 }}
+                style={{ fontSize: "24px" }}
               >
-                Close
+                <IoClose />
               </button>
             </div>
             {isLoading ? (
@@ -1361,8 +1362,8 @@ const SDBGSub = () => {
                           <input
                             type="text"
                             className="form-control"
-                            name="department"
-                            value={sdbgEntryForFi?.bg_file_no || ""}
+                            name="bg_file_no"
+                            value={sdbgEntryForFi?.bg_file_no}
                             onChange={(e) =>
                               setSdbgEntryForFi({
                                 ...sdbgEntryForFi,
