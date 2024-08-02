@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import logoheader from "../images/logo.png";
 import { useDispatch, useSelector } from "react-redux";
@@ -7,10 +7,19 @@ import { logoutHandler } from "../redux/slices/loginSlice";
 import { poRemoveHandler } from "../redux/slices/poSlice";
 import { ASSIGNER } from "../constants/userConstants";
 import { toast } from "react-toastify";
+import DynamicButton from "../Helpers/DynamicButton";
+import { apiCallBack } from "../utils/fetchAPIs";
+import { FaCog, FaFileAlt, FaKey, FaTachometerAlt } from "react-icons/fa";
 
 const MainHeader = ({ title }) => {
   const dispatch = useDispatch();
-  const { user, isLoggedIn } = useSelector((state) => state.auth);
+  const { user, isLoggedIn, token } = useSelector((state) => state.auth);
+  const [ischangepasswordPopup, setIschangepasswordPopup] = useState(false);
+  const [passwordForm, setPasswordForm] = useState({
+    old_pw: "",
+    new_pw: "",
+    confirm_pw: "",
+  });
 
   const logOutFun = () => {
     dispatch(logoutHandler());
@@ -18,7 +27,6 @@ const MainHeader = ({ title }) => {
   };
 
   const showUnauthorizedToast = () => {
-    // toast.warning("This is not an authorized user dashboard!");
     toast.warning(
       "This user does not have permission to access the dashboard!"
     );
@@ -35,7 +43,7 @@ const MainHeader = ({ title }) => {
       return (
         <li className="nav-item">
           <Link className="nav-link text-black" to={`/dashboard/qa`}>
-            DASHBOARD
+            <FaTachometerAlt className="me-2" /> DASHBOARD
           </Link>
         </li>
       );
@@ -44,14 +52,9 @@ const MainHeader = ({ title }) => {
         <>
           <li className="nav-item">
             <Link className="nav-link text-black" to={`/dashboard/bg`}>
-              DASHBOARD
+              <FaTachometerAlt className="me-2" /> DASHBOARD
             </Link>
           </li>
-          {/* <li className="nav-item">
-            <Link className="nav-link text-black" to={`/dashboard/btn`}>
-              DASHBOARD
-            </Link>
-          </li> */}
         </>
       );
     } else {
@@ -62,12 +65,49 @@ const MainHeader = ({ title }) => {
             to="#"
             onClick={showUnauthorizedToast}
           >
-            DASHBOARD
+            <FaTachometerAlt className="me-2" /> DASHBOARD
           </Link>
         </li>
       );
     }
   };
+
+  const handleInputChange = (e) => {
+    setPasswordForm({
+      ...passwordForm,
+      [e.target.name]: e.target.value,
+    });
+  };
+
+  const PasswordchangeBtn = async (e) => {
+    if (passwordForm.new_pw !== passwordForm.confirm_pw) {
+      toast.warn("New Password and Confirm Password do not match.");
+      return;
+    }
+
+    try {
+      const res = await apiCallBack(
+        "POST",
+        `auth2/updatePassword`,
+        {
+          user_code: user?.vendor_code, // include vendor code in payload
+          old_pw: passwordForm.old_pw,
+          new_pw: passwordForm.new_pw,
+        },
+        token
+      );
+      if (res?.status) {
+        setIschangepasswordPopup(false);
+        toast.success("Password changed successfully!");
+      } else {
+        toast.warn(res?.message || "Failed to change password.");
+      }
+    } catch (error) {
+      console.error("Error changing password:", error);
+      toast.error("An error occurred while changing the password.");
+    }
+  };
+
   return (
     <nav className="custom-navbar navbar navbar-expand-lg navbar-light bg-light">
       <div className="container">
@@ -78,47 +118,125 @@ const MainHeader = ({ title }) => {
         <div className="my-3">
           <h2>{title}</h2>
         </div>
-        <div className="" id="navbarNav">
-          <ul className="navbar-nav ms-auto">
-            {user?.user_type === 0 && (
+        <div className="dropdown-container">
+          <div className="ps-4 log_in menu-item dropdown-trigger">
+            <b>
+              Logged In: <br />
+              <span className="menu-title">{user?.vendor_code}</span>
+              <span className="menu-title">
+                {user.name ? `(${user.name})` : ""}
+              </span>
+              <span
+                onClick={() =>
+                  reConfirm(
+                    { file: true },
+                    logOutFun,
+                    "You're going to Logout!"
+                  )
+                }
+              >
+                (<u className="red">Logout?</u>)
+              </span>
+            </b>
+            <ul className="dropdown-menu">
+              {user?.user_type === 0 && (
+                <li className="nav-item">
+                  <Link className="nav-link text-black" to={`/bg-extension`}>
+                    <FaFileAlt className="me-2" /> BG EXTENSION
+                  </Link>
+                </li>
+              )}
+              {renderDashboardLinks()}
+              {user?.user_type !== 1 && user?.internal_role_id === ASSIGNER && (
+                <li className="nav-item">
+                  <Link className="nav-link text-black" to={`/authorisation`}>
+                    <FaCog className="me-2" /> Authorization
+                  </Link>
+                </li>
+              )}
               <li className="nav-item">
-                <Link className="nav-link text-black" to={`/bg-extension`}>
-                  BG EXTENSION
+                <Link
+                  className="nav-link text-black"
+                  to="#"
+                  onClick={() => setIschangepasswordPopup(true)}
+                >
+                  <FaKey className="me-2" /> Change Password
                 </Link>
               </li>
-            )}
-            {renderDashboardLinks()}
-            {user?.user_type !== 1 && user?.internal_role_id === ASSIGNER && (
-              <li className="nav-item">
-                <Link className="nav-link text-black" to={`/authorisation`}>
-                  Settings
-                </Link>
-              </li>
-            )}
-            <li>
-              <div className="ps-4 log_in menu-item">
-                <b>
-                  Logged In: <br />
-                  <span className="menu-title">{user?.vendor_code}</span>
-                  <span className="menu-title">
-                    {user.name ? `(${user.name})` : ""}
-                  </span>
-                  <span
-                    onClick={() =>
-                      reConfirm(
-                        { file: true },
-                        logOutFun,
-                        "You're going to Logout!"
-                      )
-                    }
-                  >
-                    (<u className="red">Logout?</u>)
-                  </span>
-                </b>
-              </div>
-            </li>
-          </ul>
+            </ul>
+          </div>
         </div>
+        {ischangepasswordPopup && (
+          <div className="popup active">
+            <div className="card card-xxl-stretch mb-5 mb-xxl-8">
+              <div className="card-header border-0 pt-5">
+                <h3 className="card-title align-items-start flex-column">
+                  <span className="card-label fw-bold fs-3 mb-1">
+                    Change Password
+                  </span>
+                </h3>
+                <button
+                  className="btn fw-bold btn-danger"
+                  onClick={() => setIschangepasswordPopup(false)}
+                >
+                  Close
+                </button>
+              </div>
+
+              <div className="row" style={{ overflow: "unset" }}>
+                <div className="col-12">
+                  <div className="mb-3">
+                    <label htmlFor="oldpassword">Old Password</label>
+                    <input
+                      className="form-control form-control-lg form-control-solid"
+                      type="password"
+                      name="old_pw"
+                      value={passwordForm.old_pw}
+                      onChange={handleInputChange}
+                      required
+                    />
+                  </div>
+                </div>
+                <div className="col-12">
+                  <div className="mb-3">
+                    <label htmlFor="newpassword">New Password</label>
+                    <input
+                      className="form-control form-control-lg form-control-solid"
+                      type="password"
+                      name="new_pw"
+                      value={passwordForm.new_pw}
+                      onChange={handleInputChange}
+                      required
+                    />
+                  </div>
+                </div>
+                <div className="col-12">
+                  <div className="mb-3">
+                    <label htmlFor="confirmpassword">Confirm Password</label>
+                    <input
+                      className="form-control form-control-lg form-control-solid"
+                      type="password"
+                      name="confirm_pw"
+                      value={passwordForm.confirm_pw}
+                      onChange={handleInputChange}
+                      required
+                    />
+                  </div>
+                </div>
+                <div className="col-12">
+                  <div className="mb-3 d-flex justify-content-between">
+                    <DynamicButton
+                      label="SUBMIT"
+                      onClick={PasswordchangeBtn}
+                      className="btn fw-bold btn-primary"
+                      type="submit"
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </nav>
   );
