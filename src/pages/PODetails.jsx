@@ -56,6 +56,33 @@ const PODetails = () => {
     setFile(selectedFile);
   };
 
+  // const handleUploadTNCMinutes = async (event) => {
+  //   try {
+  //     event.preventDefault();
+
+  //     const formData = new FormData();
+  //     formData.append("purchasing_doc_no", id);
+  //     formData.append("file", file);
+
+  //     const response = await apiCallBack(
+  //       "POST",
+  //       "upload/tncminutes",
+  //       formData,
+  //       token
+  //     );
+
+  //     if (response.status === true) {
+  //       toast.success("TNC Minutes uploaded successfully!");
+
+  //       setIsPopup(false);
+  //     } else {
+  //       toast.error("TNC Minutes not uploaded!. Please try again.");
+  //     }
+  //   } catch (error) {
+  //     console.error("Error uploading TNC Minutes:", error.message);
+  //     toast.error("Error uploading TNC Minutes. Please try again.");
+  //   }
+  // };
   const handleUploadTNCMinutes = async (event) => {
     try {
       event.preventDefault();
@@ -83,6 +110,7 @@ const PODetails = () => {
       toast.error("Error uploading TNC Minutes. Please try again.");
     }
   };
+
   const handleViewTNCMinutes = async () => {
     try {
       const response = await axios.get(
@@ -493,17 +521,19 @@ const PODetails = () => {
                               </div>
                               <div className="col-12">
                                 <div className="mb-3">
-                                  {/* <button
+                                  <button
                                     className="btn fw-bold btn-primary"
                                     onClick={handleUploadTNCMinutes}
                                   >
                                     UPDATE
-                                  </button> */}
-                                  <DynamicButton
+                                  </button>
+                                  {/* <DynamicButton
                                     label="UPDATE"
                                     className="btn fw-bold btn-primary"
-                                    onClick={handleUploadTNCMinutes}
-                                  />
+                                    onClick={(event) =>
+                                      handleUploadTNCMinutes(event)
+                                    } // Pass event correctly
+                                  /> */}
                                 </div>
                               </div>
                             </div>

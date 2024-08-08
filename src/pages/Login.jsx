@@ -219,7 +219,7 @@ export default function Login() {
                   }
                 />
               </div>
-              {/* <div className="d-flex justify-content-between mb-3">
+              <div className="d-flex justify-content-between mb-3">
                 <button
                   type="button"
                   className="btn btn-link p-0"
@@ -227,7 +227,7 @@ export default function Login() {
                 >
                   Forget Password?
                 </button>
-              </div> */}
+              </div>
               <div className="text-center">
                 <button
                   type="submit"
