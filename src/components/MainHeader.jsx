@@ -135,7 +135,8 @@ const MainHeader = ({ title }) => {
               {user?.user_type !== 1 && user?.internal_role_id === ASSIGNER && (
                 <li className="nav-item">
                   <Link className="nav-link text-black" to={`/authorisation`}>
-                    <FaCog className="me-2" /> Authorization
+                    <FaCog className="me-2" />
+                    AUTHORIZATION
                   </Link>
                 </li>
               )}
@@ -145,7 +146,7 @@ const MainHeader = ({ title }) => {
                   to="#"
                   onClick={() => setIschangepasswordPopup(true)}
                 >
-                  <FaKey className="me-2" /> Change Password
+                  <FaKey className="me-2" /> CHANGE PASSWORD
                 </Link>
               </li>
             </ul>
