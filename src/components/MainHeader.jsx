@@ -120,24 +120,9 @@ const MainHeader = ({ title }) => {
         </div>
         <div className="dropdown-container">
           <div className="ps-4 log_in menu-item dropdown-trigger">
-            <b>
-              Logged In: <br />
-              <span className="menu-title">{user?.vendor_code}</span>
-              <span className="menu-title">
-                {user.name ? `(${user.name})` : ""}
-              </span>
-              <span
-                onClick={() =>
-                  reConfirm(
-                    { file: true },
-                    logOutFun,
-                    "You're going to Logout!"
-                  )
-                }
-              >
-                (<u className="red">Logout?</u>)
-              </span>
-            </b>
+            <span className="settings-trigger">
+              <FaCog className="me-0 settings-icon" /> <b>Setting</b>
+            </span>
             <ul className="dropdown-menu">
               {user?.user_type === 0 && (
                 <li className="nav-item">
@@ -166,6 +151,25 @@ const MainHeader = ({ title }) => {
             </ul>
           </div>
         </div>
+
+        <div className="ps-4 log_in menu-item dropdown-trigger">
+          <b>
+            Logged In: <br />
+            <span className="menu-title">{user?.vendor_code}</span>
+            <span className="menu-title">
+              {user.name ? `(${user.name})` : ""}
+            </span>
+            <span
+              onClick={() =>
+                reConfirm({ file: true }, logOutFun, "You're going to Logout!")
+              }
+            >
+              (<u className="red">Logout?</u>)
+            </span>
+          </b>
+          <ul className="dropdown-menu"></ul>
+        </div>
+
         {ischangepasswordPopup && (
           <div className="popup active">
             <div className="card card-xxl-stretch mb-5 mb-xxl-8">

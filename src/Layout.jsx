@@ -65,6 +65,7 @@ import SyncComponent from "./pages/SyncComponent";
 import { ASSIGNER } from "./constants/userConstants";
 import Authorisation from "./pages/settings/Authorisation";
 import QapDashboard from "./pages/dashboard/QapDashboard";
+import ForgatePassword from "./pages/ForgatePassword";
 
 function Layout() {
   const { token, isLoggedIn, user } = useSelector((state) => state.auth);
@@ -77,6 +78,7 @@ function Layout() {
         <Routes>
           <Route path="/" element={<Login />} />
           <Route path="/registration" element={<Registration />} />
+          <Route path="/forget-password" element={<ForgatePassword />} />
           <Route path="*" element={<Navigate to="/" />} />
         </Routes>
       </BrowserRouter>

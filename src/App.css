@@ -657,6 +657,20 @@ input[type="number"] {
   position: relative;
 }
 
+.dropdown-trigger {
+  cursor: pointer;
+}
+
+.settings-trigger {
+  display: flex;
+  align-items: center;
+}
+
+.settings-icon {
+  cursor: pointer;
+  vertical-align: middle;
+}
+
 .dropdown-trigger:hover .dropdown-menu {
   display: block;
 }
@@ -670,6 +684,7 @@ input[type="number"] {
   box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
   padding: 10px;
   z-index: 1000;
+  min-width: 200px;
 }
 
 .dropdown-menu .nav-item {
@@ -678,4 +693,21 @@ input[type="number"] {
 
 .dropdown-menu .nav-item:last-child {
   margin-bottom: 0;
+}
+
+.log_in:hover .dropdown-menu {
+  display: block;
+}
+
+.nav-link {
+  display: flex;
+  align-items: center;
+}
+
+.nav-link .me-2 {
+  margin-right: 8px;
+}
+
+.settings-trigger b {
+  margin-left: 8px;
 }
