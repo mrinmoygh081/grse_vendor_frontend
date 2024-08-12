@@ -352,7 +352,7 @@ const BTNMaterialVendorInfo = ({ navigate, id }) => {
                         form?.icgrn_nos.map((item, i) => {
                           return (
                             <b className="me-3" key={i}>
-                              {item?.icgrn_nos}
+                              {item?.grn_no ? item.grn_no : "NA"}
                             </b>
                           );
                         })}
@@ -366,7 +366,7 @@ const BTNMaterialVendorInfo = ({ navigate, id }) => {
                         form?.icgrn_nos.map((item, i) => {
                           return (
                             <b className="me-3" key={i}>
-                              {item?.icgrn_nos ? item.icgrn_nos : "NA"}
+                              {item?.grn_no ? item.grn_no : "NA"}
                             </b>
                           );
                         })}
