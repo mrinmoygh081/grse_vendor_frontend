@@ -202,7 +202,7 @@ export default function Login() {
                   }
                 />
               </div>
-              <div className="fv-row mb-3">
+              <div className="fv-row mb-2">
                 <div className="d-flex flex-stack mb-2">
                   <label className="form-label fw-bolder text-dark fs-6 mb-0">
                     Password
@@ -219,7 +219,7 @@ export default function Login() {
                   }
                 />
               </div>
-              <div className="d-flex justify-content-between mb-3">
+              <div className="d-flex justify-content-end mb-3">
                 <button
                   type="button"
                   className="btn btn-link p-0"

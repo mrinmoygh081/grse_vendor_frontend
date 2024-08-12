@@ -32,7 +32,7 @@ const DrawingSub = () => {
   const [isAssignPopup, setIsAssignPopup] = useState(false);
   const [referenceNo, setreferenceNo] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  console.log(poType, "poType MMMMMMMMMMMMMMMMMMMM");
+
   const [assign, setAssign] = useState({
     purchasing_doc_no: id,
     assign_to: null,
@@ -41,7 +41,7 @@ const DrawingSub = () => {
   });
   const [empOption, setEmpOption] = useState([]);
   const [currentAssign, setCurrentAssign] = useState([]);
-  console.log(currentAssign, "llllllllll");
+
   // console.log("useruser", user);
   // console.log(poType, "poType");
   // console.log(userType, "userType");
@@ -88,6 +88,7 @@ const DrawingSub = () => {
       getData();
     }
   }, []);
+
   const getData = async () => {
     setIsLoading(true);
     try {
@@ -97,11 +98,10 @@ const DrawingSub = () => {
         null,
         token
       );
-      // console.log(data);
       if (data?.status) {
         setAlldrawing(data?.data);
-        setIsLoading(false);
       }
+      setIsLoading(false);
     } catch (error) {
       console.error("Error fetching drawing list:", error);
       setIsLoading(false);
