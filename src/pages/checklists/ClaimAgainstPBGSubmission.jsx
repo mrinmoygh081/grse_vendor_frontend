@@ -24,7 +24,7 @@ const ClaimAgainstPBGSubmission = () => {
                     <div className="row g-5 g-xl-8">
                       <div className="col-12">
                         <div className="card">
-                          <h3 className="m-3">GENERAL PARTICULARS:</h3>
+                          <h3 className="m-3">Claim Against PBG Submission:</h3>
                           <div className="card-body p-3">
                             <div className="tab-content">
                               <div className="table-responsive">
@@ -35,113 +35,82 @@ const ClaimAgainstPBGSubmission = () => {
                                       <td>89876543</td>
                                     </tr> */}
                                     <tr>
-                                      <td>Invoice reference no:</td>
-                                      <td>
-                                        <input type="text" /> &nbsp;
-                                        <input type="text" />
-                                        &nbsp;
-                                        <input type="file" />
+                                      <td>Original Invoice No :</td>
+                                      <td className="btn_value">
+                                        <input
+                                          type="text"
+                                          className="form-control me-2"
+                                          name="invoice_no"
+                                          placeholder="Invoice No"
+                                        />
+                                        <input
+                                          type="file"
+                                          className="form-control"
+                                          name="invoice_filename"
+                                          accept=".pdf"
+                                        />
+                                        {/* <button
+                                            type="button"
+                                            className="btn btn-primary btn-sm m-4"
+                                            onClick={getGrnIcgrnHandler}
+                                          >
+                                            CHECK
+                                          </button> */}
+                                        {/* <DynamicButton
+                                            label="CHECK"
+                                            onClick={getGrnIcgrnHandler}
+                                            className="btn btn-primary btn-sm m-4"
+                                          /> */}
+                                      </td>
+                                    </tr>
+                                    <tr>
+                                      <td>Balance Claim Invoice :</td>
+                                      <td className="btn_value">
+                                        <input
+                                          type="text"
+                                          className="form-control me-2"
+                                          name="invoice_no"
+                                          placeholder="Invoice No"
+                                        />
+                                        <input
+                                          type="file"
+                                          className="form-control"
+                                          name="invoice_filename"
+                                          accept=".pdf"
+                                        />
+                                      </td>
+                                    </tr>
+                                    <tr>
+                                      <td>Claim Amount :</td>
+                                      <td className="btn_value">
+                                        <input
+                                          type="text"
+                                          className="form-control me-2"
+                                          name="invoice_no"
+                                        />
+                                      </td>
+                                    </tr>
+                                    <tr>
+                                      <td>Retension % Claim :</td>
+                                      <td className="btn_value">
+                                        <input
+                                          type="text"
+                                          className="form-control me-2"
+                                          name="invoice_no"
+                                        />
+                                        <span className="ms-1">%</span>
+                                        <span className="ms-2">
+                                          {/* Retension Amount:{" "} */}
+                                        </span>
                                       </td>
                                     </tr>
                                     <tr>
                                       <td>PBG:</td>
-                                      <td>
-                                        <input type="text" />
-                                      </td>
+                                      <td className="btn_value">{}</td>
                                     </tr>
                                     <tr>
-                                      <td>PO No:</td>
-                                      <td>
-                                        <input type="text" />
-                                      </td>
-                                    </tr>
-                                    <tr>
-                                      <td>Vendor Name:</td>
-                                      <td>
-                                        <input type="text" />
-                                      </td>
-                                    </tr>
-                                    <tr>
-                                      <td>Vendor Code:</td>
-                                      <td>
-                                        {" "}
-                                        <input type="text" />
-                                      </td>
-                                    </tr>
-                                    <tr>
-                                      <td>ICGRN No /Service Entry sheet 1:</td>
-                                      <td>
-                                        {" "}
-                                        <input type="text" />
-                                      </td>
-                                    </tr>
-                                    <tr>
-                                      <td>ICGRN No /Service Entry sheet 2:</td>
-                                      <td>
-                                        <input type="text" />
-                                      </td>
-                                    </tr>
-                                    <tr>
-                                      <td>ICGRN No /Service Entry sheet 3:</td>
-                                      <td>
-                                        {" "}
-                                        <input type="text" />
-                                      </td>
-                                    </tr>
-                                    <tr>
-                                      <td>ICGRN Date:</td>
-                                      <td>
-                                        {" "}
-                                        <input type="date" />
-                                      </td>
-                                    </tr>
-                                  </tbody>
-                                </table>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                      <div className="col-12">
-                        <div className="card">
-                          <h3 className="m-3">ENTRY BY DEALING OFFICER:</h3>
-                          <div className="card-body p-3">
-                            <div className="tab-content">
-                              <div className="table-responsive">
-                                <table className="table table-striped table-bordered table_height">
-                                  <tbody style={{ maxHeight: "100%" }}>
-                                    <tr>
-                                      <td>Recommended for payment:</td>
-                                      <td>
-                                        <select className="form-control">
-                                          <option value="Y">Y</option>
-                                          <option value="N">N</option>
-                                        </select>
-                                      </td>
-                                    </tr>
-                                  </tbody>
-                                </table>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                      <div className="col-12">
-                        <div className="card">
-                          <h3 className="m-3">ENTRY BY FINANCE:</h3>
-                          <div className="card-body p-3">
-                            <div className="tab-content">
-                              <div className="table-responsive">
-                                <table className="table table-striped table-bordered table_height">
-                                  <tbody style={{ maxHeight: "100%" }}>
-                                    <tr>
-                                      <td>Released:</td>
-                                      <td>
-                                        <select className="form-control">
-                                          <option value="Y">Y</option>
-                                          <option value="N">N</option>
-                                        </select>
-                                      </td>
+                                      <td>ICGRN:</td>
+                                      <td className="btn_value">{}</td>
                                     </tr>
                                   </tbody>
                                 </table>
