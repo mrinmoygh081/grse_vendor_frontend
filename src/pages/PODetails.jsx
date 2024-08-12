@@ -25,6 +25,7 @@ const PODetails = () => {
   const { id } = useParams();
   const { token, user } = useSelector((state) => state.auth);
   const [isPopup, setIsPopup] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   window.addEventListener("popstate", () => {
     dispatch(poRemoveHandler());
@@ -84,9 +85,10 @@ const PODetails = () => {
   //   }
   // };
   const handleUploadTNCMinutes = async (event) => {
-    try {
-      event.preventDefault();
+    event.preventDefault();
+    setLoading(true); // Start loading
 
+    try {
       const formData = new FormData();
       formData.append("purchasing_doc_no", id);
       formData.append("file", file);
@@ -100,14 +102,15 @@ const PODetails = () => {
 
       if (response.status === true) {
         toast.success("TNC Minutes uploaded successfully!");
-
         setIsPopup(false);
       } else {
-        toast.error("TNC Minutes not uploaded!. Please try again.");
+        toast.error("TNC Minutes not uploaded! Please try again.");
       }
     } catch (error) {
       console.error("Error uploading TNC Minutes:", error.message);
       toast.error("Error uploading TNC Minutes. Please try again.");
+    } finally {
+      setLoading(false); // Stop loading
     }
   };
 
@@ -524,8 +527,9 @@ const PODetails = () => {
                                   <button
                                     className="btn fw-bold btn-primary"
                                     onClick={handleUploadTNCMinutes}
+                                    disabled={loading}
                                   >
-                                    UPDATE
+                                    {loading ? "Uploading..." : "UPDATE"}{" "}
                                   </button>
                                   {/* <DynamicButton
                                     label="UPDATE"
