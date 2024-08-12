@@ -27,6 +27,7 @@ import BTNMaterialVendorInfo from "../../components/BTNMaterialVendorInfo";
 import { initialDOData, initialData } from "../../data/btnData";
 import DynamicButton from "../../Helpers/DynamicButton";
 import { toast } from "react-toastify";
+import { FaCaretLeft } from "react-icons/fa";
 
 const BillsMaterialHybridEdit = () => {
   const navigate = useNavigate();
@@ -327,7 +328,7 @@ const BillsMaterialHybridEdit = () => {
         <div className="page d-flex flex-row flex-column-fluid">
           <SideBar />
           <div className="wrapper d-flex flex-column flex-row-fluid">
-            <Header title={"Bills for Material Hybrid PO"} id={id} />
+            <Header title={"Bills for Material PO"} id={id} />
             <div className="content d-flex flex-column flex-column-fluid">
               <div className="post d-flex flex-column-fluid">
                 <div className="container">
@@ -335,7 +336,18 @@ const BillsMaterialHybridEdit = () => {
                     <div className="row g-5 g-xl-8">
                       <div className="col-12">
                         <div className="card">
-                          <h3 className="m-3">Bills for Material Hybrid PO:</h3>
+                          <h3 className="d-flex align-items-center m-3">
+                            <button
+                              className="btn_icon me-3"
+                              type="button"
+                              onClick={() =>
+                                navigate(`/invoice-and-payment-process/${id}`)
+                              }
+                            >
+                              <FaCaretLeft className="fs-20" />
+                            </button>{" "}
+                            Bills for Material PO:
+                          </h3>
                           <BTNMaterialVendorInfo navigate={navigate} id={id} />
                         </div>
                       </div>

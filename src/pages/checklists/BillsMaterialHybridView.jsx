@@ -14,6 +14,7 @@ import { apiCallBack } from "../../utils/fetchAPIs";
 import { formatDate } from "../../utils/getDateTimeNow";
 import { initialDOData, initialData } from "../../data/btnData";
 import BTNMaterialVendorInfo from "../../components/BTNMaterialVendorInfo";
+import { FaCaretLeft } from "react-icons/fa";
 
 const BillsMaterialHybridView = () => {
   const navigate = useNavigate();
@@ -224,7 +225,7 @@ const BillsMaterialHybridView = () => {
         <div className="page d-flex flex-row flex-column-fluid">
           <SideBar />
           <div className="wrapper d-flex flex-column flex-row-fluid">
-            <Header title={"Bills for Material Hybrid PO"} id={id} />
+            <Header title={"Bills for Material PO"} id={id} />
             <div className="content d-flex flex-column flex-column-fluid">
               <div className="post d-flex flex-column-fluid">
                 <div className="container">
@@ -232,7 +233,18 @@ const BillsMaterialHybridView = () => {
                     <div className="row g-5 g-xl-8">
                       <div className="col-12">
                         <div className="card">
-                          <h3 className="m-3">Bills for Material Hybrid PO:</h3>
+                          <h3 className="d-flex align-items-center m-3">
+                            <button
+                              className="btn_icon me-3"
+                              type="button"
+                              onClick={() =>
+                                navigate(`/invoice-and-payment-process/${id}`)
+                              }
+                            >
+                              <FaCaretLeft className="fs-20" />
+                            </button>{" "}
+                            Bills for Material PO:
+                          </h3>
                           <BTNMaterialVendorInfo navigate={navigate} id={id} />
                         </div>
                       </div>

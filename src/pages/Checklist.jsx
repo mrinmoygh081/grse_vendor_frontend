@@ -156,22 +156,19 @@ const Checklist = () => {
                             >
                               <option value="">Select</option>
                               <option value="hybrid-bill-material">
-                                Checklist for Vendor Bill Material (Hybrid)
-                              </option>
-                              <option value="hybrid-bill-service">
-                                Checklist for Vendor Bill Service (Hybrid)
+                                Checklist for Material PO
                               </option>
                               <option value="contract-bill-service">
-                                Checklist for Vendor Bill Service (Contract)
+                                Checklist for Service PO
                               </option>
                               <option value="bill-incorrect-deductions">
-                                Checklist for Vendor Bill Incorrect Deductions
+                                Checklist for Incorrect Deductions
                               </option>
                               <option value="bill-advance-payment">
-                                Checklist for Vendor Bill Advance Payment
+                                Checklist for Advance Payment
                               </option>
                               <option value="claim-against-pbg">
-                                Checklist for Vendor Claim Against PBG
+                                Checklist for Claim Against PBG
                               </option>
                               <option value="ld-penalty-refund">
                                 Checklist for LD-Penalty Refund
