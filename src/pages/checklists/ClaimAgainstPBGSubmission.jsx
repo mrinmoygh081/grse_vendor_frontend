@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import SideBar from "../../components/SideBar";
 import Header from "../../components/Header";
 import Footer from "../../components/Footer";
@@ -9,6 +9,7 @@ const ClaimAgainstPBGSubmission = () => {
   const [isSecPopup, setIsSecPopup] = useState(false);
   const { id } = useParams();
   console.log(id, "id");
+  const navigate = useNavigate();
 
   return (
     <>
@@ -109,7 +110,7 @@ const ClaimAgainstPBGSubmission = () => {
                                       <td className="btn_value">{}</td>
                                     </tr>
                                     <tr>
-                                      <td>ICGRN:</td>
+                                      <td>ICGRN Nos:</td>
                                       <td className="btn_value">{}</td>
                                     </tr>
                                   </tbody>
@@ -123,6 +124,15 @@ const ClaimAgainstPBGSubmission = () => {
                     <div className="text-center mt-4">
                       <button className="btn fw-bold btn-primary me-3">
                         SUBMIT
+                      </button>
+                      <button
+                        className="btn btn-primary me-3"
+                        type="button"
+                        onClick={() =>
+                          navigate(`/invoice-and-payment-process/${id}`)
+                        }
+                      >
+                        BACK
                       </button>
                     </div>
                   </form>
