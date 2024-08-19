@@ -102,9 +102,9 @@ const ForgatePassword = () => {
                     style={{ width: "120px" }}
                   />
                   <h3 className="text-dark">Reset Your Password</h3>
-                  <div className="fv-row mb-3">
-                    <label className="form-label fs-6 fw-bolder text-dark darkstap">
-                      Vendor Code
+                  <div className="fv-row mb-3 text-start">
+                    <label className="form-label fs-6 fw-bolder">
+                      User Code
                     </label>
                     <input
                       className="form-control form-control-lg form-control-solid"
