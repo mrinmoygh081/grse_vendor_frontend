@@ -212,6 +212,7 @@ const Checklist = () => {
                                   {Object.keys(groupedBG).map((it, index) => {
                                     let items = groupedBG[it];
                                     let firstItem = items[0];
+                                    console.log(firstItem, "firstItem");
                                     return (
                                       <Fragment key={index}>
                                         <tr>
@@ -243,6 +244,11 @@ const Checklist = () => {
                                                   ) {
                                                     type =
                                                       "advance-bill-hybrid";
+                                                  } else if (
+                                                    firstItem.btn_type ===
+                                                    "claim-against-pbg"
+                                                  ) {
+                                                    type = "claim-against-pbg";
                                                   }
 
                                                   navigate(

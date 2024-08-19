@@ -10,7 +10,7 @@ import { toast } from "react-toastify";
 import { checkTypeArr } from "../../utils/smallFun";
 import DynamicButton from "../../Helpers/DynamicButton";
 
-const ClaimAgainstPBGSubmission = () => {
+const ClaimAgainstPBGSubmissionView = () => {
   const [formData, setFormData] = useState({
     invoiceNo: "",
     balanceClaimInvoice: "",
@@ -290,4 +290,4 @@ const ClaimAgainstPBGSubmission = () => {
   );
 };
 
-export default ClaimAgainstPBGSubmission;
+export default ClaimAgainstPBGSubmissionView;

@@ -715,35 +715,27 @@ const BillsMaterialHybrid = () => {
                                           {checkTypeArr(form?.icgrn_nos) &&
                                             form?.icgrn_nos.map((item, i) => (
                                               <b key={i} className="mx-2">
-                                                {item?.icgrn_nos}
+                                                {item?.grn_no
+                                                  ? item.grn_no
+                                                  : "NA"}
                                               </b>
                                             ))}
                                         </p>
                                       </td>
-                                      {/* <td className="btn_value">
-                                        {form.grn_nos ? form.grn_nos : "NA"}
-                                      </td> */}
                                     </tr>
                                     <tr>
                                       <td>ICGRN no </td>
                                       <td className="btn_value">
-                                        {/* <p>
-                                          {checkTypeArr(form?.icgrn_nos) &&
-                                            form?.icgrn_nos?.map((item, i) => (
-                                              <b key={i} className="mx-2">
-                                                {item?.icgrn_nos}
-                                              </b>
-                                            ))}
-                                        </p> */}
                                         <p>
                                           {checkTypeArr(form?.icgrn_nos) &&
                                             form?.icgrn_nos?.map((item, i) => (
                                               <b key={i} className="mx-2">
-                                                {item?.icgrn_nos}
+                                                {item?.grn_no
+                                                  ? item.grn_no
+                                                  : "NA"}
                                               </b>
                                             ))}
                                         </p>
-                                        {/* {form.icgrn_nos ? form.icgrn_nos : "NA"} */}
                                       </td>
                                     </tr>
                                     <tr>
