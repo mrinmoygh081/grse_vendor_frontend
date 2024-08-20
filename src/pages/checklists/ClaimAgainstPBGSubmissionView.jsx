@@ -1,124 +1,42 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import SideBar from "../../components/SideBar";
 import Header from "../../components/Header";
 import Footer from "../../components/Footer";
-import axios from "axios";
 import { apiCallBack } from "../../utils/fetchAPIs";
 import { useSelector } from "react-redux";
-import { toast } from "react-toastify";
 import { checkTypeArr } from "../../utils/smallFun";
-import DynamicButton from "../../Helpers/DynamicButton";
 
 const ClaimAgainstPBGSubmissionView = () => {
-  const [formData, setFormData] = useState({
-    invoiceNo: "",
-    balanceClaimInvoice: "",
-    claimAmount: "",
-    percentageOfClaim: "",
-    invoiceFile: null,
-    balanceClaimInvoiceFile: null,
-  });
   const [data, setData] = useState(null);
-  const [InvoiceData, setInvoiceData] = useState();
+  const [InvoiceData, setInvoiceData] = useState(null);
+  const { state } = useLocation();
   const { user, token } = useSelector((state) => state.auth);
-  console.log(data, "abhinit anand singh kumar");
-  console.log(InvoiceData, "abhinit anand singh kumar");
-
   const { id } = useParams();
   const navigate = useNavigate();
 
+  // Fetch Data Function
   const getData = async () => {
-    // setLoading(true);
     try {
-      const d = await apiCallBack(
+      const response = await apiCallBack(
         "GET",
-        `po/btn/getBTNData?id=${id}`,
+        `getFilteredData?$tableName=btn_pbg&$filter={"btn_num":"${state}"}`,
         null,
         token
       );
-      if (d?.status) {
-        console.log(d);
-        setData(d?.data);
-        // setLoading(false);
+      if (response?.status) {
+        setData(response?.data[0]); // Assuming the API returns an array, we'll take the first item
+        // Parsing the icgrn_nos JSON string
+        setInvoiceData(JSON.parse(response?.data[0]?.icgrn_nos));
       }
     } catch (error) {
-      console.error("Error fetching WDC list:", error);
-      // setLoading(false);
+      console.error("Error fetching data:", error);
     }
   };
 
   useEffect(() => {
     getData();
   }, []);
-
-  const getGrnIcgrnByInvoice = async () => {
-    try {
-      const payload = {
-        purchasing_doc_no: id,
-        invoice_no: formData.invoiceNo,
-      };
-      const response = await apiCallBack(
-        "POST",
-        "po/btn/getGrnIcgrnByInvoice",
-        payload,
-        token
-      );
-      if (response?.status) {
-        console.log(response);
-        setInvoiceData(response?.data);
-        // setLoading(false);
-      }
-    } catch (error) {
-      console.error("ERROR GETTING GRN ICGRN:", error);
-    }
-  };
-
-  const handleChange = (e) => {
-    const { name, value, files } = e.target;
-    setFormData((prevData) => ({
-      ...prevData,
-      [name]: files ? files[0] : value,
-    }));
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
-    try {
-      const formDataToSend = new FormData();
-      formDataToSend.append("purchasing_doc_no", id);
-      formDataToSend.append("invoice_no", formData.invoiceNo);
-      formDataToSend.append(
-        "balance_claim_invoice",
-        formData.balanceClaimInvoice
-      );
-      formDataToSend.append("claim_amount", formData.claimAmount);
-      formDataToSend.append("percentage_of_claim", formData.percentageOfClaim);
-      formDataToSend.append("invoice_filename", formData.invoiceFile);
-      formDataToSend.append(
-        "balance_claim_invoice_filename",
-        formData.balanceClaimInvoiceFile
-      );
-      const response = await apiCallBack(
-        "POST",
-        "po/btn/submitPbg",
-        formDataToSend,
-        token
-      );
-
-      if (response?.status) {
-        toast.success(response?.message);
-
-        // getData();
-        navigate(`/invoice-and-payment-process/${id}`);
-      } else {
-        toast.error(response?.message);
-      }
-    } catch (error) {
-      toast.error("Error:", error);
-    }
-  };
 
   return (
     <>
@@ -130,7 +48,7 @@ const ClaimAgainstPBGSubmissionView = () => {
             <div className="content d-flex flex-column flex-column-fluid">
               <div className="post d-flex flex-column-fluid">
                 <div className="container">
-                  <form onSubmit={handleSubmit}>
+                  <form>
                     <div className="row g-5 g-xl-8">
                       <div className="col-12">
                         <div className="card">
@@ -143,70 +61,53 @@ const ClaimAgainstPBGSubmissionView = () => {
                                     <tr>
                                       <td>Original Invoice No :</td>
                                       <td className="btn_value">
-                                        <input
-                                          type="text"
-                                          className="form-control me-2"
-                                          name="invoiceNo"
-                                          placeholder="Invoice No"
-                                          value={formData.invoiceNo}
-                                          onChange={handleChange}
-                                        />
-                                        <input
-                                          type="file"
-                                          className="form-control"
-                                          name="invoiceFile"
-                                          accept=".pdf"
-                                          onChange={handleChange}
-                                        />
-                                        <DynamicButton
-                                          label="CHECK"
-                                          onClick={getGrnIcgrnByInvoice}
-                                          className="btn btn-primary btn-sm m-4"
-                                        />
+                                        <b className="me-3">
+                                          {data?.invoice_no || "N/A"}
+                                        </b>
+
+                                        {data?.invoice_filename && (
+                                          <div style={{ marginTop: "8px" }}>
+                                            <a
+                                              href={`${process.env.REACT_APP_PDF_URL}submitSDBG/${data?.invoice_filename}`}
+                                              target="_blank"
+                                              rel="noreferrer"
+                                            >
+                                              VIEW
+                                            </a>
+                                          </div>
+                                        )}
                                       </td>
                                     </tr>
+
                                     <tr>
                                       <td>Balance Claim Invoice :</td>
                                       <td className="btn_value">
-                                        <input
-                                          type="text"
-                                          className="form-control me-2"
-                                          name="balanceClaimInvoice"
-                                          placeholder="Balance Claim Invoice"
-                                          value={formData.balanceClaimInvoice}
-                                          onChange={handleChange}
-                                        />
-                                        <input
-                                          type="file"
-                                          className="form-control"
-                                          name="balanceClaimInvoiceFile"
-                                          accept=".pdf"
-                                          onChange={handleChange}
-                                        />
+                                        <b className="me-3">
+                                          {data?.balance_claim_invoice || "N/A"}
+                                        </b>
+                                        {data?.balance_claim_invoice_filename && (
+                                          <div style={{ marginTop: "8px" }}>
+                                            <a
+                                              href={`${process.env.REACT_APP_PDF_URL}submitSDBG/${data?.balance_claim_invoice_filename}`}
+                                              target="_blank"
+                                              rel="noreferrer"
+                                            >
+                                              VIEW
+                                            </a>
+                                          </div>
+                                        )}
                                       </td>
                                     </tr>
                                     <tr>
                                       <td>Claim Amount :</td>
                                       <td className="btn_value">
-                                        <input
-                                          type="text"
-                                          className="form-control me-2"
-                                          name="claimAmount"
-                                          value={formData.claimAmount}
-                                          onChange={handleChange}
-                                        />
+                                        {data?.claim_amount || "N/A"}
                                       </td>
                                     </tr>
                                     <tr>
                                       <td>Retension % Claim :</td>
                                       <td className="btn_value">
-                                        <input
-                                          type="text"
-                                          className="form-control me-2"
-                                          name="percentageOfClaim"
-                                          value={formData.percentageOfClaim}
-                                          onChange={handleChange}
-                                        />
+                                        {data?.percentage_of_claim || "N/A"}
                                         <span className="ms-1">%</span>
                                       </td>
                                     </tr>
@@ -237,20 +138,13 @@ const ClaimAgainstPBGSubmissionView = () => {
                                     <tr>
                                       <td>ICGRN Nos </td>
                                       <td className="btn_value">
-                                        <p>
-                                          {checkTypeArr(
-                                            InvoiceData?.icgrn_nos
-                                          ) &&
-                                            InvoiceData?.icgrn_nos?.map(
-                                              (item, i) => (
-                                                <b key={i} className="mx-2">
-                                                  {item?.grn_no
-                                                    ? item.grn_no
-                                                    : "NA"}
-                                                </b>
-                                              )
-                                            )}
-                                        </p>
+                                        {checkTypeArr(InvoiceData)
+                                          ? InvoiceData.map((item, i) => (
+                                              <b key={i} className="mx-2">
+                                                {item?.grn_no || "NA"}
+                                              </b>
+                                            ))
+                                          : "N/A"}
                                       </td>
                                     </tr>
                                   </tbody>
@@ -262,12 +156,6 @@ const ClaimAgainstPBGSubmissionView = () => {
                       </div>
                     </div>
                     <div className="text-center mt-4">
-                      <button
-                        className="btn fw-bold btn-primary me-3"
-                        type="submit"
-                      >
-                        SUBMIT
-                      </button>
                       <button
                         className="btn btn-primary me-3"
                         type="button"

@@ -32,6 +32,24 @@ export const initialData = {
   inv_type: "",
 };
 
+export const initialDODataPBG = {
+  btn_num: "",
+  purchasing_doc_no: "",
+  ld_ge_date: "",
+  contractual_ld: "",
+  ld_amount: "",
+  drg_penalty: "",
+  qap_penalty: "",
+  ilms_penalty: "",
+  o_ret_per: "0",
+  other_deduction: "",
+  total_deduction: "",
+  net_payable_amount: "",
+  assign_to: "",
+  max_ld: "5",
+  max_penalty: "1",
+};
+
 export const initialDOData = {
   btn_num: "",
   purchasing_doc_no: "",

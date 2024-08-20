@@ -67,6 +67,7 @@ import Authorisation from "./pages/settings/Authorisation";
 import QapDashboard from "./pages/dashboard/QapDashboard";
 import ForgatePassword from "./pages/ForgatePassword";
 import ClaimAgainstPBGSubmissionView from "./pages/checklists/ClaimAgainstPBGSubmissionView";
+import ClaimAgainstPBGSubmissionEdit from "./pages/checklists/ClaimAgainstPBGSubmissionEdit";
 
 function Layout() {
   const { token, isLoggedIn, user } = useSelector((state) => state.auth);
@@ -183,6 +184,10 @@ function Layout() {
         <Route
           path="/checklist/claim-against-pbg/view/:id"
           element={<ClaimAgainstPBGSubmissionView />}
+        />
+        <Route
+          path="/checklist/claim-against-pbg/edit/:id"
+          element={<ClaimAgainstPBGSubmissionEdit />}
         />
         <Route
           path="/checklist/ld-penalty-refund/:id"

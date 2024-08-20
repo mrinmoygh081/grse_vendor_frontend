@@ -299,6 +299,12 @@ const Checklist = () => {
                                                     ) {
                                                       type =
                                                         "advance-bill-hybrid";
+                                                    } else if (
+                                                      firstItem.btn_type ===
+                                                      "claim-against-pbg"
+                                                    ) {
+                                                      type =
+                                                        "claim-against-pbg";
                                                     }
 
                                                     navigate(
