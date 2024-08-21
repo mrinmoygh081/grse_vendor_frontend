@@ -18,6 +18,13 @@ import { checkTypeArr } from "../utils/smallFun";
 import { formatDate } from "../utils/getDateTimeNow";
 import DynamicButton from "../Helpers/DynamicButton";
 import SkeletonLoader from "../loader/SkeletonLoader";
+import {
+  BONUS_COMP,
+  ESI_COMP,
+  LEAVE_COMP,
+  PF_COMP,
+  WAGE_COMP,
+} from "../constants/constants";
 
 const HrCompliance = () => {
   const inputFileRef = useRef(null);
@@ -303,13 +310,11 @@ const HrCompliance = () => {
                       }}
                     >
                       <option value="">Choose Action Type</option>
-                      <option value="PF Compliance">PF Compliance</option>
-                      <option value="ESI Compliance">ESI Compliance</option>
-                      <option value="Wage Compliance">Wage Compliance</option>
-                      <option value="Leave Salary Compliance">
-                        Leave Salary Compliance
-                      </option>
-                      <option value="Bonus Compliance">Bonus Compliance</option>
+                      <option value={PF_COMP}>{PF_COMP}</option>
+                      <option value={ESI_COMP}>{ESI_COMP}</option>
+                      <option value={WAGE_COMP}>{WAGE_COMP}</option>
+                      <option value={LEAVE_COMP}>{LEAVE_COMP}</option>
+                      <option value={BONUS_COMP}>{BONUS_COMP}</option>
                       <option value="Remarks">Remarks</option>
                       <option value="Others">Others</option>
                     </select>

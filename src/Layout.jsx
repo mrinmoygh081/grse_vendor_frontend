@@ -31,7 +31,6 @@ import BillsMaterialHybrid from "./pages/checklists/BillsMaterialHybrid";
 import ClaimAgainstPBGSubmission from "./pages/checklists/ClaimAgainstPBGSubmission";
 import Checklist from "./pages/Checklist";
 import ClaimIncorrectDeductions from "./pages/checklists/ClaimIncorrectDeductions";
-import HybridServicePOBills from "./pages/checklists/HybridServicePOBills";
 import LDPenaltyRefund from "./pages/checklists/LDPenaltyRefund";
 import IlmsSub from "./pages/IlmsSub";
 import MRSSub from "./pages/MRSSub";
@@ -55,8 +54,6 @@ import Gateentrypdf from "./pages/pdfs/Gateentrypdf";
 import BillsMaterialHybridView from "./pages/checklists/BillsMaterialHybridView";
 import GoodsReceiptSlip from "./pages/pdfs/GoodsReceiptSlip";
 import ServiceEntrySheetPdf from "./pages/pdfs/ServiceEntrySheetPdf";
-import HybridServicePOBillsEdit from "./pages/checklists/HybridServicePOBillsEdit";
-import HybridServicePOBillsView from "./pages/checklists/HybridServicePOBillsView";
 import AdvanceBillHybridEdit from "./pages/checklists/AdvanceBillHybridEdit";
 import AdvanceBillHybridView from "./pages/checklists/AdvanceBillHybridView";
 import BGfinance from "./pages/BGfinance";
@@ -144,18 +141,6 @@ function Layout() {
         <Route
           path="/checklist/hybrid-bill-material/view/:id"
           element={<BillsMaterialHybridView />}
-        />
-        <Route
-          path="/checklist/hybrid-bill-service/:id"
-          element={<HybridServicePOBills />}
-        />
-        <Route
-          path="/checklist/hybrid-bill-service/edit/:id"
-          element={<HybridServicePOBillsEdit />}
-        />
-        <Route
-          path="/checklist/hybrid-bill-service/view/:id"
-          element={<HybridServicePOBillsView />}
         />
         <Route
           path="/checklist/contract-bill-service/:id"

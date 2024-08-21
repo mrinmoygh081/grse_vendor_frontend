@@ -45,6 +45,9 @@ input[type="number"] {
 .w_30 {
   width: 30%;
 }
+.w_250 {
+  width: 250px;
+}
 .w_99 {
   width: 99%;
 }

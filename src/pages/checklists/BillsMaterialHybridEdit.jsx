@@ -42,7 +42,7 @@ const BillsMaterialHybridEdit = () => {
   const [form, setForm] = useState(initialData);
   const [doForm, setDoForm] = useState(initialDOData);
   // const [options, setOptions] = useState([]);
-  const [emp, setEmp] = useState(null);
+  const [emp, setEmp] = useState([]);
   const [showRemarks, setShowRemarks] = useState(false);
   const [remarks, setRemarks] = useState("");
 
@@ -667,22 +667,6 @@ const BillsMaterialHybridEdit = () => {
                                 </p>
                                 <div className="row">
                                   <div className="col-6 text-start">
-                                    {/* <button
-                                      type="button"
-                                      className="btn fw-bold btn-primary me-3"
-                                      onClick={() =>
-                                        actionHandlerByDO(
-                                          doForm,
-                                          setDoForm,
-                                          initialData,
-                                          navigate,
-                                          id,
-                                          token
-                                        )
-                                      }
-                                    >
-                                      SUBMIT
-                                    </button> */}
                                     <DynamicButton
                                       label="Approved"
                                       onClick={() =>
@@ -727,11 +711,6 @@ const BillsMaterialHybridEdit = () => {
                                         />
                                       </>
                                     ) : (
-                                      // <DynamicButton
-                                      //   label="REJECT"
-                                      //   className="btn fw-bold btn-danger"
-                                      //   onClick={() => setShowRemarks(true)}
-                                      // />
                                       <button
                                         className="btn fw-bold btn-danger"
                                         onClick={() => setShowRemarks(true)}

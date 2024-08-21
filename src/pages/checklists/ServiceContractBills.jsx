@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import Select from "react-select";
 import SideBar from "../../components/SideBar";
 import Header from "../../components/Header";
 import Footer from "../../components/Footer";
@@ -13,39 +14,30 @@ import {
 } from "../../utils/smallFun";
 import { inputOnWheelPrevent } from "../../utils/inputOnWheelPrevent";
 import { apiCallBack } from "../../utils/fetchAPIs";
-import { formatDate } from "../../utils/getDateTimeNow";
+import { calDatesDiff, formatDate } from "../../utils/getDateTimeNow";
 import { FaCaretLeft, FaPlus } from "react-icons/fa";
 import { D_S_INVOICE, E_INVOICE } from "../../constants/BTNContants";
 import { initialDataService } from "../../data/btnData";
+import DynamicButton from "../../Helpers/DynamicButton";
+import { toast } from "react-toastify";
+import {
+  ESI_COMP,
+  LEAVE_COMP,
+  PF_COMP,
+  WAGE_COMP,
+} from "../../constants/constants";
 
 const ServiceContractBills = () => {
   const navigate = useNavigate();
   const { user, token } = useSelector((state) => state.auth);
   const { id } = useParams();
-
-  const [data, setData] = useState(null);
-
+  const [data, setData] = useState({
+    wdcDetails: null,
+    initial: null,
+  });
+  const [emp, setEmp] = useState([]);
   const [form, setForm] = useState(initialDataService);
-
-  // const calNetClaimAmount = (invoice_value, debit_note, credit_note,gst_rate) => {
-  //   if (typeof invoice_value !== "number") {
-  //     invoice_value = parseInt(invoice_value) || 0;
-  //   }
-  //   if (typeof debit_note !== "number") {
-  //     debit_note = parseInt(debit_note) || 0;
-  //   }
-  //   if (typeof credit_note !== "number") {
-  //     credit_note = parseInt(credit_note) || 0;
-  //   }
-  //   if (typeof credit_note !== "number") {
-  //     gst_rate = parseInt(gst_rate) || 0;
-  //   }
-  //   setForm({
-  //     ...form,
-  //     net_claim_amount:
-  //       parseInt(invoice_value) + parseInt(debit_note) - parseInt(credit_note),
-  //   });
-  // };
+  const [wdcNo, setWdcNo] = useState([]);
 
   const calNetClaimAmount = (
     invoice_value,
@@ -79,85 +71,82 @@ const ServiceContractBills = () => {
     form?.gst_rate,
   ]);
 
+  const getWDCList = async () => {
+    const d = await apiCallBack(
+      "GET",
+      "po/btn/getWdcInfoServiceHybrid?type=list",
+      null,
+      null
+    );
+    if (d?.status) {
+      let options = d?.data.map((item, index) => {
+        return {
+          value: item.reference_no,
+          label: item.reference_no,
+        };
+      });
+      setWdcNo(options);
+    } else {
+      toast.info("WDC Not Found!");
+    }
+  };
+
   const getData = async () => {
+    const d = await apiCallBack(
+      "GET",
+      `po/btn/initServiceHybrid?poNo=${id}`,
+      null,
+      token
+    );
+    if (d?.status) {
+      setData({ ...data, initial: d?.data });
+    }
+  };
+
+  const getEmp = async () => {
     try {
-      const d = await apiCallBack(
+      const data = await apiCallBack(
         "GET",
-        `po/btn/getBTNDataServiceHybrid?id=${id}`,
+        `po/btn/getFinanceEmpList`,
         null,
         token
       );
-      if (d?.status) {
-        setData(d?.data);
+      if (data?.status) {
+        let options = data.data.map((item, index) => {
+          return {
+            value: item.usercode,
+            label: `${item.empname} (${item.usercode})`,
+          };
+        });
+        setEmp(options);
       }
     } catch (error) {
-      console.error("Error fetching WDC list:", error);
+      console.error("Error fetching Employee list:", error);
     }
   };
 
   useEffect(() => {
     getData();
+    getWDCList();
+    getEmp();
   }, []);
 
-  useEffect(() => {
-    if (data) {
-      setForm({
-        ...form,
-        c_sdbg_date: data?.c_sdbg_date || "",
-        c_drawing_date: data?.c_drawing_date || "",
-        c_qap_date: data?.c_qap_date || "",
-        c_ilms_date: data?.c_ilms_date || "",
-        a_sdbg_date: data?.a_sdbg_date || "",
-        a_drawing_date: data?.a_drawing_date || "",
-        a_qap_date: data?.a_qap_date || "",
-        a_ilms_date: data?.a_ilms_date || "",
-        vendor_name: data?.vendor?.vendor_name || "",
-        vendor_code: data?.vendor?.vendor_code || "",
-        esi_compliance_certified: data?.pfEsi?.esi || "",
-        pf_compliance_certified: data?.pfEsi?.pf || "",
-      });
+  const checkWDCDetails = async () => {
+    if (!form.wdc_number || form.wdc_number === "") {
+      return toast.info("Select a WDC Number");
     }
-  }, [data]);
-
-  const handleKeyPress = (e) => {
-    if (e.key === "Enter") {
-      createInvoiceNo();
+    const d = await apiCallBack(
+      "GET",
+      `po/btn/getWdcInfoServiceHybrid?reference_no=${form?.wdc_number}`,
+      null,
+      token
+    );
+    if (d?.status) {
+      setData({ ...data, wdcDetails: d?.data });
     }
   };
 
-  const createInvoiceNo = async () => {
-    try {
-      const response = await apiCallBack(
-        "GET",
-        `po/btn/getWdcInfoServiceHybrid?reference_no=${form?.wdc_number}`,
-        null,
-        token
-      );
-      console.log("createInvoiceNo", response);
-      if (response?.status) {
-        const { actual_start_date, actual_completion_date, total_amount } =
-          response.data;
-
-        // const startTimestamp = actual_start_date * 1000;
-        // const completionTimestamp = actual_completion_date * 1000;
-
-        // const startDate = new Date(startTimestamp).toLocaleDateString();
-        // const completionDate = new Date(
-        //   completionTimestamp
-        // ).toLocaleDateString();
-        setForm({
-          ...form,
-          actual_start_date,
-          actual_completion_date,
-          total_amount,
-        });
-      } else {
-        console.error("Error creating invoice number:", response.message);
-      }
-    } catch (error) {
-      console.error("Error creating invoice number:", error);
-    }
-  };
+  console.log(data);
 
   return (
     <>
@@ -191,93 +180,127 @@ const ServiceContractBills = () => {
                                 <table className="table table-striped table-bordered table_height">
                                   <tbody style={{ maxHeight: "100%" }}>
                                     <tr>
-                                      <td>Yard No:</td>
+                                      <td>WDC no:</td>
                                       <td className="btn_value">
-                                        <input
-                                          type="number"
-                                          className="form-control"
-                                          onWheel={inputOnWheelPrevent}
-                                          name="yard"
-                                          value={form?.yard}
-                                          onChange={(e) =>
-                                            inputTypeChange(e, form, setForm)
+                                        <Select
+                                          className="basic-single w_250"
+                                          classNamePrefix="select"
+                                          isClearable={true}
+                                          isSearchable={true}
+                                          name="wdc_number"
+                                          id="wdc_number"
+                                          options={wdcNo}
+                                          value={
+                                            wdcNo.filter(
+                                              (item) =>
+                                                item.value === form?.wdc_number
+                                            )[0]
+                                          }
+                                          onChange={(val) =>
+                                            setForm({
+                                              ...form,
+                                              wdc_number: val
+                                                ? val.value
+                                                : null,
+                                            })
                                           }
                                         />
+                                        <DynamicButton
+                                          label="CHECK"
+                                          onClick={() => checkWDCDetails()}
+                                          className="btn btn-primary btn-sm m-4"
+                                        />
+                                      </td>
+                                    </tr>
+                                    <tr>
+                                      <td>Yard No:</td>
+                                      <td className="btn_value">
+                                        <b>{data?.wdcDetails?.yard_no}</b>
                                       </td>
                                     </tr>
                                     <tr>
                                       <td>Stage:</td>
                                       <td className="btn_value">
-                                        <select
-                                          name="stage"
-                                          id=""
-                                          className="form-select"
-                                          onChange={(e) =>
-                                            inputTypeChange(e, form, setForm)
-                                          }
-                                        >
-                                          <option value="1"> 1 </option>
-                                          <option value="2"> 2 </option>
-                                          <option value="3"> 3 </option>
-                                          <option value="4"> 4 </option>
-                                          <option value="5"> 5 </option>
-                                          <option value="6"> 6 </option>
-                                          <option value="7"> 7 </option>
-                                          <option value="8"> 8 </option>
-                                          <option value="9"> 9 </option>
-                                          <option value="10"> 10 </option>
-                                          <option value="11"> 11 </option>
-                                          <option value="12"> 12 </option>
-                                          <option value="13"> 13 </option>
-                                          <option value="14"> 14 </option>
-                                          <option value="15"> 15 </option>
-                                          <option value="16"> 16 </option>
-                                          <option value="17"> 17 </option>
-                                          <option value="18"> 18 </option>
-                                          <option value="19"> 19 </option>
-                                          <option value="20"> 20 </option>
-                                          <option value="21"> 21 </option>
-                                          <option value="22"> 22 </option>
-                                          <option value="23"> 23 </option>
-                                          <option value="24"> 24 </option>
-                                          <option value="25"> 25 </option>
-                                          <option value="26"> 26 </option>
-                                          <option value="27"> 27 </option>
-                                          <option value="28"> 28 </option>
-                                          <option value="29"> 29 </option>
-                                          <option value="30"> 30 </option>
-                                        </select>
-                                      </td>
-                                    </tr>
-
-                                    <tr>
-                                      <td>WDC no:</td>
-                                      <td className="btn_value">
-                                        <input
-                                          type="number"
-                                          className="form-control"
-                                          onWheel={inputOnWheelPrevent}
-                                          name="wdc_no"
-                                          value={form?.wdc_no}
-                                          onChange={(e) =>
-                                            inputTypeChange(e, form, setForm)
-                                          }
-                                        />
+                                        <b>{data?.wdcDetails?.stage_details}</b>
                                       </td>
                                     </tr>
                                     <tr>
                                       <td>Work Title:</td>
                                       <td className="btn_value">
-                                        <b></b>
+                                        <b>{data?.wdcDetails?.work_title}</b>
                                       </td>
                                     </tr>
                                     <tr>
                                       <td>WDC Certifying Authority:</td>
                                       <td className="btn_value">
-                                        <b></b>
+                                        <b>{data?.wdcDetails?.assigned_to}</b>
                                       </td>
                                     </tr>
-
+                                  </tbody>
+                                </table>
+                                <table className="table table-striped table-bordered table_height">
+                                  <thead>
+                                    <tr>
+                                      <th>PO Line Item No</th>
+                                      <th>Service Code</th>
+                                      <th>Description</th>
+                                      <th>UOM</th>
+                                      <th>Claim Qty</th>
+                                      <th>PO Rate</th>
+                                      <th>Total Claim</th>
+                                      <th>Delay</th>
+                                    </tr>
+                                  </thead>
+                                  <tbody>
+                                    {checkTypeArr(
+                                      data?.wdcDetails?.line_item_array
+                                    ) &&
+                                      data?.wdcDetails?.line_item_array.map(
+                                        (item, i) => (
+                                          <tr key={i}>
+                                            <td>{item?.line_item_no}</td>
+                                            <td>{item?.service_code}</td>
+                                            <td>{item?.description}</td>
+                                            <td>{item?.unit}</td>
+                                            <td>{item?.claim_qty}</td>
+                                            <td>{item?.po_rate}</td>
+                                            <td>
+                                              {parseFloat(
+                                                Number(item?.po_rate) *
+                                                  Number(item?.claim_qty)
+                                              ).toFixed(2)}
+                                            </td>
+                                            <td>{item?.delay}</td>
+                                          </tr>
+                                        )
+                                      )}
+                                    <tr>
+                                      <td colSpan={6}>Total:</td>
+                                      <td colSpan={2}>
+                                        <b>
+                                          {checkTypeArr(
+                                            data?.wdcDetails?.line_item_array
+                                          ) &&
+                                            data?.wdcDetails?.line_item_array.reduce(
+                                              (acc, curr) => {
+                                                return (
+                                                  Number(curr?.po_rate) *
+                                                    Number(curr?.claim_qty) +
+                                                  acc
+                                                );
+                                              },
+                                              0
+                                            )}
+                                        </b>
+                                      </td>
+                                    </tr>
+                                  </tbody>
+                                </table>
+                                <table
+                                  className="table table-striped table-bordered table_height"
+                                  style={{ marginBottom: "120px" }}
+                                >
+                                  <tbody>
                                     <tr>
                                       <td>Choose Invoice Type</td>
                                       <td className="btn_value">
@@ -423,47 +446,6 @@ const ServiceContractBills = () => {
                                     )}
 
                                     <tr>
-                                      <td>Additional PO:</td>
-                                      <td className="btn_value">
-                                        {checkTypeArr(form?.associated_po) &&
-                                          form.associated_po.map((item, i) => (
-                                            <input
-                                              type="text"
-                                              className="form-control"
-                                              name="associated_po"
-                                              value={item?.a_po}
-                                              onChange={(e) => {
-                                                item.a_po = e.target.value;
-                                                setForm({
-                                                  ...form,
-                                                  associated_po:
-                                                    form.associated_po,
-                                                });
-                                              }}
-                                              key={i}
-                                            />
-                                          ))}
-                                        <button
-                                          className="btn btn-sm btn-primary d-flex align-items-center ms-2"
-                                          style={{ fontSize: "16px" }}
-                                          type="button"
-                                          onClick={() =>
-                                            setForm({
-                                              ...form,
-                                              associated_po: [
-                                                ...form?.associated_po,
-                                                {
-                                                  a_po: "",
-                                                },
-                                              ],
-                                            })
-                                          }
-                                        >
-                                          <FaPlus />
-                                        </button>
-                                      </td>
-                                    </tr>
-                                    <tr>
                                       <td>Basic value:</td>
                                       <td className="btn_value">
                                         <input
@@ -583,11 +565,126 @@ const ServiceContractBills = () => {
                                         <b>{form?.net_with_gst}</b>
                                       </td>
                                     </tr>
+
                                     <tr>
-                                      <td>PBG</td>
+                                      <td>Contractual SDBG Submission Date</td>
                                       <td className="btn_value">
-                                        {checkTypeArr(data?.pbg_filename)
-                                          ? data?.pbg_filename.map(
+                                        <b className="me-3">
+                                          {data?.initial?.c_sdbg_date &&
+                                            formatDate(
+                                              data?.initial?.c_sdbg_date
+                                            )}
+                                        </b>
+                                      </td>
+                                    </tr>
+                                    <tr>
+                                      <td>Actual SDBG Submission Date</td>
+                                      <td className="btn_value">
+                                        <b className="me-3">
+                                          {data?.initial?.a_sdbg_date &&
+                                            formatDate(
+                                              data?.initial?.a_sdbg_date
+                                            )}
+                                        </b>
+                                      </td>
+                                    </tr>
+                                    <tr>
+                                      <td>
+                                        Hinderance register certified by
+                                        berth/user
+                                      </td>
+                                      <td className="btn_value">
+                                        <b className="me-3">
+                                          {data?.wdcDetails
+                                            ?.file_hinderence_report_cerified_by_berth ? (
+                                            <a
+                                              href={`${process.env.REACT_APP_PDF_URL}wdc/${data?.wdcDetails?.file_hinderence_report_cerified_by_berth}`}
+                                              target="_blank"
+                                              rel="noreferrer"
+                                            >
+                                              VIEW
+                                            </a>
+                                          ) : (
+                                            "NOT SUBMITTED"
+                                          )}
+                                        </b>
+                                      </td>
+                                    </tr>
+                                    <tr>
+                                      <td>ESI Compliance Certified By HR</td>
+                                      <td className="btn_value">
+                                        <b className="me-3">
+                                          {checkTypeArr(
+                                            data?.initial?.hrDetais
+                                          ) &&
+                                          data?.initial?.hrDetais.filter(
+                                            (item) =>
+                                              item.action_type === ESI_COMP
+                                          ).length > 0
+                                            ? "ESI COMPLIANT"
+                                            : "NOT COMPLIENT"}
+                                        </b>
+                                      </td>
+                                    </tr>
+
+                                    <tr>
+                                      <td>PF Compliance Certified By HR</td>
+                                      <td className="btn_value">
+                                        <b className="me-3">
+                                          {checkTypeArr(
+                                            data?.initial?.hrDetais
+                                          ) &&
+                                          data?.initial?.hrDetais.filter(
+                                            (item) =>
+                                              item.action_type === PF_COMP
+                                          ).length > 0
+                                            ? "PF COMPLIANT"
+                                            : "NOT COMPLIENT"}
+                                        </b>
+                                      </td>
+                                    </tr>
+                                    <tr>
+                                      <td>Wage Compliance Certified By HR</td>
+                                      <td className="btn_value">
+                                        <b className="me-3">
+                                          {checkTypeArr(
+                                            data?.initial?.hrDetais
+                                          ) &&
+                                          data?.initial?.hrDetais.filter(
+                                            (item) =>
+                                              item.action_type === WAGE_COMP
+                                          ).length > 0
+                                            ? "WAGE COMPLIANT"
+                                            : "NOT COMPLIENT"}
+                                        </b>
+                                      </td>
+                                    </tr>
+                                    <tr>
+                                      <td>
+                                        Leave Salary & Bonus Compliance
+                                        certified by HR
+                                      </td>
+                                      <td className="btn_value">
+                                        <b className="me-3">
+                                          {checkTypeArr(
+                                            data?.initial?.hrDetais
+                                          ) &&
+                                          data?.initial?.hrDetais.filter(
+                                            (item) =>
+                                              item.action_type === LEAVE_COMP
+                                          ).length > 0
+                                            ? "LEAVE SALARY COMPLIANT"
+                                            : "NOT COMPLIENT"}
+                                        </b>
+                                      </td>
+                                    </tr>
+                                    <tr>
+                                      <td>PBG if any</td>
+                                      <td className="btn_value">
+                                        {checkTypeArr(
+                                          data?.initial?.pbg_filename
+                                        )
+                                          ? data?.initial?.pbg_filename.map(
                                               (item, i) => {
                                                 return (
                                                   <a
@@ -605,205 +702,33 @@ const ServiceContractBills = () => {
                                       </td>
                                     </tr>
                                     <tr>
-                                      <td>Total:</td>
+                                      <td>Bill Certifying Authority</td>
                                       <td className="btn_value">
-                                        <b>{form?.total_amount}</b>
-                                      </td>
-                                    </tr>
-
-                                    <tr>
-                                      <td>Contractual SDBG Submission Date</td>
-                                      <td className="btn_value">
-                                        <b className="me-3">
-                                          {form?.a_sdbg_date &&
-                                            new Date(
-                                              form?.a_sdbg_date
-                                            ).toLocaleDateString()}
-                                        </b>
-                                      </td>
-                                    </tr>
-                                    <tr>
-                                      <td>Actual SDBG Submission Date</td>
-                                      <td className="btn_value">
-                                        <b className="me-3">
-                                          {form?.a_sdbg_date &&
-                                            new Date(
-                                              form?.a_sdbg_date
-                                            ).toLocaleDateString()}
-                                        </b>
-                                      </td>
-                                    </tr>
-                                    <tr>
-                                      <td>Contractual work start date</td>
-                                      <td className="btn_value">
-                                        <b className="me-3">
-                                          {form?.a_sdbg_date &&
-                                            new Date(
-                                              form?.a_sdbg_date
-                                            ).toLocaleDateString()}
-                                        </b>
-                                      </td>
-                                    </tr>
-                                    <tr>
-                                      <td>Contractual work completion date</td>
-                                      <td className="btn_value">
-                                        <b className="me-3">
-                                          {form?.a_sdbg_date &&
-                                            new Date(
-                                              form?.a_sdbg_date
-                                            ).toLocaleDateString()}
-                                        </b>
-                                      </td>
-                                    </tr>
-                                    <tr>
-                                      <td>Actual work start date</td>
-                                      <td className="btn_value">
-                                        <b className="me-3">
-                                          {form?.actual_start_date &&
-                                            new Date(
-                                              form?.actual_start_date * 1000
-                                            ).toLocaleDateString()}
-                                        </b>
-                                      </td>
-                                    </tr>
-                                    <tr>
-                                      <td>Actual work completion date</td>
-                                      <td className="btn_value">
-                                        <b className="me-3">
-                                          {form?.actual_completion_date &&
-                                            formatDate(
-                                              form?.actual_completion_date *
-                                                1000
-                                            )}
-                                        </b>
-                                      </td>
-                                    </tr>
-                                    <tr>
-                                      <td>
-                                        Hinderance register certified by
-                                        berth/user
-                                      </td>
-                                      <td className="btn_value">
-                                        <b className="me-3">
-                                          {form?.actual_completion_date &&
-                                            formatDate(
-                                              form?.actual_completion_date *
-                                                1000
-                                            )}
-                                        </b>
-                                      </td>
-                                    </tr>
-                                    {/* <tr>
-                                      <td>ESI Compliance Certified By HR</td>
-                                      <td className="btn_value">
-                                        <b className="me-3">
-                                          {false ? (
-                                            <a
-                                              href={`${process.env.REACT_APP_PDF_URL}submitSDBG/${data?.file_name}`}
-                                              target="_blank"
-                                              rel="noreferrer"
-                                            >
-                                              VIEW
-                                            </a>
-                                          ) : (
-                                            "ESI NOT SUBMITTED."
-                                          )}
-                                        </b>
-                                      </td>
-                                    </tr> */}
-                                    <tr>
-                                      <td>ESI Compliance Certified By HR</td>
-                                      <td className="btn_value">
-                                        <b className="me-3">
-                                          {data?.pfEsi?.esi !== null ? (
-                                            <span>PF COMPLIANT</span>
-                                          ) : (
-                                            <span>PF NOT SUBMITTED</span>
-                                          )}
-                                        </b>
-                                      </td>
-                                    </tr>
-                                    {/* <tr>
-                                      {console.log(data, "dataBBBBBBBBBBB")}
-                                      <td>PF Compliance Certified By HR</td>
-                                      <td className="btn_value">
-                                        <b className="me-3">
-                                          {checkTypeArr(data?.sdbg_filename) ? (
-                                            <a
-                                              href={`${process.env.REACT_APP_PDF_URL}submitSDBG/${data?.file_name}`}
-                                              target="_blank"
-                                              rel="noreferrer"
-                                            >
-                                              VIEW
-                                            </a>
-                                          ) : (
-                                            "PF NOT SUBMITTED."
-                                          )}
-
-                                          {false ? (
-                                            <a
-                                              href={`${process.env.REACT_APP_PDF_URL}submitSDBG/${data?.file_name}`}
-                                              target="_blank"
-                                              rel="noreferrer"
-                                            >
-                                              VIEW
-                                            </a>
-                                          ) : (
-                                            "PF NOT SUBMITTED."
-                                          )}
-                                        </b>
-                                      </td>
-                                    </tr> */}
-
-                                    <tr>
-                                      <td>PF Compliance Certified By HR</td>
-                                      <td className="btn_value">
-                                        <b className="me-3">
-                                          {data?.pfEsi?.pf !== null ? (
-                                            <span>PF COMPLIANT</span>
-                                          ) : (
-                                            <span>PF NOT SUBMITTED</span>
-                                          )}
-                                        </b>
-                                      </td>
-                                    </tr>
-                                    <tr>
-                                      <td>Wage Compliance Certified By HR</td>
-                                      <td className="btn_value">
-                                        <b className="me-3">
-                                          {false ? (
-                                            <a
-                                              href={`${process.env.REACT_APP_PDF_URL}submitSDBG/${data?.file_name}`}
-                                              target="_blank"
-                                              rel="noreferrer"
-                                            >
-                                              VIEW
-                                            </a>
-                                          ) : (
-                                            "WAGE NOT SUBMITTED."
-                                          )}
-                                        </b>
-                                      </td>
-                                    </tr>
-                                    <tr>
-                                      <td>
-                                        Leave Salary & Bonus Compliance
-                                        certified by HR
-                                      </td>
-                                      <td className="btn_value">
-                                        <b className="me-3">
-                                          {false ? (
-                                            <a
-                                              href={`${process.env.REACT_APP_PDF_URL}submitSDBG/${data?.file_name}`}
-                                              target="_blank"
-                                              rel="noreferrer"
-                                            >
-                                              VIEW
-                                            </a>
-                                          ) : (
-                                            "WAGE NOT SUBMITTED."
-                                          )}
-                                        </b>
+                                        <Select
+                                          className="basic-single w-100"
+                                          classNamePrefix="select"
+                                          isClearable={true}
+                                          isSearchable={true}
+                                          name="emp"
+                                          id="emp"
+                                          options={emp}
+                                          value={
+                                            emp &&
+                                            emp.filter(
+                                              (item) =>
+                                                item.value ===
+                                                form?.bill_cerifying_au
+                                            )[0]
+                                          }
+                                          onChange={(val) =>
+                                            setForm({
+                                              ...form,
+                                              bill_cerifying_au: val
+                                                ? val.value
+                                                : null,
+                                            })
+                                          }
+                                        />
                                       </td>
                                     </tr>
                                     <tr>
@@ -843,7 +768,7 @@ const ServiceContractBills = () => {
                                     className="btn fw-bold btn-primary me-3"
                                     onClick={() =>
                                       actionHandlerServiceBTN(
-                                        "BillsMaterialHybrid",
+                                        "ServiceBills",
                                         token,
                                         user,
                                         id,

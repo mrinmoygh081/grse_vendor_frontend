@@ -28,12 +28,8 @@ const BillsMaterialHybrid = () => {
   const navigate = useNavigate();
   const { user, token } = useSelector((state) => state.auth);
   const { id } = useParams();
-
   const [data, setData] = useState(null);
   const [form, setForm] = useState(initialData);
-  // const [invType, setInvType] = useState({
-  //   invoice_type: "",
-  // });
 
   const calNetClaimAmount = (invoice_value, debit_note, credit_note) => {
     invoice_value = parseFloat(invoice_value) || 0;
@@ -292,14 +288,6 @@ const BillsMaterialHybrid = () => {
                                               onClick={getGrnIcgrnHandler}
                                               className="btn btn-primary btn-sm m-4"
                                             />
-
-                                            {/* <button
-                                              type="button"
-                                              className="btn btn-primary btn-sm m-4"
-                                              onClick={getGrnIcgrnHandler}
-                                            >
-                                              CHECK
-                                            </button> */}
                                           </div>
                                           <div className="btn_value">
                                             <div className="me-4">
@@ -579,39 +567,6 @@ const BillsMaterialHybrid = () => {
                                           : ""}
                                       </td>
                                     </tr>
-                                    {/* <tr>
-                                      <td>Contractual SDBG Submission Date</td>
-                                      <td className="btn_value">
-                                        <b className="me-3">
-                                          {loading
-                                            ? "Loading..."
-                                            : form?.c_sdbg_date
-                                            ? formatDate(form?.c_sdbg_date)
-                                            : "NA"}
-                                          {!form?.c_sdbg_date
-                                            ? ""
-                                            : form?.c_sdbg_date &&
-                                              !form?.a_sdbg_date
-                                            ? " (NOT SUBMITTED)"
-                                            : ""}
-                                        </b>
-                                        {!loading &&
-                                        checkTypeArr(data?.sdbg_filename)
-                                          ? data?.sdbg_filename.map(
-                                              (item, i) => (
-                                                <a
-                                                  href={`${process.env.REACT_APP_PDF_URL}submitSDBG/${item?.file_name}`}
-                                                  target="_blank"
-                                                  rel="noreferrer"
-                                                  key={i}
-                                                >
-                                                  VIEW
-                                                </a>
-                                              )
-                                            )
-                                          : ""}
-                                      </td>
-                                    </tr> */}
                                     <tr>
                                       <td>Actual SDBG Submission Date</td>
                                       <td className="btn_value">
@@ -906,23 +861,6 @@ const BillsMaterialHybrid = () => {
                               </div>
                               <div className="text-center">
                                 {user?.user_type === USER_VENDOR && (
-                                  // <button
-                                  //   type="button"
-                                  //   className="btn fw-bold btn-primary me-3"
-                                  //   onClick={() =>
-                                  //     actionHandlerBTN(
-                                  //       "BillsMaterialHybrid",
-                                  //       token,
-                                  //       id,
-                                  //       form,
-                                  //       setForm,
-                                  //       initialData,
-                                  //       navigate
-                                  //     )
-                                  //   }
-                                  // >
-                                  //   SUBMIT
-                                  // </button>
                                   <DynamicButton
                                     label="SUBMIT"
                                     onClick={() =>
