@@ -898,7 +898,7 @@ const WDCSub = () => {
                       <div className="mb-3">
                         <label className="form-label">Yard No</label>
                         <input
-                          type="text"
+                          type="number"
                           className="form-control"
                           value={formData?.yard_no}
                           onChange={(e) =>
@@ -1012,7 +1012,7 @@ const WDCSub = () => {
                       <div className="mb-3">
                         <label className="form-label">Stage Details</label>
                         <input
-                          type="text"
+                          type="number"
                           className="form-control"
                           value={formData?.stage_details}
                           onChange={(e) =>
@@ -1277,7 +1277,7 @@ const WDCSub = () => {
                       <div className="mb-3">
                         <label className="form-label">Yard No</label>
                         <input
-                          type="text"
+                          type="number"
                           className="form-control"
                           value={formDataWdc?.yard_no}
                           onChange={(e) =>
