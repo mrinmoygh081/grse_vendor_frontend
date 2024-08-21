@@ -6,6 +6,7 @@ import Footer from "../../components/Footer";
 import { apiCallBack } from "../../utils/fetchAPIs";
 import { useSelector } from "react-redux";
 import { checkTypeArr } from "../../utils/smallFun";
+import { FaCaretLeft } from "react-icons/fa";
 
 const ClaimAgainstPBGSubmissionView = () => {
   const [data, setData] = useState(null);
@@ -52,7 +53,18 @@ const ClaimAgainstPBGSubmissionView = () => {
                     <div className="row g-5 g-xl-8">
                       <div className="col-12">
                         <div className="card">
-                          <h3 className="m-3">Claim Against PBG Submission:</h3>
+                          <h3 className="d-flex align-items-center m-3">
+                            <button
+                              className="btn_icon me-3"
+                              type="button"
+                              onClick={() =>
+                                navigate(`/invoice-and-payment-process/${id}`)
+                              }
+                            >
+                              <FaCaretLeft className="fs-20" />
+                            </button>{" "}
+                            Claim Against PBG Submission:
+                          </h3>
                           <div className="card-body p-3">
                             <div className="tab-content">
                               <div className="table-responsive">

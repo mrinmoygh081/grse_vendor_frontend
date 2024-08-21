@@ -306,6 +306,10 @@ input[type="number"] {
   min-height: 35px;
   vertical-align: middle;
 }
+.table_height_pbg td {
+  min-height: 90px;
+  vertical-align: middle;
+}
 .searchui {
   outline: none;
   border-radius: 5px;
