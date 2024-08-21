@@ -6,7 +6,6 @@ import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { FaCaretLeft } from "react-icons/fa";
 import { useSelector } from "react-redux";
 import Select from "react-select";
-import DynamicButton from "../../Helpers/DynamicButton";
 import { apiCallBack } from "../../utils/fetchAPIs";
 import ClaimAgainstPBGSubmissioninfo from "../../components/ClaimAgainstPBGSubmissioninfo";
 import { toast } from "react-toastify";
@@ -17,7 +16,7 @@ const ClaimAgainstPBGSubmissionEdit = () => {
   };
   const navigate = useNavigate();
   const { isDO } = useSelector((state) => state.selectedPO);
-  const { user, token } = useSelector((state) => state.auth);
+  const { token } = useSelector((state) => state.auth);
   const { id } = useParams();
   const { state } = useLocation();
   const [showRemarks, setShowRemarks] = useState(false);
@@ -44,11 +43,11 @@ const ClaimAgainstPBGSubmissionEdit = () => {
           }));
           setEmp(options);
         } else {
-          setEmp([]); // Fallback to an empty array on failure
+          setEmp([]);
         }
       } catch (error) {
         console.error("Error fetching Employee list:", error);
-        setEmp([]); // Fallback to an empty array on error
+        setEmp([]);
       }
     };
 
@@ -246,11 +245,7 @@ const ClaimAgainstPBGSubmissionEdit = () => {
                                         }
                                         className="form-control mb-2"
                                       />
-                                      {/* <DynamicButton
-                                          label="Submit Rejection"
-                                          className="btn fw-bold btn-danger"
-                                          onClick={handleRejection}
-                                        /> */}
+
                                       <button
                                         className="btn fw-bold btn-sm btn-danger"
                                         onClick={handleRejection}
@@ -262,11 +257,6 @@ const ClaimAgainstPBGSubmissionEdit = () => {
                                       </button>
                                     </>
                                   ) : (
-                                    // <DynamicButton
-                                    //   label="Reject"
-                                    //   className="btn fw-bold btn-danger"
-                                    //   onClick={handleRejection}
-                                    // />
                                     <button
                                       className="btn fw-bold btn-sm btn-danger"
                                       onClick={handleRejection}
