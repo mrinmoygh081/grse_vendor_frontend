@@ -92,7 +92,7 @@ const ClaimAgainstPBGSubmissionEdit = () => {
   };
 
   const handleApproval = () => {
-    handleSubmit("approved");
+    handleSubmit("APPROVED");
   };
 
   const handleRejection = async () => {
@@ -103,7 +103,7 @@ const ClaimAgainstPBGSubmissionEdit = () => {
       formData.append("net_payable_amount", netPayableAmount);
       formData.append("assigned_to", 0);
       formData.append("purchasing_doc_no", id);
-      formData.append("status", "rejected");
+      formData.append("status", "REJECTED");
       if (remarks) formData.append("remarks", remarks);
 
       try {
