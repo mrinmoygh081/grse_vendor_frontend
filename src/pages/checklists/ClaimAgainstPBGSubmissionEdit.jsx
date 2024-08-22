@@ -32,7 +32,7 @@ const ClaimAgainstPBGSubmissionEdit = () => {
       try {
         const data = await apiCallBack(
           "GET",
-          `po/btn/getFinanceEmpList`,
+          `po/btn/getFinanceEmpList?$select=1`,
           null,
           token
         );
@@ -219,7 +219,7 @@ const ClaimAgainstPBGSubmissionEdit = () => {
                                     onClick={handleApproval}
                                     disabled={loading}
                                   >
-                                    {loading ? "Loading..." : "Approve"}{" "}
+                                    {loading ? "Loading..." : "APPROVE"}{" "}
                                   </button>
                                   <button
                                     type="button"
@@ -261,7 +261,7 @@ const ClaimAgainstPBGSubmissionEdit = () => {
                                       className="btn fw-bold btn-sm btn-danger"
                                       onClick={handleRejection}
                                     >
-                                      Reject
+                                      REJECT
                                     </button>
                                   )}
                                 </div>
