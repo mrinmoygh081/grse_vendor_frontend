@@ -32,7 +32,7 @@ const ClaimAgainstPBGSubmissionEdit = () => {
       try {
         const data = await apiCallBack(
           "GET",
-          `po/btn/getFinanceEmpList`,
+          `po/btn/getFinanceEmpList?$select=1`,
           null,
           token
         );
@@ -92,7 +92,7 @@ const ClaimAgainstPBGSubmissionEdit = () => {
   };
 
   const handleApproval = () => {
-    handleSubmit("approved");
+    handleSubmit("APPROVED");
   };
 
   const handleRejection = async () => {
@@ -103,7 +103,7 @@ const ClaimAgainstPBGSubmissionEdit = () => {
       formData.append("net_payable_amount", netPayableAmount);
       formData.append("assigned_to", 0);
       formData.append("purchasing_doc_no", id);
-      formData.append("status", "rejected");
+      formData.append("status", "REJECTED");
       if (remarks) formData.append("remarks", remarks);
 
       try {
@@ -219,7 +219,7 @@ const ClaimAgainstPBGSubmissionEdit = () => {
                                     onClick={handleApproval}
                                     disabled={loading}
                                   >
-                                    {loading ? "Loading..." : "Approve"}{" "}
+                                    {loading ? "Loading..." : "APPROVE"}{" "}
                                   </button>
                                   <button
                                     type="button"
@@ -261,7 +261,7 @@ const ClaimAgainstPBGSubmissionEdit = () => {
                                       className="btn fw-bold btn-sm btn-danger"
                                       onClick={handleRejection}
                                     >
-                                      Reject
+                                      REJECT
                                     </button>
                                   )}
                                 </div>

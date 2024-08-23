@@ -89,14 +89,8 @@ const WDCSub = () => {
   const [viewData, setViewData] = useState(null);
   const [emp, setEmp] = useState(null);
   const [delay, setDelay] = useState("");
-  const [doForm, setDoForm] = useState({
-    contractual_start_date: "",
-    Contractual_completion_date: "",
-    status: "",
-  });
-  const [doFormJcc, setDoFormJcc] = useState({
-    status: "",
-  });
+  const [doForm, setDoForm] = useState({});
+  const [doFormJcc, setDoFormJcc] = useState({});
   const [isSubmitted, setIsSubmitted] = useState(false);
 
   const [isLoading, setIsLoading] = useState(false);
@@ -115,6 +109,23 @@ const WDCSub = () => {
   const fileoneInputRef = useRef(null);
   const filetwoInputRef = useRef(null);
   const filethreeInputRef = useRef(null);
+
+  const handleInputChange = (e, index, field) => {
+    const updatedForm = { ...doForm };
+    if (!updatedForm[index]) {
+      updatedForm[index] = {};
+    }
+    updatedForm[index][field] = e.target.value;
+    setDoForm(updatedForm);
+  };
+  const handleInputChangejcc = (e, index, field) => {
+    const updatedForm = { ...doFormJcc };
+    if (!updatedForm[index]) {
+      updatedForm[index] = {};
+    }
+    updatedForm[index][field] = e.target.value;
+    setDoFormJcc(updatedForm);
+  };
 
   const getData = async () => {
     setIsLoading(true);
@@ -324,39 +335,75 @@ const WDCSub = () => {
     }
   };
 
+  // const submitHandlerAction = async (flag, reference_no) => {
+  //   try {
+  //     const formDataCopy = { ...formData };
+
+  //     {
+  //       const fD = new FormData();
+
+  //       fD.append("purchasing_doc_no", viewData?.purchasing_doc_no || "");
+  //       fD.append("reference_no", reference_no || viewData.reference_no || "");
+
+  //       fD.append("status", flag);
+
+  //       const lineItemArray = viewData.line_item_array.map((item) => ({
+  //         contractual_start_date: doForm.contractual_start_date,
+  //         Contractual_completion_date: doForm.Contractual_completion_date,
+  //         status: doForm.status,
+  //         delay: delay,
+  //         line_item_no: item.line_item_no || "",
+  //       }));
+
+  //       fD.append("line_item_array", JSON.stringify(lineItemArray));
+
+  //       const res = await apiCallBack("POST", "po/wdc/submitWdc", fD, token);
+
+  //       if (res.status) {
+  //         toast.success(res.message);
+  //         setIsPopup(false);
+  //         setIsSecPopup(false);
+  //         setFormData(initialFormData);
+  //         getData();
+  //       } else {
+  //         toast.warn(res.message);
+  //       }
+  //     }
+  //   } catch (error) {
+  //     toast.error("Error uploading file: " + error.message);
+  //     console.error("Error uploading file:", error);
+  //   }
+  // };
+
   const submitHandlerAction = async (flag, reference_no) => {
     try {
-      const formDataCopy = { ...formData }; // Create a copy of formData
+      const fD = new FormData();
 
-      {
-        const fD = new FormData();
+      fD.append("purchasing_doc_no", viewData?.purchasing_doc_no || "");
+      fD.append("reference_no", reference_no || viewData.reference_no || "");
+      fD.append("status", flag);
 
-        fD.append("purchasing_doc_no", viewData?.purchasing_doc_no || "");
-        fD.append("reference_no", reference_no || viewData.reference_no || "");
+      const lineItemArray = viewData.line_item_array.map((item, index) => ({
+        contractual_start_date: doForm[index]?.contractual_start_date || "",
+        Contractual_completion_date:
+          doForm[index]?.Contractual_completion_date || "",
+        status: doForm[index]?.status || "",
+        delay: item.hinderance_in_days || "",
+        line_item_no: item.line_item_no || "",
+      }));
 
-        fD.append("status", flag);
+      fD.append("line_item_array", JSON.stringify(lineItemArray));
 
-        const lineItemArray = viewData.line_item_array.map((item) => ({
-          contractual_start_date: doForm.contractual_start_date,
-          Contractual_completion_date: doForm.Contractual_completion_date,
-          status: doForm.status,
-          delay: delay,
-          line_item_no: item.line_item_no || "",
-        }));
+      const res = await apiCallBack("POST", "po/wdc/submitWdc", fD, token);
 
-        fD.append("line_item_array", JSON.stringify(lineItemArray));
-
-        const res = await apiCallBack("POST", "po/wdc/submitWdc", fD, token);
-
-        if (res.status) {
-          toast.success(res.message);
-          setIsPopup(false);
-          setIsSecPopup(false);
-          setFormData(initialFormData);
-          getData();
-        } else {
-          toast.warn(res.message);
-        }
+      if (res.status) {
+        toast.success(res.message);
+        setIsPopup(false);
+        setIsSecPopup(false);
+        setFormData(initialFormData);
+        getData();
+      } else {
+        toast.warn(res.message);
       }
     } catch (error) {
       toast.error("Error uploading file: " + error.message);
@@ -380,9 +427,9 @@ const WDCSub = () => {
 
         fD.append("status", flag);
 
-        const lineItemArray = viewData.line_item_array.map((item) => ({
+        const lineItemArray = viewData.line_item_array.map((item, index) => ({
           line_item_no: item.line_item_no || "",
-          status: doFormJcc.status,
+          status: doFormJcc[index]?.status || "",
         }));
 
         fD.append("line_item_array", JSON.stringify(lineItemArray));
@@ -1699,10 +1746,11 @@ const WDCSub = () => {
                                 <input
                                   type="date"
                                   onChange={(e) =>
-                                    setDoForm({
-                                      ...doForm,
-                                      contractual_start_date: e.target.value,
-                                    })
+                                    handleInputChange(
+                                      e,
+                                      index,
+                                      "contractual_start_date"
+                                    )
                                   }
                                   className="form-control"
                                   placeholderText="DD/MM/YYYY"
@@ -1712,11 +1760,11 @@ const WDCSub = () => {
                                 <input
                                   type="date"
                                   onChange={(e) =>
-                                    setDoForm({
-                                      ...doForm,
-                                      Contractual_completion_date:
-                                        e.target.value,
-                                    })
+                                    handleInputChange(
+                                      e,
+                                      index,
+                                      "Contractual_completion_date"
+                                    )
                                   }
                                   className="form-control"
                                   placeholderText="DD/MM/YYYY"
@@ -1735,10 +1783,7 @@ const WDCSub = () => {
                                 <select
                                   className="form-select"
                                   onChange={(e) =>
-                                    setDoForm({
-                                      ...doForm,
-                                      status: e.target.value,
-                                    })
+                                    handleInputChange(e, index, "status")
                                   }
                                 >
                                   <option value="">Select</option>
@@ -1928,10 +1973,7 @@ const WDCSub = () => {
                                 <select
                                   className="form-select"
                                   onChange={(e) =>
-                                    setDoFormJcc({
-                                      ...doFormJcc,
-                                      status: e.target.value,
-                                    })
+                                    handleInputChangejcc(e, index, "status")
                                   }
                                 >
                                   <option value="">Select</option>

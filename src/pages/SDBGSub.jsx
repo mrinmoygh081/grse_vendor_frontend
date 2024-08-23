@@ -60,6 +60,7 @@ const SDBGSub = () => {
   const [formData, setFormData] = useState({
     sdbgFile: null,
     remarks: "",
+    bg_no: "",
   });
   const [entryState, setEntryState] = useState({});
   const GRSE_LOGO_BASE64 =
@@ -190,10 +191,11 @@ const SDBGSub = () => {
   }, [id]);
 
   const updateSDBG = async (flag) => {
-    const { sdbgFile, remarks } = formData;
+    const { sdbgFile, remarks, bg_no } = formData;
     if (
       selectedActionType.trim() === "" ||
       !sdbgFile ||
+      !bg_no ||
       remarks.trim() === ""
     ) {
       return toast.warn("Please provide all required fields");
@@ -203,6 +205,7 @@ const SDBGSub = () => {
       form.append("purchasing_doc_no", id);
       form.append("file", formData.sdbgFile);
       form.append("remarks", formData.remarks);
+      form.append("bg_no", formData.bg_no);
       form.append("status", flag);
       form.append("action_type", selectedActionType);
 
@@ -622,6 +625,7 @@ const SDBGSub = () => {
                                 <tr className="border-0">
                                   {/* <th className="min-w-170px">Action Type</th> */}
                                   <th className="min-w-150px">DateTime </th>
+                                  <th>Bank Guarantee No</th>
                                   <th className="min-w-90px">File</th>
                                   <th className="min-w-150px">Action By</th>
                                   <th className="min-w-150px">Remarks</th>
@@ -638,7 +642,7 @@ const SDBGSub = () => {
                                   <>
                                     <tr></tr>
                                     <tr>
-                                      <td colSpan={10}>
+                                      <td colSpan={11}>
                                         <SkeletonLoader col={6} row={6} />
                                       </td>
                                     </tr>
@@ -650,7 +654,7 @@ const SDBGSub = () => {
                                       return (
                                         <Fragment key={index}>
                                           <tr>
-                                            <td colSpan={10}>
+                                            <td colSpan={11}>
                                               <b>{it}</b>
                                             </td>
                                           </tr>
@@ -664,7 +668,7 @@ const SDBGSub = () => {
                                               return (
                                                 <Fragment key={ind}>
                                                   <tr>
-                                                    <td colSpan={5}>
+                                                    <td colSpan={6}>
                                                       <b>{item}</b>
                                                     </td>
                                                     <td>
@@ -741,6 +745,7 @@ const SDBGSub = () => {
                                                               data?.created_at
                                                             )}
                                                         </td>
+                                                        <td>{data?.bg_no}</td>
                                                         <td>
                                                           <a
                                                             href={`${process.env.REACT_APP_PDF_URL}/submitSDBG/${data.file_name}`}
@@ -878,6 +883,21 @@ const SDBGSub = () => {
                       setFormData({ ...formData, sdbgFile: e.target.files[0] })
                     }
                     accept=".pdf"
+                  />
+                </div>
+              </div>
+              <div className="col-12">
+                <div className="mb-3">
+                  <label className="form-label">Bank Guarantee No</label>
+                  &nbsp;&nbsp;
+                  <span className="mandatorystart">*</span>
+                  <input
+                    type="text"
+                    className="form-control"
+                    value={formData.bg_no}
+                    onChange={(e) =>
+                      setFormData({ ...formData, bg_no: e.target.value })
+                    }
                   />
                 </div>
               </div>

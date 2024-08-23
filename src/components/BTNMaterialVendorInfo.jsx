@@ -36,7 +36,7 @@ const BTNMaterialVendorInfo = ({ navigate, id }) => {
   //   }
   // };
   const getDataByBTN = async () => {
-    setLoading(true); // Start loading
+    setLoading(true);
     try {
       const d = await apiCallBack(
         "GET",
@@ -107,7 +107,7 @@ const BTNMaterialVendorInfo = ({ navigate, id }) => {
             display: "flex",
             justifyContent: "center",
             alignItems: "center",
-            height: "100vh", // Full height of the viewport
+            height: "100vh",
           }}
         >
           <TailSpin
