@@ -85,6 +85,12 @@ const ClaimAgainstPBGSubmission = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    // Check if PBG data is available
+    if (!checkTypeArr(data?.pbg_filename) || data?.pbg_filename.length === 0) {
+      toast.warning("Please submit the PBG before proceeding.");
+      return;
+    }
+
     try {
       const formDataToSend = new FormData();
       formDataToSend.append("purchasing_doc_no", id);
@@ -100,6 +106,7 @@ const ClaimAgainstPBGSubmission = () => {
         "balance_claim_invoice_filename",
         formData.balanceClaimInvoiceFile
       );
+
       const response = await apiCallBack(
         "POST",
         "po/btn/submitPbg",
@@ -109,8 +116,6 @@ const ClaimAgainstPBGSubmission = () => {
 
       if (response?.status) {
         toast.success(response?.message);
-
-        // getData();
         navigate(`/invoice-and-payment-process/${id}`);
       } else {
         toast.error(response?.message);

@@ -90,9 +90,7 @@ const WDCSub = () => {
   const [emp, setEmp] = useState(null);
   const [delay, setDelay] = useState("");
   const [doForm, setDoForm] = useState({});
-  const [doFormJcc, setDoFormJcc] = useState({
-    status: "",
-  });
+  const [doFormJcc, setDoFormJcc] = useState({});
   const [isSubmitted, setIsSubmitted] = useState(false);
 
   const [isLoading, setIsLoading] = useState(false);
@@ -119,6 +117,14 @@ const WDCSub = () => {
     }
     updatedForm[index][field] = e.target.value;
     setDoForm(updatedForm);
+  };
+  const handleInputChangejcc = (e, index, field) => {
+    const updatedForm = { ...doFormJcc };
+    if (!updatedForm[index]) {
+      updatedForm[index] = {};
+    }
+    updatedForm[index][field] = e.target.value;
+    setDoFormJcc(updatedForm);
   };
 
   const getData = async () => {
@@ -382,7 +388,7 @@ const WDCSub = () => {
         Contractual_completion_date:
           doForm[index]?.Contractual_completion_date || "",
         status: doForm[index]?.status || "",
-        delay: doForm[index]?.delay || "",
+        delay: item.hinderance_in_days || "",
         line_item_no: item.line_item_no || "",
       }));
 
@@ -421,9 +427,9 @@ const WDCSub = () => {
 
         fD.append("status", flag);
 
-        const lineItemArray = viewData.line_item_array.map((item) => ({
+        const lineItemArray = viewData.line_item_array.map((item, index) => ({
           line_item_no: item.line_item_no || "",
-          status: doFormJcc.status,
+          status: doFormJcc[index]?.status || "",
         }));
 
         fD.append("line_item_array", JSON.stringify(lineItemArray));
@@ -1984,10 +1990,7 @@ const WDCSub = () => {
                                 <select
                                   className="form-select"
                                   onChange={(e) =>
-                                    setDoFormJcc({
-                                      ...doFormJcc,
-                                      status: e.target.value,
-                                    })
+                                    handleInputChangejcc(e, index, "status")
                                   }
                                 >
                                   <option value="">Select</option>
