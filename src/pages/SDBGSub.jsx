@@ -60,6 +60,7 @@ const SDBGSub = () => {
   const [formData, setFormData] = useState({
     sdbgFile: null,
     remarks: "",
+    bg_no: "",
   });
   const [entryState, setEntryState] = useState({});
   const GRSE_LOGO_BASE64 =
@@ -190,10 +191,11 @@ const SDBGSub = () => {
   }, [id]);
 
   const updateSDBG = async (flag) => {
-    const { sdbgFile, remarks } = formData;
+    const { sdbgFile, remarks, bg_no } = formData;
     if (
       selectedActionType.trim() === "" ||
       !sdbgFile ||
+      !bg_no ||
       remarks.trim() === ""
     ) {
       return toast.warn("Please provide all required fields");
@@ -203,6 +205,7 @@ const SDBGSub = () => {
       form.append("purchasing_doc_no", id);
       form.append("file", formData.sdbgFile);
       form.append("remarks", formData.remarks);
+      form.append("bg_no", formData.bg_no);
       form.append("status", flag);
       form.append("action_type", selectedActionType);
 
@@ -878,6 +881,21 @@ const SDBGSub = () => {
                       setFormData({ ...formData, sdbgFile: e.target.files[0] })
                     }
                     accept=".pdf"
+                  />
+                </div>
+              </div>
+              <div className="col-12">
+                <div className="mb-3">
+                  <label className="form-label">Bank Guarantee No</label>
+                  &nbsp;&nbsp;
+                  <span className="mandatorystart">*</span>
+                  <input
+                    type="text"
+                    className="form-control"
+                    value={formData.bg_no}
+                    onChange={(e) =>
+                      setFormData({ ...formData, bg_no: e.target.value })
+                    }
                   />
                 </div>
               </div>
