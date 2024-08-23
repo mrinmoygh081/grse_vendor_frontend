@@ -14,8 +14,8 @@ import {
 } from "../../utils/smallFun";
 import { inputOnWheelPrevent } from "../../utils/inputOnWheelPrevent";
 import { apiCallBack } from "../../utils/fetchAPIs";
-import { calDatesDiff, formatDate } from "../../utils/getDateTimeNow";
-import { FaCaretLeft, FaPlus } from "react-icons/fa";
+import { formatDate } from "../../utils/getDateTimeNow";
+import { FaCaretLeft } from "react-icons/fa";
 import { D_S_INVOICE, E_INVOICE } from "../../constants/BTNContants";
 import { initialDataService } from "../../data/btnData";
 import DynamicButton from "../../Helpers/DynamicButton";
@@ -39,37 +39,57 @@ const ServiceContractBills = () => {
   const [form, setForm] = useState(initialDataService);
   const [wdcNo, setWdcNo] = useState([]);
 
-  const calNetClaimAmount = (
-    invoice_value,
-    debit_note,
-    credit_note,
-    gst_rate
-  ) => {
+  const calNetClaimAmount = (invoice_value, debit_note, credit_note) => {
     invoice_value = parseInt(invoice_value) || 0;
     debit_note = parseInt(debit_note) || 0;
     credit_note = parseInt(credit_note) || 0;
-    gst_rate = parseInt(gst_rate) || 0;
 
-    const net_gross_claim_amount =
-      invoice_value + debit_note - credit_note + gst_rate;
+    const net_claim_amount = invoice_value + debit_note - credit_note;
 
     setForm((prevForm) => ({
       ...prevForm,
-      net_gross_claim_amount: net_gross_claim_amount,
+      net_claim_amount: net_claim_amount,
     }));
   };
 
   useEffect(() => {
-    const { invoice_value, debit_note, credit_note, gst_rate } = form;
-    if (invoice_value || debit_note || credit_note || gst_rate) {
-      calNetClaimAmount(invoice_value, debit_note, credit_note, gst_rate);
+    const { invoice_value, debit_note, credit_note } = form;
+    if (invoice_value || debit_note || credit_note) {
+      calNetClaimAmount(invoice_value, debit_note, credit_note);
     }
-  }, [
-    form?.invoice_value,
-    form?.debit_note,
-    form?.credit_note,
-    form?.gst_rate,
-  ]);
+  }, [form?.invoice_value, form?.debit_note, form?.credit_note]);
+
+  const calNetClaimAmountwithGST = (net_claim_amount, cgst, sgst, igst) => {
+    cgst = parseFloat(cgst) || 0;
+    sgst = parseFloat(sgst) || 0;
+    igst = parseFloat(igst) || 0;
+
+    const totalGST = (cgst + sgst + igst) / 100;
+    let netWithGST = net_claim_amount * (1 + totalGST);
+    netWithGST = parseFloat(netWithGST.toFixed(2));
+    setForm((prevForm) => ({
+      ...prevForm,
+      net_claim_amt_gst: netWithGST,
+    }));
+  };
+  useEffect(() => {
+    const { net_claim_amount, cgst, sgst, igst } = form;
+    if (net_claim_amount || cgst || sgst || igst) {
+      calNetClaimAmountwithGST(net_claim_amount, cgst, sgst, igst);
+    }
+  }, [form?.net_claim_amount, form?.cgst, form?.sgst, form?.igst]);
+
+  useEffect(() => {
+    if (checkTypeArr(data?.wdcDetails?.line_item_array)) {
+      let total_price = data?.wdcDetails?.line_item_array.reduce(
+        (acc, curr) => {
+          return Number(curr?.po_rate) * Number(curr?.claim_qty) + acc;
+        },
+        0
+      );
+      setForm({ ...form, total_price: total_price });
+    }
+  }, [data?.wdcDetails?.line_item_array]);
 
   const getWDCList = async () => {
     const d = await apiCallBack(
@@ -105,17 +125,12 @@ const ServiceContractBills = () => {
 
   const getEmp = async () => {
     try {
-      const data = await apiCallBack(
-        "GET",
-        `po/btn/getFinanceEmpList`,
-        null,
-        token
-      );
+      const data = await apiCallBack("GET", `po/wdc/grseEmpList`, null, token);
       if (data?.status) {
         let options = data.data.map((item, index) => {
           return {
-            value: item.usercode,
-            label: `${item.empname} (${item.usercode})`,
+            value: item.code,
+            label: `${item.name} (${item.code})`,
           };
         });
         setEmp(options);
@@ -179,6 +194,24 @@ const ServiceContractBills = () => {
                               <div className="table-responsive">
                                 <table className="table table-striped table-bordered table_height">
                                   <tbody style={{ maxHeight: "100%" }}>
+                                    <tr>
+                                      <td>Vendor Name</td>
+                                      <td className="btn_value">
+                                        <b>{data?.initial?.vendor_name}</b>
+                                      </td>
+                                    </tr>
+                                    <tr>
+                                      <td>Vendor Code</td>
+                                      <td className="btn_value">
+                                        <b>{data?.initial?.vendor_code}</b>
+                                      </td>
+                                    </tr>
+                                    <tr>
+                                      <td>GSTIN (Registration no)</td>
+                                      <td className="btn_value">
+                                        <b>{data?.initial?.vendor_gstno}</b>
+                                      </td>
+                                    </tr>
                                     <tr>
                                       <td>WDC no:</td>
                                       <td className="btn_value">
@@ -277,21 +310,7 @@ const ServiceContractBills = () => {
                                     <tr>
                                       <td colSpan={6}>Total:</td>
                                       <td colSpan={2}>
-                                        <b>
-                                          {checkTypeArr(
-                                            data?.wdcDetails?.line_item_array
-                                          ) &&
-                                            data?.wdcDetails?.line_item_array.reduce(
-                                              (acc, curr) => {
-                                                return (
-                                                  Number(curr?.po_rate) *
-                                                    Number(curr?.claim_qty) +
-                                                  acc
-                                                );
-                                              },
-                                              0
-                                            )}
-                                        </b>
+                                        <b>{form?.total_price}</b>
                                       </td>
                                     </tr>
                                   </tbody>
@@ -336,10 +355,11 @@ const ServiceContractBills = () => {
                                               value={form?.invoice_no}
                                               placeholder="invoice number"
                                               onChange={(e) =>
-                                                setForm({
-                                                  ...form,
-                                                  invoice_no: e.target.value,
-                                                })
+                                                inputTypeChange(
+                                                  e,
+                                                  form,
+                                                  setForm
+                                                )
                                               }
                                             />
                                           </div>
@@ -369,7 +389,7 @@ const ServiceContractBills = () => {
                                               <input
                                                 type="file"
                                                 className="form-control"
-                                                name="invoice_supporting_doc"
+                                                name="suppoting_invoice_filename"
                                                 onChange={(e) =>
                                                   inputFileChange(
                                                     e,
@@ -396,10 +416,11 @@ const ServiceContractBills = () => {
                                               value={form?.invoice_no}
                                               placeholder="invoice number"
                                               onChange={(e) =>
-                                                setForm({
-                                                  ...form,
-                                                  invoice_no: e.target.value,
-                                                })
+                                                inputTypeChange(
+                                                  e,
+                                                  form,
+                                                  setForm
+                                                )
                                               }
                                             />
                                           </div>
@@ -429,7 +450,7 @@ const ServiceContractBills = () => {
                                               <input
                                                 type="file"
                                                 className="form-control"
-                                                name="invoice_supporting_doc"
+                                                name="suppoting_invoice_filename"
                                                 onChange={(e) =>
                                                   inputFileChange(
                                                     e,
@@ -508,7 +529,7 @@ const ServiceContractBills = () => {
                                     <tr>
                                       <td>Net Basic amount: </td>
                                       <td className="btn_value">
-                                        <b>{form?.net_gross_claim_amount}</b>
+                                        <b>{form?.net_claim_amount}</b>
                                       </td>
                                     </tr>
                                     <tr>
@@ -562,7 +583,7 @@ const ServiceContractBills = () => {
                                     <tr>
                                       <td>Net claim amount with GST:</td>
                                       <td className="btn_value">
-                                        <b>{form?.net_with_gst}</b>
+                                        <b>{form?.net_claim_amt_gst}</b>
                                       </td>
                                     </tr>
 
@@ -709,7 +730,7 @@ const ServiceContractBills = () => {
                                           classNamePrefix="select"
                                           isClearable={true}
                                           isSearchable={true}
-                                          name="emp"
+                                          name="bill_certifing_authority"
                                           id="emp"
                                           options={emp}
                                           value={
@@ -717,13 +738,13 @@ const ServiceContractBills = () => {
                                             emp.filter(
                                               (item) =>
                                                 item.value ===
-                                                form?.bill_cerifying_au
+                                                form?.bill_certifing_authority
                                             )[0]
                                           }
                                           onChange={(val) =>
                                             setForm({
                                               ...form,
-                                              bill_cerifying_au: val
+                                              bill_certifing_authority: val
                                                 ? val.value
                                                 : null,
                                             })
@@ -758,6 +779,34 @@ const ServiceContractBills = () => {
                                         </div>
                                       </td>
                                     </tr>
+                                    <tr>
+                                      <td colSpan="2">
+                                        <div className="form-check">
+                                          <input
+                                            type="checkbox"
+                                            className="form-check-input"
+                                            id="agree_to_declaration"
+                                            name="agree_to_declaration"
+                                            value={form?.agree_to_declaration}
+                                            required
+                                            onClick={(e) =>
+                                              setForm({
+                                                ...form,
+                                                agree_to_declaration:
+                                                  e.target.checked,
+                                              })
+                                            }
+                                          />
+                                          <label
+                                            className="form-check-label"
+                                            htmlFor="agree_to_declaration"
+                                          >
+                                            I hereby declare that all the
+                                            entries are correct.
+                                          </label>
+                                        </div>
+                                      </td>
+                                    </tr>
                                   </tbody>
                                 </table>
                               </div>
@@ -774,7 +823,6 @@ const ServiceContractBills = () => {
                                         id,
                                         form,
                                         setForm,
-                                        initialDataService,
                                         navigate
                                       )
                                     }
