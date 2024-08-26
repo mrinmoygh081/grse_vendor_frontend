@@ -88,10 +88,8 @@ const WDCSub = () => {
   const [groupedData, setGroupedData] = useState([]);
   const [viewData, setViewData] = useState(null);
   const [emp, setEmp] = useState(null);
-  const [delay, setDelay] = useState("");
   const [doForm, setDoForm] = useState({});
   const [doFormJcc, setDoFormJcc] = useState({});
-  const [isSubmitted, setIsSubmitted] = useState(false);
 
   const [isLoading, setIsLoading] = useState(false);
 
@@ -99,7 +97,6 @@ const WDCSub = () => {
   const [dynamicFieldsWdc, setDynamicFieldsWdc] = useState([
     line_item_fieldswdc,
   ]);
-  console.log(viewData, "viewData mmmmmmmmmmmmm");
 
   const [formData, setFormData] = useState(initialFormData);
   const [formDataWdc, setFormDataWdc] = useState(initialFormDatawdc);
@@ -334,46 +331,7 @@ const WDCSub = () => {
       console.error("Error uploading file:", error);
     }
   };
-
-  // const submitHandlerAction = async (flag, reference_no) => {
-  //   try {
-  //     const formDataCopy = { ...formData };
-
-  //     {
-  //       const fD = new FormData();
-
-  //       fD.append("purchasing_doc_no", viewData?.purchasing_doc_no || "");
-  //       fD.append("reference_no", reference_no || viewData.reference_no || "");
-
-  //       fD.append("status", flag);
-
-  //       const lineItemArray = viewData.line_item_array.map((item) => ({
-  //         contractual_start_date: doForm.contractual_start_date,
-  //         Contractual_completion_date: doForm.Contractual_completion_date,
-  //         status: doForm.status,
-  //         delay: delay,
-  //         line_item_no: item.line_item_no || "",
-  //       }));
-
-  //       fD.append("line_item_array", JSON.stringify(lineItemArray));
-
-  //       const res = await apiCallBack("POST", "po/wdc/submitWdc", fD, token);
-
-  //       if (res.status) {
-  //         toast.success(res.message);
-  //         setIsPopup(false);
-  //         setIsSecPopup(false);
-  //         setFormData(initialFormData);
-  //         getData();
-  //       } else {
-  //         toast.warn(res.message);
-  //       }
-  //     }
-  //   } catch (error) {
-  //     toast.error("Error uploading file: " + error.message);
-  //     console.error("Error uploading file:", error);
-  //   }
-  // };
+  console.log("fjdkl", doForm);
 
   const submitHandlerAction = async (flag, reference_no) => {
     try {
@@ -383,14 +341,26 @@ const WDCSub = () => {
       fD.append("reference_no", reference_no || viewData.reference_no || "");
       fD.append("status", flag);
 
-      const lineItemArray = viewData.line_item_array.map((item, index) => ({
-        contractual_start_date: doForm[index]?.contractual_start_date || "",
-        Contractual_completion_date:
-          doForm[index]?.Contractual_completion_date || "",
-        status: doForm[index]?.status || "",
-        delay: delay || "",
-        line_item_no: item.line_item_no || "",
-      }));
+      const lineItemArray = viewData.line_item_array.map((item, index) => {
+        console.log(viewData.line_item_array[0].actual_completion_date);
+        console.log(doForm.Contractual_completion_date);
+        console.log(viewData.line_item_array[0].hinderance_in_days);
+
+        let del = parseInt(
+          calDatesDiff(
+            new Date(viewData.line_item_array[index].actual_completion_date),
+            new Date(doForm[index].Contractual_completion_date)
+          ) + parseInt(viewData.line_item_array[index].hinderance_in_days)
+        );
+        return {
+          contractual_start_date: doForm[index]?.contractual_start_date || "",
+          Contractual_completion_date:
+            doForm[index]?.Contractual_completion_date || "",
+          status: doForm[index]?.status || "",
+          delay: del || "0",
+          line_item_no: item.line_item_no || "",
+        };
+      });
 
       fD.append("line_item_array", JSON.stringify(lineItemArray));
 
@@ -452,48 +422,6 @@ const WDCSub = () => {
       console.error("Error uploading file:", error);
     }
   };
-
-  // const submitHandlerAction = async (flag, ref_no) => {
-  //   try {
-  //     const { action_type, line_item_array } = formData;
-
-  //     if (action_type && line_item_array && line_item_array.length > 0) {
-  //       const fD = new FormData();
-
-  //       fD.append("action_type", action_type);
-  //       Object.keys(viewData).forEach((key) => {
-  //         if (key !== "line_item_array") {
-  //           fD.append(key, viewData[key]);
-  //         }
-  //       });
-
-  //       const updatedLineItemArray = line_item_array.map((item) => ({
-  //         ...item,
-  //         contractual_start_date: doForm.contractual_start_date,
-  //         Contractual_completion_date: doForm.Contractual_completion_date,
-  //       }));
-  //       fD.append("line_item_array", JSON.stringify(updatedLineItemArray));
-
-  //       const res = await apiCallBack("POST", "po/wdc/submitWdc", fD, token);
-
-  //       if (res.status) {
-  //         toast.success(res.message);
-  //         setIsPopup(false);
-  //         setIsSecPopup(false);
-  //         setFormData(initialFormData);
-  //         getData();
-  //       } else {
-  //         toast.warn(res.message);
-  //       }
-  //     } else {
-  //       // No need for this warning since all required fields are displayed in viewData
-  //       // toast.warn("Please fill up all the required fields!");
-  //     }
-  //   } catch (error) {
-  //     toast.error("Error uploading file: " + error.message);
-  //     console.error("Error uploading file:", error);
-  //   }
-  // };
 
   const getAvailableAmount = async (item) => {
     try {
@@ -597,27 +525,6 @@ const WDCSub = () => {
     updatedFields[index][fieldName] = date;
     setDynamicFieldsWdc(updatedFields);
   };
-
-  useEffect(() => {
-    let dateDelay = 0; // Initialize delay to a default value
-
-    if (viewData?.line_item_array && viewData.line_item_array.length > 0) {
-      if (doForm?.Contractual_completion_date) {
-        dateDelay =
-          parseInt(
-            calDatesDiff(
-              new Date(viewData.line_item_array[0].actual_completion_date),
-              new Date(doForm.Contractual_completion_date)
-            )
-          ) + parseInt(viewData.line_item_array[0].hinderance_in_days);
-      } else {
-        dateDelay = parseInt(viewData.line_item_array[0].hinderance_in_days);
-      }
-    }
-
-    // Set the delay state
-    setDelay(dateDelay);
-  }, [doForm?.Contractual_completion_date, viewData]);
 
   return (
     <>
@@ -1791,7 +1698,7 @@ const WDCSub = () => {
                                   <option value="REJECTED">Rejected</option>
                                 </select>
                               </td>
-                              <td>{delay}</td>
+                              <td></td>
                             </tr>
                           </Fragment>
                         ))}
@@ -1811,20 +1718,6 @@ const WDCSub = () => {
                     </div>
                   </div>
                   <div className="col-12">
-                    {/* <button
-                    className="btn btn-primary"
-                    type="button"
-                    onClick={() => toast.warn("SAP is not conntected!")}
-                  >
-                    SUBMIT
-                  </button> */}
-                    {/* <button
-                      onClick={() => submitHandlerAction("APPROVED", null)}
-                      className="btn fw-bold btn-primary"
-                      type="button"
-                    >
-                      SUBMIT
-                    </button> */}
                     <DynamicButton
                       label="SUBMIT"
                       onClick={() => submitHandlerAction("APPROVED", null)}
@@ -1998,13 +1891,6 @@ const WDCSub = () => {
                       <label className="form-label">Remarks</label>
                       <p>{viewData?.remarks}</p>
                     </div>
-                    {/* <button
-                      onClick={() => submitHandlerActionJcc("APPROVED", null)}
-                      className="btn fw-bold btn-primary"
-                      type="button"
-                    >
-                      SUBMIT
-                    </button> */}
                     <DynamicButton
                       label="SUBMIT"
                       onClick={() => submitHandlerActionJcc("APPROVED", null)}
