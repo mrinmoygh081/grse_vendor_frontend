@@ -65,6 +65,7 @@ import QapDashboard from "./pages/dashboard/QapDashboard";
 import ForgatePassword from "./pages/ForgatePassword";
 import ClaimAgainstPBGSubmissionView from "./pages/checklists/ClaimAgainstPBGSubmissionView";
 import ClaimAgainstPBGSubmissionEdit from "./pages/checklists/ClaimAgainstPBGSubmissionEdit";
+import NotFound from "./components/NotFound";
 import ServiceContractBillsView from "./pages/checklists/ServiceContractBillsView";
 import ServiceContractBillsEdit from "./pages/checklists/ServiceContractBillsEdit";
 
@@ -248,6 +249,7 @@ function Layout() {
             <Route path="/authorisation/" element={<Authorisation />} />
           </>
         )}
+        <Route path="*" element={<NotFound />} />
       </Routes>
     </BrowserRouter>
   );

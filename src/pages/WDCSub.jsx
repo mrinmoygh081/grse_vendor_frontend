@@ -99,7 +99,7 @@ const WDCSub = () => {
   const [dynamicFieldsWdc, setDynamicFieldsWdc] = useState([
     line_item_fieldswdc,
   ]);
-  // console.log(dynamicFieldsWdc, "dynamicFieldsWdc mmmmmmmmmmmmm");
+  console.log(viewData, "viewData mmmmmmmmmmmmm");
 
   const [formData, setFormData] = useState(initialFormData);
   const [formDataWdc, setFormDataWdc] = useState(initialFormDatawdc);
@@ -388,7 +388,7 @@ const WDCSub = () => {
         Contractual_completion_date:
           doForm[index]?.Contractual_completion_date || "",
         status: doForm[index]?.status || "",
-        delay: item.hinderance_in_days || "",
+        delay: delay || "",
         line_item_no: item.line_item_no || "",
       }));
 

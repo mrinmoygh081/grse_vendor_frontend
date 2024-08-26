@@ -139,7 +139,7 @@ const ServiceContractBillsEdit = () => {
       };
       const response = await apiCallBack(
         "POST",
-        "po/btn/BillsMaterialHybridByDO",
+        "po/btn/submitSBtnByCAuthorty",
         payload,
         token
       );
