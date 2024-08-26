@@ -1540,7 +1540,7 @@ const WDCSub = () => {
                           onChange={(val) =>
                             setFormData({
                               ...formData,
-                              certifying_authority: val.value,
+                              certifying_authority: val?.value || "",
                             })
                           }
                         />
