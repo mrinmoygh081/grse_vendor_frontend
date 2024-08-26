@@ -56,6 +56,24 @@ export const calculatePenalty = (
   return Math.round(penaltyAmount);
 };
 
+export const calculateLDByDate = (difference, originalValue, percentage) => {
+  const oneWeek = 7 * 24 * 60 * 60 * 1000;
+
+  if (difference < 0) return 0;
+
+  // Calculate the number of weeks delayed
+  const weeksDelayed = Math.ceil(difference / oneWeek);
+  // console.log("fun", difference, actualTime, contractualTime, weeksDelayed);
+
+  // Calculate the penalty percentage
+  let penaltyPercentage = weeksDelayed * percentage;
+
+  // Calculate the penalty amount
+  const penaltyAmount = (Number(originalValue) * penaltyPercentage) / 100;
+
+  return Math.round(penaltyAmount);
+};
+
 // export const calculateNetPay = (
 //   net,
 //   ld,
@@ -122,6 +140,29 @@ export const calculateNetPay = (
   other = (other / 100) * net;
 
   let deduct = parseFloat(ld) + parseFloat(other) + parseFloat(estimate);
+  let net_pay = parseFloat(net) - deduct;
+
+  return {
+    other: parseFloat(other).toFixed(2),
+    deduct: parseFloat(deduct).toFixed(2),
+    net_pay: parseFloat(net_pay).toFixed(2),
+  };
+};
+
+export const calculateNetPayService = (net, ld, other) => {
+  if (!net || net === "") {
+    toast.warn("Net claim amount is missing");
+    return;
+  }
+
+  // Default values if not provided
+  ld = ld || 0;
+  other = other || 0;
+
+  // Convert other deduction percentage to actual value
+  other = (other / 100) * net;
+
+  let deduct = parseFloat(ld) + parseFloat(other);
   let net_pay = parseFloat(net) - deduct;
 
   return {

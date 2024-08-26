@@ -23,7 +23,6 @@ export default function Header({ title, id }) {
 
   useEffect(() => {
     (async () => {
-      console.log(id, typeof id);
       if (id === "null") {
         dispatch(poRemoveHandler());
         navigate("/");

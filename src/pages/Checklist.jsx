@@ -15,6 +15,7 @@ import { TailSpin } from "react-loader-spinner";
 import { activityOptions } from "../data/btnData";
 import SkeletonLoader from "../loader/SkeletonLoader";
 import DynamicButton from "../Helpers/DynamicButton";
+import { ASSIGNER, USER_GRSE_FINANCE } from "../constants/userConstants";
 
 const Checklist = () => {
   const { id } = useParams();
@@ -80,12 +81,13 @@ const Checklist = () => {
   const assignSDBGByFinance = async () => {
     if (assign.assign_to_fi) {
       try {
-        const res = await apiCallBack(
-          "POST",
-          `po/btn/assignToFiStaff`,
-          assign,
-          token
-        );
+        let uri;
+        if (assign?.btn_type === "service-contract-bills") {
+          uri = "submitSBtnByFAuthorty";
+        } else if (assign?.btn_type === "hybrid-bill-material") {
+          uri = "assignToFiStaff";
+        }
+        const res = await apiCallBack("POST", `po/btn/${uri}`, assign, token);
         if (res?.status) {
           setIsAssignPopup(false);
           toast.success(`Successfully assigned to ${assign.assign_to_fi}`);
@@ -209,7 +211,6 @@ const Checklist = () => {
                                   {Object.keys(groupedBG).map((it, index) => {
                                     let items = groupedBG[it];
                                     let firstItem = items[0];
-                                    console.log(firstItem, "firstItem");
                                     return (
                                       <Fragment key={index}>
                                         <tr>
@@ -231,10 +232,9 @@ const Checklist = () => {
                                                       "hybrid-bill-material";
                                                   } else if (
                                                     firstItem.btn_type ===
-                                                    "hybrid-bill-service"
+                                                    "service-contract-bills"
                                                   ) {
-                                                    type =
-                                                      "hybrid-bill-service";
+                                                    type = "bill-service";
                                                   } else if (
                                                     firstItem.btn_type ===
                                                     "advance-bill-hybrid"
@@ -258,15 +258,18 @@ const Checklist = () => {
                                               >
                                                 VIEW
                                               </button>
-                                              {user?.department_id === 15 &&
+                                              {user?.department_id ===
+                                                USER_GRSE_FINANCE &&
                                                 user?.internal_role_id ===
-                                                  1 && (
+                                                  ASSIGNER && (
                                                   <button
                                                     onClick={() => {
                                                       setAssign({
                                                         ...assign,
                                                         btn_num:
                                                           firstItem?.btn_num,
+                                                        btn_type:
+                                                          firstItem?.btn_type,
                                                       });
                                                       setIsAssignPopup(true);
                                                     }}
@@ -275,40 +278,29 @@ const Checklist = () => {
                                                     ASSIGN
                                                   </button>
                                                 )}
-                                              {isDO && (
+                                              {isDO &&
+                                                firstItem.btn_type ===
+                                                  "hybrid-bill-material" && (
+                                                  <button
+                                                    className="btn btn-sm btn-primary m-1"
+                                                    onClick={() => {
+                                                      navigate(
+                                                        `/checklist/hybrid-bill-material/edit/${id}`,
+                                                        {
+                                                          state: `${firstItem?.btn_num}`,
+                                                        }
+                                                      );
+                                                    }}
+                                                  >
+                                                    Action
+                                                  </button>
+                                                )}
+                                              {true && (
                                                 <button
                                                   className="btn btn-sm btn-primary m-1"
                                                   onClick={() => {
-                                                    let type = "";
-
-                                                    if (
-                                                      firstItem.btn_type ===
-                                                      "hybrid-bill-material"
-                                                    ) {
-                                                      type =
-                                                        "hybrid-bill-material";
-                                                    } else if (
-                                                      firstItem.btn_type ===
-                                                      "hybrid-bill-service"
-                                                    ) {
-                                                      type =
-                                                        "hybrid-bill-service";
-                                                    } else if (
-                                                      firstItem.btn_type ===
-                                                      "advance-bill-hybrid"
-                                                    ) {
-                                                      type =
-                                                        "advance-bill-hybrid";
-                                                    } else if (
-                                                      firstItem.btn_type ===
-                                                      "claim-against-pbg"
-                                                    ) {
-                                                      type =
-                                                        "claim-against-pbg";
-                                                    }
-
                                                     navigate(
-                                                      `/checklist/${type}/edit/${id}`,
+                                                      `/checklist/bill-service/edit/${id}`,
                                                       {
                                                         state: `${firstItem?.btn_num}`,
                                                       }

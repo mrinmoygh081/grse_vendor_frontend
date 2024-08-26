@@ -66,6 +66,8 @@ import ForgatePassword from "./pages/ForgatePassword";
 import ClaimAgainstPBGSubmissionView from "./pages/checklists/ClaimAgainstPBGSubmissionView";
 import ClaimAgainstPBGSubmissionEdit from "./pages/checklists/ClaimAgainstPBGSubmissionEdit";
 import NotFound from "./components/NotFound";
+import ServiceContractBillsView from "./pages/checklists/ServiceContractBillsView";
+import ServiceContractBillsEdit from "./pages/checklists/ServiceContractBillsEdit";
 
 function Layout() {
   const { token, isLoggedIn, user } = useSelector((state) => state.auth);
@@ -148,6 +150,15 @@ function Layout() {
           element={<ServiceContractBills />}
         />
         <Route
+          path="/checklist/bill-service/view/:id"
+          element={<ServiceContractBillsView />}
+        />
+
+        <Route
+          path="/checklist/bill-service/edit/:id"
+          element={<ServiceContractBillsEdit />}
+        />
+        <Route
           path="/checklist/bill-incorrect-deductions/:id"
           element={<ClaimIncorrectDeductions />}
         />
@@ -183,9 +194,6 @@ function Layout() {
         <Route path="/payment-advise/:id" element={<PaymentAdvisesSub />} />
         <Route path="/pbg-upload/:id" element={<PBGuploadSub />} />
         <Route path="/bg-extension" element={<BGExtensionSub />} />
-        {/* <Route path="/dashboard/bg" element={<BGfinance />} />
-        <Route path="/dashboard/btn" element={<BTNfinance />} />
-        <Route path="/dashboard/qa" element={<QapDashboard />} /> */}
         {user?.department_id === 3 && (
           <Route path="/dashboard/qa" element={<QapDashboard />} />
         )}
@@ -196,7 +204,6 @@ function Layout() {
           </>
         )}
         <Route path="/claim-letter/:id" element={<ClaimLatterSub />} />
-        {/* <Route path="/checklistedit/:id" element={<ChecklistSubEdit />} /> */}
         <Route path="/wdc/:id" element={<WDCSub />} />
         <Route path="/BillSubAttach" element={<BillSubAttach />} />
         <Route path="/BillVendorAttach" element={<BillVendorAttach />} />

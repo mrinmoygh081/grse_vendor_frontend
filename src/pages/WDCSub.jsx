@@ -598,27 +598,11 @@ const WDCSub = () => {
     setDynamicFieldsWdc(updatedFields);
   };
 
-  // useEffect(() => {
-  //   console.log("viewData2", doForm?.contractual_completion_date);
-  //   let dateDelay;
-  //   if(doForm?.contractual_completion_date){
-  //     dateDelay = parseInt(calDatesDiff(new Date(viewData?.line_item_array[0]?.actual_completion_date), new Date(doForm?.contractual_completion_date))) + parseInt(viewData?.line_item_array[0]?.hinderance_in_days)
-  //   } else {
-  //     dateDelay = parseInt(viewData?.line_item_array[0]?.hinderance_in_days)
-
-  //   }
-  //   setDelay(dateDelay)
-  // }, [doForm?.contractual_completion_date, viewData])
-
   useEffect(() => {
-    // console.log("viewData2", doForm?.contractual_completion_date);
-
     let dateDelay = 0; // Initialize delay to a default value
 
     if (viewData?.line_item_array && viewData.line_item_array.length > 0) {
-      // Check if viewData.line_item_array exists and has at least one element
       if (doForm?.Contractual_completion_date) {
-        // Calculate delay based on actual completion date and contractual completion date
         dateDelay =
           parseInt(
             calDatesDiff(
@@ -627,7 +611,6 @@ const WDCSub = () => {
             )
           ) + parseInt(viewData.line_item_array[0].hinderance_in_days);
       } else {
-        // If contractual completion date is not available, use only hinderance in days
         dateDelay = parseInt(viewData.line_item_array[0].hinderance_in_days);
       }
     }

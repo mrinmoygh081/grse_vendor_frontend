@@ -327,12 +327,6 @@ const BillsMaterialHybrid = () => {
                                               />
                                             </div>
                                           </div>
-                                          {/* <p>
-                                            In case of ink -signed invoice
-                                            vendor should mandatorily send Hard
-                                            Copy of Invoice to Dealing within 2
-                                            working days
-                                          </p> */}
                                         </td>
                                       </tr>
                                     )}
@@ -359,13 +353,6 @@ const BillsMaterialHybrid = () => {
                                             }
                                             accept=".pdf"
                                           />
-                                          {/* <button
-                                            type="button"
-                                            className="btn btn-primary btn-sm m-4"
-                                            onClick={getGrnIcgrnHandler}
-                                          >
-                                            CHECK
-                                          </button> */}
                                           <DynamicButton
                                             label="CHECK"
                                             onClick={getGrnIcgrnHandler}

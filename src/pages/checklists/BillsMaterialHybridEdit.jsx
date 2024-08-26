@@ -4,7 +4,6 @@ import SideBar from "../../components/SideBar";
 import Header from "../../components/Header";
 import Footer from "../../components/Footer";
 import { useSelector } from "react-redux";
-import { USER_VENDOR } from "../../constants/userConstants";
 import {
   actionHandlerByDO,
   getGrnIcgrnByInvoice,
@@ -13,7 +12,6 @@ import {
   calculateNetPay,
   calculatePenalty,
   checkTypeArr,
-  inputTypeChange,
 } from "../../utils/smallFun";
 import { apiCallBack } from "../../utils/fetchAPIs";
 import { inputOnWheelPrevent } from "../../utils/inputOnWheelPrevent";
@@ -32,7 +30,7 @@ import { FaCaretLeft } from "react-icons/fa";
 const BillsMaterialHybridEdit = () => {
   const navigate = useNavigate();
   const { isDO } = useSelector((state) => state.selectedPO);
-  const { user, token } = useSelector((state) => state.auth);
+  const { token } = useSelector((state) => state.auth);
   const { id } = useParams();
   const { state } = useLocation();
 
