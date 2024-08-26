@@ -734,7 +734,6 @@ const ServiceContractBills = () => {
                                           id="emp"
                                           options={emp}
                                           value={
-                                            emp &&
                                             emp.filter(
                                               (item) =>
                                                 item.value ===
