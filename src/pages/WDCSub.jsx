@@ -248,6 +248,7 @@ const WDCSub = () => {
           setIsPopup(false);
           setIsSecPopup(false);
           setFormData(initialFormData);
+          setDynamicFields([line_item_fields]);
           getData();
         } else {
           toast.warn(res.message);
@@ -331,7 +332,8 @@ const WDCSub = () => {
       console.error("Error uploading file:", error);
     }
   };
-  console.log("fjdkl", doForm);
+  console.log("allData", allData);
+  console.log("viewData", viewData);
 
   const submitHandlerAction = async (flag, reference_no) => {
     try {
@@ -524,6 +526,12 @@ const WDCSub = () => {
     const updatedFields = [...dynamicFieldsWdc];
     updatedFields[index][fieldName] = date;
     setDynamicFieldsWdc(updatedFields);
+  };
+  const handleClosePopup = () => {
+    setFormData(initialFormData);
+    setFormDataWdc(initialFormDatawdc);
+    setDynamicFields([line_item_fields]);
+    setIsPopup(false);
   };
 
   return (
@@ -734,7 +742,7 @@ const WDCSub = () => {
               </h3>
               <button
                 className="btn fw-bold btn-danger"
-                onClick={() => setIsPopup(false)}
+                onClick={handleClosePopup}
               >
                 Close
               </button>
@@ -2013,8 +2021,8 @@ const WDCSub = () => {
               </div>
               <div className="col-12 col-md-6">
                 <div className="mb-3">
-                  <label className="form-label">line_item_no</label>
-                  <p>{viewData?.line_item_no}</p>
+                  <label className="form-label">Certifying Authority</label>
+                  <p>{viewData?.assigned_to}</p>
                 </div>
               </div>
 
