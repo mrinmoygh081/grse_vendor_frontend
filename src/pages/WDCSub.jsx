@@ -88,7 +88,17 @@ const WDCSub = () => {
   const [groupedData, setGroupedData] = useState([]);
   const [viewData, setViewData] = useState(null);
   const [emp, setEmp] = useState(null);
-  const [doForm, setDoForm] = useState({});
+  const [doForm, setDoForm] = useState(() => {
+    return (
+      viewData?.line_item_array?.map(() => ({
+        contractual_start_date: "",
+        Contractual_completion_date: "",
+        status: "",
+        delay: 0,
+      })) || []
+    );
+  });
+
   const [doFormJcc, setDoFormJcc] = useState({});
 
   const [isLoading, setIsLoading] = useState(false);
@@ -107,14 +117,90 @@ const WDCSub = () => {
   const filetwoInputRef = useRef(null);
   const filethreeInputRef = useRef(null);
 
-  const handleInputChange = (e, index, field) => {
-    const updatedForm = { ...doForm };
-    if (!updatedForm[index]) {
-      updatedForm[index] = {};
+  // const handleInputChange = (e, index, fieldName) => {
+  //   const { value } = e.target;
+  //   const updatedForm = [...doForm];
+
+  //   // Update the specific field
+  //   updatedForm[index] = {
+  //     ...updatedForm[index],
+  //     [fieldName]: value,
+  //   };
+
+  //   // If the fieldName is related to dates, recalculate the delay
+  //   if (
+  //     fieldName === "contractual_start_date" ||
+  //     fieldName === "Contractual_completion_date"
+  //   ) {
+  //     const contractualCompletionDate = new Date(
+  //       updatedForm[index].Contractual_completion_date
+  //     );
+  //     const actualCompletionDate = new Date(
+  //       viewData.line_item_array[index].actual_completion_date
+  //     );
+  //     const hinderanceDays =
+  //       parseInt(viewData.line_item_array[index].hinderance_in_days) || 0;
+
+  //     let delay = 0;
+  //     if (contractualCompletionDate && actualCompletionDate) {
+  //       const timeDiff =
+  //         actualCompletionDate.getTime() - contractualCompletionDate.getTime();
+  //       const delayDays = Math.floor(timeDiff / (1000 * 60 * 60 * 24)); // Days between the two dates
+  //       delay = delayDays - hinderanceDays;
+  //     }
+
+  //     updatedForm[index].delay = delay > 0 ? delay : 0; // Ensure delay is not negative
+  //   }
+
+  //   setDoForm(updatedForm);
+  // };
+
+  const handleInputChange = (e, index, fieldName) => {
+    const { value } = e.target;
+    const updatedForm = [...doForm];
+
+    // Update the specific field
+    updatedForm[index] = {
+      ...updatedForm[index],
+      [fieldName]: value,
+    };
+
+    // If the fieldName is related to dates, recalculate the delay
+    if (
+      fieldName === "contractual_start_date" ||
+      fieldName === "Contractual_completion_date" ||
+      fieldName === "actual_completion_date"
+    ) {
+      const contractualCompletionDateStr =
+        updatedForm[index]?.Contractual_completion_date;
+      const actualCompletionDateStr =
+        viewData.line_item_array[index]?.actual_completion_date;
+      const hinderanceDays =
+        parseInt(viewData.line_item_array[index]?.hinderance_in_days) || 0;
+
+      if (contractualCompletionDateStr && actualCompletionDateStr) {
+        const contractualCompletionDate = new Date(
+          contractualCompletionDateStr
+        );
+        const actualCompletionDate = new Date(actualCompletionDateStr);
+
+        // Reset time components to midnight to avoid issues
+        contractualCompletionDate.setHours(0, 0, 0, 0);
+        actualCompletionDate.setHours(0, 0, 0, 0);
+
+        // Calculate the delay in days
+        const timeDiff = actualCompletionDate - contractualCompletionDate;
+        const delayDays = Math.floor(timeDiff / (1000 * 60 * 60 * 24)); // Days between the two dates
+
+        // Adjust delay by subtracting hinderance days
+        const delay = delayDays - hinderanceDays;
+        updatedForm[index].delay = delay > 0 ? delay : 0; // Ensure delay is not negative
+      }
     }
-    updatedForm[index][field] = e.target.value;
+
     setDoForm(updatedForm);
   };
+
   const handleInputChangejcc = (e, index, field) => {
     const updatedForm = { ...doFormJcc };
     if (!updatedForm[index]) {
@@ -335,6 +421,86 @@ const WDCSub = () => {
   console.log("allData", allData);
   console.log("viewData", viewData);
 
+  // const submitHandlerAction = async (flag, reference_no) => {
+  //   try {
+  //     const fD = new FormData();
+
+  //     fD.append("purchasing_doc_no", viewData?.purchasing_doc_no || "");
+  //     fD.append("reference_no", reference_no || viewData.reference_no || "");
+  //     fD.append("status", flag);
+
+  //     const lineItemArray = viewData.line_item_array.map((item, index) => {
+  //       let delay = 0;
+
+  //       const contractualCompletionDateStr =
+  //         doForm[index]?.Contractual_completion_date;
+  //       const actualCompletionDateStr = item.actual_completion_date;
+
+  //       if (contractualCompletionDateStr && actualCompletionDateStr) {
+  //         const contractualCompletionDate = new Date(
+  //           contractualCompletionDateStr
+  //         );
+  //         const actualCompletionDate = new Date(actualCompletionDateStr);
+  //         const hinderanceDays = parseInt(item.hinderance_in_days) || 0;
+
+  //         // Calculate the delay in days
+  //         const timeDiff =
+  //           actualCompletionDate.getTime() -
+  //           contractualCompletionDate.getTime();
+  //         const delayDays = Math.floor(timeDiff / (1000 * 60 * 60 * 24)); // Days between the two dates
+
+  //         // Adjust delay by subtracting hinderance days
+  //         delay = delayDays - hinderanceDays;
+  //         console.log(
+  //           "Contractual Completion Date:",
+  //           contractualCompletionDate
+  //         );
+  //         console.log("Actual Completion Date:", actualCompletionDate);
+  //         console.log("Hinderance Days:", hinderanceDays);
+  //         console.log("Calculated Delay Days:", delayDays);
+  //         console.log("Final Delay:", delay);
+  //       }
+
+  //       return {
+  //         contractual_start_date: doForm[index]?.contractual_start_date || "",
+  //         Contractual_completion_date:
+  //           doForm[index]?.Contractual_completion_date || "",
+  //         status: doForm[index]?.status || "",
+  //         delay: delay > 0 ? delay : 0, // Ensure delay is not negative
+  //         line_item_no: item.line_item_no || "",
+  //       };
+  //     });
+
+  //     fD.append("line_item_array", JSON.stringify(lineItemArray));
+
+  //     const res = await apiCallBack("POST", "po/wdc/submitWdc", fD, token);
+
+  //     if (res.status) {
+  //       toast.success(res.message);
+  //       setIsPopup(false);
+  //       setIsSecPopup(false);
+  //       setFormData(initialFormData);
+
+  //       // Reset doForm to initial state
+  //       setDoForm(
+  //         viewData?.line_item_array?.map(() => ({
+  //           contractual_start_date: "",
+  //           Contractual_completion_date: "",
+  //           status: "",
+  //           delay: 0,
+  //         })) || []
+  //       );
+
+  //       getData();
+  //     } else {
+  //       toast.warn(res.message);
+  //     }
+  //   } catch (error) {
+  //     toast.error("Error uploading file: " + error.message);
+  //     console.error("Error uploading file:", error);
+  //   }
+  // };
+
   const submitHandlerAction = async (flag, reference_no) => {
     try {
       const fD = new FormData();
@@ -344,22 +510,45 @@ const WDCSub = () => {
       fD.append("status", flag);
 
       const lineItemArray = viewData.line_item_array.map((item, index) => {
-        console.log(viewData.line_item_array[0].actual_completion_date);
-        console.log(doForm.Contractual_completion_date);
-        console.log(viewData.line_item_array[0].hinderance_in_days);
+        let delay = 0;
 
-        let del = parseInt(
-          calDatesDiff(
-            new Date(viewData.line_item_array[index].actual_completion_date),
-            new Date(doForm[index].Contractual_completion_date)
-          ) + parseInt(viewData.line_item_array[index].hinderance_in_days)
-        );
+        const contractualCompletionDateStr =
+          doForm[index]?.Contractual_completion_date;
+        const actualCompletionDateStr = item.actual_completion_date;
+        const hinderanceDays = parseInt(item.hinderance_in_days) || 0;
+
+        if (contractualCompletionDateStr && actualCompletionDateStr) {
+          const contractualCompletionDate = new Date(
+            contractualCompletionDateStr
+          );
+          const actualCompletionDate = new Date(actualCompletionDateStr);
+
+          // Reset time components to midnight to avoid issues
+          contractualCompletionDate.setHours(0, 0, 0, 0);
+          actualCompletionDate.setHours(0, 0, 0, 0);
+
+          // Calculate the delay in days
+          const timeDiff = actualCompletionDate - contractualCompletionDate;
+          const delayDays = Math.floor(timeDiff / (1000 * 60 * 60 * 24)); // Days between the two dates
+
+          // Adjust delay by subtracting hinderance days
+          delay = delayDays - hinderanceDays;
+          console.log(
+            "Contractual Completion Date:",
+            contractualCompletionDate
+          );
+          console.log("Actual Completion Date:", actualCompletionDate);
+          console.log("Hinderance Days:", hinderanceDays);
+          console.log("Calculated Delay Days:", delayDays);
+          console.log("Final Delay:", delay);
+        }
+
         return {
           contractual_start_date: doForm[index]?.contractual_start_date || "",
           Contractual_completion_date:
             doForm[index]?.Contractual_completion_date || "",
           status: doForm[index]?.status || "",
-          delay: del || "0",
+          delay: delay > 0 ? delay : 0, // Ensure delay is not negative
           line_item_no: item.line_item_no || "",
         };
       });
@@ -373,6 +562,17 @@ const WDCSub = () => {
         setIsPopup(false);
         setIsSecPopup(false);
         setFormData(initialFormData);
+
+        // Reset doForm to initial state
+        setDoForm(
+          viewData?.line_item_array?.map(() => ({
+            contractual_start_date: "",
+            Contractual_completion_date: "",
+            status: "",
+            delay: 0,
+          })) || []
+        );
+
         getData();
       } else {
         toast.warn(res.message);
@@ -531,6 +731,7 @@ const WDCSub = () => {
     setFormData(initialFormData);
     setFormDataWdc(initialFormDatawdc);
     setDynamicFields([line_item_fields]);
+    setDynamicFieldsWdc([line_item_fieldswdc]);
     setIsPopup(false);
   };
 
@@ -600,6 +801,10 @@ const WDCSub = () => {
                                               items.map((item, index) => (
                                                 <tr key={index}>
                                                   <td>{item?.action_type}</td>
+                                                  {console.log(
+                                                    item,
+                                                    "OPPPPPPPPPPPPPPPPPPPP"
+                                                  )}
 
                                                   <td>
                                                     {item?.created_at &&
@@ -1649,9 +1854,7 @@ const WDCSub = () => {
                         viewData?.line_item_array.map((field, index) => (
                           <Fragment key={index}>
                             <tr>
-                              <td>
-                                <span>{field?.line_item_no}</span>
-                              </td>
+                              <td>{field?.line_item_no}</td>
                               <td>{field?.description}</td>
                               <td>
                                 {field?.rest_amount} {field?.unit}
@@ -1706,7 +1909,7 @@ const WDCSub = () => {
                                   <option value="REJECTED">Rejected</option>
                                 </select>
                               </td>
-                              <td></td>
+                              <td>{doForm[index]?.delay || "0"}</td>
                             </tr>
                           </Fragment>
                         ))}
@@ -1917,7 +2120,7 @@ const WDCSub = () => {
           <div className="card-header border-0 pt-5 pb-3">
             <h3 className="card-title align-items-start flex-column">
               <span className="card-label fw-bold fs-3 mb-1">
-                All Data for{" "}
+                FFF All Data for{" "}
                 {viewData?.reference_no && `for ${viewData?.reference_no}`}
               </span>
             </h3>
@@ -2036,6 +2239,14 @@ const WDCSub = () => {
                     <th>Actual Start</th>
                     <th>Actual Completion</th>
                     <th>Hinderance in Days</th>
+
+                    {viewData?.status === "APPROVED" && (
+                      <th>Contractual Start</th>
+                    )}
+                    {viewData?.status === "APPROVED" && (
+                      <th>Contractual Completion</th>
+                    )}
+                    {viewData?.status === "APPROVED" && <th>Delay</th>}
                   </tr>
                 </thead>
                 <tbody>
@@ -2060,6 +2271,22 @@ const WDCSub = () => {
                               formatDate(field?.actual_completion_date)}
                           </td>
                           <td>{field?.hinderance_in_days}</td>
+
+                          {viewData?.status === "APPROVED" && (
+                            <td>
+                              {field?.actual_completion_date &&
+                                formatDate(field?.contractual_start_date)}
+                            </td>
+                          )}
+                          {viewData?.status === "APPROVED" && (
+                            <td>
+                              {field?.actual_completion_date &&
+                                formatDate(field?.Contractual_completion_date)}
+                            </td>
+                          )}
+                          {viewData?.status === "APPROVED" && (
+                            <td>{field?.delay}</td>
+                          )}
                         </tr>
                       </Fragment>
                     ))}
@@ -2082,6 +2309,7 @@ const WDCSub = () => {
           </form>
         </div>
       </div>
+
       {/* // jcc popup*/}
       <div
         className={isPopupJccView ? "popup popup_lg active" : "popup popup_lg"}
