@@ -71,6 +71,7 @@ const ForgatePassword = () => {
       user_code: formData.vendorCode,
       password: formData.newPassword,
       otp: formData.otp,
+      status: "UPDATE",
     };
     const res = await apiCallBack("POST", "auth2/setPassword", payload, token);
     setIsLoading(false);
