@@ -7,16 +7,19 @@ import { reConfirm } from "../utils/reConfirm";
 import { toast } from "react-toastify";
 import { apiCallBack } from "../utils/fetchAPIs";
 import DynamicButton from "../Helpers/DynamicButton";
+import DatePicker from "react-datepicker"; // Import DatePicker
+import "react-datepicker/dist/react-datepicker.css"; // Import DatePicker styles
+import { convertToEpoch } from "../utils/getDateTimeNow";
 
 const SyncComponent = () => {
   const [syncing, setSyncing] = useState(false);
   const [syncMessage, setSyncMessage] = useState("");
+  const [selectedDate, setSelectedDate] = useState(new Date()); // State for DatePicker
   const dispatch = useDispatch();
 
   const logOutFun = () => {
     dispatch(logoutHandler());
     dispatch(poRemoveHandler());
-    // window.location.href = "/";
   };
 
   const handleSync = async () => {
@@ -60,6 +63,29 @@ const SyncComponent = () => {
     }
   };
 
+  const fileDownloadHandler = async () => {
+    setSyncing(true);
+    setSyncMessage("");
+    try {
+      let payload = {
+        sync_date: new Date(selectedDate).getTime(),
+      };
+      const response = apiCallBack(
+        "POST",
+        "/sync/sync_file_zip",
+        payload,
+        null
+      );
+      toast.success(response.data.message || "File sync successful");
+    } catch (error) {
+      toast.error(
+        "File sync failed: " + (error.response?.data?.message || error.message)
+      );
+    } finally {
+      setSyncing(false);
+    }
+  };
+
   return (
     <div className="container mt-5">
       <div className="card">
@@ -81,6 +107,7 @@ const SyncComponent = () => {
         <div className="card-body">
           <div className="row">
             <div className="col-md-6">
+              <h3>Sync Unsynced Data</h3>
               <ol>
                 <li>
                   Copy The Zip File named as sync_data.zip stored in the other
@@ -93,7 +120,7 @@ const SyncComponent = () => {
                   this server where this website is running on.
                 </li>
                 <li>
-                  Open a specic folder path to this server
+                  Open a specific folder path to this server
                   (/var/www/html/obps/obps_backend/sync/otherServerData/Data){" "}
                 </li>
                 <li>Create a Directory named as today's date (DD-MM-YYYY)</li>
@@ -101,13 +128,6 @@ const SyncComponent = () => {
                   Paste the copied sync_data.zip inside the today's date folder
                 </li>
               </ol>
-              {/* <button
-                className="btn btn-primary btn-sm mt-2"
-                onClick={() => handleSync()}
-                disabled={syncing}
-              >
-                Sync Data
-              </button> */}
               <DynamicButton
                 label="Sync Data"
                 onClick={() => handleSync()}
@@ -115,6 +135,7 @@ const SyncComponent = () => {
               />
             </div>
             <div className="col-md-6">
+              <h3>Additional Instructions</h3>
               <ol>
                 <li>Ensure all data is up-to-date before syncing.</li>
                 <li>Check your network connection.</li>
@@ -123,20 +144,53 @@ const SyncComponent = () => {
                 <li>Refer to the documentation for detailed instructions.</li>
                 <li>Log out and log in again if the sync fails repeatedly.</li>
               </ol>
-              {/* <button
+              {/* <DynamicButton
+                label="Sync File"
+                onClick={() => handleFileSync()}
                 className="btn btn-secondary btn-sm mt-2"
-                disabled={syncing}
-                onClick={() => handleFileSync()}
-              >
-                Sync File
-              </button> */}
+              /> */}
+            </div>
+          </div>
+
+          {/* New section for Sync Download and Sync Upload */}
+          <div className="row mt-4">
+            <div className="col-md-6">
+              <h3>Unsynced File Download</h3>
+              <DatePicker
+                selected={selectedDate}
+                onChange={(date) => setSelectedDate(date)}
+                className="form-control my-2"
+                placeholderText="Select Date"
+                maxDate={new Date()}
+              />
               <DynamicButton
-                label=" Sync File"
-                onClick={() => handleFileSync()}
+                label="Download Sync"
+                onClick={fileDownloadHandler}
+                className="btn btn-primary btn-sm mt-2"
+              />
+            </div>
+            <div className="col-md-6">
+              <h3>Unsynced File Upload</h3>
+              <ol>
+                <li>
+                  Copy The Zip File named as sync_data.zip stored in the other
+                  server in a specific path. <br />{" "}
+                  (/var/www/html/obps/obps_backend/)
+                </li>
+                <li>Check your network connection.</li>
+                <li>Do not close the browser while syncing.</li>
+                <li>Contact support if you encounter any issues.</li>
+                <li>Refer to the documentation for detailed instructions.</li>
+                <li>Log out and log in again if the sync fails repeatedly.</li>
+              </ol>
+              <DynamicButton
+                label="Upload Sync"
+                onClick={handleFileSync}
                 className="btn btn-secondary btn-sm mt-2"
               />
             </div>
           </div>
+
           {syncMessage && (
             <div className="alert alert-info mt-3">{syncMessage}</div>
           )}
@@ -145,7 +199,6 @@ const SyncComponent = () => {
       <div className="d-flex mt-3">
         <button
           className="btn btn-danger ms-auto"
-          href={"#"}
           onClick={() =>
             reConfirm({ file: true }, logOutFun, "You're going to Logout!")
           }
