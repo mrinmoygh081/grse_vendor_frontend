@@ -1888,7 +1888,12 @@ const WDCSub = () => {
                   <div className="col-12 col-md-6">
                     <div className="mb-3">
                       <label className="form-label">Certifying Authority</label>
-                      <p>{viewData?.assigned_to}</p>
+                      <p>
+                        {viewData?.cname || ""}{" "}
+                        {viewData?.assigned_to
+                          ? `(${viewData.assigned_to})`
+                          : ""}
+                      </p>
                     </div>
                   </div>
                   {/* <div className="col-12 col-md-6">
@@ -2093,7 +2098,12 @@ const WDCSub = () => {
                   <div className="col-12 col-md-6">
                     <div className="mb-3">
                       <label className="form-label">Certifying Authority</label>
-                      <p>{viewData?.assigned_to}</p>
+                      <p>
+                        {viewData?.cname || ""}{" "}
+                        {viewData?.assigned_to
+                          ? `(${viewData.assigned_to})`
+                          : ""}
+                      </p>
                     </div>
                   </div>
 
@@ -2300,7 +2310,10 @@ const WDCSub = () => {
               <div className="col-12 col-md-6">
                 <div className="mb-3">
                   <label className="form-label">Certifying Authority</label>
-                  <p>{viewData?.assigned_to}</p>
+                  <p>
+                    {viewData?.cname || ""}{" "}
+                    {viewData?.assigned_to ? `(${viewData.assigned_to})` : ""}
+                  </p>
                 </div>
               </div>
 
@@ -2476,7 +2489,10 @@ const WDCSub = () => {
               <div className="col-12 col-md-6">
                 <div className="mb-3">
                   <label className="form-label">Certifying Authority</label>
-                  <p>{viewData?.assigned_to}</p>
+                  <p>
+                    {viewData?.cname || ""}{" "}
+                    {viewData?.assigned_to ? `(${viewData.assigned_to})` : ""}
+                  </p>
                 </div>
               </div>
               {/* <div className="col-12 col-md-6">
