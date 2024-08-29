@@ -735,85 +735,92 @@ input[type="number"] {
 
 /* page not found css */
 
-.not-found-animation-container {
-  text-align: center;
-  padding: 50px;
-  background-color: #75c0c9;
-  height: 100vh;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  overflow: hidden;
-}
-
-.mountain {
+.page-not-found-container {
   position: relative;
-  width: 300px;
-  height: 150px;
-  background: #8b4513;
-  clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
-  margin-bottom: 30px;
-  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  background-color: #f8f8f8;
+  padding: 0 20px;
+  text-align: center;
+  overflow: hidden; /* Hide elements that float outside */
 }
 
-.boy,
-.girl {
-  position: absolute;
-  bottom: 10px;
-  width: 30px;
-  height: 50px;
-  background-color: #ffccbc;
-  border-radius: 50%;
+.content-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  max-width: 900px;
+  width: 100%;
+  z-index: 10; /* Ensure the main content stays on top */
 }
 
-.boy {
-  left: 50px;
-  animation: boyMove 3s infinite alternate;
+.error-text {
+  flex: 1;
+  text-align: left;
 }
 
-.girl {
-  right: 50px;
-  animation: girlMove 3s infinite alternate;
+.error-text h1 {
+  font-size: 4rem;
+  color: #333;
 }
 
-@keyframes boyMove {
-  0% {
-    transform: translateX(0) translateY(0);
-  }
-  50% {
-    transform: translateX(-10px) translateY(-15px);
-  }
-  100% {
-    transform: translateX(0) translateY(0);
-  }
+.error-text p {
+  font-size: 1.25rem;
+  color: #666;
 }
 
-@keyframes girlMove {
-  0% {
-    transform: translateX(0) translateY(0);
-  }
-  50% {
-    transform: translateX(10px) translateY(-15px);
-  }
-  100% {
-    transform: translateX(0) translateY(0);
-  }
-}
-
-.title {
-  font-size: 48px;
+.error-code {
   margin-top: 20px;
+  font-weight: bold;
 }
 
-.subtitle {
-  font-size: 24px;
+.home-button {
+  margin-top: 20px;
+  padding: 10px 20px;
+  font-size: 1rem;
+  color: #fff;
+  background-color: #007bff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
 }
 
-.message {
-  font-size: 18px;
-  margin-top: 10px;
+.home-button:hover {
+  background-color: #0056b3;
 }
-.fade-in-delayed {
-  animation: fadeIn 1s ease-in 1s;
+
+.error-image {
+  flex: 1;
+  text-align: right;
+}
+
+.error-image img {
+  max-width: 100%;
+  height: auto;
+}
+
+.floating-element {
+  position: absolute;
+  font-size: 2.5rem;
+  color: rgba(0, 0, 0, 0.1);
+  animation: float 5s infinite;
+}
+
+@keyframes float {
+  0% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+  50% {
+    transform: translateY(-20px);
+    opacity: 0.7;
+  }
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
 }

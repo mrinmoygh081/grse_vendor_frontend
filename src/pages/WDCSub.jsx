@@ -88,10 +88,18 @@ const WDCSub = () => {
   const [groupedData, setGroupedData] = useState([]);
   const [viewData, setViewData] = useState(null);
   const [emp, setEmp] = useState(null);
-  const [delay, setDelay] = useState("");
-  const [doForm, setDoForm] = useState({});
+  const [doForm, setDoForm] = useState(() => {
+    return (
+      viewData?.line_item_array?.map(() => ({
+        contractual_start_date: "",
+        Contractual_completion_date: "",
+        status: "",
+        delay: 0,
+      })) || []
+    );
+  });
+
   const [doFormJcc, setDoFormJcc] = useState({});
-  const [isSubmitted, setIsSubmitted] = useState(false);
 
   const [isLoading, setIsLoading] = useState(false);
 
@@ -99,7 +107,6 @@ const WDCSub = () => {
   const [dynamicFieldsWdc, setDynamicFieldsWdc] = useState([
     line_item_fieldswdc,
   ]);
-  console.log(viewData, "viewData mmmmmmmmmmmmm");
 
   const [formData, setFormData] = useState(initialFormData);
   const [formDataWdc, setFormDataWdc] = useState(initialFormDatawdc);
@@ -110,14 +117,90 @@ const WDCSub = () => {
   const filetwoInputRef = useRef(null);
   const filethreeInputRef = useRef(null);
 
-  const handleInputChange = (e, index, field) => {
-    const updatedForm = { ...doForm };
-    if (!updatedForm[index]) {
-      updatedForm[index] = {};
+  // const handleInputChange = (e, index, fieldName) => {
+  //   const { value } = e.target;
+  //   const updatedForm = [...doForm];
+
+  //   // Update the specific field
+  //   updatedForm[index] = {
+  //     ...updatedForm[index],
+  //     [fieldName]: value,
+  //   };
+
+  //   // If the fieldName is related to dates, recalculate the delay
+  //   if (
+  //     fieldName === "contractual_start_date" ||
+  //     fieldName === "Contractual_completion_date"
+  //   ) {
+  //     const contractualCompletionDate = new Date(
+  //       updatedForm[index].Contractual_completion_date
+  //     );
+  //     const actualCompletionDate = new Date(
+  //       viewData.line_item_array[index].actual_completion_date
+  //     );
+  //     const hinderanceDays =
+  //       parseInt(viewData.line_item_array[index].hinderance_in_days) || 0;
+
+  //     let delay = 0;
+  //     if (contractualCompletionDate && actualCompletionDate) {
+  //       const timeDiff =
+  //         actualCompletionDate.getTime() - contractualCompletionDate.getTime();
+  //       const delayDays = Math.floor(timeDiff / (1000 * 60 * 60 * 24)); // Days between the two dates
+  //       delay = delayDays - hinderanceDays;
+  //     }
+
+  //     updatedForm[index].delay = delay > 0 ? delay : 0; // Ensure delay is not negative
+  //   }
+
+  //   setDoForm(updatedForm);
+  // };
+
+  const handleInputChange = (e, index, fieldName) => {
+    const { value } = e.target;
+    const updatedForm = [...doForm];
+
+    // Update the specific field
+    updatedForm[index] = {
+      ...updatedForm[index],
+      [fieldName]: value,
+    };
+
+    // If the fieldName is related to dates, recalculate the delay
+    if (
+      fieldName === "contractual_start_date" ||
+      fieldName === "Contractual_completion_date" ||
+      fieldName === "actual_completion_date"
+    ) {
+      const contractualCompletionDateStr =
+        updatedForm[index]?.Contractual_completion_date;
+      const actualCompletionDateStr =
+        viewData.line_item_array[index]?.actual_completion_date;
+      const hinderanceDays =
+        parseInt(viewData.line_item_array[index]?.hinderance_in_days) || 0;
+
+      if (contractualCompletionDateStr && actualCompletionDateStr) {
+        const contractualCompletionDate = new Date(
+          contractualCompletionDateStr
+        );
+        const actualCompletionDate = new Date(actualCompletionDateStr);
+
+        // Reset time components to midnight to avoid issues
+        contractualCompletionDate.setHours(0, 0, 0, 0);
+        actualCompletionDate.setHours(0, 0, 0, 0);
+
+        // Calculate the delay in days
+        const timeDiff = actualCompletionDate - contractualCompletionDate;
+        const delayDays = Math.floor(timeDiff / (1000 * 60 * 60 * 24)); // Days between the two dates
+
+        // Adjust delay by subtracting hinderance days
+        const delay = delayDays - hinderanceDays;
+        updatedForm[index].delay = delay > 0 ? delay : 0; // Ensure delay is not negative
+      }
     }
-    updatedForm[index][field] = e.target.value;
+
     setDoForm(updatedForm);
   };
+
   const handleInputChangejcc = (e, index, field) => {
     const updatedForm = { ...doFormJcc };
     if (!updatedForm[index]) {
@@ -251,6 +334,7 @@ const WDCSub = () => {
           setIsPopup(false);
           setIsSecPopup(false);
           setFormData(initialFormData);
+          setDynamicFields([line_item_fields]);
           getData();
         } else {
           toast.warn(res.message);
@@ -334,40 +418,82 @@ const WDCSub = () => {
       console.error("Error uploading file:", error);
     }
   };
+  console.log("allData", allData);
+  console.log("viewData", viewData);
 
   // const submitHandlerAction = async (flag, reference_no) => {
   //   try {
-  //     const formDataCopy = { ...formData };
+  //     const fD = new FormData();
 
-  //     {
-  //       const fD = new FormData();
+  //     fD.append("purchasing_doc_no", viewData?.purchasing_doc_no || "");
+  //     fD.append("reference_no", reference_no || viewData.reference_no || "");
+  //     fD.append("status", flag);
 
-  //       fD.append("purchasing_doc_no", viewData?.purchasing_doc_no || "");
-  //       fD.append("reference_no", reference_no || viewData.reference_no || "");
+  //     const lineItemArray = viewData.line_item_array.map((item, index) => {
+  //       let delay = 0;
 
-  //       fD.append("status", flag);
+  //       const contractualCompletionDateStr =
+  //         doForm[index]?.Contractual_completion_date;
+  //       const actualCompletionDateStr = item.actual_completion_date;
 
-  //       const lineItemArray = viewData.line_item_array.map((item) => ({
-  //         contractual_start_date: doForm.contractual_start_date,
-  //         Contractual_completion_date: doForm.Contractual_completion_date,
-  //         status: doForm.status,
-  //         delay: delay,
-  //         line_item_no: item.line_item_no || "",
-  //       }));
+  //       if (contractualCompletionDateStr && actualCompletionDateStr) {
+  //         const contractualCompletionDate = new Date(
+  //           contractualCompletionDateStr
+  //         );
+  //         const actualCompletionDate = new Date(actualCompletionDateStr);
+  //         const hinderanceDays = parseInt(item.hinderance_in_days) || 0;
 
-  //       fD.append("line_item_array", JSON.stringify(lineItemArray));
+  //         // Calculate the delay in days
+  //         const timeDiff =
+  //           actualCompletionDate.getTime() -
+  //           contractualCompletionDate.getTime();
+  //         const delayDays = Math.floor(timeDiff / (1000 * 60 * 60 * 24)); // Days between the two dates
 
-  //       const res = await apiCallBack("POST", "po/wdc/submitWdc", fD, token);
-
-  //       if (res.status) {
-  //         toast.success(res.message);
-  //         setIsPopup(false);
-  //         setIsSecPopup(false);
-  //         setFormData(initialFormData);
-  //         getData();
-  //       } else {
-  //         toast.warn(res.message);
+  //         // Adjust delay by subtracting hinderance days
+  //         delay = delayDays - hinderanceDays;
+  //         console.log(
+  //           "Contractual Completion Date:",
+  //           contractualCompletionDate
+  //         );
+  //         console.log("Actual Completion Date:", actualCompletionDate);
+  //         console.log("Hinderance Days:", hinderanceDays);
+  //         console.log("Calculated Delay Days:", delayDays);
+  //         console.log("Final Delay:", delay);
   //       }
+
+  //       return {
+  //         contractual_start_date: doForm[index]?.contractual_start_date || "",
+  //         Contractual_completion_date:
+  //           doForm[index]?.Contractual_completion_date || "",
+  //         status: doForm[index]?.status || "",
+  //         delay: delay > 0 ? delay : 0, // Ensure delay is not negative
+  //         line_item_no: item.line_item_no || "",
+  //       };
+  //     });
+
+  //     fD.append("line_item_array", JSON.stringify(lineItemArray));
+
+  //     const res = await apiCallBack("POST", "po/wdc/submitWdc", fD, token);
+
+  //     if (res.status) {
+  //       toast.success(res.message);
+  //       setIsPopup(false);
+  //       setIsSecPopup(false);
+  //       setFormData(initialFormData);
+
+  //       // Reset doForm to initial state
+  //       setDoForm(
+  //         viewData?.line_item_array?.map(() => ({
+  //           contractual_start_date: "",
+  //           Contractual_completion_date: "",
+  //           status: "",
+  //           delay: 0,
+  //         })) || []
+  //       );
+
+  //       getData();
+  //     } else {
+  //       toast.warn(res.message);
   //     }
   //   } catch (error) {
   //     toast.error("Error uploading file: " + error.message);
@@ -383,14 +509,90 @@ const WDCSub = () => {
       fD.append("reference_no", reference_no || viewData.reference_no || "");
       fD.append("status", flag);
 
-      const lineItemArray = viewData.line_item_array.map((item, index) => ({
-        contractual_start_date: doForm[index]?.contractual_start_date || "",
-        Contractual_completion_date:
-          doForm[index]?.Contractual_completion_date || "",
-        status: doForm[index]?.status || "",
-        delay: delay || "",
-        line_item_no: item.line_item_no || "",
-      }));
+      const newErrors = [];
+
+      // Validate each line item in doForm
+      viewData.line_item_array.forEach((item, index) => {
+        const doItem = doForm[index];
+
+        // Validate Contractual Start Date
+        if (!doItem?.contractual_start_date) {
+          newErrors.push(
+            `Contractual Start Date is required for item ${index + 1}`
+          );
+        }
+
+        // Validate Contractual Completion Date
+        if (!doItem?.Contractual_completion_date) {
+          newErrors.push(
+            `Contractual Completion Date is required for item ${index + 1}`
+          );
+        } else if (
+          new Date(doItem.Contractual_completion_date) <
+          new Date(doItem.contractual_start_date)
+        ) {
+          newErrors.push(
+            `Contractual Completion Date cannot be earlier than Contractual Start Date for item ${
+              index + 1
+            }`
+          );
+        }
+
+        // Validate Status
+        if (!doItem?.status) {
+          newErrors.push(`Status is required for item ${index + 1}`);
+        }
+      });
+
+      // If there are validation errors, display them and return early
+      if (newErrors.length > 0) {
+        newErrors.forEach((error) => toast.warn(error));
+        return;
+      }
+
+      const lineItemArray = viewData.line_item_array.map((item, index) => {
+        let delay = 0;
+
+        const contractualCompletionDateStr =
+          doForm[index]?.Contractual_completion_date;
+        const actualCompletionDateStr = item.actual_completion_date;
+        const hinderanceDays = parseInt(item.hinderance_in_days) || 0;
+
+        if (contractualCompletionDateStr && actualCompletionDateStr) {
+          const contractualCompletionDate = new Date(
+            contractualCompletionDateStr
+          );
+          const actualCompletionDate = new Date(actualCompletionDateStr);
+
+          // Reset time components to midnight to avoid issues
+          contractualCompletionDate.setHours(0, 0, 0, 0);
+          actualCompletionDate.setHours(0, 0, 0, 0);
+
+          // Calculate the delay in days
+          const timeDiff = actualCompletionDate - contractualCompletionDate;
+          const delayDays = Math.floor(timeDiff / (1000 * 60 * 60 * 24)); // Days between the two dates
+
+          // Adjust delay by subtracting hinderance days
+          delay = delayDays - hinderanceDays;
+          console.log(
+            "Contractual Completion Date:",
+            contractualCompletionDate
+          );
+          console.log("Actual Completion Date:", actualCompletionDate);
+          console.log("Hinderance Days:", hinderanceDays);
+          console.log("Calculated Delay Days:", delayDays);
+          console.log("Final Delay:", delay);
+        }
+
+        return {
+          contractual_start_date: doForm[index]?.contractual_start_date || "",
+          Contractual_completion_date:
+            doForm[index]?.Contractual_completion_date || "",
+          status: doForm[index]?.status || "",
+          delay: delay > 0 ? delay : 0, // Ensure delay is not negative
+          line_item_no: item.line_item_no || "",
+        };
+      });
 
       fD.append("line_item_array", JSON.stringify(lineItemArray));
 
@@ -401,6 +603,17 @@ const WDCSub = () => {
         setIsPopup(false);
         setIsSecPopup(false);
         setFormData(initialFormData);
+
+        // Reset doForm to initial state
+        setDoForm(
+          viewData?.line_item_array?.map(() => ({
+            contractual_start_date: "",
+            Contractual_completion_date: "",
+            status: "",
+            delay: 0,
+          })) || []
+        );
+
         getData();
       } else {
         toast.warn(res.message);
@@ -416,84 +629,57 @@ const WDCSub = () => {
   const submitHandlerActionJcc = async (flag, reference_no) => {
     try {
       const formDataCopy = { ...formData };
+      const fD = new FormData();
 
-      {
-        const fD = new FormData();
+      fD.append("purchasing_doc_no", viewData?.purchasing_doc_no || "");
+      fD.append("reference_no", reference_no || viewData.reference_no || "");
+      fD.append("action_type", viewData?.action_type || "");
+      fD.append("remarks", viewData?.remarks || "");
+      fD.append("status", flag);
 
-        fD.append("purchasing_doc_no", viewData?.purchasing_doc_no || "");
-        fD.append("reference_no", reference_no || viewData.reference_no || "");
-        fD.append("action_type", viewData?.action_type || "");
-        fD.append("remarks", viewData?.remarks || "");
+      const newErrors = [];
 
-        fD.append("status", flag);
+      // Validate each line item in doFormJcc
+      viewData.line_item_array.forEach((item, index) => {
+        const doItem = doFormJcc[index];
 
-        const lineItemArray = viewData.line_item_array.map((item, index) => ({
-          line_item_no: item.line_item_no || "",
-          status: doFormJcc[index]?.status || "",
-        }));
-
-        fD.append("line_item_array", JSON.stringify(lineItemArray));
-        fD.append("total_amount_status", "APPROVED");
-
-        const res = await apiCallBack("POST", "po/wdc/submitWdc", fD, token);
-
-        if (res.status) {
-          toast.success(res.message);
-          setIsPopupJccView(false);
-          setIsjccActionSecPopup(false);
-          setFormDataWdc(initialFormDatawdc);
-          getData();
-        } else {
-          toast.warn(res.message);
+        // Check if status is present
+        if (!doItem?.status) {
+          newErrors.push(`Status is required for item ${index + 1}`);
         }
+      });
+
+      // If there are validation errors, display them and return early
+      if (newErrors.length > 0) {
+        newErrors.forEach((error) => toast.warn(error));
+        return; // Stop execution if there are errors
+      }
+
+      // Proceed with line item processing after validation
+      const lineItemArray = viewData.line_item_array.map((item, index) => ({
+        line_item_no: item.line_item_no || "",
+        status: doFormJcc[index]?.status || "",
+      }));
+
+      fD.append("line_item_array", JSON.stringify(lineItemArray));
+      fD.append("total_amount_status", "APPROVED");
+
+      const res = await apiCallBack("POST", "po/wdc/submitWdc", fD, token);
+
+      if (res.status) {
+        toast.success(res.message);
+        setIsPopupJccView(false);
+        setIsjccActionSecPopup(false);
+        setFormDataWdc(initialFormDatawdc);
+        getData();
+      } else {
+        toast.warn(res.message);
       }
     } catch (error) {
       toast.error("Error uploading file: " + error.message);
       console.error("Error uploading file:", error);
     }
   };
-
-  // const submitHandlerAction = async (flag, ref_no) => {
-  //   try {
-  //     const { action_type, line_item_array } = formData;
-
-  //     if (action_type && line_item_array && line_item_array.length > 0) {
-  //       const fD = new FormData();
-
-  //       fD.append("action_type", action_type);
-  //       Object.keys(viewData).forEach((key) => {
-  //         if (key !== "line_item_array") {
-  //           fD.append(key, viewData[key]);
-  //         }
-  //       });
-
-  //       const updatedLineItemArray = line_item_array.map((item) => ({
-  //         ...item,
-  //         contractual_start_date: doForm.contractual_start_date,
-  //         Contractual_completion_date: doForm.Contractual_completion_date,
-  //       }));
-  //       fD.append("line_item_array", JSON.stringify(updatedLineItemArray));
-
-  //       const res = await apiCallBack("POST", "po/wdc/submitWdc", fD, token);
-
-  //       if (res.status) {
-  //         toast.success(res.message);
-  //         setIsPopup(false);
-  //         setIsSecPopup(false);
-  //         setFormData(initialFormData);
-  //         getData();
-  //       } else {
-  //         toast.warn(res.message);
-  //       }
-  //     } else {
-  //       // No need for this warning since all required fields are displayed in viewData
-  //       // toast.warn("Please fill up all the required fields!");
-  //     }
-  //   } catch (error) {
-  //     toast.error("Error uploading file: " + error.message);
-  //     console.error("Error uploading file:", error);
-  //   }
-  // };
 
   const getAvailableAmount = async (item) => {
     try {
@@ -597,27 +783,13 @@ const WDCSub = () => {
     updatedFields[index][fieldName] = date;
     setDynamicFieldsWdc(updatedFields);
   };
-
-  useEffect(() => {
-    let dateDelay = 0; // Initialize delay to a default value
-
-    if (viewData?.line_item_array && viewData.line_item_array.length > 0) {
-      if (doForm?.Contractual_completion_date) {
-        dateDelay =
-          parseInt(
-            calDatesDiff(
-              new Date(viewData.line_item_array[0].actual_completion_date),
-              new Date(doForm.Contractual_completion_date)
-            )
-          ) + parseInt(viewData.line_item_array[0].hinderance_in_days);
-      } else {
-        dateDelay = parseInt(viewData.line_item_array[0].hinderance_in_days);
-      }
-    }
-
-    // Set the delay state
-    setDelay(dateDelay);
-  }, [doForm?.Contractual_completion_date, viewData]);
+  const handleClosePopup = () => {
+    setFormData(initialFormData);
+    setFormDataWdc(initialFormDatawdc);
+    setDynamicFields([line_item_fields]);
+    setDynamicFieldsWdc([line_item_fieldswdc]);
+    setIsPopup(false);
+  };
 
   return (
     <>
@@ -685,6 +857,10 @@ const WDCSub = () => {
                                               items.map((item, index) => (
                                                 <tr key={index}>
                                                   <td>{item?.action_type}</td>
+                                                  {console.log(
+                                                    item,
+                                                    "OPPPPPPPPPPPPPPPPPPPP"
+                                                  )}
 
                                                   <td>
                                                     {item?.created_at &&
@@ -827,7 +1003,7 @@ const WDCSub = () => {
               </h3>
               <button
                 className="btn fw-bold btn-danger"
-                onClick={() => setIsPopup(false)}
+                onClick={handleClosePopup}
               >
                 Close
               </button>
@@ -1540,7 +1716,7 @@ const WDCSub = () => {
                           onChange={(val) =>
                             setFormData({
                               ...formData,
-                              certifying_authority: val.value,
+                              certifying_authority: val?.value || "",
                             })
                           }
                         />
@@ -1663,6 +1839,7 @@ const WDCSub = () => {
                           <Link
                             to={`${process.env.REACT_APP_PDF_URL}wdcs/${viewData?.file_inspection_note_ref_no}`}
                             target="_blank"
+                            style={{ marginLeft: "10px" }}
                           >
                             Click here
                           </Link>
@@ -1683,6 +1860,7 @@ const WDCSub = () => {
                           <Link
                             to={`${process.env.REACT_APP_PDF_URL}wdcs/${viewData?.file_hinderence_report_cerified_by_berth}`}
                             target="_blank"
+                            style={{ marginLeft: "10px" }}
                           >
                             Click here
                           </Link>
@@ -1699,6 +1877,7 @@ const WDCSub = () => {
                           <Link
                             to={`${process.env.REACT_APP_PDF_URL}wdcs/${viewData?.file_attendance_report}`}
                             target="_blank"
+                            style={{ marginLeft: "10px" }}
                           >
                             Click here
                           </Link>
@@ -1708,10 +1887,16 @@ const WDCSub = () => {
                   </div>
                   <div className="col-12 col-md-6">
                     <div className="mb-3">
+                      <label className="form-label">Certifying Authority</label>
+                      <p>{viewData?.assigned_to}</p>
+                    </div>
+                  </div>
+                  {/* <div className="col-12 col-md-6">
+                    <div className="mb-3">
                       <label className="form-label">line_item_no</label>
                       <p>{viewData?.line_item_no}</p>
                     </div>
-                  </div>
+                  </div> */}
 
                   <table className="table table-bordered table-striped">
                     <thead>
@@ -1734,9 +1919,7 @@ const WDCSub = () => {
                         viewData?.line_item_array.map((field, index) => (
                           <Fragment key={index}>
                             <tr>
-                              <td>
-                                <span>{field?.line_item_no}</span>
-                              </td>
+                              <td>{field?.line_item_no}</td>
                               <td>{field?.description}</td>
                               <td>
                                 {field?.rest_amount} {field?.unit}
@@ -1791,7 +1974,7 @@ const WDCSub = () => {
                                   <option value="REJECTED">Rejected</option>
                                 </select>
                               </td>
-                              <td>{delay}</td>
+                              <td>{doForm[index]?.delay || "0"}</td>
                             </tr>
                           </Fragment>
                         ))}
@@ -1811,20 +1994,6 @@ const WDCSub = () => {
                     </div>
                   </div>
                   <div className="col-12">
-                    {/* <button
-                    className="btn btn-primary"
-                    type="button"
-                    onClick={() => toast.warn("SAP is not conntected!")}
-                  >
-                    SUBMIT
-                  </button> */}
-                    {/* <button
-                      onClick={() => submitHandlerAction("APPROVED", null)}
-                      className="btn fw-bold btn-primary"
-                      type="button"
-                    >
-                      SUBMIT
-                    </button> */}
                     <DynamicButton
                       label="SUBMIT"
                       onClick={() => submitHandlerAction("APPROVED", null)}
@@ -1921,6 +2090,12 @@ const WDCSub = () => {
                       </p>
                     </div>
                   </div>
+                  <div className="col-12 col-md-6">
+                    <div className="mb-3">
+                      <label className="form-label">Certifying Authority</label>
+                      <p>{viewData?.assigned_to}</p>
+                    </div>
+                  </div>
 
                   {/* <div className="col-12 col-md-6">
                 <div className="mb-3">
@@ -1940,8 +2115,8 @@ const WDCSub = () => {
                         <th>PO Rate</th>
                         <th>Total</th>
                         <th>Actual Start Date</th>
-                        <th>Actual Completion date</th>
-                        <th>Delay in work execution</th>
+                        <th>Actual Completion Date</th>
+                        <th>Delay In Work Execution</th>
                         <th>Status</th>
                       </tr>
                     </thead>
@@ -1998,13 +2173,6 @@ const WDCSub = () => {
                       <label className="form-label">Remarks</label>
                       <p>{viewData?.remarks}</p>
                     </div>
-                    {/* <button
-                      onClick={() => submitHandlerActionJcc("APPROVED", null)}
-                      className="btn fw-bold btn-primary"
-                      type="button"
-                    >
-                      SUBMIT
-                    </button> */}
                     <DynamicButton
                       label="SUBMIT"
                       onClick={() => submitHandlerActionJcc("APPROVED", null)}
@@ -2084,6 +2252,7 @@ const WDCSub = () => {
                       <Link
                         to={`${process.env.REACT_APP_PDF_URL}wdcs/${viewData?.file_inspection_note_ref_no}`}
                         target="_blank"
+                        style={{ marginLeft: "10px" }}
                       >
                         Click here
                       </Link>
@@ -2102,6 +2271,7 @@ const WDCSub = () => {
                       <Link
                         to={`${process.env.REACT_APP_PDF_URL}wdcs/${viewData?.file_hinderence_report_cerified_by_berth}`}
                         target="_blank"
+                        style={{ marginLeft: "10px" }}
                       >
                         Click here
                       </Link>
@@ -2118,6 +2288,7 @@ const WDCSub = () => {
                       <Link
                         to={`${process.env.REACT_APP_PDF_URL}wdcs/${viewData?.file_attendance_report}`}
                         target="_blank"
+                        style={{ marginLeft: "10px" }} // This adds margin between the text and "Click here"
                       >
                         Click here
                       </Link>
@@ -2125,10 +2296,11 @@ const WDCSub = () => {
                   </p>
                 </div>
               </div>
+
               <div className="col-12 col-md-6">
                 <div className="mb-3">
-                  <label className="form-label">line_item_no</label>
-                  <p>{viewData?.line_item_no}</p>
+                  <label className="form-label">Certifying Authority</label>
+                  <p>{viewData?.assigned_to}</p>
                 </div>
               </div>
 
@@ -2142,6 +2314,15 @@ const WDCSub = () => {
                     <th>Actual Start</th>
                     <th>Actual Completion</th>
                     <th>Hinderance in Days</th>
+
+                    {viewData?.status === "APPROVED" && (
+                      <th>Contractual Start</th>
+                    )}
+                    {viewData?.status === "APPROVED" && (
+                      <th>Contractual Completion</th>
+                    )}
+                    {viewData?.status === "APPROVED" && <th>Status</th>}
+                    {viewData?.status === "APPROVED" && <th>Delay</th>}
                   </tr>
                 </thead>
                 <tbody>
@@ -2166,6 +2347,25 @@ const WDCSub = () => {
                               formatDate(field?.actual_completion_date)}
                           </td>
                           <td>{field?.hinderance_in_days}</td>
+
+                          {viewData?.status === "APPROVED" && (
+                            <td>
+                              {field?.actual_completion_date &&
+                                formatDate(field?.contractual_start_date)}
+                            </td>
+                          )}
+                          {viewData?.status === "APPROVED" && (
+                            <td>
+                              {field?.actual_completion_date &&
+                                formatDate(field?.Contractual_completion_date)}
+                            </td>
+                          )}
+                          {viewData?.status === "APPROVED" && (
+                            <td>{field?.status}</td>
+                          )}
+                          {viewData?.status === "APPROVED" && (
+                            <td>{field?.delay}</td>
+                          )}
                         </tr>
                       </Fragment>
                     ))}
@@ -2188,6 +2388,7 @@ const WDCSub = () => {
           </form>
         </div>
       </div>
+
       {/* // jcc popup*/}
       <div
         className={isPopupJccView ? "popup popup_lg active" : "popup popup_lg"}
@@ -2272,7 +2473,12 @@ const WDCSub = () => {
                   </p>
                 </div>
               </div>
-
+              <div className="col-12 col-md-6">
+                <div className="mb-3">
+                  <label className="form-label">Certifying Authority</label>
+                  <p>{viewData?.assigned_to}</p>
+                </div>
+              </div>
               {/* <div className="col-12 col-md-6">
                 <div className="mb-3">
                   <label className="form-label">line_item_no</label>
@@ -2291,8 +2497,9 @@ const WDCSub = () => {
                     <th>PO Rate</th>
                     <th>Total</th>
                     <th>Actual Start Date</th>
-                    <th>Actual Completion date</th>
-                    <th>Delay in work execution</th>
+                    <th>Actual Completion Date</th>
+                    <th>Delay In Work Execution</th>
+                    {viewData?.status === "APPROVED" && <th>Status</th>}
                   </tr>
                 </thead>
                 <tbody>
@@ -2319,12 +2526,14 @@ const WDCSub = () => {
                               formatDate(field?.actual_completion_date)}
                           </td>
                           <td>{field?.delay_in_work_execution}</td>
+                          {viewData?.status === "APPROVED" && (
+                            <td>{field?.status}</td>
+                          )}
                         </tr>
                       </Fragment>
                     ))}
                 </tbody>
               </table>
-
               {/* <div className="col-12 col-md-6">
                 <div className="mb-3">
                   <label className="form-label">Stage Details</label>

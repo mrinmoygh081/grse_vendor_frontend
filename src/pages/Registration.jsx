@@ -146,6 +146,7 @@ export default function Registration() {
       user_code: regData.vendor_code,
       password: regData.password,
       otp: regData.otp,
+      status: "CREATE",
     };
 
     const res = await apiCallBack("POST", "auth2/setPassword", payload, token);
