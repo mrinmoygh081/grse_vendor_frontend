@@ -162,7 +162,6 @@ const ServiceContractBillsEdit = () => {
     if (checkTypeArr(data?.wdcDetails?.line_item_array) || empForm?.value) {
       let estimatedLD = 0;
       for (let item of data?.wdcDetails?.line_item_array) {
-        console.log("item", item);
         let ld = calculateLDByDate(
           item?.delay,
           parseFloat(Number(item?.po_rate) * Number(item?.claim_qty)).toFixed(
