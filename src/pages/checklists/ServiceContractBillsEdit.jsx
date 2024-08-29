@@ -10,14 +10,12 @@ import { initialDataService, initialEmpData } from "../../data/btnData";
 import { useSelector } from "react-redux";
 import { apiCallBack } from "../../utils/fetchAPIs";
 import DynamicButton from "../../Helpers/DynamicButton";
-import { formatDate } from "../../utils/getDateTimeNow";
 import { toast } from "react-toastify";
 import { actionHandlerServiceByEmp } from "../../Helpers/BTNChecklist";
 import { inputOnWheelPrevent } from "../../utils/inputOnWheelPrevent";
 import {
   calculateLDByDate,
   calculateNetPayService,
-  calculatePenalty,
   checkTypeArr,
   inputTypeChange,
 } from "../../utils/smallFun";
@@ -25,12 +23,13 @@ import { TYPE_GRN, TYPE_SERVICE } from "../../constants/BTNContants";
 
 const ServiceContractBillsEdit = () => {
   const navigate = useNavigate();
-  const { token } = useSelector((state) => state.auth);
+  const { user, token } = useSelector((state) => state.auth);
   const { state } = useLocation();
   const { id } = useParams();
 
   const [data, setData] = useState(null);
   const [form, setForm] = useState(initialDataService);
+  const [billCA, setBillCA] = useState();
 
   const getData = async () => {
     const d = await apiCallBack(
@@ -72,7 +71,11 @@ const ServiceContractBillsEdit = () => {
   };
 
   useEffect(() => {
-    getForm(state);
+    if (state?.btn_num && state?.bill_ca) {
+      getForm(state.btn_num);
+      setBillCA(state.bill_ca);
+    }
+    // console.log("state", state);
   }, [state]);
 
   // CERTIFING AUTHORITY
@@ -109,7 +112,7 @@ const ServiceContractBillsEdit = () => {
 
   useEffect(() => {
     if (state) {
-      setEmpForm({ ...empForm, btn_num: state });
+      setEmpForm({ ...empForm, btn_num: state?.btn_num });
     }
   }, [state]);
 
@@ -156,9 +159,10 @@ const ServiceContractBillsEdit = () => {
   };
 
   useEffect(() => {
-    if (checkTypeArr(data?.wdcDetails?.line_item_array)) {
+    if (checkTypeArr(data?.wdcDetails?.line_item_array) || empForm?.value) {
       let estimatedLD = 0;
       for (let item of data?.wdcDetails?.line_item_array) {
+        console.log("item", item);
         let ld = calculateLDByDate(
           item?.delay,
           parseFloat(Number(item?.po_rate) * Number(item?.claim_qty)).toFixed(
@@ -177,7 +181,7 @@ const ServiceContractBillsEdit = () => {
       estimatedLD = Math.min(estimatedLD, max_penalty_amount);
       setEmpForm({ ...empForm, estimatedLD });
     }
-  }, [data?.wdcDetails?.line_item_array]);
+  }, [data?.wdcDetails?.line_item_array, empForm?.value, empForm?.max_ld]);
 
   useEffect(() => {
     let net = empForm?.value;
@@ -185,19 +189,23 @@ const ServiceContractBillsEdit = () => {
       let report = calculateNetPayService(
         net,
         empForm?.estimatedLD,
-        empForm?.o_ret_per
+        empForm?.retension_rate,
+        empForm?.other_deduction
       );
       // console.log("net_pay", report?.net_pay);
       setEmpForm({
         ...empForm,
         total_deduction: report?.deduct,
         net_payable_amount: report?.net_pay,
-        other_deduction: report?.other,
+        retension_amount: report?.retension,
       });
     }
-  }, [empForm?.value, empForm?.estimatedLD, empForm?.o_ret_per]);
-
-  console.log("empForm", empForm);
+  }, [
+    empForm?.value,
+    empForm?.estimatedLD,
+    empForm?.retension_rate,
+    empForm?.other_deduction,
+  ]);
 
   return (
     <>
@@ -228,7 +236,7 @@ const ServiceContractBillsEdit = () => {
                           <BTNServiceVendor data={data} form={form} />
                         </div>
                       </div>
-                      {true && (
+                      {user?.vendor_code === billCA && (
                         <div className="col-12">
                           <div className="card">
                             <h3 className="m-3">
@@ -415,6 +423,29 @@ const ServiceContractBillsEdit = () => {
                                       <table className="table table-striped table-bordered table_height">
                                         <tbody>
                                           <tr>
+                                            <td>Max LD</td>
+                                            <td>
+                                              <select
+                                                name="max_ld"
+                                                id=""
+                                                className="form-select"
+                                                onChange={(e) =>
+                                                  inputTypeChange(
+                                                    e,
+                                                    empForm,
+                                                    setEmpForm
+                                                  )
+                                                }
+                                              >
+                                                <option value="">
+                                                  Choose Max LD
+                                                </option>
+                                                <option value="5">5%</option>
+                                                <option value="10">10%</option>
+                                              </select>
+                                            </td>
+                                          </tr>
+                                          <tr>
                                             <td>Estimated Total LD</td>
                                             <td>{empForm?.estimatedLD}</td>
                                           </tr>
@@ -423,16 +454,16 @@ const ServiceContractBillsEdit = () => {
                                             <td className="btn_value">
                                               <input
                                                 type="number"
-                                                name="o_ret_per"
+                                                name="retension_rate"
                                                 className="form-control"
-                                                value={empForm?.o_ret_per}
+                                                value={empForm?.retension_rate}
                                                 onChange={(e) => {
                                                   let value = e.target.value;
                                                   if (value > 100) value = 100;
                                                   if (value < 0) value = 0;
                                                   setEmpForm({
                                                     ...empForm,
-                                                    o_ret_per: value,
+                                                    retension_rate: value,
                                                   });
                                                 }}
                                                 onWheel={inputOnWheelPrevent}
@@ -442,13 +473,54 @@ const ServiceContractBillsEdit = () => {
                                               <span className="ms-1">%</span>
                                               <span className="ms-2">
                                                 Retension Amount:{" "}
-                                                {empForm?.other_deduction}
+                                                {empForm?.retension_amount}
                                               </span>
                                             </td>
                                           </tr>
 
                                           <tr>
                                             <td>Remarks for Retension</td>
+                                            <td>
+                                              <input
+                                                type="text"
+                                                name="retension_remarks"
+                                                className="form-control"
+                                                value={
+                                                  empForm?.retension_remarks
+                                                }
+                                                onChange={(e) =>
+                                                  inputTypeChange(
+                                                    e,
+                                                    empForm,
+                                                    setEmpForm
+                                                  )
+                                                }
+                                              />
+                                            </td>
+                                          </tr>
+
+                                          <tr>
+                                            <td>Other Deduction</td>
+                                            <td className="btn_value">
+                                              <input
+                                                type="number"
+                                                name="other_deduction"
+                                                className="form-control"
+                                                value={empForm?.other_deduction}
+                                                onChange={(e) =>
+                                                  inputTypeChange(
+                                                    e,
+                                                    empForm,
+                                                    setEmpForm
+                                                  )
+                                                }
+                                                onWheel={inputOnWheelPrevent}
+                                              />
+                                            </td>
+                                          </tr>
+
+                                          <tr>
+                                            <td>Deduction Remarks</td>
                                             <td>
                                               <input
                                                 type="text"
@@ -524,7 +596,9 @@ const ServiceContractBillsEdit = () => {
                                           initialEmpData,
                                           navigate,
                                           id,
-                                          token
+                                          token,
+                                          form,
+                                          data
                                         )
                                       }
                                       className="btn fw-bold btn-primary me-3"

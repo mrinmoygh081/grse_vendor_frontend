@@ -527,7 +527,7 @@ const ServiceContractBills = () => {
                                       </td>
                                     </tr>
                                     <tr>
-                                      <td>Net Basic amount: </td>
+                                      <td>Net Claim Amount: </td>
                                       <td className="btn_value">
                                         <b>{form?.net_claim_amount}</b>
                                       </td>
@@ -581,7 +581,7 @@ const ServiceContractBills = () => {
                                       </td>
                                     </tr>
                                     <tr>
-                                      <td>Net claim amount with GST:</td>
+                                      <td>Net Claim Amount with GST:</td>
                                       <td className="btn_value">
                                         <b>{form?.net_claim_amt_gst}</b>
                                       </td>

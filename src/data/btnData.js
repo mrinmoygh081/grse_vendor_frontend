@@ -124,15 +124,18 @@ export const initialDataService = {
 };
 
 export const initialEmpData = {
+  finance_authority: "",
   btn_num: "",
-  purchasing_doc_no: "",
+  type: "",
   value: "",
+  purchasing_doc_no: "",
+  max_ld: "",
   estimatedLD: "",
-  o_ret_per: "0",
+  retension_rate: "0",
+  retension_amount: "0",
+  retension_remarks: "",
   other_deduction: "",
+  deduction_remarks: "",
   total_deduction: "",
   net_payable_amount: "",
-  finance_authority: "",
-  max_ld: "5",
-  deduction_remarks: "",
 };

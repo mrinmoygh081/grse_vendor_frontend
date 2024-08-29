@@ -35,7 +35,8 @@ const Checklist = () => {
   const navigate = useNavigate();
   const [slug, setSlug] = useState("");
   const [paymentData, setPaymentData] = useState("");
-  const [loading, setLoading] = useState(true); // Add loading state
+  const [loading, setLoading] = useState(true);
+  console.log("user", user);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -295,14 +296,20 @@ const Checklist = () => {
                                                     Action
                                                   </button>
                                                 )}
-                                              {true && (
+                                              {user?.vendor_code ===
+                                                firstItem?.bill_certifing_authority && (
                                                 <button
                                                   className="btn btn-sm btn-primary m-1"
                                                   onClick={() => {
                                                     navigate(
                                                       `/checklist/bill-service/edit/${id}`,
                                                       {
-                                                        state: `${firstItem?.btn_num}`,
+                                                        state: {
+                                                          btn_num:
+                                                            firstItem?.btn_num,
+                                                          bill_ca:
+                                                            firstItem?.bill_certifing_authority,
+                                                        },
                                                       }
                                                     );
                                                   }}
@@ -408,13 +415,6 @@ const Checklist = () => {
                                     </div>
                                     <div className="col-12">
                                       <div className="mb-3 d-flex justify-content-between">
-                                        {/* <button
-                                          onClick={assignSDBGByFinance}
-                                          className="btn fw-bold btn-primary"
-                                          type="button"
-                                        >
-                                          ASSIGN
-                                        </button> */}
                                         <DynamicButton
                                           label="ASSIGN"
                                           onClick={assignSDBGByFinance}

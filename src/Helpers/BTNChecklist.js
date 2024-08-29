@@ -294,31 +294,43 @@ export const actionHandlerServiceByEmp = async (
   initialEmpData,
   navigate,
   id,
-  token
+  token,
+  form,
+  data
 ) => {
   try {
     const {
       finance_authority,
       value,
       other_deduction,
-      o_ret_per,
+      max_ld,
+      retension_rate,
+      retension_amount,
+      retension_remarks,
       btn_num,
       type,
       number,
       estimatedLD,
-      remarks,
+      deduction_remarks,
       total_deduction,
       net_payable_amount,
     } = empForm;
+    let wdc_details = JSON.stringify(data?.wdcDetails?.line_item_array);
+    const { net_claim_amount } = form;
     if (!finance_authority || finance_authority === "") {
       return toast.warn("Please choose the finance authority.");
     }
     if (!value || value === "") {
       return toast.warn("Service entry sheet value or GRN Value is mandatory.");
     }
-    if (!other_deduction || other_deduction === "") {
-      return toast.warn("Please fill retension percentage.");
+    if (value !== net_claim_amount) {
+      return toast.warn(
+        "SES Value or GRN Value and Net Claim Amount should be matched."
+      );
     }
+    // if (!other_deduction || other_deduction === "") {
+    //   return toast.warn("Please fill retension percentage.");
+    // }
 
     let payload = {
       purchasing_doc_no: id,
@@ -328,14 +340,17 @@ export const actionHandlerServiceByEmp = async (
         type === TYPE_SERVICE
           ? "service-entry"
           : type === TYPE_GRN
-          ? "service-entry"
+          ? "grn"
           : null,
       entry_number: number,
-      wdc_details: "",
+      wdc_details,
+      max_ld,
       estimated_ld: estimatedLD,
+      retension_rate,
+      retension_amount,
+      retension_remarks,
       other_deduction,
-      o_ret_per,
-      deduction_remarks: remarks,
+      deduction_remarks,
       total_deduction,
       net_payable_amount,
     };

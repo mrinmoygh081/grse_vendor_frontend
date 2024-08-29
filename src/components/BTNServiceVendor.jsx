@@ -119,16 +119,32 @@ const BTNServiceVendor = ({ data, form }) => {
                     <td>Digitally Signed Invoice:</td>
                     <td>
                       <div className="btn_value">
-                        <b></b>
+                        <b>{form?.invoice_no}</b>
                       </div>
                       <div className="btn_value">
                         <div className="me-4">
-                          <label htmlFor="">Invoice File</label>
-                          <b></b>
+                          <label htmlFor="">Invoice File</label>{" "}
+                          <p>
+                            <a
+                              href={`${process.env.REACT_APP_PDF_URL}btns/${form?.invoice_filename}`}
+                              target="_blank"
+                              rel="noreferrer"
+                            >
+                              VIEW
+                            </a>
+                          </p>
                         </div>
                         <div>
                           <label htmlFor="">Supporting Documents</label>
-                          <b></b>
+                          <p>
+                            <a
+                              href={`${process.env.REACT_APP_PDF_URL}btns/${form?.suppoting_invoice_filename}`}
+                              target="_blank"
+                              rel="noreferrer"
+                            >
+                              VIEW
+                            </a>
+                          </p>
                         </div>
                       </div>
                     </td>
@@ -203,7 +219,7 @@ const BTNServiceVendor = ({ data, form }) => {
                   </td>
                 </tr>
                 <tr>
-                  <td>Net Basic amount: </td>
+                  <td>Net Claim Amount: </td>
                   <td className="btn_value">
                     <b>{form?.net_claim_amount}</b>
                   </td>
@@ -236,7 +252,7 @@ const BTNServiceVendor = ({ data, form }) => {
                   </td>
                 </tr>
                 <tr>
-                  <td>Net claim amount with GST:</td>
+                  <td>Net Claim Amount with GST:</td>
                   <td className="btn_value">
                     <b>{form?.net_claim_amt_gst}</b>
                   </td>
