@@ -509,6 +509,47 @@ const WDCSub = () => {
       fD.append("reference_no", reference_no || viewData.reference_no || "");
       fD.append("status", flag);
 
+      const newErrors = [];
+
+      // Validate each line item in doForm
+      viewData.line_item_array.forEach((item, index) => {
+        const doItem = doForm[index];
+
+        // Validate Contractual Start Date
+        if (!doItem?.contractual_start_date) {
+          newErrors.push(
+            `Contractual Start Date is required for item ${index + 1}`
+          );
+        }
+
+        // Validate Contractual Completion Date
+        if (!doItem?.Contractual_completion_date) {
+          newErrors.push(
+            `Contractual Completion Date is required for item ${index + 1}`
+          );
+        } else if (
+          new Date(doItem.Contractual_completion_date) <
+          new Date(doItem.contractual_start_date)
+        ) {
+          newErrors.push(
+            `Contractual Completion Date cannot be earlier than Contractual Start Date for item ${
+              index + 1
+            }`
+          );
+        }
+
+        // Validate Status
+        if (!doItem?.status) {
+          newErrors.push(`Status is required for item ${index + 1}`);
+        }
+      });
+
+      // If there are validation errors, display them and return early
+      if (newErrors.length > 0) {
+        newErrors.forEach((error) => toast.warn(error));
+        return;
+      }
+
       const lineItemArray = viewData.line_item_array.map((item, index) => {
         let delay = 0;
 
@@ -588,36 +629,51 @@ const WDCSub = () => {
   const submitHandlerActionJcc = async (flag, reference_no) => {
     try {
       const formDataCopy = { ...formData };
+      const fD = new FormData();
 
-      {
-        const fD = new FormData();
+      fD.append("purchasing_doc_no", viewData?.purchasing_doc_no || "");
+      fD.append("reference_no", reference_no || viewData.reference_no || "");
+      fD.append("action_type", viewData?.action_type || "");
+      fD.append("remarks", viewData?.remarks || "");
+      fD.append("status", flag);
 
-        fD.append("purchasing_doc_no", viewData?.purchasing_doc_no || "");
-        fD.append("reference_no", reference_no || viewData.reference_no || "");
-        fD.append("action_type", viewData?.action_type || "");
-        fD.append("remarks", viewData?.remarks || "");
+      const newErrors = [];
 
-        fD.append("status", flag);
+      // Validate each line item in doFormJcc
+      viewData.line_item_array.forEach((item, index) => {
+        const doItem = doFormJcc[index];
 
-        const lineItemArray = viewData.line_item_array.map((item, index) => ({
-          line_item_no: item.line_item_no || "",
-          status: doFormJcc[index]?.status || "",
-        }));
-
-        fD.append("line_item_array", JSON.stringify(lineItemArray));
-        fD.append("total_amount_status", "APPROVED");
-
-        const res = await apiCallBack("POST", "po/wdc/submitWdc", fD, token);
-
-        if (res.status) {
-          toast.success(res.message);
-          setIsPopupJccView(false);
-          setIsjccActionSecPopup(false);
-          setFormDataWdc(initialFormDatawdc);
-          getData();
-        } else {
-          toast.warn(res.message);
+        // Check if status is present
+        if (!doItem?.status) {
+          newErrors.push(`Status is required for item ${index + 1}`);
         }
+      });
+
+      // If there are validation errors, display them and return early
+      if (newErrors.length > 0) {
+        newErrors.forEach((error) => toast.warn(error));
+        return; // Stop execution if there are errors
+      }
+
+      // Proceed with line item processing after validation
+      const lineItemArray = viewData.line_item_array.map((item, index) => ({
+        line_item_no: item.line_item_no || "",
+        status: doFormJcc[index]?.status || "",
+      }));
+
+      fD.append("line_item_array", JSON.stringify(lineItemArray));
+      fD.append("total_amount_status", "APPROVED");
+
+      const res = await apiCallBack("POST", "po/wdc/submitWdc", fD, token);
+
+      if (res.status) {
+        toast.success(res.message);
+        setIsPopupJccView(false);
+        setIsjccActionSecPopup(false);
+        setFormDataWdc(initialFormDatawdc);
+        getData();
+      } else {
+        toast.warn(res.message);
       }
     } catch (error) {
       toast.error("Error uploading file: " + error.message);
@@ -1783,6 +1839,7 @@ const WDCSub = () => {
                           <Link
                             to={`${process.env.REACT_APP_PDF_URL}wdcs/${viewData?.file_inspection_note_ref_no}`}
                             target="_blank"
+                            style={{ marginLeft: "10px" }}
                           >
                             Click here
                           </Link>
@@ -1803,6 +1860,7 @@ const WDCSub = () => {
                           <Link
                             to={`${process.env.REACT_APP_PDF_URL}wdcs/${viewData?.file_hinderence_report_cerified_by_berth}`}
                             target="_blank"
+                            style={{ marginLeft: "10px" }}
                           >
                             Click here
                           </Link>
@@ -1819,6 +1877,7 @@ const WDCSub = () => {
                           <Link
                             to={`${process.env.REACT_APP_PDF_URL}wdcs/${viewData?.file_attendance_report}`}
                             target="_blank"
+                            style={{ marginLeft: "10px" }}
                           >
                             Click here
                           </Link>
@@ -1828,10 +1887,16 @@ const WDCSub = () => {
                   </div>
                   <div className="col-12 col-md-6">
                     <div className="mb-3">
+                      <label className="form-label">Certifying Authority</label>
+                      <p>{viewData?.assigned_to}</p>
+                    </div>
+                  </div>
+                  {/* <div className="col-12 col-md-6">
+                    <div className="mb-3">
                       <label className="form-label">line_item_no</label>
                       <p>{viewData?.line_item_no}</p>
                     </div>
-                  </div>
+                  </div> */}
 
                   <table className="table table-bordered table-striped">
                     <thead>
@@ -2025,6 +2090,12 @@ const WDCSub = () => {
                       </p>
                     </div>
                   </div>
+                  <div className="col-12 col-md-6">
+                    <div className="mb-3">
+                      <label className="form-label">Certifying Authority</label>
+                      <p>{viewData?.assigned_to}</p>
+                    </div>
+                  </div>
 
                   {/* <div className="col-12 col-md-6">
                 <div className="mb-3">
@@ -2044,8 +2115,8 @@ const WDCSub = () => {
                         <th>PO Rate</th>
                         <th>Total</th>
                         <th>Actual Start Date</th>
-                        <th>Actual Completion date</th>
-                        <th>Delay in work execution</th>
+                        <th>Actual Completion Date</th>
+                        <th>Delay In Work Execution</th>
                         <th>Status</th>
                       </tr>
                     </thead>
@@ -2120,7 +2191,7 @@ const WDCSub = () => {
           <div className="card-header border-0 pt-5 pb-3">
             <h3 className="card-title align-items-start flex-column">
               <span className="card-label fw-bold fs-3 mb-1">
-                FFF All Data for{" "}
+                All Data for{" "}
                 {viewData?.reference_no && `for ${viewData?.reference_no}`}
               </span>
             </h3>
@@ -2181,6 +2252,7 @@ const WDCSub = () => {
                       <Link
                         to={`${process.env.REACT_APP_PDF_URL}wdcs/${viewData?.file_inspection_note_ref_no}`}
                         target="_blank"
+                        style={{ marginLeft: "10px" }}
                       >
                         Click here
                       </Link>
@@ -2199,6 +2271,7 @@ const WDCSub = () => {
                       <Link
                         to={`${process.env.REACT_APP_PDF_URL}wdcs/${viewData?.file_hinderence_report_cerified_by_berth}`}
                         target="_blank"
+                        style={{ marginLeft: "10px" }}
                       >
                         Click here
                       </Link>
@@ -2215,6 +2288,7 @@ const WDCSub = () => {
                       <Link
                         to={`${process.env.REACT_APP_PDF_URL}wdcs/${viewData?.file_attendance_report}`}
                         target="_blank"
+                        style={{ marginLeft: "10px" }} // This adds margin between the text and "Click here"
                       >
                         Click here
                       </Link>
@@ -2222,6 +2296,7 @@ const WDCSub = () => {
                   </p>
                 </div>
               </div>
+
               <div className="col-12 col-md-6">
                 <div className="mb-3">
                   <label className="form-label">Certifying Authority</label>
@@ -2246,6 +2321,7 @@ const WDCSub = () => {
                     {viewData?.status === "APPROVED" && (
                       <th>Contractual Completion</th>
                     )}
+                    {viewData?.status === "APPROVED" && <th>Status</th>}
                     {viewData?.status === "APPROVED" && <th>Delay</th>}
                   </tr>
                 </thead>
@@ -2283,6 +2359,9 @@ const WDCSub = () => {
                               {field?.actual_completion_date &&
                                 formatDate(field?.Contractual_completion_date)}
                             </td>
+                          )}
+                          {viewData?.status === "APPROVED" && (
+                            <td>{field?.status}</td>
                           )}
                           {viewData?.status === "APPROVED" && (
                             <td>{field?.delay}</td>
@@ -2394,7 +2473,12 @@ const WDCSub = () => {
                   </p>
                 </div>
               </div>
-
+              <div className="col-12 col-md-6">
+                <div className="mb-3">
+                  <label className="form-label">Certifying Authority</label>
+                  <p>{viewData?.assigned_to}</p>
+                </div>
+              </div>
               {/* <div className="col-12 col-md-6">
                 <div className="mb-3">
                   <label className="form-label">line_item_no</label>
@@ -2413,8 +2497,9 @@ const WDCSub = () => {
                     <th>PO Rate</th>
                     <th>Total</th>
                     <th>Actual Start Date</th>
-                    <th>Actual Completion date</th>
-                    <th>Delay in work execution</th>
+                    <th>Actual Completion Date</th>
+                    <th>Delay In Work Execution</th>
+                    {viewData?.status === "APPROVED" && <th>Status</th>}
                   </tr>
                 </thead>
                 <tbody>
@@ -2441,12 +2526,14 @@ const WDCSub = () => {
                               formatDate(field?.actual_completion_date)}
                           </td>
                           <td>{field?.delay_in_work_execution}</td>
+                          {viewData?.status === "APPROVED" && (
+                            <td>{field?.status}</td>
+                          )}
                         </tr>
                       </Fragment>
                     ))}
                 </tbody>
               </table>
-
               {/* <div className="col-12 col-md-6">
                 <div className="mb-3">
                   <label className="form-label">Stage Details</label>
