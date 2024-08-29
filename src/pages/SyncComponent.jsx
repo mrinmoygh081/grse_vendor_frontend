@@ -48,7 +48,7 @@ const SyncComponent = () => {
     setSyncMessage("");
     try {
       const response = await axios.post(
-        `${process.env.REACT_APP_BACKEND_API}/sync/sync_file_upload`
+        `${process.env.REACT_APP_BACKEND_API}sync/sync_file_upload`
       );
       toast.success(response.data.message || "File sync successful");
     } catch (error) {

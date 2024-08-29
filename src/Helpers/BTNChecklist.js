@@ -323,7 +323,7 @@ export const actionHandlerServiceByEmp = async (
     if (!value || value === "") {
       return toast.warn("Service entry sheet value or GRN Value is mandatory.");
     }
-    if (value !== net_claim_amount) {
+    if (Number(value) !== Number(net_claim_amount)) {
       return toast.warn(
         "SES Value or GRN Value and Net Claim Amount should be matched."
       );

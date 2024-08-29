@@ -94,7 +94,7 @@ const ServiceContractBills = () => {
   const getWDCList = async () => {
     const d = await apiCallBack(
       "GET",
-      "po/btn/getWdcInfoServiceHybrid?type=list",
+      `po/btn/getWdcInfoServiceHybrid?type=list&purchasing_doc_no=${id}`,
       null,
       null
     );
