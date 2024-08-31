@@ -57,6 +57,16 @@ const MainHeader = ({ title }) => {
           </li>
         </>
       );
+    } else if (user?.department_id === 2) {
+      return (
+        <>
+          <li className="nav-item">
+            <Link className="nav-link text-black" to={`/dashboard/drawing`}>
+              <FaTachometerAlt className="me-2" /> DASHBOARD
+            </Link>
+          </li>
+        </>
+      );
     } else {
       return (
         <li className="nav-item">

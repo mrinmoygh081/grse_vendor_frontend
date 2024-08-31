@@ -217,7 +217,7 @@ const POs = () => {
                           </span>
                         </button>
                       </td>
-                      <td>
+                      {/* <td>
                         {po?.SD?.SdContractualSubmissionDate
                           ? formatDate(po?.SD?.SdContractualSubmissionDate)
                           : "--"}{" "}
@@ -226,8 +226,18 @@ const POs = () => {
                           ? formatDate(po?.SD?.SdActualSubmissionDate)
                           : "--"}{" "}
                         | {po?.SD?.SdLastStatus || "--"}
-                      </td>
+                      </td> */}
                       <td>
+                        {po?.sdbg?.contractualSubmissionDate
+                          ? formatDate(po?.sdbg?.contractualSubmissionDate)
+                          : "--"}{" "}
+                        |{" "}
+                        {po?.sdbg?.actualSubmissionDate
+                          ? formatDate(po?.sdbg?.actualSubmissionDate)
+                          : "--"}{" "}
+                        | {po?.sdbg?.lastStatus || "--"}
+                      </td>
+                      {/* <td>
                         {po?.Drawing?.DrawingContractualSubmissionDate
                           ? formatDate(
                               po?.Drawing?.DrawingContractualSubmissionDate
@@ -238,7 +248,39 @@ const POs = () => {
                           ? formatDate(po?.Drawing?.DrawingActualSubmissionDate)
                           : "--"}{" "}
                         | {po?.Drawing?.DrawingLastStatus || "--"}
+                      </td> */}
+                      <td>
+                        {po?.drawing?.contractualSubmissionDate
+                          ? formatDate(po?.drawing?.contractualSubmissionDate)
+                          : "--"}{" "}
+                        |{" "}
+                        {po?.drawing?.actualSubmissionDate
+                          ? formatDate(po?.Drawing?.actualSubmissionDate)
+                          : "--"}{" "}
+                        | {po?.drawing?.lastStatus || "--"}
                       </td>
+                      {/* <td>
+                        {po?.QAP?.qapContractualSubmissionDate
+                          ? new Date(
+                              po.QAP.qapContractualSubmissionDate
+                            ).toLocaleDateString()
+                          : "--"}{" "}
+                        |{" "}
+                        {po?.QAP?.qapActualSubmissionDate
+                          ? new Date(
+                              po.QAP.qapActualSubmissionDate
+                            ).toLocaleDateString()
+                          : "--"}{" "}
+                        | {po?.QAP?.qapLastStatus || "--"}
+                        {po?.QAP?.qapContractualSubmissionDate
+                          ? formatDate(po?.QAP?.qapContractualSubmissionDate)
+                          : "--"}{" "}
+                        |{" "}
+                        {po?.QAP?.qapActualSubmissionDate
+                          ? formatDate(po?.QAP?.qapActualSubmissionDate)
+                          : "--"}{" "}
+                        | {po?.QAP?.qapLastStatus || "--"}
+                      </td> */}
                       <td>
                         {/* {po?.QAP?.qapContractualSubmissionDate
                           ? new Date(
@@ -252,15 +294,38 @@ const POs = () => {
                             ).toLocaleDateString()
                           : "--"}{" "}
                         | {po?.QAP?.qapLastStatus || "--"} */}
-                        {po?.QAP?.qapContractualSubmissionDate
-                          ? formatDate(po?.QAP?.qapContractualSubmissionDate)
+                        {po?.qap?.contractualSubmissionDate
+                          ? formatDate(po?.qap?.contractualSubmissionDate)
                           : "--"}{" "}
                         |{" "}
-                        {po?.QAP?.qapActualSubmissionDate
-                          ? formatDate(po?.QAP?.qapActualSubmissionDate)
+                        {po?.qap?.actualSubmissionDate
+                          ? formatDate(po?.qap?.actualSubmissionDate)
                           : "--"}{" "}
-                        | {po?.QAP?.qapLastStatus || "--"}
+                        | {po?.qap?.lastStatus || "--"}
                       </td>
+                      {/* <td>
+                        {po?.ILMS?.ilmsContractualSubmissionDate
+                          ? new Date(
+                              po.ILMS.ilmsContractualSubmissionDate
+                            ).toLocaleDateString()
+                          : "--"}{" "}
+                        |{" "}
+                        {po?.ILMS?.ilmsActualSubmissionDate
+                          ? new Date(
+                              po.ILMS.ilmsActualSubmissionDate
+                            ).toLocaleDateString()
+                          : "--"}{" "}
+                        | {po?.ILMS?.ilmsLastStatus || "--"}
+                        {po?.ILMS?.ilmsContractualSubmissionDate
+                          ? formatDate(po?.ILMS?.ilmsContractualSubmissionDate)
+                          : "--"}{" "}
+                        |{" "}
+                        {po?.ILMS?.ilmsActualSubmissionDate
+                          ? formatDate(po?.ILMS?.ilmsActualSubmissionDate)
+                          : "--"}{" "}
+                        | {po?.ILMS?.ilmsLastStatus || "--"}
+                      </td> */}
+
                       <td>
                         {/* {po?.ILMS?.ilmsContractualSubmissionDate
                           ? new Date(
@@ -274,15 +339,16 @@ const POs = () => {
                             ).toLocaleDateString()
                           : "--"}{" "}
                         | {po?.ILMS?.ilmsLastStatus || "--"} */}
-                        {po?.ILMS?.ilmsContractualSubmissionDate
-                          ? formatDate(po?.ILMS?.ilmsContractualSubmissionDate)
+                        {po?.ilms?.contractualSubmissionDate
+                          ? formatDate(po?.ilms?.contractualSubmissionDate)
                           : "--"}{" "}
                         |{" "}
-                        {po?.ILMS?.ilmsActualSubmissionDate
-                          ? formatDate(po?.ILMS?.ilmsActualSubmissionDate)
+                        {po?.ilms?.actualSubmissionDate
+                          ? formatDate(po?.ilms?.actualSubmissionDate)
                           : "--"}{" "}
-                        | {po?.ILMS?.ilmsLastStatus || "--"}
+                        | {po?.ilms?.lastStatus || "--"}
                       </td>
+
                       <td>{po?.currentStage?.current}</td>
                     </tr>
                   ))

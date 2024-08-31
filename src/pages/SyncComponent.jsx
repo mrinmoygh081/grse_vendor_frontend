@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import axios from "axios";
 import { useDispatch } from "react-redux";
 import { logoutHandler } from "../redux/slices/loginSlice";
@@ -7,14 +7,17 @@ import { reConfirm } from "../utils/reConfirm";
 import { toast } from "react-toastify";
 import { apiCallBack } from "../utils/fetchAPIs";
 import DynamicButton from "../Helpers/DynamicButton";
-import DatePicker from "react-datepicker"; // Import DatePicker
-import "react-datepicker/dist/react-datepicker.css"; // Import DatePicker styles
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 import { convertToEpoch } from "../utils/getDateTimeNow";
 
 const SyncComponent = () => {
-  const [syncing, setSyncing] = useState(false);
-  const [syncMessage, setSyncMessage] = useState("");
-  const [selectedDate, setSelectedDate] = useState(new Date()); // State for DatePicker
+  const inputFileRef = useRef(null);
+  const [selectedDate, setSelectedDate] = useState(new Date());
+  const [formData, setFormData] = useState({
+    file: "",
+    data: "",
+  });
   const dispatch = useDispatch();
 
   const logOutFun = () => {
@@ -22,14 +25,43 @@ const SyncComponent = () => {
     dispatch(poRemoveHandler());
   };
 
-  const handleSync = async () => {
-    setSyncing(true);
-    setSyncMessage("");
+  const downloadDataHandler = async () => {
     try {
-      const resp = await apiCallBack("POST", "sync/sync_unzip", null, null);
-      console.log(resp);
+      const resp = await apiCallBack("POST", "sync/sync_download", null, null);
+      console.log("resp", resp);
+      if (resp.status) {
+        const upRes = await apiCallBack("POST", "sync/sync_zip", null, null);
+        if (upRes?.status) {
+          toast.success(upRes.message || "Data has been downloaded");
+        } else {
+          toast.info(upRes.message);
+        }
+      } else {
+        toast.info(resp.message);
+      }
+    } catch (error) {
+      toast.error(
+        "Sync failed: " + (error.response?.data?.message || error.message)
+      );
+    }
+  };
+
+  console.log("formData", formData);
+
+  const DataUploadHndlar = async () => {
+    inputFileRef.current.value = null;
+    try {
+      console.log("formData?.data", formData?.data);
+      if (!formData?.data || formData?.data === "") {
+        return toast.info("Zip File is mandatory.");
+      }
+      const fData = new FormData();
+      fData.append("file", formData?.data);
+      const resp = await apiCallBack("POST", "sync/sync_unzip", fData, null);
+      console.log(resp, "resp file data");
       if (resp.status) {
         const upRes = await apiCallBack("POST", "sync/sync_upload", null, null);
+        console.log(upRes, "upRes file data");
         if (upRes?.status) {
           toast.success(upRes.message || "Data has been synced");
         } else {
@@ -42,30 +74,12 @@ const SyncComponent = () => {
       toast.error(
         "Sync failed: " + (error.response?.data?.message || error.message)
       );
-    }
-    setSyncing(false);
-  };
-
-  const handleFileSync = async () => {
-    setSyncing(true);
-    setSyncMessage("");
-    try {
-      const response = await axios.post(
-        `${process.env.REACT_APP_BACKEND_API}sync/sync_file_upload`
-      );
-      toast.success(response.data.message || "File sync successful");
-    } catch (error) {
-      toast.error(
-        "File sync failed: " + (error.response?.data?.message || error.message)
-      );
     } finally {
-      setSyncing(false);
+      inputFileRef.current.value = null;
     }
   };
 
   const fileDownloadHandler = async () => {
-    setSyncing(true);
-    setSyncMessage("");
     try {
       let payload = {
         sync_date: new Date(selectedDate).getTime(),
@@ -81,8 +95,19 @@ const SyncComponent = () => {
       toast.error(
         "File sync failed: " + (error.response?.data?.message || error.message)
       );
-    } finally {
-      setSyncing(false);
+    }
+  };
+
+  const uploadFileHandler = async () => {
+    try {
+      const response = await axios.post(
+        `${process.env.REACT_APP_BACKEND_API}sync/sync_file_upload`
+      );
+      toast.success(response.data.message || "File sync successful");
+    } catch (error) {
+      toast.error(
+        "File sync failed: " + (error.response?.data?.message || error.message)
+      );
     }
   };
 
@@ -107,8 +132,8 @@ const SyncComponent = () => {
         <div className="card-body">
           <div className="row">
             <div className="col-md-6">
-              <h3>Sync Unsynced Data</h3>
-              <ol>
+              <h3>Download Unsynced Data</h3>
+              {/* <ol>
                 <li>
                   Copy The Zip File named as sync_data.zip stored in the other
                   server in a specific path
@@ -127,35 +152,45 @@ const SyncComponent = () => {
                 <li>
                   Paste the copied sync_data.zip inside the today's date folder
                 </li>
-              </ol>
+              </ol> */}
               <DynamicButton
-                label="Sync Data"
-                onClick={() => handleSync()}
+                label="DOWNLOAD DATA"
+                onClick={() => downloadDataHandler()}
                 className="btn btn-primary btn-sm mt-2"
               />
             </div>
             <div className="col-md-6">
-              <h3>Additional Instructions</h3>
-              <ol>
+              <h3>Upload Unsynced Data</h3>
+              {/* <ol>
                 <li>Ensure all data is up-to-date before syncing.</li>
                 <li>Check your network connection.</li>
                 <li>Do not close the browser while syncing.</li>
                 <li>Contact support if you encounter any issues.</li>
                 <li>Refer to the documentation for detailed instructions.</li>
                 <li>Log out and log in again if the sync fails repeatedly.</li>
-              </ol>
-              {/* <DynamicButton
-                label="Sync File"
-                onClick={() => handleFileSync()}
-                className="btn btn-secondary btn-sm mt-2"
-              /> */}
+              </ol> */}
+
+              <input
+                type="file"
+                ref={inputFileRef}
+                className="form-control"
+                onChange={(e) =>
+                  setFormData({ ...formData, data: e.target.files[0] })
+                }
+                accept=".zip"
+              />
+              <DynamicButton
+                label="UPLOAD DATA"
+                onClick={() => DataUploadHndlar()}
+                className="btn btn-primary btn-sm mt-2"
+              />
             </div>
           </div>
 
           {/* New section for Sync Download and Sync Upload */}
           <div className="row mt-4">
             <div className="col-md-6">
-              <h3>Unsynced File Download</h3>
+              <h3>Download Unsynced File</h3>
               <DatePicker
                 selected={selectedDate}
                 onChange={(date) => setSelectedDate(date)}
@@ -163,15 +198,16 @@ const SyncComponent = () => {
                 placeholderText="Select Date"
                 maxDate={new Date()}
               />
+
               <DynamicButton
-                label="Download Sync"
+                label="DOWNLOAD FILE"
                 onClick={fileDownloadHandler}
                 className="btn btn-primary btn-sm mt-2"
               />
             </div>
             <div className="col-md-6">
-              <h3>Unsynced File Upload</h3>
-              <ol>
+              <h3>Upload Unsynced File</h3>
+              {/* <ol>
                 <li>
                   Copy The Zip File named as sync_data.zip stored in the other
                   server in a specific path. <br />{" "}
@@ -182,18 +218,23 @@ const SyncComponent = () => {
                 <li>Contact support if you encounter any issues.</li>
                 <li>Refer to the documentation for detailed instructions.</li>
                 <li>Log out and log in again if the sync fails repeatedly.</li>
-              </ol>
+              </ol> */}
+              <input
+                type="file"
+                ref={inputFileRef}
+                className="form-control"
+                onChange={(e) =>
+                  setFormData({ ...formData, file: e.target.files[0] })
+                }
+                accept=".zip"
+              />
               <DynamicButton
-                label="Upload Sync"
-                onClick={handleFileSync}
-                className="btn btn-secondary btn-sm mt-2"
+                label="UPLOAD FILE"
+                onClick={uploadFileHandler}
+                className="btn btn-primary btn-sm mt-2"
               />
             </div>
           </div>
-
-          {syncMessage && (
-            <div className="alert alert-info mt-3">{syncMessage}</div>
-          )}
         </div>
       </div>
       <div className="d-flex mt-3">

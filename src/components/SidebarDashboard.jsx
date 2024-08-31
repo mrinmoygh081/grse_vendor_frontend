@@ -16,6 +16,8 @@ const SidebarDashboard = ({ title }) => {
       return sidebarDashboardData.filter(
         (item) => item.title === "BG" || item.title === "BTN"
       );
+    } else if (department_id === 2) {
+      return sidebarDashboardData.filter((item) => item.title === "DRAWING");
     } else {
       return sidebarDashboardData;
     }

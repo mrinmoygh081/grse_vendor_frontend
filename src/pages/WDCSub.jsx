@@ -273,7 +273,7 @@ const WDCSub = () => {
 
   const submitHandler = async (flag, ref_no) => {
     try {
-      const formDataCopy = { ...formData }; // Create a copy of formData
+      const formDataCopy = { ...formData };
 
       // Check if all required fields are filled
       if (

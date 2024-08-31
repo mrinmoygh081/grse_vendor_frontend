@@ -68,6 +68,7 @@ import ClaimAgainstPBGSubmissionEdit from "./pages/checklists/ClaimAgainstPBGSub
 import NotFound from "./components/NotFound";
 import ServiceContractBillsView from "./pages/checklists/ServiceContractBillsView";
 import ServiceContractBillsEdit from "./pages/checklists/ServiceContractBillsEdit";
+import QapDrawing from "./pages/dashboard/QapDrawing";
 
 function Layout() {
   const { token, isLoggedIn, user } = useSelector((state) => state.auth);
@@ -196,6 +197,9 @@ function Layout() {
         <Route path="/bg-extension" element={<BGExtensionSub />} />
         {user?.department_id === 3 && (
           <Route path="/dashboard/qa" element={<QapDashboard />} />
+        )}
+        {user?.department_id === 2 && (
+          <Route path="/dashboard/drawing" element={<QapDrawing />} />
         )}
         {user?.department_id === 15 && (
           <>

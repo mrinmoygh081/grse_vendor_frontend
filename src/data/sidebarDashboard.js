@@ -11,4 +11,8 @@ export const sidebarDashboardData = [
     title: "QA",
     link: "/dashboard/qa",
   },
+  {
+    title: "DRAWING",
+    link: "/dashboard/drawing",
+  },
 ];
