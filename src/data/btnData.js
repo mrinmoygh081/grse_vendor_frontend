@@ -107,6 +107,7 @@ export const initialDataService = {
   wdc_number: "",
   invoice_type: "",
   invoice_no: "",
+  invoice_date: "",
   invoice_filename: "",
   suppoting_invoice_filename: "",
   invoice_value: "",
