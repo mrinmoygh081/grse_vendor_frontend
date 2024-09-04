@@ -757,7 +757,6 @@ const WDCSub = () => {
     // Update the field with the new value
     updatedFields[index][fieldName] = value;
   
-    // If the field being changed is "line_item_no"
     if (fieldName === "line_item_no") {
       const lineItemNo = value;
       try {
@@ -766,56 +765,109 @@ const WDCSub = () => {
   
         // Update fields based on fetched data
         updatedFields[index].description = getRestData?.description || ""; // Set description
-        updatedFields[index].rest_amount = getRestData?.rest_amount || 0; // Set rest amount
+        updatedFields[index].rest_amount = getRestData?.rest_amount || ""; // Set rest amount without formatting
         updatedFields[index].unit = getRestData?.unit || ""; // Set unit
+  
+        // Reset Claim Quantity when line item changes
+        updatedFields[index].claim_qty = ""; // Reset claim quantity to prevent carry-over
       } catch (error) {
         console.error("Error fetching available amount:", error);
-        // You can display an error message or handle the error accordingly
+        // Handle the error if needed
       }
-    }
-  
-    // Ensure that the Claim Quantity does not exceed Open Quantity
-    if (fieldName === "claim_qty") {
-      const claimQty = parseFloat(value); // Convert to number for comparison
-      const openQty = parseFloat(updatedFields[index].rest_amount); // Convert to number for comparison
+    } else if (fieldName === "claim_qty") {
+      const claimQty = parseFloat(value) || 0; // Convert to number for comparison
+      const openQty = parseFloat(updatedFields[index].rest_amount) || 0; // Convert to number for comparison
   
       // Check if Claim Quantity is less than or equal to Open Quantity
       if (claimQty > openQty) {
         // Display a validation message or handle it
-        toast.warning("Claim Quantity should be less than or equal to Open Quantity.");
+        toast.warn("Claim Quantity should be less than or equal to Open Quantity.");
         return; // Exit the function to prevent further processing
       }
+  
+      // Update Claim Quantity as entered without formatting
+      updatedFields[index].claim_qty = value; 
     }
   
     // Update the state with the modified dynamic fields
     setDynamicFields(updatedFields);
   };
   
+  
+  
+
+  // const handleFieldChangeWdc = async (index, fieldName, value) => {
+  //   const updatedFields = [...dynamicFieldsWdc];
+  //   updatedFields[index][fieldName] = value;
+
+  //   // Fetch and update Description, Open PO Qty, and UOM when Line Item No changes
+  //   if (fieldName === "line_item_no") {
+  //     const lineItemNo = value;
+  //     // Fetch corresponding data for the selected Line Item No
+  //     let getRestData = await getAvailableAmountWdc(lineItemNo);
+  //     // Update the corresponding fields in the state
+  //     updatedFields[index].description = getRestData?.description;
+  //     updatedFields[index].rest_amount = getRestData?.rest_amount;
+  //     updatedFields[index].unit = getRestData?.unit;
+  //     updatedFields[index].matarial_code = getRestData?.matarial_code;
+  //     updatedFields[index].target_amount = getRestData?.target_amount;
+  //     updatedFields[index].po_rate = getRestData?.po_rate;
+
+  //     // Update the state with the modified dynamic fields
+  //     setDynamicFieldsWdc(updatedFields);
+  //   } else {
+  //     // Update the state with the modified dynamic fields
+  //     setDynamicFieldsWdc(updatedFields);
+  //   }
+  // };
 
   const handleFieldChangeWdc = async (index, fieldName, value) => {
-    const updatedFields = [...dynamicFieldsWdc];
-    updatedFields[index][fieldName] = value;
-
-    // Fetch and update Description, Open PO Qty, and UOM when Line Item No changes
+    const updatedFields = [...dynamicFieldsWdc]; // Copy current state
+    updatedFields[index][fieldName] = value; // Update the specific field with the new value
+  
+    // Fetch and update related fields when "line_item_no" changes
     if (fieldName === "line_item_no") {
       const lineItemNo = value;
-      // Fetch corresponding data for the selected Line Item No
-      let getRestData = await getAvailableAmountWdc(lineItemNo);
-      // Update the corresponding fields in the state
-      updatedFields[index].description = getRestData?.description;
-      updatedFields[index].rest_amount = getRestData?.rest_amount;
-      updatedFields[index].unit = getRestData?.unit;
-      updatedFields[index].matarial_code = getRestData?.matarial_code;
-      updatedFields[index].target_amount = getRestData?.target_amount;
-      updatedFields[index].po_rate = getRestData?.po_rate;
-
-      // Update the state with the modified dynamic fields
-      setDynamicFieldsWdc(updatedFields);
-    } else {
-      // Update the state with the modified dynamic fields
-      setDynamicFieldsWdc(updatedFields);
+      try {
+        // Fetch corresponding data for the selected Line Item No
+        const getRestData = await getAvailableAmountWdc(lineItemNo);
+  
+        // Update fields based on fetched data
+        updatedFields[index].description = getRestData?.description || ""; // Set description
+        updatedFields[index].rest_amount = getRestData?.rest_amount || ""; // Set rest amount without formatting
+        updatedFields[index].unit = getRestData?.unit || ""; // Set unit
+        updatedFields[index].matarial_code = getRestData?.matarial_code || ""; // Set material code
+        updatedFields[index].target_amount = getRestData?.target_amount || ""; // Set target amount
+        updatedFields[index].po_rate = getRestData?.po_rate || ""; // Set PO rate
+  
+        // Reset Claim Quantity when line item changes
+        updatedFields[index].claim_qty = ""; // Clear claim quantity to avoid incorrect values
+  
+      } catch (error) {
+        console.error("Error fetching available amount:", error);
+      }
+    } else if (fieldName === "claim_qty") {
+      const claimQty = parseFloat(value) || 0; // Convert to number for comparison
+      const openQty = parseFloat(updatedFields[index].rest_amount) || 0; // Convert to number for comparison
+  console.log(claimQty,"claimQty");
+  console.log(claimQty,"openQty");
+  
+      // Check if Claim Quantity is less than or equal to Open Quantity
+      if (claimQty > openQty) {
+        // Display a validation message or handle it
+        alert("Claim Quantity should be less than or equal to Open Quantity.");
+        return; // Exit the function to prevent further processing
+      }
+  
+      // Update Claim Quantity as entered without formatting
+      updatedFields[index].claim_qty = value;
     }
+  
+    // Update the state with the modified dynamic fields
+    setDynamicFieldsWdc(updatedFields);
   };
+  
+  
 
   const handleDateChange = (index, fieldName, date) => {
     const updatedFields = [...dynamicFields];
@@ -1640,6 +1692,7 @@ const WDCSub = () => {
                                 <input
                                   type="number"
                                   className="form-control"
+                                   step="0.001"
                                   value={field.claim_qty}
                                   onChange={(e) =>
                                     handleFieldChangeWdc(
