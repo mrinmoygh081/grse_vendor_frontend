@@ -24,6 +24,7 @@ import {
   FORWARD_TO_FINANCE,
   SUBMITTED,
   APPROVED,
+  ACTION_MBG,
 } from "../constants/BGconstants";
 import { logOutFun } from "../utils/logOutFun";
 import { logoutHandler } from "../redux/slices/loginSlice";
@@ -865,6 +866,7 @@ const SDBGSub = () => {
                     <option value={ACTION_DD}>{ACTION_DD}</option>
                     <option value={ACTION_PBG}>{ACTION_PBG}</option>
                     <option value={ACTION_ABG}>{ACTION_ABG}</option>
+                    <option value={ACTION_MBG}>{ACTION_MBG}</option>
                     <option value={ACTION_RM}>{ACTION_RM}</option>
                     <option value={ACTION_O}>{ACTION_O}</option>
                   </select>
@@ -1258,6 +1260,7 @@ const SDBGSub = () => {
                       <option value="SDBG">SDBG</option>
                       <option value="PBG">PBG</option>
                       <option value="ADVANCED BG">ADVANCED BG</option>
+                      <option value="MATERIAL BG">MATERIAL BG</option>
                     </select>
                   </div>
                 </div>

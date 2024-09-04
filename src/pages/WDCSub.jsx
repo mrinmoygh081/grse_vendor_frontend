@@ -98,7 +98,9 @@ const WDCSub = () => {
       })) || []
     );
   });
-
+  const [status, setStatus] = useState("");
+  const [showRemarksPopup, setShowRemarksPopup] = useState(false);
+  const [remarks, setRemarks] = useState("");
   const [doFormJcc, setDoFormJcc] = useState({});
 
   const [isLoading, setIsLoading] = useState(false);
@@ -159,7 +161,7 @@ const WDCSub = () => {
     const { value } = e.target;
     const updatedForm = [...doForm];
 
-    // Update the specific field
+   
     updatedForm[index] = {
       ...updatedForm[index],
       [fieldName]: value,
@@ -199,6 +201,17 @@ const WDCSub = () => {
     }
 
     setDoForm(updatedForm);
+  };
+
+  const handleInputChangeOne = (e, fieldName) => {
+    const value = e.target.value;
+    setStatus(value);
+
+    if (value === "REJECTED") {
+      setShowRemarksPopup(true); // Show popup for remarks if "Rejected" is selected
+    } else {
+      setShowRemarksPopup(false);
+    }
   };
 
   const handleInputChangejcc = (e, index, field) => {
@@ -509,20 +522,24 @@ const WDCSub = () => {
       fD.append("reference_no", reference_no || viewData.reference_no || "");
       fD.append("status", flag);
 
+      // Ensure remarks are provided when rejecting
+      if (flag === "REJECTED" && !remarks) {
+        toast.warn("Remarks are required for rejection.");
+        return;
+      }
+
       const newErrors = [];
 
       // Validate each line item in doForm
       viewData.line_item_array.forEach((item, index) => {
         const doItem = doForm[index];
 
-        // Validate Contractual Start Date
         if (!doItem?.contractual_start_date) {
           newErrors.push(
             `Contractual Start Date is required for item ${index + 1}`
           );
         }
 
-        // Validate Contractual Completion Date
         if (!doItem?.Contractual_completion_date) {
           newErrors.push(
             `Contractual Completion Date is required for item ${index + 1}`
@@ -538,13 +555,9 @@ const WDCSub = () => {
           );
         }
 
-        // Validate Status
-        if (!doItem?.status) {
-          newErrors.push(`Status is required for item ${index + 1}`);
-        }
+       
       });
 
-      // If there are validation errors, display them and return early
       if (newErrors.length > 0) {
         newErrors.forEach((error) => toast.warn(error));
         return;
@@ -564,37 +577,27 @@ const WDCSub = () => {
           );
           const actualCompletionDate = new Date(actualCompletionDateStr);
 
-          // Reset time components to midnight to avoid issues
           contractualCompletionDate.setHours(0, 0, 0, 0);
           actualCompletionDate.setHours(0, 0, 0, 0);
 
-          // Calculate the delay in days
           const timeDiff = actualCompletionDate - contractualCompletionDate;
-          const delayDays = Math.floor(timeDiff / (1000 * 60 * 60 * 24)); // Days between the two dates
+          const delayDays = Math.floor(timeDiff / (1000 * 60 * 60 * 24));
 
-          // Adjust delay by subtracting hinderance days
           delay = delayDays - hinderanceDays;
-          console.log(
-            "Contractual Completion Date:",
-            contractualCompletionDate
-          );
-          console.log("Actual Completion Date:", actualCompletionDate);
-          console.log("Hinderance Days:", hinderanceDays);
-          console.log("Calculated Delay Days:", delayDays);
-          console.log("Final Delay:", delay);
         }
 
         return {
           contractual_start_date: doForm[index]?.contractual_start_date || "",
           Contractual_completion_date:
             doForm[index]?.Contractual_completion_date || "",
-          status: doForm[index]?.status || "",
-          delay: delay > 0 ? delay : 0, // Ensure delay is not negative
+         
+          delay: delay > 0 ? delay : 0,
           line_item_no: item.line_item_no || "",
         };
       });
 
       fD.append("line_item_array", JSON.stringify(lineItemArray));
+      if (flag === "REJECTED") fD.append("remarks", remarks);
 
       const res = await apiCallBack("POST", "po/wdc/submitWdc", fD, token);
 
@@ -603,8 +606,8 @@ const WDCSub = () => {
         setIsPopup(false);
         setIsSecPopup(false);
         setFormData(initialFormData);
+        setRemarks(""); // Reset remarks
 
-        // Reset doForm to initial state
         setDoForm(
           viewData?.line_item_array?.map(() => ({
             contractual_start_date: "",
@@ -620,9 +623,9 @@ const WDCSub = () => {
       }
     } catch (error) {
       toast.error("Error uploading file: " + error.message);
-      console.error("Error uploading file:", error);
     }
   };
+
 
   //jcc action submit fuction
 
@@ -1776,7 +1779,7 @@ const WDCSub = () => {
               <div className="card-header border-0 pt-5 pb-3">
                 <h3 className="card-title align-items-start flex-column">
                   <span className="card-label fw-bold fs-3 mb-1">
-                    All Data for{" "}
+                    All Data{" "}
                     {viewData?.reference_no && `for ${viewData?.reference_no}`}
                   </span>
                 </h3>
@@ -1915,7 +1918,6 @@ const WDCSub = () => {
                         <th>Actual Start</th>
                         <th>Actual Completion</th>
                         <th>Hinderance in Days</th>
-                        <th>Status</th>
                         <th>Delay</th>
                       </tr>
                     </thead>
@@ -1967,7 +1969,7 @@ const WDCSub = () => {
                                   formatDate(field?.actual_completion_date)}
                               </td>
                               <td>{field?.hinderance_in_days}</td>
-                              <td>
+                              {/* <td>
                                 <select
                                   className="form-select"
                                   onChange={(e) =>
@@ -1978,7 +1980,7 @@ const WDCSub = () => {
                                   <option value="APPROVED">Approved</option>
                                   <option value="REJECTED">Rejected</option>
                                 </select>
-                              </td>
+                              </td> */}
                               <td>{doForm[index]?.delay || "0"}</td>
                             </tr>
                           </Fragment>
@@ -1999,17 +2001,54 @@ const WDCSub = () => {
                     </div>
                   </div>
                   <div className="col-12">
-                    <DynamicButton
-                      label="SUBMIT"
-                      onClick={() => submitHandlerAction("APPROVED", null)}
-                      className="btn fw-bold btn-primary"
-                    />
-                  </div>
+      <div className="mb-3">
+      <label className="form-label">Remarks</label>
+        <select
+          className="form-select"
+          onChange={(e) => handleInputChangeOne(e, "status")}
+        >
+          <option value="">Select</option>
+          <option value="APPROVED">Approved</option>
+          <option value="REJECTED">Rejected</option>
+        </select>
+      </div>
+
+      {showRemarksPopup && (
+        <div className="remarks-popup">
+          <label>Remarks</label>
+          <input
+            type="text"
+            value={remarks}
+            onChange={(e) => setRemarks(e.target.value)}
+            required
+          />
+          {/* <button
+            onClick={() => submitHandlerAction("REJECTED", null)}
+            className="btn fw-bold my-2 btn-danger"
+          >
+            Submit Remarks
+          </button> */}
+        </div>
+      )}
+
+      <DynamicButton
+        label="SUBMIT"
+        onClick={() =>
+          status === "APPROVED"
+            ? submitHandlerAction("APPROVED", null)
+            : showRemarksPopup
+            ? submitHandlerAction("REJECTED", null)
+            : null
+        }
+        className="btn fw-bold btn-primary"
+      />
+    </div>
+                
                 </div>
               </form>
             </div>
           </div>
-          {/* ////////jccc action popup */}
+          {/* ////////jcc action popup */}
 
           <div
             className={

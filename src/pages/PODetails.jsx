@@ -11,6 +11,7 @@ import axios from "axios";
 import { clrLegend } from "../utils/clrLegend";
 import { logOutFun } from "../utils/logOutFun";
 import { logoutHandler } from "../redux/slices/loginSlice";
+import { Link } from "react-router-dom";
 import { MdArchive } from "react-icons/md";
 import { checkTypeArr } from "../utils/smallFun";
 import { formatDate } from "../utils/getDateTimeNow";
