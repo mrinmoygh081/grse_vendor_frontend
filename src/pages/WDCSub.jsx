@@ -729,27 +729,68 @@ const WDCSub = () => {
     }
   };
 
-  const handleFieldChange = async (index, fieldName, value) => {
-    const updatedFields = [...dynamicFields];
-    updatedFields[index][fieldName] = value;
+  // const handleFieldChange = async (index, fieldName, value) => {
+  //   const updatedFields = [...dynamicFields];
+  //   updatedFields[index][fieldName] = value;
 
-    // Fetch and update Description, Open PO Qty, and UOM when Line Item No changes
+   
+  //   if (fieldName === "line_item_no") {
+  //     const lineItemNo = value;
+  //     // Fetch corresponding data for the selected Line Item No
+  //     let getRestData = await getAvailableAmount(lineItemNo);
+  //     // Update the corresponding fields in the state
+  //     updatedFields[index].description = getRestData?.description;
+  //     updatedFields[index].rest_amount = getRestData?.rest_amount;
+  //     updatedFields[index].unit = getRestData?.unit;
+
+  //     // Update the state with the modified dynamic fields
+  //     setDynamicFields(updatedFields);
+  //   } else {
+  //     // Update the state with the modified dynamic fields
+  //     setDynamicFields(updatedFields);
+  //   }
+  // };
+
+  const handleFieldChange = async (index, fieldName, value) => {
+    const updatedFields = [...dynamicFields]; // Copy current state
+  
+    // Update the field with the new value
+    updatedFields[index][fieldName] = value;
+  
+    // If the field being changed is "line_item_no"
     if (fieldName === "line_item_no") {
       const lineItemNo = value;
-      // Fetch corresponding data for the selected Line Item No
-      let getRestData = await getAvailableAmount(lineItemNo);
-      // Update the corresponding fields in the state
-      updatedFields[index].description = getRestData?.description;
-      updatedFields[index].rest_amount = getRestData?.rest_amount;
-      updatedFields[index].unit = getRestData?.unit;
-
-      // Update the state with the modified dynamic fields
-      setDynamicFields(updatedFields);
-    } else {
-      // Update the state with the modified dynamic fields
-      setDynamicFields(updatedFields);
+      try {
+        // Fetch corresponding data for the selected Line Item No
+        const getRestData = await getAvailableAmount(lineItemNo);
+  
+        // Update fields based on fetched data
+        updatedFields[index].description = getRestData?.description || ""; // Set description
+        updatedFields[index].rest_amount = getRestData?.rest_amount || 0; // Set rest amount
+        updatedFields[index].unit = getRestData?.unit || ""; // Set unit
+      } catch (error) {
+        console.error("Error fetching available amount:", error);
+        // You can display an error message or handle the error accordingly
+      }
     }
+  
+    // Ensure that the Claim Quantity does not exceed Open Quantity
+    if (fieldName === "claim_qty") {
+      const claimQty = parseFloat(value); // Convert to number for comparison
+      const openQty = parseFloat(updatedFields[index].rest_amount); // Convert to number for comparison
+  
+      // Check if Claim Quantity is less than or equal to Open Quantity
+      if (claimQty > openQty) {
+        // Display a validation message or handle it
+        toast.warning("Claim Quantity should be less than or equal to Open Quantity.");
+        return; // Exit the function to prevent further processing
+      }
+    }
+  
+    // Update the state with the modified dynamic fields
+    setDynamicFields(updatedFields);
   };
+  
 
   const handleFieldChangeWdc = async (index, fieldName, value) => {
     const updatedFields = [...dynamicFieldsWdc];
@@ -1286,6 +1327,7 @@ const WDCSub = () => {
                                 <input
                                   type="number"
                                   className="form-control"
+                                  step="0.001"
                                   value={field.claim_qty}
                                   onChange={(e) =>
                                     handleFieldChange(
