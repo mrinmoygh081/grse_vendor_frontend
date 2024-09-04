@@ -9,15 +9,15 @@ import { apiCallBack } from "../utils/fetchAPIs";
 import DynamicButton from "../Helpers/DynamicButton";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import { convertToEpoch } from "../utils/getDateTimeNow";
+// import { convertToEpoch } from "../utils/getDateTimeNow";
 
 const SyncComponent = () => {
-  const inputFileRef = useRef(null);
-  const [selectedDate, setSelectedDate] = useState(new Date());
-  const [formData, setFormData] = useState({
-    file: "",
-    data: "",
+  // const inputFileRef = useRef(null);
+  const [selectedDate, setSelectedDate] = useState({
+    dataSync: new Date(new Date().setDate(new Date().getDate() - 1)),
+    fileSync: new Date(new Date().setDate(new Date().getDate() - 1)),
   });
+
   const dispatch = useDispatch();
 
   const logOutFun = () => {
@@ -25,48 +25,42 @@ const SyncComponent = () => {
     dispatch(poRemoveHandler());
   };
 
-  const downloadDataHandler = async () => {
-    try {
-      const resp = await apiCallBack("POST", "sync/sync_download", null, null);
-      console.log("resp", resp);
-      if (resp.status) {
-        const upRes = await apiCallBack("POST", "sync/sync_zip", null, null);
-        if (upRes?.status) {
-          toast.success(upRes.message || "Data has been downloaded");
-        } else {
-          toast.info(upRes.message);
-        }
-      } else {
-        toast.info(resp.message);
-      }
-    } catch (error) {
-      toast.error(
-        "Sync failed: " + (error.response?.data?.message || error.message)
-      );
-    }
-  };
+  // const downloadDataHandler = async () => {
+  //   try {
+  //     const resp = await apiCallBack("POST", "sync/sync_download", null, null);
+  //     console.log("resp", resp);
+  //     if (resp.status) {
+  //       const upRes = await apiCallBack("POST", "sync/sync_zip", null, null);
+  //       if (upRes?.status) {
+  //         toast.success(upRes.message || "Data has been downloaded");
+  //       } else {
+  //         toast.info(upRes.message);
+  //       }
+  //     } else {
+  //       toast.info(resp.message);
+  //     }
+  //   } catch (error) {
+  //     toast.error(
+  //       "Sync failed: " + (error.response?.data?.message || error.message)
+  //     );
+  //   }
+  // };
 
-  console.log("formData", formData);
+  console.log("selectedDate", selectedDate);
 
   const DataUploadHndlar = async () => {
-    inputFileRef.current.value = null;
     try {
-      console.log("formData?.data", formData?.data);
-      if (!formData?.data || formData?.data === "") {
+      console.log("formData?.data", selectedDate?.dataSync);
+      if (!selectedDate?.dataSync || selectedDate?.dataSync === "") {
         return toast.info("Zip File is mandatory.");
       }
-      const fData = new FormData();
-      fData.append("file", formData?.data);
-      const resp = await apiCallBack("POST", "sync/sync_unzip", fData, null);
-      console.log(resp, "resp file data");
+      let payload = {
+        from_date: selectedDate?.dataSync,
+      };
+      const resp = await apiCallBack("POST", "sync/sync_unzip", payload, null);
       if (resp.status) {
-        const upRes = await apiCallBack("POST", "sync/sync_upload", null, null);
-        console.log(upRes, "upRes file data");
-        if (upRes?.status) {
-          toast.success(upRes.message || "Data has been synced");
-        } else {
-          toast.info(upRes.message);
-        }
+        console.log(resp, "resp file dataSync");
+        toast.success(resp.message || "Data has been synced");
       } else {
         toast.info(resp.message);
       }
@@ -74,29 +68,27 @@ const SyncComponent = () => {
       toast.error(
         "Sync failed: " + (error.response?.data?.message || error.message)
       );
-    } finally {
-      inputFileRef.current.value = null;
     }
   };
 
-  const fileDownloadHandler = async () => {
-    try {
-      let payload = {
-        sync_date: new Date(selectedDate).getTime(),
-      };
-      const response = apiCallBack(
-        "POST",
-        "/sync/sync_file_zip",
-        payload,
-        null
-      );
-      toast.success(response.data.message || "File sync successful");
-    } catch (error) {
-      toast.error(
-        "File sync failed: " + (error.response?.data?.message || error.message)
-      );
-    }
-  };
+  // const fileDownloadHandler = async () => {
+  //   try {
+  //     let payload = {
+  //       sync_date: new Date(selectedDate).getTime(),
+  //     };
+  //     const response = apiCallBack(
+  //       "POST",
+  //       "/sync/sync_file_zip",
+  //       payload,
+  //       null
+  //     );
+  //     toast.success(response.data.message || "File sync successful");
+  //   } catch (error) {
+  //     toast.error(
+  //       "File sync failed: " + (error.response?.data?.message || error.message)
+  //     );
+  //   }
+  // };
 
   const uploadFileHandler = async () => {
     try {
@@ -131,9 +123,9 @@ const SyncComponent = () => {
         </div>
         <div className="card-body">
           <div className="row">
-            <div className="col-md-6">
+            {/* <div className="col-md-6">
               <h3>Download Unsynced Data</h3>
-              {/* <ol>
+              <ol>
                 <li>
                   Copy The Zip File named as sync_data.zip stored in the other
                   server in a specific path
@@ -152,32 +144,32 @@ const SyncComponent = () => {
                 <li>
                   Paste the copied sync_data.zip inside the today's date folder
                 </li>
-              </ol> */}
+              </ol> 
               <DynamicButton
                 label="DOWNLOAD DATA"
                 onClick={() => downloadDataHandler()}
                 className="btn btn-primary btn-sm mt-2"
               />
-            </div>
+            </div> */}
             <div className="col-md-6">
               <h3>Upload Unsynced Data</h3>
-              {/* <ol>
+              <ol>
                 <li>Ensure all data is up-to-date before syncing.</li>
                 <li>Check your network connection.</li>
                 <li>Do not close the browser while syncing.</li>
                 <li>Contact support if you encounter any issues.</li>
                 <li>Refer to the documentation for detailed instructions.</li>
                 <li>Log out and log in again if the sync fails repeatedly.</li>
-              </ol> */}
-
-              <input
-                type="file"
-                ref={inputFileRef}
-                className="form-control"
-                onChange={(e) =>
-                  setFormData({ ...formData, data: e.target.files[0] })
+              </ol>
+              <label htmlFor="">Select From Date You want to Sync Data:</label>
+              <DatePicker
+                selected={selectedDate?.dataSync}
+                onChange={(date) =>
+                  setSelectedDate({ ...selectedDate, dataSync: date })
                 }
-                accept=".zip"
+                className="form-control my-2"
+                placeholderText="Select Date"
+                maxDate={new Date(new Date().setDate(new Date().getDate() - 1))}
               />
               <DynamicButton
                 label="UPLOAD DATA"
@@ -185,11 +177,36 @@ const SyncComponent = () => {
                 className="btn btn-primary btn-sm mt-2"
               />
             </div>
+            <div className="col-md-6">
+              <h3>Upload Unsynced File</h3>
+              <ol>
+                <li>
+                  Copy The Zip File named as sync_data.zip stored in the other
+                  server in a specific path. <br />{" "}
+                  (/var/www/html/obps/obps_backend/)
+                </li>
+              </ol>
+              <label htmlFor="">Select From Date You want to Sync File:</label>
+              <DatePicker
+                selected={selectedDate?.fileSync}
+                onChange={(date) =>
+                  setSelectedDate({ ...selectedDate, fileSync: date })
+                }
+                className="form-control my-2"
+                placeholderText="Select Date"
+                maxDate={new Date(new Date().setDate(new Date().getDate() - 1))}
+              />
+              <DynamicButton
+                label="UPLOAD FILE"
+                onClick={uploadFileHandler}
+                className="btn btn-primary btn-sm mt-2"
+              />
+            </div>
           </div>
 
           {/* New section for Sync Download and Sync Upload */}
           <div className="row mt-4">
-            <div className="col-md-6">
+            {/* <div className="col-md-6">
               <h3>Download Unsynced File</h3>
               <DatePicker
                 selected={selectedDate}
@@ -204,36 +221,7 @@ const SyncComponent = () => {
                 onClick={fileDownloadHandler}
                 className="btn btn-primary btn-sm mt-2"
               />
-            </div>
-            <div className="col-md-6">
-              <h3>Upload Unsynced File</h3>
-              {/* <ol>
-                <li>
-                  Copy The Zip File named as sync_data.zip stored in the other
-                  server in a specific path. <br />{" "}
-                  (/var/www/html/obps/obps_backend/)
-                </li>
-                <li>Check your network connection.</li>
-                <li>Do not close the browser while syncing.</li>
-                <li>Contact support if you encounter any issues.</li>
-                <li>Refer to the documentation for detailed instructions.</li>
-                <li>Log out and log in again if the sync fails repeatedly.</li>
-              </ol> */}
-              <input
-                type="file"
-                ref={inputFileRef}
-                className="form-control"
-                onChange={(e) =>
-                  setFormData({ ...formData, file: e.target.files[0] })
-                }
-                accept=".zip"
-              />
-              <DynamicButton
-                label="UPLOAD FILE"
-                onClick={uploadFileHandler}
-                className="btn btn-primary btn-sm mt-2"
-              />
-            </div>
+            </div> */}
           </div>
         </div>
       </div>
