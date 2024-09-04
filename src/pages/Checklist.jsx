@@ -87,6 +87,8 @@ const Checklist = () => {
           uri = "submitSBtnByFAuthorty";
         } else if (assign?.btn_type === "hybrid-bill-material") {
           uri = "assignToFiStaff";
+        } else if (assign?.btn_type === "claim-against-pbg") {
+          uri = "assignToFiStaff";
         }
         const res = await apiCallBack("POST", `po/btn/${uri}`, assign, token);
         if (res?.status) {
