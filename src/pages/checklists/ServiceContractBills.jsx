@@ -267,7 +267,10 @@ const ServiceContractBills = () => {
                                     <tr>
                                       <td>WDC Certifying Authority:</td>
                                       <td className="btn_value">
-                                        <b>{data?.wdcDetails?.assigned_to}</b>
+                                        <b>
+                                          {data?.wdcDetails?.assigned_to_name} (
+                                          {data?.wdcDetails?.assigned_to})
+                                        </b>
                                       </td>
                                     </tr>
                                   </tbody>
@@ -374,15 +377,18 @@ const ServiceContractBills = () => {
                                               </label>
                                               <ReactDatePicker
                                                 selected={
-                                                  form.bg_date
-                                                    ? new Date(form.bg_date)
+                                                  form.invoice_date
+                                                    ? new Date(
+                                                        form.invoice_date
+                                                      )
                                                     : null
                                                 }
                                                 onChange={(date) => {
                                                   setForm((prevData) => ({
                                                     ...prevData,
                                                     invoice_date:
-                                                      convertToEpoch(date),
+                                                      convertToEpoch(date) *
+                                                      1000,
                                                   }));
                                                 }}
                                                 dateFormat="dd/MM/yyyy"
@@ -471,18 +477,20 @@ const ServiceContractBills = () => {
                                               <label htmlFor="">
                                                 Invoice Date
                                               </label>
-
                                               <ReactDatePicker
                                                 selected={
-                                                  form.bg_date
-                                                    ? new Date(form.bg_date)
+                                                  form.invoice_date
+                                                    ? new Date(
+                                                        form.invoice_date
+                                                      )
                                                     : null
                                                 }
                                                 onChange={(date) => {
                                                   setForm((prevData) => ({
                                                     ...prevData,
                                                     invoice_date:
-                                                      convertToEpoch(date),
+                                                      convertToEpoch(date) *
+                                                      1000,
                                                   }));
                                                 }}
                                                 dateFormat="dd/MM/yyyy"
