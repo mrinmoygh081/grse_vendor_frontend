@@ -14,7 +14,7 @@ import {
 } from "../../utils/smallFun";
 import { inputOnWheelPrevent } from "../../utils/inputOnWheelPrevent";
 import { apiCallBack } from "../../utils/fetchAPIs";
-import { formatDate } from "../../utils/getDateTimeNow";
+import { convertToEpoch, formatDate } from "../../utils/getDateTimeNow";
 import { FaCaretLeft } from "react-icons/fa";
 import { D_S_INVOICE, E_INVOICE } from "../../constants/BTNContants";
 import { initialDataService } from "../../data/btnData";
@@ -26,6 +26,7 @@ import {
   PF_COMP,
   WAGE_COMP,
 } from "../../constants/constants";
+import ReactDatePicker from "react-datepicker";
 
 const ServiceContractBills = () => {
   const navigate = useNavigate();
@@ -266,7 +267,10 @@ const ServiceContractBills = () => {
                                     <tr>
                                       <td>WDC Certifying Authority:</td>
                                       <td className="btn_value">
-                                        <b>{data?.wdcDetails?.assigned_to}</b>
+                                        <b>
+                                          {data?.wdcDetails?.assigned_to_name} (
+                                          {data?.wdcDetails?.assigned_to})
+                                        </b>
                                       </td>
                                     </tr>
                                   </tbody>
@@ -348,20 +352,61 @@ const ServiceContractBills = () => {
                                         <td>Digitally Signed Invoice:</td>
                                         <td>
                                           <div className="btn_value">
-                                            <input
-                                              type="text"
-                                              className="form-control me-3"
-                                              name="invoice_no"
-                                              value={form?.invoice_no}
-                                              placeholder="invoice number"
-                                              onChange={(e) =>
-                                                inputTypeChange(
-                                                  e,
-                                                  form,
-                                                  setForm
-                                                )
-                                              }
-                                            />
+                                            <div className="me-4">
+                                              <label htmlFor="">
+                                                Invoice Number
+                                              </label>
+                                              <input
+                                                type="text"
+                                                className="form-control me-3"
+                                                name="invoice_no"
+                                                value={form?.invoice_no}
+                                                placeholder="invoice number"
+                                                onChange={(e) =>
+                                                  inputTypeChange(
+                                                    e,
+                                                    form,
+                                                    setForm
+                                                  )
+                                                }
+                                              />
+                                            </div>
+                                            <div>
+                                              <label htmlFor="">
+                                                Invoice Date
+                                              </label>
+                                              <ReactDatePicker
+                                                selected={
+                                                  form.invoice_date
+                                                    ? new Date(
+                                                        form.invoice_date
+                                                      )
+                                                    : null
+                                                }
+                                                onChange={(date) => {
+                                                  setForm((prevData) => ({
+                                                    ...prevData,
+                                                    invoice_date:
+                                                      convertToEpoch(date) *
+                                                      1000,
+                                                  }));
+                                                }}
+                                                dateFormat="dd/MM/yyyy"
+                                                className="form-control"
+                                              />
+                                              {/* <input
+                                                type="date"
+                                                className="form-control"
+                                                name="invoice_date"
+                                                onChange={(e) =>
+                                                  inputFileChange(
+                                                    e,
+                                                    form,
+                                                    setForm
+                                                  )
+                                                }
+                                              /> */}
+                                            </div>
                                           </div>
                                           <div className="btn_value">
                                             <div className="me-4">
@@ -409,20 +454,49 @@ const ServiceContractBills = () => {
                                         <td>E-Invoice No :</td>
                                         <td>
                                           <div className="btn_value">
-                                            <input
-                                              type="text"
-                                              className="form-control me-3"
-                                              name="invoice_no"
-                                              value={form?.invoice_no}
-                                              placeholder="invoice number"
-                                              onChange={(e) =>
-                                                inputTypeChange(
-                                                  e,
-                                                  form,
-                                                  setForm
-                                                )
-                                              }
-                                            />
+                                            <div className="me-4">
+                                              <label htmlFor="">
+                                                Invoice Number
+                                              </label>
+                                              <input
+                                                type="text"
+                                                className="form-control me-3"
+                                                name="invoice_no"
+                                                value={form?.invoice_no}
+                                                placeholder="invoice number"
+                                                onChange={(e) =>
+                                                  inputTypeChange(
+                                                    e,
+                                                    form,
+                                                    setForm
+                                                  )
+                                                }
+                                              />
+                                            </div>
+                                            <div>
+                                              <label htmlFor="">
+                                                Invoice Date
+                                              </label>
+                                              <ReactDatePicker
+                                                selected={
+                                                  form.invoice_date
+                                                    ? new Date(
+                                                        form.invoice_date
+                                                      )
+                                                    : null
+                                                }
+                                                onChange={(date) => {
+                                                  setForm((prevData) => ({
+                                                    ...prevData,
+                                                    invoice_date:
+                                                      convertToEpoch(date) *
+                                                      1000,
+                                                  }));
+                                                }}
+                                                dateFormat="dd/MM/yyyy"
+                                                className="form-control"
+                                              />
+                                            </div>
                                           </div>
                                           <div className="btn_value">
                                             <div className="me-4">

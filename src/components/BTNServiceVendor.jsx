@@ -62,7 +62,10 @@ const BTNServiceVendor = ({ data, form }) => {
                 <tr>
                   <td>WDC Certifying Authority:</td>
                   <td className="btn_value">
-                    <b>{data?.wdcDetails?.assigned_to}</b>
+                    <b>
+                      {data?.wdcDetails?.assigned_to_name} (
+                      {data?.wdcDetails?.assigned_to})
+                    </b>
                   </td>
                 </tr>
               </tbody>
@@ -119,7 +122,18 @@ const BTNServiceVendor = ({ data, form }) => {
                     <td>Digitally Signed Invoice:</td>
                     <td>
                       <div className="btn_value">
-                        <b>{form?.invoice_no}</b>
+                        <div className="me-3">
+                          <label>Invoice Number</label>
+                          <p>
+                            <b>{form?.invoice_no}</b>
+                          </p>
+                        </div>
+                        <div>
+                          <label>Invoice Date</label>
+                          <p>
+                            <b>{form?.invoice_date}</b>
+                          </p>
+                        </div>
                       </div>
                       <div className="btn_value">
                         <div className="me-4">
@@ -155,7 +169,14 @@ const BTNServiceVendor = ({ data, form }) => {
                     <td>E-Invoice No :</td>
                     <td>
                       <div className="btn_value">
-                        <b>{form?.invoice_no}</b>
+                        <div className="me-3">
+                          <label>Invoice Number</label>
+                          <b>{form?.invoice_no}</b>
+                        </div>
+                        <div>
+                          <label>Invoice Date</label>
+                          <b>{form?.invoice_date}</b>
+                        </div>
                       </div>
                       <div className="btn_value">
                         <div className="me-4">
