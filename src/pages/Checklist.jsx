@@ -87,6 +87,8 @@ const Checklist = () => {
           uri = "submitSBtnByFAuthorty";
         } else if (assign?.btn_type === "hybrid-bill-material") {
           uri = "assignToFiStaff";
+        } else if (assign?.btn_type === "claim-against-pbg") {
+          uri = "assignToFiStaff";
         }
         const res = await apiCallBack("POST", `po/btn/${uri}`, assign, token);
         if (res?.status) {
@@ -280,13 +282,15 @@ const Checklist = () => {
                                                   </button>
                                                 )}
                                               {isDO &&
-                                                firstItem.btn_type ===
-                                                  "hybrid-bill-material" && (
+                                                (firstItem.btn_type ===
+                                                  "hybrid-bill-material" ||
+                                                  firstItem.btn_type ===
+                                                    "claim-against-pbg") && (
                                                   <button
                                                     className="btn btn-sm btn-primary m-1"
                                                     onClick={() => {
                                                       navigate(
-                                                        `/checklist/hybrid-bill-material/edit/${id}`,
+                                                        `/checklist/${firstItem.btn_type}/edit/${id}`,
                                                         {
                                                           state: `${firstItem?.btn_num}`,
                                                         }
@@ -296,6 +300,7 @@ const Checklist = () => {
                                                     Action
                                                   </button>
                                                 )}
+
                                               {user?.vendor_code ===
                                                 firstItem?.bill_certifing_authority && (
                                                 <button
