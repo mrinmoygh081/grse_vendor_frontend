@@ -122,7 +122,7 @@ const ServiceContractBillsEdit = () => {
     }
     const d = await apiCallBack(
       "GET",
-      `po/btn/getServiceBtnData?type=${type}&id=${empForm?.number}`,
+      `po/btn/getServiceBtnData?type=${type}&grn=${empForm?.number}&po=${id}`,
       null,
       token
     );
