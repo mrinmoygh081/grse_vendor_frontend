@@ -11,6 +11,19 @@ const NotFound = () => {
     navigate("/"); // Navigate to the home page
   };
 
+  // Function to randomly position elements
+  const randomizeElements = () => {
+    const newElements = elements.map((element) => ({
+      ...element,
+      style: {
+        left: `${Math.random() * 90}%`,
+        top: `${Math.random() * 90}%`,
+        animationDelay: `${Math.random() * 2}s`,
+      },
+    }));
+    setElements(newElements);
+  };
+
   useEffect(() => {
     // Create multiple 404 and emoji elements on mount
     const newElements = [];
@@ -35,8 +48,16 @@ const NotFound = () => {
     return () => clearTimeout(timer); // Clean up the timer on unmount
   }, []);
 
+  // Handle mouse move to trigger random repositioning
+  const handleMouseMove = () => {
+    randomizeElements(); // Reposition elements randomly on mouse move
+  };
+
   return (
-    <div className="page-not-found-container">
+    <div
+      className="page-not-found-container"
+      onMouseMove={handleMouseMove} // Add mouse move event
+    >
       {show404 &&
         elements.map((element) => (
           <div

@@ -824,3 +824,53 @@ input[type="number"] {
     opacity: 1;
   }
 }
+/* k********************************remarks for wdc************************************************************************8 */
+.remarks-container {
+  padding: 20px; /* Padding inside the container */
+  background-color: #fff; /* White background for the container */
+  border: 1px solid #ccc; /* Light border around the container */
+  border-radius: 8px; /* Rounded corners */
+  width: 100%; /* Full width of its parent */
+  max-width: 500px; /* Maximum width of the container */
+  margin: 0 auto; /* Center the container horizontally */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Adds shadow to the container */
+}
+
+.remarks-container label {
+  display: block; /* Makes the label a block element */
+  margin-bottom: 10px; /* Space between label and textarea */
+  font-weight: bold; /* Bold text for the label */
+}
+
+.remarks-container textarea {
+  width: 100%; /* Full width for the textarea */
+  height: 100px; /* Fixed height for the textarea */
+  padding: 8px; /* Padding inside the textarea */
+  border: 1px solid #ccc; /* Border around the textarea */
+  border-radius: 4px; /* Rounded corners for the textarea */
+  box-sizing: border-box; /* Ensures padding and border are included in width */
+  resize: vertical; /* Allows vertical resizing of the textarea */
+}
+
+.remarks-container button {
+  display: block; /* Makes the button a block element */
+  width: 100%; /* Full width for the button */
+  padding: 10px; /* Padding inside the button */
+  border: none; /* Removes default border */
+  border-radius: 4px; /* Rounded corners for the button */
+  background-color: #dc3545; /* Red background color */
+  color: #fff; /* White text color */
+  font-weight: bold; /* Bold text for the button */
+  cursor: pointer; /* Pointer cursor on hover */
+  transition: background-color 0.3s ease; /* Smooth background color transition */
+}
+
+.remarks-container button:hover {
+  background-color: #c82333; /* Darker red background on hover */
+}
+
+.remarks-container button:disabled {
+  background-color: #e0e0e0; /* Light gray background for disabled button */
+  cursor: not-allowed; /* Not-allowed cursor for disabled button */
+}
+

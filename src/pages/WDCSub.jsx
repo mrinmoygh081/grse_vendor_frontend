@@ -99,7 +99,9 @@ const WDCSub = () => {
     );
   });
   const [status, setStatus] = useState("");
+  const [statusjcc, setStatusjcc] = useState("");
   const [showRemarksPopup, setShowRemarksPopup] = useState(false);
+  const [showRemarksPopupjcc, setShowRemarksPopupjcc] = useState(false);
   const [remarks, setRemarks] = useState("");
   const [doFormJcc, setDoFormJcc] = useState({});
 
@@ -161,7 +163,6 @@ const WDCSub = () => {
     const { value } = e.target;
     const updatedForm = [...doForm];
 
-   
     updatedForm[index] = {
       ...updatedForm[index],
       [fieldName]: value,
@@ -211,6 +212,16 @@ const WDCSub = () => {
       setShowRemarksPopup(true); // Show popup for remarks if "Rejected" is selected
     } else {
       setShowRemarksPopup(false);
+    }
+  };
+  const handleInputChangeOnejcc = (e, fieldName) => {
+    const value = e.target.value;
+    setStatusjcc(value);
+
+    if (value === "REJECTED") {
+      setShowRemarksPopupjcc(true); // Show popup for remarks if "Rejected" is selected
+    } else {
+      setShowRemarksPopupjcc(false);
     }
   };
 
@@ -419,6 +430,7 @@ const WDCSub = () => {
           setIsSecPopup(false);
           setFormData(initialFormData);
           setFormDataWdc(initialFormDatawdc);
+          setDynamicFieldsWdc([line_item_fieldswdc]);
           getData();
         } else {
           toast.warn(res.message);
@@ -554,8 +566,6 @@ const WDCSub = () => {
             }`
           );
         }
-
-       
       });
 
       if (newErrors.length > 0) {
@@ -590,7 +600,7 @@ const WDCSub = () => {
           contractual_start_date: doForm[index]?.contractual_start_date || "",
           Contractual_completion_date:
             doForm[index]?.Contractual_completion_date || "",
-         
+
           delay: delay > 0 ? delay : 0,
           line_item_no: item.line_item_no || "",
         };
@@ -626,54 +636,59 @@ const WDCSub = () => {
     }
   };
 
-
   //jcc action submit fuction
 
   const submitHandlerActionJcc = async (flag, reference_no) => {
     try {
-      const formDataCopy = { ...formData };
       const fD = new FormData();
-
+      
       fD.append("purchasing_doc_no", viewData?.purchasing_doc_no || "");
       fD.append("reference_no", reference_no || viewData.reference_no || "");
       fD.append("action_type", viewData?.action_type || "");
       fD.append("remarks", viewData?.remarks || "");
       fD.append("status", flag);
-
+  
       const newErrors = [];
-
+  
+      // Validate the remarks if flag is REJECTED
+      if (flag === "REJECTED" && (!remarks || remarks.trim() === "")) {
+        newErrors.push("Remarks are required when rejecting.");
+      }
+  
       // Validate each line item in doFormJcc
       viewData.line_item_array.forEach((item, index) => {
         const doItem = doFormJcc[index];
-
-        // Check if status is present
-        if (!doItem?.status) {
-          newErrors.push(`Status is required for item ${index + 1}`);
-        }
+        // Add your additional validation logic here if needed
       });
-
+  
       // If there are validation errors, display them and return early
       if (newErrors.length > 0) {
         newErrors.forEach((error) => toast.warn(error));
         return; // Stop execution if there are errors
       }
-
+  
       // Proceed with line item processing after validation
       const lineItemArray = viewData.line_item_array.map((item, index) => ({
         line_item_no: item.line_item_no || "",
         status: doFormJcc[index]?.status || "",
       }));
-
+  
       fD.append("line_item_array", JSON.stringify(lineItemArray));
-      fD.append("total_amount_status", "APPROVED");
-
+  
+      // Only append remarks once, based on the flag
+      if (flag === "REJECTED") {
+        fD.set("remarks", remarks); // Use set to ensure only one instance of remarks
+      }
+  
       const res = await apiCallBack("POST", "po/wdc/submitWdc", fD, token);
-
+  
       if (res.status) {
         toast.success(res.message);
         setIsPopupJccView(false);
         setIsjccActionSecPopup(false);
         setFormDataWdc(initialFormDatawdc);
+        setRemarks("");
+        setShowRemarksPopupjcc("");
         getData();
       } else {
         toast.warn(res.message);
@@ -683,6 +698,9 @@ const WDCSub = () => {
       console.error("Error uploading file:", error);
     }
   };
+   
+  
+  
 
   const getAvailableAmount = async (item) => {
     try {
@@ -733,7 +751,6 @@ const WDCSub = () => {
   //   const updatedFields = [...dynamicFields];
   //   updatedFields[index][fieldName] = value;
 
-   
   //   if (fieldName === "line_item_no") {
   //     const lineItemNo = value;
   //     // Fetch corresponding data for the selected Line Item No
@@ -754,13 +771,13 @@ const WDCSub = () => {
   const handleFieldChange = async (index, fieldName, value) => {
     // Copy the current state to avoid direct mutations
     const updatedFields = [...dynamicFields];
-  
+
     if (fieldName === "line_item_no") {
       const lineItemNo = value;
       try {
         // Fetch corresponding data for the selected Line Item No
         const getRestData = await getAvailableAmount(lineItemNo);
-  
+
         // Update fields based on fetched data
         updatedFields[index] = {
           ...updatedFields[index],
@@ -776,33 +793,28 @@ const WDCSub = () => {
     } else if (fieldName === "claim_qty") {
       const claimQty = parseFloat(value) || 0; // Convert to number for comparison
       const openQty = parseFloat(updatedFields[index].rest_amount) || 0; // Convert to number for comparison
-  
+
       console.log(claimQty, "claimQty"); // Should reflect the latest value
       console.log(openQty, "openQty");
-  
+
       // Check if Claim Quantity is greater than Open Quantity
       if (claimQty > openQty) {
-        toast.warn("Claim Quantity should be less than or equal to Open Quantity.");
+        toast.warn(
+          "Claim Quantity should be less than or equal to Open Quantity."
+        );
         return; // Exit the function to prevent further processing
       }
-  
+
       // Only update Claim Quantity if the value is valid
       updatedFields[index].claim_qty = value;
     } else {
       // Update other fields directly
       updatedFields[index][fieldName] = value;
     }
-  
+
     // Update the state with the modified dynamic fields
     setDynamicFields(updatedFields);
   };
-  
-  
-  
-  
-  
-  
-  
 
   // const handleFieldChangeWdc = async (index, fieldName, value) => {
   //   const updatedFields = [...dynamicFieldsWdc];
@@ -830,60 +842,59 @@ const WDCSub = () => {
   // };
 
   const handleFieldChangeWdc = async (index, fieldName, value) => {
-    // Copy current state to avoid direct mutations
+    // Create a shallow copy of the state to avoid direct mutation
     const updatedFields = [...dynamicFieldsWdc];
-  
+
     // Update the specific field with the new value
     updatedFields[index][fieldName] = value;
-  
-    // If the field is "line_item_no", fetch and update related fields
+
     if (fieldName === "line_item_no") {
       const lineItemNo = value;
       try {
-        // Fetch corresponding data for the selected Line Item No
+        // Fetch data for the selected Line Item No
         const getRestData = await getAvailableAmountWdc(lineItemNo);
-  
+
         // Update fields based on fetched data
         updatedFields[index] = {
           ...updatedFields[index], // Keep existing fields
-          description: getRestData?.description || "", // Set description
-          rest_amount: getRestData?.rest_amount || "", // Set rest amount without formatting
-          unit: getRestData?.unit || "", // Set unit
-          matarial_code: getRestData?.matarial_code || "", // Set material code
-          target_amount: getRestData?.target_amount || "", // Set target amount
-          po_rate: getRestData?.po_rate || "", // Set PO rate
-          claim_qty: "", // Reset claim quantity to avoid incorrect values
+          description: getRestData?.description || "",
+          rest_amount: getRestData?.rest_amount || "",
+          unit: getRestData?.unit || "",
+          matarial_code: getRestData?.matarial_code || "",
+          target_amount: getRestData?.target_amount || "",
+          po_rate: getRestData?.po_rate || "",
+          claim_qty: "", // Reset claim quantity
         };
+
+        // Log updated data for debugging
+        console.log(
+          updatedFields[index].target_amount,
+          "Updated rest_amount after fetching"
+        );
       } catch (error) {
         console.error("Error fetching available amount:", error);
       }
     } else if (fieldName === "claim_qty") {
-      // Convert the claim quantity to a number for comparison
-      const claimQty = parseFloat(value) || 0;
-      // Convert the open quantity to a number for comparison
-      const openQty = parseFloat(updatedFields[index].rest_amount) || 0;
-  
-      console.log(claimQty, "claimQty");
-      console.log(openQty, "openQty");
-  
-      // Check if Claim Quantity is less than or equal to Open Quantity
+      const claimQty = parseFloat(value) || 0; // Convert to a number for comparison
+      const openQty = parseFloat(updatedFields[index].target_amount) || 0; // Use fetched value from the API
+
+      console.log(claimQty, "claimQty abhinit"); // Log user-entered value
+      console.log(openQty, "openQty"); // Log fetched value from the API
+
+      // Validate that Claim Quantity is less than or equal to Open Quantity
       if (claimQty > openQty) {
-        toast.warning("Claim Quantity should be less than or equal to Open Quantity.");
+        alert("Claim Quantity should be less than or equal to Open Quantity.");
         // Reset the field to an empty value if the condition is not met
         updatedFields[index].claim_qty = "";
       } else {
-        // Update Claim Quantity if the validation passes
+        // Update Claim Quantity if validation passes
         updatedFields[index].claim_qty = value;
       }
     }
-  
+
     // Update the state with the modified dynamic fields
     setDynamicFieldsWdc(updatedFields);
   };
-  
-  
-  
-  
 
   const handleDateChange = (index, fieldName, date) => {
     const updatedFields = [...dynamicFields];
@@ -1672,6 +1683,7 @@ const WDCSub = () => {
                       <tbody>
                         {dynamicFieldsWdc.map((field, index) => (
                           <Fragment key={index}>
+                            {console.log(field, "field")}
                             <tr>
                               <td>
                                 <select
@@ -1708,8 +1720,10 @@ const WDCSub = () => {
                                 <input
                                   type="number"
                                   className="form-control"
-                                   step="0.001"
-                                   value={dynamicFieldsWdc[index].claim_qty || ""}
+                                  step="0.001"
+                                  value={
+                                    dynamicFieldsWdc[index].claim_qty || ""
+                                  }
                                   // value={field.claim_qty}
                                   onChange={(e) =>
                                     handleFieldChangeWdc(
@@ -2106,56 +2120,57 @@ const WDCSub = () => {
                       <p>{viewData?.stage_details}</p>
                     </div>
                   </div>
-                  <div className="col-12">
+                  <div className="col-12 col-md-6">
                     <div className="mb-3">
                       <label className="form-label">Remarks</label>
                       <p>{viewData?.remarks}</p>
                     </div>
                   </div>
-                  <div className="col-12">
-      <div className="mb-3">
-      <label className="form-label">Remarks</label>
-        <select
-          className="form-select"
-          onChange={(e) => handleInputChangeOne(e, "status")}
-        >
-          <option value="">Select</option>
-          <option value="APPROVED">Approved</option>
-          <option value="REJECTED">Rejected</option>
-        </select>
-      </div>
+                  <div className="col-12 col-md-6">
+                    <div className="mb-3">
+                      <label className="form-label">Remarks</label>
+                      <select
+                        className="form-select"
+                        onChange={(e) => handleInputChangeOne(e, "status")}
+                      >
+                        <option value="">Select</option>
+                        <option value="APPROVED">Approved</option>
+                        <option value="REJECTED">Rejected</option>
+                      </select>
+                    </div>
 
-      {showRemarksPopup && (
-        <div className="remarks-popup">
-          <label>Remarks</label>
-          <input
-            type="text"
-            value={remarks}
-            onChange={(e) => setRemarks(e.target.value)}
-            required
-          />
-          {/* <button
-            onClick={() => submitHandlerAction("REJECTED", null)}
-            className="btn fw-bold my-2 btn-danger"
-          >
-            Submit Remarks
-          </button> */}
-        </div>
-      )}
+                    {showRemarksPopup && (
+                      <div className="col-12  my-4">
+                        <div className="remarks-container">
+                          <label htmlFor="remarks">Remarks For Rejection</label>
+                          <textarea
+                            id="remarks"
+                            value={remarks}
+                            onChange={(e) => setRemarks(e.target.value)}
+                            required
+                          />
+                          {/* <button
+      onClick={() => submitHandlerAction("REJECTED", null)}
+      className="btn fw-bold my-2 btn-danger"
+    >
+      Submit Remarks
+    </button> */}
+                        </div>
+                      </div>
+                    )}
 
-      <DynamicButton
-        label="SUBMIT"
-        onClick={() =>
-          status === "APPROVED"
-            ? submitHandlerAction("APPROVED", null)
-            : showRemarksPopup
-            ? submitHandlerAction("REJECTED", null)
-            : null
-        }
-        className="btn fw-bold btn-primary"
-      />
-    </div>
-                
+                    <DynamicButton
+                      label="SUBMIT"
+                      onClick={() =>
+                        status === "APPROVED"
+                          ? submitHandlerAction("APPROVED", null)
+                          : showRemarksPopup
+                          ? submitHandlerAction("REJECTED", null)
+                          : null
+                      }
+                      className="btn fw-bold btn-primary"
+                    />
+                  </div>
                 </div>
               </form>
             </div>
@@ -2180,6 +2195,8 @@ const WDCSub = () => {
                   onClick={() => {
                     setViewData(null);
                     setIsjccActionSecPopup(false);
+                    setShowRemarksPopupjcc(false);
+                    setRemarks("")
                   }}
                 >
                   Close
@@ -2278,7 +2295,6 @@ const WDCSub = () => {
                         <th>Actual Start Date</th>
                         <th>Actual Completion Date</th>
                         <th>Delay In Work Execution</th>
-                        <th>Status</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -2305,7 +2321,7 @@ const WDCSub = () => {
                                   formatDate(field?.actual_completion_date)}
                               </td>
                               <td>{field?.delay_in_work_execution}</td>
-                              <td>
+                              {/* <td>
                                 <select
                                   className="form-select"
                                   onChange={(e) =>
@@ -2316,7 +2332,7 @@ const WDCSub = () => {
                                   <option value="APPROVED">Approved</option>
                                   <option value="REJECTED">Rejected</option>
                                 </select>
-                              </td>
+                              </td> */}
                             </tr>
                           </Fragment>
                         ))}
@@ -2334,11 +2350,58 @@ const WDCSub = () => {
                       <label className="form-label">Remarks</label>
                       <p>{viewData?.remarks}</p>
                     </div>
-                    <DynamicButton
+                    <div className="col-12 col-md-6">
+                      <div className="mb-3">
+                        <label className="form-label">Remarks</label>
+                        <select
+                          className="form-select"
+                          onChange={(e) => handleInputChangeOnejcc(e, "statusjcc")}
+                        >
+                          <option value="">Select</option>
+                          <option value="APPROVED">Approved</option>
+                          <option value="REJECTED">Rejected</option>
+                        </select>
+                      </div>
+
+                      {showRemarksPopupjcc && (
+                        <div className="col-12  my-4">
+                          <div className="remarks-container">
+                            <label htmlFor="remarks">
+                              Remarks For Rejection
+                            </label>
+                            <textarea
+                              id="remarks"
+                              value={remarks}
+                              onChange={(e) => setRemarks(e.target.value)}
+                              required
+                            />
+                            {/* <button
+      onClick={() => submitHandlerAction("REJECTED", null)}
+      className="btn fw-bold my-2 btn-danger"
+    >
+      Submit Remarks
+    </button> */}
+                          </div>
+                        </div>
+                      )}
+
+                      <DynamicButton
+                        label="SUBMIT"
+                        onClick={() =>
+                          statusjcc === "APPROVED"
+                            ? submitHandlerActionJcc("APPROVED", null)
+                            : showRemarksPopupjcc
+                            ? submitHandlerActionJcc("REJECTED", null)
+                            : null
+                        }
+                        className="btn fw-bold btn-primary"
+                      />
+                    </div>
+                    {/* <DynamicButton
                       label="SUBMIT"
                       onClick={() => submitHandlerActionJcc("APPROVED", null)}
                       className="btn fw-bold btn-primary"
-                    />
+                    /> */}
                   </div>
                 </div>
               </form>
@@ -2352,7 +2415,7 @@ const WDCSub = () => {
           <div className="card-header border-0 pt-5 pb-3">
             <h3 className="card-title align-items-start flex-column">
               <span className="card-label fw-bold fs-3 mb-1">
-                All Data for{" "}
+                All Data{" "}
                 {viewData?.reference_no && `for ${viewData?.reference_no}`}
               </span>
             </h3>
@@ -2485,8 +2548,17 @@ const WDCSub = () => {
                     {viewData?.status === "APPROVED" && (
                       <th>Contractual Completion</th>
                     )}
-                    {viewData?.status === "APPROVED" && <th>Status</th>}
+                    {/* {viewData?.status === "APPROVED" && <th>Status</th>} */}
                     {viewData?.status === "APPROVED" && <th>Delay</th>}
+
+                    {viewData?.status === "REJECTED" && (
+                      <th>Contractual Start</th>
+                    )}
+                    {viewData?.status === "REJECTED" && (
+                      <th>Contractual Completion</th>
+                    )}
+                    {/* {viewData?.status === "APPROVED" && <th>Status</th>} */}
+                    {viewData?.status === "REJECTED" && <th>Delay</th>}
                   </tr>
                 </thead>
                 <tbody>
@@ -2524,10 +2596,31 @@ const WDCSub = () => {
                                 formatDate(field?.Contractual_completion_date)}
                             </td>
                           )}
-                          {viewData?.status === "APPROVED" && (
+                          {/* {viewData?.status === "APPROVED" && (
                             <td>{field?.status}</td>
-                          )}
+                          )} */}
                           {viewData?.status === "APPROVED" && (
+                            <td>{field?.delay}</td>
+                          )}
+
+                          {/* jjjjj */}
+
+                          {viewData?.status === "REJECTED" && (
+                            <td>
+                              {field?.actual_completion_date &&
+                                formatDate(field?.contractual_start_date)}
+                            </td>
+                          )}
+                          {viewData?.status === "REJECTED" && (
+                            <td>
+                              {field?.actual_completion_date &&
+                                formatDate(field?.Contractual_completion_date)}
+                            </td>
+                          )}
+                          {/* {viewData?.status === "APPROVED" && (
+                            <td>{field?.status}</td>
+                          )} */}
+                          {viewData?.status === "REJECTED" && (
                             <td>{field?.delay}</td>
                           )}
                         </tr>
@@ -2561,7 +2654,7 @@ const WDCSub = () => {
           <div className="card-header border-0 pt-5 pb-3">
             <h3 className="card-title align-items-start flex-column">
               <span className="card-label fw-bold fs-3 mb-1">
-                All Data for{" "}
+                All Data{" "}
                 {viewData?.reference_no && `for ${viewData?.reference_no}`}
               </span>
             </h3>
