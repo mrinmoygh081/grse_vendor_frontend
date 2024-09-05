@@ -874,7 +874,7 @@ const SDBGSub = () => {
               </div>
               <div className="col-12">
                 <div className="mb-3">
-                  <label className="form-label">SDBG File</label>
+                  <label className="form-label">BG File</label>
                   &nbsp;&nbsp;
                   <span className="mandatorystart">*</span>
                   <input
