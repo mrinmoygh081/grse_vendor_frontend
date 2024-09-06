@@ -715,6 +715,7 @@ const WDCSub = () => {
           description: res?.data?.description,
           rest_amount: res?.data?.rest_amount,
           unit: res?.data?.unit,
+          rest_amount_wdc: res?.data?.rest_amount_wdc,
         };
       }
     } catch (error) {
@@ -731,6 +732,7 @@ const WDCSub = () => {
         null,
         token
       );
+      console.log(res,"resresresresres")
       if (res?.status) {
         return {
           description: res?.data?.description,
@@ -739,6 +741,7 @@ const WDCSub = () => {
           matarial_code: res?.data?.matarial_code,
           target_amount: res?.data?.target_amount,
           po_rate: res?.data?.po_rate,
+          rest_amount_wdc: res?.data?.rest_amount_wdc,
         };
       }
     } catch (error) {
@@ -785,6 +788,7 @@ const WDCSub = () => {
           description: getRestData?.description || "",
           rest_amount: getRestData?.rest_amount || "",
           unit: getRestData?.unit || "",
+          rest_amount_wdc: getRestData?.rest_amount_wdc,
           claim_qty: "", // Reset claim quantity when line item changes
         };
       } catch (error) {
@@ -792,7 +796,7 @@ const WDCSub = () => {
       }
     } else if (fieldName === "claim_qty") {
       const claimQty = parseFloat(value) || 0; // Convert to number for comparison
-      const openQty = parseFloat(updatedFields[index].rest_amount) || 0; // Convert to number for comparison
+      const openQty = parseFloat(updatedFields[index].rest_amount_wdc) || 0; // Convert to number for comparison
 
       console.log(claimQty, "claimQty"); // Should reflect the latest value
       console.log(openQty, "openQty");
@@ -863,6 +867,7 @@ const WDCSub = () => {
           matarial_code: getRestData?.matarial_code || "",
           target_amount: getRestData?.target_amount || "",
           po_rate: getRestData?.po_rate || "",
+          rest_amount_wdc: getRestData?.rest_amount_wdc,
           claim_qty: "", // Reset claim quantity
         };
 
@@ -876,7 +881,7 @@ const WDCSub = () => {
       }
     } else if (fieldName === "claim_qty") {
       const claimQty = parseFloat(value) || 0; // Convert to a number for comparison
-      const openQty = parseFloat(updatedFields[index].target_amount) || 0; // Use fetched value from the API
+      const openQty = parseFloat(updatedFields[index].rest_amount_wdc) || 0; // Use fetched value from the API
 
       console.log(claimQty, "claimQty abhinit"); // Log user-entered value
       console.log(openQty, "openQty"); // Log fetched value from the API
@@ -1400,7 +1405,7 @@ const WDCSub = () => {
                               </td>
                               <td>{field.description}</td>
                               <td>
-                                {field.rest_amount} {field.unit}
+                                {field.rest_amount_wdc} {field.unit}
                               </td>
                               <td>
                                 <input
@@ -1715,7 +1720,7 @@ const WDCSub = () => {
                               <td>{field.matarial_code}</td>
                               <td>{field.description}</td>
                               {/* <td>{field.po_qty}</td> */}
-                              <td>{field.target_amount}</td>
+                              <td>{field.rest_amount_wdc}</td>
                               <td>
                                 <input
                                   type="number"
@@ -1914,6 +1919,8 @@ const WDCSub = () => {
                   onClick={() => {
                     setViewData(null);
                     setIsSecPopup(false);
+                    setRemarks("")
+                    setShowRemarksPopup("")
                   }}
                 >
                   Close
@@ -2055,7 +2062,7 @@ const WDCSub = () => {
                               <td>{field?.line_item_no}</td>
                               <td>{field?.description}</td>
                               <td>
-                                {field?.rest_amount} {field?.unit}
+                                {field?.rest_amount_wdc} {field?.unit}
                               </td>
                               <td>{field?.claim_qty}</td>
                               <td>
@@ -2308,7 +2315,7 @@ const WDCSub = () => {
 
                               <td>{field?.matarial_code}</td>
                               <td>{field?.description}</td>
-                              <td>{field?.target_amount}</td>
+                              <td>{field?.rest_amount_wdc}</td>
                               <td>{field?.claim_qty}</td>
                               <td>{field?.po_rate}</td>
                               <td>{field?.claim_qty * field?.po_rate}</td>
@@ -2571,7 +2578,7 @@ const WDCSub = () => {
                           </td>
                           <td>{field?.description}</td>
                           <td>
-                            {field?.rest_amount} {field?.unit}
+                            {field?.rest_amount_wdc} {field?.unit}
                           </td>
                           <td>{field?.claim_qty}</td>
                           <td>
@@ -2773,7 +2780,7 @@ const WDCSub = () => {
 
                           <td>{field?.matarial_code}</td>
                           <td>{field?.description}</td>
-                          <td>{field?.target_amount}</td>
+                          <td>{field?.rest_amount_wdc}</td>
                           <td>{field?.claim_qty}</td>
                           <td>{field?.po_rate}</td>
                           <td>{field?.claim_qty * field?.po_rate}</td>
