@@ -195,7 +195,7 @@ function Layout() {
         <Route path="/payment-advise/:id" element={<PaymentAdvisesSub />} />
         <Route path="/pbg-upload/:id" element={<PBGuploadSub />} />
         <Route path="/bg-extension" element={<BGExtensionSub />} />
-        {user?.department_id === 3 && (
+        {/* {user?.department_id === 3 && (
           <Route path="/dashboard/qa" element={<QapDashboard />} />
         )}
         {user?.department_id === 2 && (
@@ -206,7 +206,20 @@ function Layout() {
             <Route path="/dashboard/bg" element={<BGfinance />} />
             <Route path="/dashboard/btn" element={<BTNfinance />} />
           </>
+        )} */}
+        {(user?.department_id === 3 || user?.department_id === 1) && (
+          <Route path="/dashboard/qa" element={<QapDashboard />} />
         )}
+        {(user?.department_id === 2 || user?.department_id === 1) && (
+          <Route path="/dashboard/drawing" element={<QapDrawing />} />
+        )}
+        {(user?.department_id === 15 || user?.department_id === 1) && (
+          <>
+            <Route path="/dashboard/bg" element={<BGfinance />} />
+            <Route path="/dashboard/btn" element={<BTNfinance />} />
+          </>
+        )}
+
         <Route path="/claim-letter/:id" element={<ClaimLatterSub />} />
         <Route path="/wdc/:id" element={<WDCSub />} />
         <Route path="/BillSubAttach" element={<BillSubAttach />} />

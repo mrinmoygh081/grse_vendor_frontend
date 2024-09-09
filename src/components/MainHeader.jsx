@@ -39,7 +39,7 @@ const MainHeader = ({ title }) => {
   }, [isLoggedIn]);
 
   const renderDashboardLinks = () => {
-    if (user?.department_id === 3) {
+    if (user?.department_id === 1 || user?.department_id === 3) {
       return (
         <li className="nav-item">
           <Link className="nav-link text-black" to={`/dashboard/qa`}>
@@ -47,7 +47,9 @@ const MainHeader = ({ title }) => {
           </Link>
         </li>
       );
-    } else if (user?.department_id === 15) {
+    } 
+  
+    if (user?.department_id === 1 || user?.department_id === 15) {
       return (
         <>
           <li className="nav-item">
@@ -55,32 +57,34 @@ const MainHeader = ({ title }) => {
               <FaTachometerAlt className="me-2" /> DASHBOARD
             </Link>
           </li>
-        </>
-      );
-    } else if (user?.department_id === 2) {
-      return (
-        <>
           <li className="nav-item">
-            <Link className="nav-link text-black" to={`/dashboard/drawing`}>
+            <Link className="nav-link text-black" to={`/dashboard/btn`}>
               <FaTachometerAlt className="me-2" /> DASHBOARD
             </Link>
           </li>
         </>
       );
-    } else {
+    } 
+  
+    if (user?.department_id === 1 || user?.department_id === 2) {
       return (
         <li className="nav-item">
-          <Link
-            className="nav-link text-black"
-            to="#"
-            onClick={showUnauthorizedToast}
-          >
+          <Link className="nav-link text-black" to={`/dashboard/drawing`}>
             <FaTachometerAlt className="me-2" /> DASHBOARD
           </Link>
         </li>
       );
-    }
+    } 
+  
+    return (
+      <li className="nav-item">
+        <Link className="nav-link text-black" to="#" onClick={showUnauthorizedToast}>
+          <FaTachometerAlt className="me-2" /> DASHBOARD
+        </Link>
+      </li>
+    );
   };
+  
 
   const handleInputChange = (e) => {
     setPasswordForm({
