@@ -11,3 +11,4 @@ export const ASSIGNER = 1;
 export const STAFF = 2;
 export const NODALOFFICER = 1;
 export const GENERALUSER = 2;
+export const DEPT_IT = 1;

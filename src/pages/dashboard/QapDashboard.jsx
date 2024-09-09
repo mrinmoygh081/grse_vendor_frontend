@@ -139,9 +139,9 @@ const QapDashboard = () => {
   };
 
   return (
-    <div className="wrapper d-flex flex-column flex-row-fluid">
+    <div className="d-flex flex-column flex-row-fluid">
       <div className="page d-flex flex-row flex-column-fluid">
-        <SidebarDashboard />
+        {/* <SidebarDashboard /> */}
         <div className="d-flex flex-column flex-row-fluid">
           <MainHeader title="BG Dashboard" id={id} />
           <div className="card">
@@ -235,7 +235,6 @@ const QapDashboard = () => {
                     </td>
                   </tr>
                   <tr className="border-0">
-                    <th className="min-w-150px">Sl.NO.</th>
                     <th className="min-w-150px">QAP NO.</th>
                     <th className="min-w-150px">PO Number</th>
                     <th className="min-w-150px">Material Description</th>
@@ -262,7 +261,6 @@ const QapDashboard = () => {
                     <>
                       {filteredData.map((file, index) => (
                         <tr key={index}>
-                          <td>{index + 1}</td>
                           <td>
                             <button
                               onClick={() =>

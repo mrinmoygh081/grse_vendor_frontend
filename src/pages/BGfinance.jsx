@@ -134,9 +134,9 @@ const BGfinance = () => {
   };
 
   return (
-    <div className="wrapper d-flex flex-column flex-row-fluid">
+    <div className="d-flex flex-column flex-row-fluid">
       <div className="page d-flex flex-row flex-column-fluid">
-        <SidebarDashboard />
+        {/* <SidebarDashboard /> */}
         <div className="d-flex flex-column flex-row-fluid">
           <MainHeader title="BG Dashboard" id={id} />
           <div className="card">
