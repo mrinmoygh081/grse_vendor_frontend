@@ -230,7 +230,7 @@ const QapDrawing = () => {
                   <tr className="row-count">
                     <td colSpan={11} style={{ textAlign: "left" }}>
                       {" "}
-                      Number of BG {filteredData.length}{" "}
+                      Number of Drawing {filteredData.length}{" "}
                       {filteredData.length === 1 ? "" : ""}
                     </td>
                   </tr>

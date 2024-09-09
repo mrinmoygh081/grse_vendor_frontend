@@ -295,83 +295,203 @@ const WDCSub = () => {
     }
   }, [allData]);
 
+  // const submitHandler = async (flag, ref_no) => {
+  //   try {
+  //     const formDataCopy = { ...formData };
+
+  //     // Check if all required fields are filled
+  //     if (
+  //       formDataCopy.action_type &&
+  //       formDataCopy.remarks &&
+  //       formDataCopy.line_item_array &&
+  //       formDataCopy.line_item_array.length > 0
+  //     ) {
+  //       const fD = new FormData();
+
+  //       // Append other fields to FormData
+  //       fD.append("action_type", formDataCopy.action_type);
+  //       fD.append("purchasing_doc_no", id);
+  //       fD.append("remarks", formDataCopy.remarks);
+  //       fD.append("status", flag);
+  //       fD.append("work_done_by", formDataCopy.work_done_by);
+  //       fD.append("work_title", formDataCopy.work_title);
+  //       fD.append("job_location", formDataCopy.job_location);
+  //       fD.append("yard_no", formDataCopy.yard_no);
+  //       fD.append(
+  //         "inspection_note_ref_no",
+  //         formDataCopy.inspection_note_ref_no
+  //       );
+  //       fD.append(
+  //         "file_inspection_note_ref_no",
+  //         formDataCopy.file_inspection_note_ref_no
+  //       );
+  //       fD.append(
+  //         "hinderence_report_cerified_by_berth",
+  //         formDataCopy.hinderence_report_cerified_by_berth
+  //       );
+  //       fD.append(
+  //         "file_hinderence_report_cerified_by_berth",
+  //         formDataCopy.file_hinderence_report_cerified_by_berth
+  //       );
+  //       fD.append("attendance_report", formDataCopy.attendance_report);
+  //       fD.append(
+  //         "file_attendance_report",
+  //         formDataCopy.file_attendance_report
+  //       );
+  //       fD.append("unit", formDataCopy.unit);
+  //       fD.append("stage_details", formDataCopy.stage_details);
+  //       fD.append("assigned_to", formDataCopy.certifying_authority);
+
+  //       // Convert line_item_array to JSON string and append to FormData
+  //       formDataCopy.line_item_array = dynamicFields;
+  //       fD.append(
+  //         "line_item_array",
+  //         JSON.stringify(formDataCopy.line_item_array)
+  //       );
+
+  //       // console.log("fd", fD);
+
+  //       const res = await apiCallBack("POST", "po/wdc/submitWdc", fD, token);
+
+  //       if (res.status) {
+  //         toast.success(res.message);
+  //         setIsPopup(false);
+  //         setIsSecPopup(false);
+  //         setFormData(initialFormData);
+  //         setDynamicFields([line_item_fields]);
+  //         getData();
+  //       } else {
+  //         toast.warn(res.message);
+  //       }
+  //     } else {
+  //       toast.warn("Please fill up all the required fields!");
+  //     }
+  //   } catch (error) {
+  //     toast.error("Error uploading file: " + error.message);
+  //     console.error("Error uploading file:", error);
+  //   }
+  // };
+
   const submitHandler = async (flag, ref_no) => {
     try {
+      // Copy the current form data to avoid direct mutations
       const formDataCopy = { ...formData };
-
-      // Check if all required fields are filled
+  
+      // Log the initial form data to verify its content
+      console.log("Initial Form Data:", formDataCopy);
+  
+      // Validate if all required fields are filled
       if (
+        formDataCopy.certifying_authority &&
         formDataCopy.action_type &&
         formDataCopy.remarks &&
         formDataCopy.line_item_array &&
         formDataCopy.line_item_array.length > 0
       ) {
+        let isValid = true; // Initialize validation flag
+  
+        // Iterate over each line item for validation
+        formDataCopy.line_item_array.forEach((item, index) => {
+          console.log(`Validating line item ${index + 1}:`, item);
+  
+          // Convert fields to strings if they are not strings already
+          const lineItemNo = item.line_item_no ? item.line_item_no.toString().trim() : "";
+          const claimQty = item.claim_qty ? item.claim_qty.toString().trim() : "";
+          const actualStartDate = item.actual_start_date ? item.actual_start_date.toString().trim() : "";
+          const actualCompletionDate = item.actual_completion_date ? item.actual_completion_date.toString().trim() : "";
+          const hinderanceInDays = item.hinderance_in_days !== null && item.hinderance_in_days !== undefined 
+                                    ? item.hinderance_in_days.toString().trim() : "";
+  
+          // Perform validation checks for each required field
+          if (!lineItemNo) {
+            toast.warn(`PO Line Item is required for item ${index + 1}`);
+            isValid = false;
+          }
+  
+          if (!claimQty || isNaN(claimQty) || parseFloat(claimQty) <= 0) {
+            toast.warn(`Claim Quantity is required and should be a positive number for item ${index + 1}`);
+            isValid = false;
+          }
+  
+          if (!actualStartDate) {
+            toast.warn(`Actual Start Date is required for item ${index + 1}`);
+            isValid = false;
+          }
+  
+          if (!actualCompletionDate) {
+            toast.warn(`Actual Completion Date is required for item ${index + 1}`);
+            isValid = false;
+          }
+  
+          if (hinderanceInDays === "" || isNaN(hinderanceInDays) || parseInt(hinderanceInDays) < 0) {
+            toast.warn(`Hinderance in Days is required and should be a non-negative number for item ${index + 1}`);
+            isValid = false;
+          }
+        });
+  
+        // If validation fails, log the error and return early
+        if (!isValid) {
+          console.log("Validation failed. Exiting submitHandler.");
+          return;
+        }
+  
+        console.log("All validations passed. Proceeding with API call...");
+  
+        // Create a FormData object to prepare data for the API call
         const fD = new FormData();
-
-        // Append other fields to FormData
+  
+        // Append fields to FormData
         fD.append("action_type", formDataCopy.action_type);
-        fD.append("purchasing_doc_no", id);
+        fD.append("purchasing_doc_no", id); // Make sure 'ref_no' is defined correctly
         fD.append("remarks", formDataCopy.remarks);
         fD.append("status", flag);
-        fD.append("work_done_by", formDataCopy.work_done_by);
-        fD.append("work_title", formDataCopy.work_title);
-        fD.append("job_location", formDataCopy.job_location);
-        fD.append("yard_no", formDataCopy.yard_no);
-        fD.append(
-          "inspection_note_ref_no",
-          formDataCopy.inspection_note_ref_no
-        );
-        fD.append(
-          "file_inspection_note_ref_no",
-          formDataCopy.file_inspection_note_ref_no
-        );
-        fD.append(
-          "hinderence_report_cerified_by_berth",
-          formDataCopy.hinderence_report_cerified_by_berth
-        );
-        fD.append(
-          "file_hinderence_report_cerified_by_berth",
-          formDataCopy.file_hinderence_report_cerified_by_berth
-        );
-        fD.append("attendance_report", formDataCopy.attendance_report);
-        fD.append(
-          "file_attendance_report",
-          formDataCopy.file_attendance_report
-        );
-        fD.append("unit", formDataCopy.unit);
-        fD.append("stage_details", formDataCopy.stage_details);
-        fD.append("assigned_to", formDataCopy.certifying_authority);
-
-        // Convert line_item_array to JSON string and append to FormData
-        formDataCopy.line_item_array = dynamicFields;
-        fD.append(
-          "line_item_array",
-          JSON.stringify(formDataCopy.line_item_array)
-        );
-
-        // console.log("fd", fD);
-
+        fD.append("work_done_by", formDataCopy.work_done_by || "");
+        fD.append("work_title", formDataCopy.work_title || "");
+        fD.append("job_location", formDataCopy.job_location || "");
+        fD.append("yard_no", formDataCopy.yard_no || "");
+        fD.append("inspection_note_ref_no", formDataCopy.inspection_note_ref_no || "");
+        fD.append("file_inspection_note_ref_no", formDataCopy.file_inspection_note_ref_no || "");
+        fD.append("hinderence_report_cerified_by_berth", formDataCopy.hinderence_report_cerified_by_berth || "");
+        fD.append("file_hinderence_report_cerified_by_berth", formDataCopy.file_hinderence_report_cerified_by_berth || "");
+        fD.append("attendance_report", formDataCopy.attendance_report || "");
+        fD.append("file_attendance_report", formDataCopy.file_attendance_report || "");
+        fD.append("unit", formDataCopy.unit || "");
+        fD.append("stage_details", formDataCopy.stage_details || "");
+        fD.append("assigned_to", formDataCopy.certifying_authority || "");
+        fD.append("line_item_array", JSON.stringify(formDataCopy.line_item_array));
+  
+        // Make the API call using the FormData object
         const res = await apiCallBack("POST", "po/wdc/submitWdc", fD, token);
-
+  
+        // Handle the API response
         if (res.status) {
           toast.success(res.message);
           setIsPopup(false);
           setIsSecPopup(false);
-          setFormData(initialFormData);
-          setDynamicFields([line_item_fields]);
-          getData();
+          setFormData(initialFormData); // Reset form data to initial state
+          setDynamicFields([line_item_fields]); // Reset dynamic fields
+          getData(); // Refresh or fetch updated data
         } else {
           toast.warn(res.message);
         }
       } else {
+        console.log("Required fields are missing or incorrect.");
         toast.warn("Please fill up all the required fields!");
       }
     } catch (error) {
-      toast.error("Error uploading file: " + error.message);
-      console.error("Error uploading file:", error);
+      console.error("Error submitting form:", error);
+      toast.error("Error submitting form: " + error.message);
     }
   };
+  
+  
+  
 
+
+  
+  
+  
+  
   //JCC *****************************************************
 
   const submitHandlerWdc = async (flag, ref_no) => {
@@ -379,17 +499,74 @@ const WDCSub = () => {
       // Create copies of formData and formDataWdc
       const formDataCopy = { ...formData };
       const formDataWdcCopy = { ...formDataWdc };
-
-      // Check if all required fields are filled
+  
+      // Check if all main fields are filled
       if (
         formDataCopy.action_type &&
         formDataWdcCopy.remarks &&
+        formDataCopy.certifying_authority &&
         formDataWdcCopy.line_item_array &&
         formDataWdcCopy.line_item_array.length > 0
       ) {
+        let isValid = true; // Initialize validation flag
+  
+        // Iterate over each line item for validation
+        formDataWdcCopy.line_item_array.forEach((item, index) => {
+          console.log(`Validating line item ${index + 1}:`, item);
+  
+          // Convert fields to strings and trim spaces
+          const lineItemNo = item.line_item_no ? item.line_item_no.toString().trim() : "";
+          const claimQty = item.claim_qty ? item.claim_qty.toString().trim() : "";
+          const actualStartDate = item.actual_start_date ? item.actual_start_date.toString().trim() : "";
+          const actualCompletionDate = item.actual_completion_date ? item.actual_completion_date.toString().trim() : "";
+          const hinderanceInDays = item.delay_in_work_execution !== null && item.delay_in_work_execution !== undefined
+            ? item.delay_in_work_execution.toString().trim() : "";
+  
+          // Check if the line item is completely empty
+          if (!lineItemNo && !claimQty && !actualStartDate && !actualCompletionDate && hinderanceInDays === "" &&
+              !item.description && !item.rest_amount && !item.unit && !item.matarial_code &&
+              !item.target_amount && !item.po_rate) {
+            toast.warn(`Line item ${index + 1} is completely empty and should not be submitted.`);
+            isValid = false;
+            return; // Continue to the next iteration
+          }
+  
+          // Validate each field
+          if (!lineItemNo) {
+            toast.warn(`PO Line Item is required for line item ${index + 1}`);
+            isValid = false;
+          }
+  
+          if (!claimQty || isNaN(claimQty) || parseFloat(claimQty) <= 0) {
+            toast.warn(`Claim Quantity is required and should be a positive number for line item ${index + 1}`);
+            isValid = false;
+          }
+  
+          if (!actualStartDate) {
+            toast.warn(`Actual Start Date is required for line item ${index + 1}`);
+            isValid = false;
+          }
+  
+          if (!actualCompletionDate) {
+            toast.warn(`Actual Completion Date is required for line item ${index + 1}`);
+            isValid = false;
+          }
+  
+          if (hinderanceInDays === "" || isNaN(hinderanceInDays) || parseInt(hinderanceInDays) < 0) {
+            toast.warn(`Hinderance in Days is required and should be a non-negative number for line item ${index + 1}`);
+            isValid = false;
+          }
+        });
+  
+        if (!isValid) {
+          console.log("Validation failed. Exiting submitHandler.");
+          return;
+        }
+  
+        console.log("All validations passed. Proceeding with API call...");
+  
+        // Prepare form data for API call
         const formDataToSend = new FormData();
-
-        // Append data to formDataToSend
         formDataToSend.append("action_type", formDataCopy.action_type);
         formDataToSend.append("purchasing_doc_no", id);
         formDataToSend.append("remarks", formDataWdcCopy.remarks);
@@ -407,14 +584,13 @@ const WDCSub = () => {
           "guarantee_defect_liability_end_date",
           convertToEpoch(formDataWdcCopy.guarantee_defect_liability_end_date)
         );
-        // convertToEpoch(delivery_date),
+  
         // Convert line_item_array to JSON string and append to FormData
-        formDataWdcCopy.line_item_array = dynamicFieldsWdc;
         formDataToSend.append(
           "line_item_array",
           JSON.stringify(formDataWdcCopy.line_item_array)
         );
-
+  
         // Perform API call
         const res = await apiCallBack(
           "POST",
@@ -422,7 +598,7 @@ const WDCSub = () => {
           formDataToSend,
           token
         );
-
+  
         // Handle response
         if (res.status) {
           toast.success(res.message);
@@ -443,6 +619,9 @@ const WDCSub = () => {
       console.error("Error uploading file:", error);
     }
   };
+  
+  
+  
   // console.log("allData", allData);
   // console.log("viewData", viewData);
 
@@ -771,16 +950,68 @@ const WDCSub = () => {
   //   }
   // };
 
+   // purana code hai ye mera
+
+  // const handleFieldChange = async (index, fieldName, value) => {
+  //   // Copy the current state to avoid direct mutations
+  //   const updatedFields = [...dynamicFields];
+
+  //   if (fieldName === "line_item_no") {
+  //     const lineItemNo = value;
+  //     try {
+  //       // Fetch corresponding data for the selected Line Item No
+  //       const getRestData = await getAvailableAmount(lineItemNo);
+
+  //       // Update fields based on fetched data
+  //       updatedFields[index] = {
+  //         ...updatedFields[index],
+  //         line_item_no: lineItemNo,
+  //         description: getRestData?.description || "",
+  //         rest_amount: getRestData?.rest_amount || "",
+  //         unit: getRestData?.unit || "",
+  //         rest_amount_wdc: getRestData?.rest_amount_wdc,
+  //         claim_qty: "", // Reset claim quantity when line item changes
+  //       };
+  //     } catch (error) {
+  //       console.error("Error fetching available amount:", error);
+  //     }
+  //   } else if (fieldName === "claim_qty") {
+  //     const claimQty = parseFloat(value) || 0; // Convert to number for comparison
+  //     const openQty = parseFloat(updatedFields[index].rest_amount_wdc) || 0; // Convert to number for comparison
+
+  //     console.log(claimQty, "claimQty"); // Should reflect the latest value
+  //     console.log(openQty, "openQty");
+
+  //     // Check if Claim Quantity is greater than Open Quantity
+  //     if (claimQty > openQty) {
+  //       toast.warn(
+  //         "Claim Quantity should be less than or equal to Open Quantity."
+  //       );
+  //       return; // Exit the function to prevent further processing
+  //     }
+
+  //     // Only update Claim Quantity if the value is valid
+  //     updatedFields[index].claim_qty = value;
+  //   } else {
+  //     // Update other fields directly
+  //     updatedFields[index][fieldName] = value;
+  //   }
+
+  //   // Update the state with the modified dynamic fields
+  //   setDynamicFields(updatedFields);
+  // };
+
   const handleFieldChange = async (index, fieldName, value) => {
     // Copy the current state to avoid direct mutations
     const updatedFields = [...dynamicFields];
-
+  
     if (fieldName === "line_item_no") {
       const lineItemNo = value;
+  
       try {
         // Fetch corresponding data for the selected Line Item No
         const getRestData = await getAvailableAmount(lineItemNo);
-
+  
         // Update fields based on fetched data
         updatedFields[index] = {
           ...updatedFields[index],
@@ -797,10 +1028,10 @@ const WDCSub = () => {
     } else if (fieldName === "claim_qty") {
       const claimQty = parseFloat(value) || 0; // Convert to number for comparison
       const openQty = parseFloat(updatedFields[index].rest_amount_wdc) || 0; // Convert to number for comparison
-
+  
       console.log(claimQty, "claimQty"); // Should reflect the latest value
       console.log(openQty, "openQty");
-
+  
       // Check if Claim Quantity is greater than Open Quantity
       if (claimQty > openQty) {
         toast.warn(
@@ -808,17 +1039,25 @@ const WDCSub = () => {
         );
         return; // Exit the function to prevent further processing
       }
-
+  
       // Only update Claim Quantity if the value is valid
-      updatedFields[index].claim_qty = value;
+      updatedFields[index] = { ...updatedFields[index], claim_qty: value };
     } else {
       // Update other fields directly
-      updatedFields[index][fieldName] = value;
+      updatedFields[index] = { ...updatedFields[index], [fieldName]: value };
     }
-
+  
     // Update the state with the modified dynamic fields
     setDynamicFields(updatedFields);
+    setFormData((prevFormData) => ({
+      ...prevFormData,
+      line_item_array: updatedFields,
+    }));
+  
+    // Log the updated state for debugging
+    console.log("Updated Fields:", updatedFields);
   };
+  
 
   // const handleFieldChangeWdc = async (index, fieldName, value) => {
   //   const updatedFields = [...dynamicFieldsWdc];
@@ -846,21 +1085,17 @@ const WDCSub = () => {
   // };
 
   const handleFieldChangeWdc = async (index, fieldName, value) => {
-    // Create a shallow copy of the state to avoid direct mutation
     const updatedFields = [...dynamicFieldsWdc];
-
-    // Update the specific field with the new value
     updatedFields[index][fieldName] = value;
 
     if (fieldName === "line_item_no") {
       const lineItemNo = value;
       try {
-        // Fetch data for the selected Line Item No
+        // Mock API function to get available amount, replace with your API call
         const getRestData = await getAvailableAmountWdc(lineItemNo);
 
-        // Update fields based on fetched data
         updatedFields[index] = {
-          ...updatedFields[index], // Keep existing fields
+          ...updatedFields[index],
           description: getRestData?.description || "",
           rest_amount: getRestData?.rest_amount || "",
           unit: getRestData?.unit || "",
@@ -868,38 +1103,30 @@ const WDCSub = () => {
           target_amount: getRestData?.target_amount || "",
           po_rate: getRestData?.po_rate || "",
           rest_amount_wdc: getRestData?.rest_amount_wdc,
-          claim_qty: "", // Reset claim quantity
+          claim_qty: "",
         };
-
-        // Log updated data for debugging
-        console.log(
-          updatedFields[index].target_amount,
-          "Updated rest_amount after fetching"
-        );
       } catch (error) {
         console.error("Error fetching available amount:", error);
       }
     } else if (fieldName === "claim_qty") {
-      const claimQty = parseFloat(value) || 0; // Convert to a number for comparison
-      const openQty = parseFloat(updatedFields[index].rest_amount_wdc) || 0; // Use fetched value from the API
+      const claimQty = parseFloat(value) || 0;
+      const openQty = parseFloat(updatedFields[index].rest_amount_wdc) || 0;
 
-      console.log(claimQty, "claimQty abhinit"); // Log user-entered value
-      console.log(openQty, "openQty"); // Log fetched value from the API
-
-      // Validate that Claim Quantity is less than or equal to Open Quantity
       if (claimQty > openQty) {
         alert("Claim Quantity should be less than or equal to Open Quantity.");
-        // Reset the field to an empty value if the condition is not met
         updatedFields[index].claim_qty = "";
       } else {
-        // Update Claim Quantity if validation passes
         updatedFields[index].claim_qty = value;
       }
     }
 
-    // Update the state with the modified dynamic fields
     setDynamicFieldsWdc(updatedFields);
+    setFormDataWdc((prevFormData) => ({
+      ...prevFormData,
+      line_item_array: updatedFields,
+    }));
   };
+  
 
   const handleDateChange = (index, fieldName, date) => {
     const updatedFields = [...dynamicFields];
@@ -1408,19 +1635,13 @@ const WDCSub = () => {
                                 {field.rest_amount_wdc} {field.unit}
                               </td>
                               <td>
-                                <input
-                                  type="number"
-                                  className="form-control"
-                                  step="0.001"
-                                  value={dynamicFields[index].claim_qty || ""}
-                                  onChange={(e) =>
-                                    handleFieldChange(
-                                      index,
-                                      "claim_qty",
-                                      e.target.value
-                                    )
-                                  }
-                                />
+                              <input
+  type="text"
+  value={dynamicFields[index].claim_qty || ""}
+  onChange={(e) => handleFieldChange(index, "claim_qty", e.target.value)}
+/>
+
+
                               </td>
                               <td>
                                 {" "}
@@ -2135,7 +2356,7 @@ const WDCSub = () => {
                   </div>
                   <div className="col-12 col-md-6">
                     <div className="mb-3">
-                      <label className="form-label">Remarks</label>
+                      <label className="form-label">Status</label>
                       <select
                         className="form-select"
                         onChange={(e) => handleInputChangeOne(e, "status")}
@@ -2250,9 +2471,7 @@ const WDCSub = () => {
                       <p>
                         {" "}
                         {viewData?.guarantee_defect_liability_start_date &&
-                          formatDate(
-                            viewData?.guarantee_defect_liability_start_date
-                          )}
+                          formatDate(viewData?.guarantee_defect_liability_start_date * 1000)}
                       </p>
                     </div>
                   </div>
@@ -2265,7 +2484,7 @@ const WDCSub = () => {
                         {" "}
                         {viewData?.guarantee_defect_liability_end_date &&
                           formatDate(
-                            viewData?.guarantee_defect_liability_end_date
+                            viewData?.guarantee_defect_liability_end_date * 1000
                           )}
                       </p>
                     </div>
@@ -2359,7 +2578,7 @@ const WDCSub = () => {
                     </div>
                     <div className="col-12 col-md-6">
                       <div className="mb-3">
-                        <label className="form-label">Remarks</label>
+                        <label className="form-label">Status</label>
                         <select
                           className="form-select"
                           onChange={(e) => handleInputChangeOnejcc(e, "statusjcc")}
@@ -2766,7 +2985,7 @@ const WDCSub = () => {
                     <th>Actual Start Date</th>
                     <th>Actual Completion Date</th>
                     <th>Delay In Work Execution</th>
-                    {viewData?.status === "APPROVED" && <th>Status</th>}
+                    {/* {viewData?.status === "APPROVED" && <th>Status</th>} */}
                   </tr>
                 </thead>
                 <tbody>
@@ -2793,9 +3012,9 @@ const WDCSub = () => {
                               formatDate(field?.actual_completion_date)}
                           </td>
                           <td>{field?.delay_in_work_execution}</td>
-                          {viewData?.status === "APPROVED" && (
+                          {/* {viewData?.status === "APPROVED" && (
                             <td>{field?.status}</td>
-                          )}
+                          )} */}
                         </tr>
                       </Fragment>
                     ))}

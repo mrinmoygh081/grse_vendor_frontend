@@ -230,7 +230,7 @@ const QapDashboard = () => {
                   <tr className="row-count">
                     <td colSpan={11} style={{ textAlign: "left" }}>
                       {" "}
-                      Number of BG {filteredData.length}{" "}
+                      Number of QA {filteredData.length}{" "}
                       {filteredData.length === 1 ? "" : ""}
                     </td>
                   </tr>
