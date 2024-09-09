@@ -5,7 +5,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { reConfirm } from "../utils/reConfirm";
 import { logoutHandler } from "../redux/slices/loginSlice";
 import { poRemoveHandler } from "../redux/slices/poSlice";
-import { ASSIGNER } from "../constants/userConstants";
+import { ASSIGNER, DEPT_IT } from "../constants/userConstants";
 import { toast } from "react-toastify";
 import DynamicButton from "../Helpers/DynamicButton";
 import { apiCallBack } from "../utils/fetchAPIs";
@@ -20,6 +20,8 @@ const MainHeader = ({ title }) => {
     new_pw: "",
     confirm_pw: "",
   });
+  console.log("user", user.department_id);
+  console.log("user", DEPT_IT);
 
   const logOutFun = () => {
     dispatch(logoutHandler());
@@ -39,52 +41,43 @@ const MainHeader = ({ title }) => {
   }, [isLoggedIn]);
 
   const renderDashboardLinks = () => {
-    if (user?.department_id === 1 || user?.department_id === 3) {
-      return (
-        <li className="nav-item">
-          <Link className="nav-link text-black" to={`/dashboard/qa`}>
-            <FaTachometerAlt className="me-2" /> DASHBOARD
-          </Link>
-        </li>
-      );
-    } 
-  
-    if (user?.department_id === 1 || user?.department_id === 15) {
-      return (
-        <>
-          <li className="nav-item">
-            <Link className="nav-link text-black" to={`/dashboard/bg`}>
-              <FaTachometerAlt className="me-2" /> DASHBOARD
-            </Link>
-          </li>
-          <li className="nav-item">
-            <Link className="nav-link text-black" to={`/dashboard/btn`}>
-              <FaTachometerAlt className="me-2" /> DASHBOARD
-            </Link>
-          </li>
-        </>
-      );
-    } 
-  
-    if (user?.department_id === 1 || user?.department_id === 2) {
-      return (
-        <li className="nav-item">
-          <Link className="nav-link text-black" to={`/dashboard/drawing`}>
-            <FaTachometerAlt className="me-2" /> DASHBOARD
-          </Link>
-        </li>
-      );
-    } 
-  
     return (
-      <li className="nav-item">
-        <Link className="nav-link text-black" to="#" onClick={showUnauthorizedToast}>
-          <FaTachometerAlt className="me-2" /> DASHBOARD
-        </Link>
-      </li>
+      <>
+        {(user?.department_id === DEPT_IT || user?.department_id === 3) && (
+          <>
+            <li className="nav-item">
+              <Link className="nav-link text-black" to={`/dashboard/qa`}>
+                <FaTachometerAlt className="me-2" /> QA DASHBOARD
+              </Link>
+            </li>
+          </>
+        )}
+        {(user?.department_id === DEPT_IT || user?.department_id === 15) && (
+          <>
+            <li className="nav-item">
+              <Link className="nav-link text-black" to={`/dashboard/bg`}>
+                <FaTachometerAlt className="me-2" /> BG DASHBOARD
+              </Link>
+            </li>
+            <li className="nav-item">
+              <Link className="nav-link text-black" to={`/dashboard/btn`}>
+                <FaTachometerAlt className="me-2" /> BTN DASHBOARD
+              </Link>
+            </li>
+          </>
+        )}
+        {(user?.department_id === DEPT_IT || user?.department_id === 2) && (
+          <>
+            <li className="nav-item">
+              <Link className="nav-link text-black" to={`/dashboard/drawing`}>
+                <FaTachometerAlt className="me-2" /> DESIGN DASHBOARD
+              </Link>
+            </li>
+          </>
+        )}
+      </>
     );
   };
-  
 
   const handleInputChange = (e) => {
     setPasswordForm({

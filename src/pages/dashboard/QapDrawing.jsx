@@ -139,9 +139,9 @@ const QapDrawing = () => {
   };
 
   return (
-    <div className="wrapper d-flex flex-column flex-row-fluid">
+    <div className="d-flex flex-column flex-row-fluid">
       <div className="page d-flex flex-row flex-column-fluid">
-        <SidebarDashboard />
+        {/* <SidebarDashboard /> */}
         <div className="d-flex flex-column flex-row-fluid">
           <MainHeader title="Drawing Dashboard" id={id} />
           <div className="card">
@@ -235,14 +235,13 @@ const QapDrawing = () => {
                     </td>
                   </tr>
                   <tr className="border-0">
-                    <th className="min-w-150px">Sl.NO.</th>
-                    <th className="min-w-150px">QAP NO.</th>
+                    <th className="min-w-150px">Drawing NO.</th>
                     <th className="min-w-150px">PO Number</th>
                     <th className="min-w-150px">Material Description</th>
                     <th className="min-w-150px">Vendor Name</th>
                     <th className="min-w-150px">Assigned To</th>
                     <th className="min-w-150px">Assigned on</th>
-                    <th className="min-w-150px">Accepted on</th>
+                    <th className="min-w-150px">Approved on</th>
                     <th className="min-w-150px">Current status</th>
                     <th className="min-w-150px">Status Date</th>
                     <th className="min-w-150px">Time taken</th>
@@ -262,7 +261,6 @@ const QapDrawing = () => {
                     <>
                       {filteredData.map((file, index) => (
                         <tr key={index}>
-                          <td>{index + 1}</td>
                           <td>
                             <button
                               onClick={() =>
