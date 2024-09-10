@@ -168,7 +168,7 @@ const POs = () => {
             </div>
           </div>
           <div className="m-2">
-            Number of PO: <b>{filteredPolist.length}</b>
+            Number of PO: <b>{filteredPolist?.length}</b>
           </div>
           <div className="table-responsive">
             <table className="table table-bordered table-hover table-striped table_styled">
