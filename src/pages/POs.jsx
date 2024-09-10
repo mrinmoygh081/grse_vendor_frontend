@@ -65,8 +65,6 @@ const POs = () => {
 
     return matchesSearchQuery && matchesSelectedStatus;
   });
-  console.log(filteredPolist, "vvvvvvvvvvvvvvvvvvvvvvvvvvv");
-
   const generateExcel = () => {
     const table = document.querySelector(".table");
 
