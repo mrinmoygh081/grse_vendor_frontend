@@ -34,7 +34,12 @@ const QapDashboard = () => {
   const createPayment = async () => {
     setLoading(true);
     try {
-      const response = await apiCallBack("GET", "stat/QA", null, token);
+      const response = await apiCallBack(
+        "GET",
+        "stat?type=qap_submission",
+        null,
+        token
+      );
       if (response?.status) {
         setPaymentdata(response.data);
       } else {
@@ -143,7 +148,7 @@ const QapDashboard = () => {
       <div className="page d-flex flex-row flex-column-fluid">
         {/* <SidebarDashboard /> */}
         <div className="d-flex flex-column flex-row-fluid">
-          <MainHeader title="BG Dashboard" id={id} />
+          <MainHeader title="QA Dashboard" id={id} />
           <div className="card">
             <div className="searchfun">
               <div className="card_headline">

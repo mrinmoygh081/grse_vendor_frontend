@@ -282,37 +282,64 @@ const QAPSub = () => {
 
   const savedQAPHandler = async () => {
     await deleteSavedQAP();
-    const { remarks, QapFile, supporting_doc, reference_no } = formData;
 
+    const { remarks, action_type, QapFile, supporting_doc, reference_no } =
+      formData;
+
+    // Validate mandatory fields
     if (!id) {
       toast.error("PO Number is required!");
+      return;
+    }
+    if (!action_type || action_type.trim() === "") {
+      toast.warn("Action Type is a mandatory field!");
+      return;
+    }
+    if (!remarks || remarks.trim() === "") {
+      toast.warn("Remarks are mandatory fields!");
       return;
     }
 
     const formDataToSend = new FormData();
     formDataToSend.append("purchasing_doc_no", id);
+    formDataToSend.append("remarks", remarks);
+    formDataToSend.append("reference_no", reference_no ? reference_no : "");
+    formDataToSend.append("action_type", action_type);
     if (QapFile) {
       formDataToSend.append("file", QapFile);
     }
-    formDataToSend.append("remarks", remarks);
-    formDataToSend.append("reference_no", reference_no);
     supporting_doc.forEach((file) => {
       formDataToSend.append("supporting_doc", file);
     });
 
     try {
+      // Make API call
       const res = await apiCallBack(
         "POST",
         "po/insertQapSave",
         formDataToSend,
         token
       );
+
       if (res?.status) {
+        // Success handling
         toast.success("Remarks have been saved successfully!");
+
+        // Reset file fields
+        setFormData((prevState) => ({
+          ...prevState,
+          QapFile: null,
+          supporting_doc: [],
+          reference_no: "",
+          action_type: "", // Reset action_type after submission
+        }));
+
+        // Close popup and refresh data
         setIsPopup(false);
         getData();
         getQapSave();
       } else {
+        // Error handling from API response
         toast.error(res.message);
       }
     } catch (error) {
@@ -320,6 +347,7 @@ const QAPSub = () => {
       toast.error("Error saving QAP");
     }
   };
+
   const handleFileChange = (e) => {
     const filesArray = Array.from(e.target.files);
     setFormData({
@@ -570,8 +598,7 @@ const QAPSub = () => {
                 <div className="col-12">
                   <div className="my-3">
                     <select
-                      name=""
-                      id=""
+                      name="action_type"
                       className="form-select"
                       onChange={(e) => {
                         setFormData({
@@ -579,7 +606,7 @@ const QAPSub = () => {
                           action_type: e.target.value,
                         });
                       }}
-                      value={formData?.action_type}
+                      value={formData?.action_type || ""} // Default value for controlled component
                     >
                       <option value="">Choose Action Type</option>
                       <option value="UPLOAD QAP File">UPLOAD QAP File</option>
@@ -641,7 +668,7 @@ const QAPSub = () => {
                       id=""
                       rows="4"
                       className="form-control"
-                      value={formData?.remarks}
+                      value={formData?.remarks || ""}
                       onChange={(e) =>
                         setFormData({ ...formData, remarks: e.target.value })
                       }

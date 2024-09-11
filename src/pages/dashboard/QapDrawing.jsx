@@ -34,7 +34,12 @@ const QapDrawing = () => {
   const createPayment = async () => {
     setLoading(true);
     try {
-      const response = await apiCallBack("GET", "stat/QA", null, token);
+      const response = await apiCallBack(
+        "GET",
+        "stat?type=drawing",
+        null,
+        token
+      );
       if (response?.status) {
         setPaymentdata(response.data);
       } else {
@@ -63,7 +68,7 @@ const QapDrawing = () => {
       // poType
     };
     dispatch(poHandler(po));
-    navigate(`/qap/${poNumber}`);
+    navigate(`/drawing/${poNumber}`);
   };
 
   const filteredData = paymentdata.filter((file) => {
@@ -95,31 +100,29 @@ const QapDrawing = () => {
   const generateExcel = () => {
     const data = [
       [
-        "Sl.NO.",
         "QAP NO.",
         "PO Number",
         "Material Description",
         "Vendor Name",
         "Assigned To",
         "Assigned on",
-        "Accepted on",
+        "Approved on",
         "Current status",
         "Status Date",
         "Time taken",
       ],
       ...filteredData.map((file, index) => [
-        index + 1,
         file.reference_no,
         file.bg_file_no,
         file.purchasing_doc_no,
         "",
         file.vendor_name,
-        file.assigned_to,
-        formatDatee(file.bg_date),
-        formatDatee(file.bg_recived_date),
+        file.assign_to,
+        file.assign_from,
+        formatDatee(file.accepted_on),
         file.status,
         formatDate(file.created_at),
-        formatDatee(file.bg_recived_date),
+        file.time_taken,
       ]),
     ];
 
@@ -275,14 +278,14 @@ const QapDrawing = () => {
                           <td>{file.purchasing_doc_no}</td>
                           <td>{""}</td>
                           <td>{file.vendor_name}</td>
-                          <td>{file.assigned_to}</td>
-                          <td>{file.assigned_from}</td>
-                          <td>{file.accepted_on}</td>
+                          <td>{file.assign_to}</td>
+                          <td>{file.assign_from}</td>
+                          <td>{formatDate(file.accepted_on)}</td>
                           <td className={`${clrLegend(file?.status)} bold`}>
                             {file.status}
                           </td>
                           <td>{formatDate(file.created_at)}</td>
-                          <td>{formatDatee(file.bg_recived_date)}</td>
+                          <td>{file.time_taken}</td>
                         </tr>
                       ))}
                     </>
