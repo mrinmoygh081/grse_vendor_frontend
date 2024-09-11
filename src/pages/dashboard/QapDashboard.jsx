@@ -34,7 +34,12 @@ const QapDashboard = () => {
   const createPayment = async () => {
     setLoading(true);
     try {
-      const response = await apiCallBack("GET", "stat/QA", null, token);
+      const response = await apiCallBack(
+        "GET",
+        "stat?type=qap_submission",
+        null,
+        token
+      );
       if (response?.status) {
         setPaymentdata(response.data);
       } else {
