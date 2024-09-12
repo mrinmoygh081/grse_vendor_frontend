@@ -532,7 +532,14 @@ const DrawingSub = () => {
               </h3>
               <button
                 className="btn fw-bold btn-danger"
-                onClick={() => setIsPopup(false)}
+                onClick={() => {
+                  setIsPopup(false);
+                  setSelectedActionType("");
+                  setFormData({
+                    drawingFile: null,
+                    remarks: "",
+                  });
+                }}
               >
                 Close
               </button>
