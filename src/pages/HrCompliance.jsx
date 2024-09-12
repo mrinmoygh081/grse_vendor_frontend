@@ -18,6 +18,7 @@ import { checkTypeArr } from "../utils/smallFun";
 import { formatDate } from "../utils/getDateTimeNow";
 import DynamicButton from "../Helpers/DynamicButton";
 import SkeletonLoader from "../loader/SkeletonLoader";
+import DatePicker from "react-datepicker";
 import {
   BONUS_COMP,
   ESI_COMP,
@@ -36,7 +37,9 @@ const HrCompliance = () => {
     fileData: null,
     remarks: "",
     actionType: "",
+    compliance_date: null, // New state for compliance date
   });
+
   const [isLoading, setIsLoading] = useState(false);
   const { user, token } = useSelector((state) => state.auth);
   // const { poType } = useSelector((state) => state.selectedPO);
@@ -71,7 +74,13 @@ const HrCompliance = () => {
   }, [id, token]);
 
   const actionHandler = async (flag) => {
-    const { fileData, remarks, actionType } = formData;
+    const { fileData, remarks, actionType, compliance_date } = formData; // Destructure compliance_date
+
+    // Validation for compliance_date
+    if (compliance_date === null || compliance_date === "") {
+      return toast.warn("Compliance date is required!");
+    }
+
     if (
       flag === "SUBMITTED" &&
       (actionType === "" || !fileData || remarks.trim() === "")
@@ -84,19 +93,9 @@ const HrCompliance = () => {
       (actionType === "" || remarks.trim() === "")
     ) {
       return toast.warn(
-        "Action Type and remarks is mandatory for approval or rejection!"
+        "Action Type and remarks are mandatory for approval or rejection!"
       );
     }
-
-    // let uType;
-    // let mailSendTo;
-    // if (userType === 1) {
-    //   uType = "VENDOR";
-    //   mailSendTo = "mrinmoygh081@gmail.com";
-    // } else {
-    //   uType = "GRSE";
-    //   mailSendTo = "aabhinit96@gmail.com";
-    // }
 
     try {
       const formDataToSend = new FormData();
@@ -105,12 +104,7 @@ const HrCompliance = () => {
       formDataToSend.append("file", fileData);
       formDataToSend.append("remarks", remarks);
       formDataToSend.append("status", flag);
-      // formDataToSend.append("reference_no", referenceNo);
-      // formDataToSend.append("mailSendTo", mailSendTo);
-      // formDataToSend.append("updated_by", uType);
-      // formDataToSend.append("vendor_code", user.vendor_code);
-      // formDataToSend.append("action_by_name", user.name);
-      // formDataToSend.append("action_by_id", user.email);
+      formDataToSend.append("compliance_date", compliance_date);
 
       const response = await apiCallBack(
         "POST",
@@ -126,6 +120,7 @@ const HrCompliance = () => {
           fileData: null,
           remarks: "",
           actionType: "",
+          compliance_date: null,
         });
         inputFileRef.current.value = null;
         getData();
@@ -180,6 +175,9 @@ const HrCompliance = () => {
                                   <th>Action Type</th>
                                   <th>Action By</th>
                                   <th className="min-w-150px">Remarks</th>
+                                  <th className="min-w-150px">
+                                    Compliance Date
+                                  </th>
                                   {/* <th>Status</th> */}
                                   {/* {user?.department_id === USER_GRSE_HR && (
                                     <th>Action</th>
@@ -229,6 +227,11 @@ const HrCompliance = () => {
                                               <td className="align-middle">
                                                 {item.remarks}
                                               </td>
+                                              <td className="align-middle">
+                                                Year: {item.year}, Month:{" "}
+                                                {item.month}
+                                              </td>
+
                                               {/* <td
                                           className={`${clrLegend(
                                             item?.status
@@ -288,7 +291,18 @@ const HrCompliance = () => {
               </h3>
               <button
                 className="btn fw-bold btn-danger"
-                onClick={() => setIsPopup(false)}
+                onClick={() => {
+                  setIsPopup(false);
+                  setFormData({
+                    fileData: null,
+                    remarks: "",
+                    actionType: "",
+                    compliance_date: null,
+                  });
+                  if (inputFileRef.current) {
+                    inputFileRef.current.value = "";
+                  }
+                }}
               >
                 Close
               </button>
@@ -319,6 +333,20 @@ const HrCompliance = () => {
                       <option value="Others">Others</option>
                     </select>
                   </div>
+                  <div className="mb-3">
+                    <label className="form-label">Compliance Date</label>
+                    &nbsp;&nbsp;<span className="mandatorystart">*</span>
+                    <DatePicker
+                      dateFormat="dd/MM/yyyy"
+                      className="form-control"
+                      selected={formData?.compliance_date}
+                      onChange={(date) =>
+                        setFormData({ ...formData, compliance_date: date })
+                      }
+                      placeholderText="Select Date"
+                    />
+                  </div>
+
                   <div className="mb-3">
                     <label className="form-label">File Info</label>
                     &nbsp;&nbsp;<span className="mandatorystart">*</span>

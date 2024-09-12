@@ -287,7 +287,7 @@ const QapDashboard = () => {
                             {file.status}
                           </td>
                           <td>{formatDate(file.created_at)}</td>
-                          <td>{formatDatee(file.bg_recived_date)}</td>
+                          <td>{file.time_taken}</td>
                         </tr>
                       ))}
                     </>
