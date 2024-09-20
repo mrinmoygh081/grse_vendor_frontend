@@ -19,7 +19,7 @@ const ClaimIncorrectDeductions = () => {
         <div className="page d-flex flex-row flex-column-fluid">
           <SideBar />
           <div className="wrapper d-flex flex-column flex-row-fluid">
-            <Header title={"Bills for Material PO"} id={id} />
+            <Header title={"Checklist for Any Other Claims"} id={id} />
             <div className="content d-flex flex-column flex-column-fluid">
               <div className="post d-flex flex-column-fluid">
                 <div className="container">
@@ -37,7 +37,7 @@ const ClaimIncorrectDeductions = () => {
                             >
                               <FaCaretLeft className="fs-20" />
                             </button>{" "}
-                            Bills for Material PO:
+                            Checklist for Any Other Claims:
                           </h3>
                           <div className="card-body p-3">
                             <div className="tab-content">
@@ -45,28 +45,25 @@ const ClaimIncorrectDeductions = () => {
                                 <table className="table table-striped table-bordered table_height">
                                   <tbody style={{ maxHeight: "100%" }}>
                                     <tr>
-                                      <td>Yard No:</td>
-                                      <td className="btn_value">
-                                        <input
-                                          type="number"
-                                          className="form-control"
-                                          onWheel={inputOnWheelPrevent}
-                                          name="yard"
-                                        />
-                                      </td>
-                                    </tr>
-                                    <tr>
-                                      <td>Stage:</td>
+                                      <td>Claim Type:</td>
                                       <td className="btn_value">
                                         <select
                                           name="stage"
                                           id=""
                                           className="form-select"
+                                          style={{
+                                            width: "85%",
+                                            fontSize: "10px",
+                                            padding: "13px",
+                                          }}
                                         >
-                                          <option value="1"> 1 </option>
-                                          <option value="2"> 2 </option>
-                                          <option value="3"> 3 </option>
-                                          <option value="4"> 4 </option>
+                                          <option value="bill-incorrect-deductions">
+                                            {" "}
+                                            Checklist for Incorrect Deductions{" "}
+                                          </option>
+                                          <option value="ld-penalty-refund">
+                                            Checklist for LD-Penalty Refund
+                                          </option>
                                         </select>
                                       </td>
                                     </tr>
