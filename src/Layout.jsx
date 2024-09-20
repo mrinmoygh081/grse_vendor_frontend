@@ -159,10 +159,10 @@ function Layout() {
           path="/checklist/bill-service/edit/:id"
           element={<ServiceContractBillsEdit />}
         />
-        <Route
+        {/* <Route
           path="/checklist/bill-incorrect-deductions/:id"
           element={<ClaimIncorrectDeductions />}
-        />
+        /> */}
         <Route
           path="/checklist/bill-other-claims/:id"
           element={<ClaimIncorrectDeductions />}

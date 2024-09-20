@@ -166,20 +166,20 @@ const Checklist = () => {
                               <option value="contract-bill-service">
                                 Checklist for Service PO
                               </option>
-                              <option value="bill-incorrect-deductions">
+                              {/* <option value="bill-incorrect-deductions">
                                 Checklist for Incorrect Deductions
-                              </option>
-                              <option value="bill-other-claims">
-                                Checklist for Any Other Claims
-                              </option>
+                              </option> */}
                               <option value="bill-advance-payment">
                                 Checklist for Advance Payment
                               </option>
                               <option value="claim-against-pbg">
                                 Checklist for Claim Against PBG
                               </option>
-                              <option value="ld-penalty-refund">
+                              {/* <option value="ld-penalty-refund">
                                 Checklist for LD-Penalty Refund
+                              </option> */}
+                              <option value="bill-other-claims">
+                                Checklist for Any Other Claims
                               </option>
                             </select>
                           </div>
