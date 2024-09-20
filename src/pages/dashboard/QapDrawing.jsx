@@ -280,7 +280,12 @@ const QapDrawing = () => {
                           <td>{file.vendor_name}</td>
                           <td>{file.assign_to}</td>
                           <td>{file.assign_from}</td>
-                          <td>{formatDate(file.accepted_on)}</td>
+                          {/* <td>{formatDate(file.accepted_on)}</td> */}
+                          <td>
+                            {file.accepted_on && file.accepted_on !== "N/A"
+                              ? formatDate(file.accepted_on)
+                              : ""}
+                          </td>
                           <td className={`${clrLegend(file?.status)} bold`}>
                             {file.status}
                           </td>

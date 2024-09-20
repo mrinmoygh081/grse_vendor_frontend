@@ -35,6 +35,7 @@ const QAPSub = () => {
     reference_no: null,
     supporting_doc: [],
   });
+  console.log(formData, "formData");
 
   const [assign, setAssign] = useState({
     purchasing_doc_no: id,

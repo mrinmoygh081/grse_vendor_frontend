@@ -169,6 +169,9 @@ const Checklist = () => {
                               <option value="bill-incorrect-deductions">
                                 Checklist for Incorrect Deductions
                               </option>
+                              <option value="bill-other-claims">
+                                Checklist for Any Other Claims
+                              </option>
                               <option value="bill-advance-payment">
                                 Checklist for Advance Payment
                               </option>
