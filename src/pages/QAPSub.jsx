@@ -169,8 +169,13 @@ const QAPSub = () => {
 
   useEffect(() => {
     getData();
-    getQapSave();
   }, [id, token]);
+
+  useEffect(() => {
+    if (formData?.reference_no) {
+      getQapSave();
+    }
+  }, [formData?.reference_no]);
 
   const updateQAP = async (flag) => {
     const { action_type, QapFile, remarks, supporting_doc, reference_no } =
@@ -281,9 +286,11 @@ const QAPSub = () => {
     }
   };
 
-  const savedQAPHandler = async (referenceNo) => {
-    const { remarks, action_type, QapFile, supporting_doc } = formData;
+  const savedQAPHandler = async () => {
+    const { remarks, action_type, QapFile, supporting_doc, reference_no } =
+      formData;
 
+    // Validate mandatory fields
     if (!id) {
       toast.error("PO Number is required!");
       return;
@@ -296,24 +303,22 @@ const QAPSub = () => {
       toast.warn("Remarks are mandatory fields!");
       return;
     }
-
     await deleteSavedQAP();
 
     const formDataToSend = new FormData();
     formDataToSend.append("purchasing_doc_no", id);
     formDataToSend.append("remarks", remarks);
-    formDataToSend.append("reference_no", referenceNo ? referenceNo : "");
+    formDataToSend.append("reference_no", reference_no ? reference_no : "");
     formDataToSend.append("action_type", action_type);
-
     if (QapFile) {
       formDataToSend.append("file", QapFile);
     }
-
     supporting_doc.forEach((file) => {
       formDataToSend.append("supporting_doc", file);
     });
 
     try {
+      // Make API call
       const res = await apiCallBack(
         "POST",
         "po/insertQapSave",
@@ -322,20 +327,24 @@ const QAPSub = () => {
       );
 
       if (res?.status) {
+        // Success handling
         toast.success("Remarks have been saved successfully!");
 
+        // Reset file fields
         setFormData((prevState) => ({
           ...prevState,
           QapFile: null,
           supporting_doc: [],
           reference_no: "",
-          action_type: "",
+          action_type: "", // Reset action_type after submission
         }));
 
+        // Close popup and refresh data
         setIsPopup(false);
         getData();
         getQapSave();
       } else {
+        // Error handling from API response
         toast.error(res.message);
       }
     } catch (error) {
@@ -687,9 +696,7 @@ const QAPSub = () => {
                           </button> */}
                           <DynamicButton
                             label="SAVE"
-                            onClick={() =>
-                              savedQAPHandler(formData?.reference_no)
-                            }
+                            onClick={() => savedQAPHandler()}
                             className="btn fw-bold btn-primary me-2"
                           />
                           {/* <button

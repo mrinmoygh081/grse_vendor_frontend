@@ -3,15 +3,31 @@ import { useNavigate, useParams } from "react-router-dom";
 import SideBar from "../../components/SideBar";
 import Header from "../../components/Header";
 import Footer from "../../components/Footer";
-import { inputOnWheelPrevent } from "../../utils/inputOnWheelPrevent";
-import { FaCaretLeft, FaPlus } from "react-icons/fa";
-import DynamicButton from "../../Helpers/DynamicButton";
+import { FaCaretLeft } from "react-icons/fa";
 
 const ClaimIncorrectDeductions = () => {
-  const [isPopup, setIsPopup] = useState(false);
-  const [isSecPopup, setIsSecPopup] = useState(false);
   const { id } = useParams();
   const navigate = useNavigate();
+
+  const [formData, setFormData] = useState({
+    ref_invoice1_no: "",
+    ref_invoice1_amount: "",
+    ref_invoice1_remarks: "",
+    ref_invoice2_no: "",
+    ref_invoice2_amount: "",
+    ref_invoice2_remarks: "",
+    ref_invoice3_no: "",
+    ref_invoice3_amount: "",
+    ref_invoice3_remarks: "",
+    ref_invoice4_no: "",
+    ref_invoice4_amount: "",
+    ref_invoice4_remarks: "",
+  });
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prevData) => ({ ...prevData, [name]: value }));
+  };
 
   return (
     <>
@@ -43,13 +59,12 @@ const ClaimIncorrectDeductions = () => {
                             <div className="tab-content">
                               <div className="table-responsive">
                                 <table className="table table-striped table-bordered table_height">
-                                  <tbody style={{ maxHeight: "100%" }}>
+                                  <tbody>
                                     <tr>
                                       <td>Claim Type:</td>
                                       <td className="btn_value">
                                         <select
                                           name="stage"
-                                          id=""
                                           className="form-select"
                                           style={{
                                             width: "85%",
@@ -58,8 +73,7 @@ const ClaimIncorrectDeductions = () => {
                                           }}
                                         >
                                           <option value="bill-incorrect-deductions">
-                                            {" "}
-                                            Checklist for Incorrect Deductions{" "}
+                                            Checklist for Incorrect Deductions
                                           </option>
                                           <option value="ld-penalty-refund">
                                             Checklist for LD-Penalty Refund
@@ -67,184 +81,156 @@ const ClaimIncorrectDeductions = () => {
                                         </select>
                                       </td>
                                     </tr>
-
+                                  </tbody>
+                                </table>
+                                <table className="table table-striped table-bordered table_height">
+                                  <thead>
                                     <tr>
-                                      <td>Digitally Signed Invoice:</td>
+                                      <th>Reference Invoice No</th>
+                                      <th>Claim Amount</th>
+                                      <th>Remarks</th>
+                                    </tr>
+                                  </thead>
+                                  <tbody>
+                                    {/* Row 1 */}
+                                    <tr>
                                       <td>
-                                        <div className="btn_value">
-                                          <input
-                                            type="text"
-                                            className="form-control me-3"
-                                            name="invoice_no"
-                                            placeholder="invoice number"
-                                          />
-                                          <DynamicButton
-                                            label="CHECK"
-                                            className="btn btn-primary btn-sm m-4"
-                                          />
-                                        </div>
-                                        <div className="btn_value">
-                                          <div className="me-4">
-                                            <label htmlFor="">
-                                              Invoice File
-                                            </label>
-                                            <input
-                                              type="file"
-                                              className="form-control"
-                                              name="invoice_filename"
-                                              accept=".pdf"
-                                            />
-                                          </div>
-                                          <div>
-                                            <label htmlFor="">
-                                              Supporting Documents
-                                            </label>
-                                            <input
-                                              type="file"
-                                              className="form-control"
-                                              name="invoice_supporting_doc"
-                                              accept=".pdf"
-                                            />
-                                          </div>
-                                        </div>
-                                      </td>
-                                    </tr>
-
-                                    <tr>
-                                      <td>E-Invoice No :</td>
-                                      <td className="btn_value">
                                         <input
                                           type="text"
-                                          className="form-control me-2"
-                                          name="invoice_no"
-                                          placeholder="E-Invoice number"
-                                        />
-                                        <input
-                                          type="file"
+                                          name="ref_invoice1_no"
                                           className="form-control"
-                                          name="invoice_filename"
-                                          accept=".pdf"
+                                          placeholder="Enter Invoice No 1"
+                                          value={formData.ref_invoice1_no}
+                                          onChange={handleChange}
                                         />
                                       </td>
-                                    </tr>
-
-                                    <tr>
-                                      <td>Additional PO:</td>
-                                      <td className="btn_value">
+                                      <td>
+                                        <input
+                                          type="number"
+                                          name="ref_invoice1_amount"
+                                          className="form-control"
+                                          placeholder="Enter Claim Amount 1"
+                                          value={formData.ref_invoice1_amount}
+                                          onChange={handleChange}
+                                        />
+                                      </td>
+                                      <td>
                                         <input
                                           type="text"
+                                          name="ref_invoice1_remarks"
                                           className="form-control"
-                                          name="associated_po"
-                                        />
-
-                                        <button
-                                          className="btn btn-sm btn-primary d-flex align-items-center ms-2"
-                                          style={{ fontSize: "16px" }}
-                                          type="button"
-                                        >
-                                          <FaPlus />
-                                        </button>
-                                      </td>
-                                    </tr>
-                                    <tr>
-                                      <td>Basic value:</td>
-                                      <td className="btn_value">
-                                        <input
-                                          type="number"
-                                          className="form-control"
-                                          onWheel={inputOnWheelPrevent}
-                                          name="invoice_value"
+                                          placeholder="Enter Remarks 1"
+                                          value={formData.ref_invoice1_remarks}
+                                          onChange={handleChange}
                                         />
                                       </td>
                                     </tr>
 
+                                    {/* Row 2 */}
                                     <tr>
-                                      <td>Debit/Credit Note:</td>
-                                      <td className="btn_value">
+                                      <td>
                                         <input
-                                          type="file"
+                                          type="text"
+                                          name="ref_invoice2_no"
                                           className="form-control"
-                                          name="debit_credit_filename"
-                                          accept=".pdf"
+                                          placeholder="Enter Invoice No 2"
+                                          value={formData.ref_invoice2_no}
+                                          onChange={handleChange}
                                         />
                                       </td>
-                                    </tr>
-                                    <tr>
-                                      <td>Debit Note value:</td>
-                                      <td className="btn_value">
-                                        <input
-                                          type="number"
-                                          className="form-control"
-                                          onWheel={inputOnWheelPrevent}
-                                          name="debit_note"
-                                        />
-                                      </td>
-                                    </tr>
-                                    <tr>
-                                      <td>Credit Note value:</td>
-                                      <td className="btn_value">
+                                      <td>
                                         <input
                                           type="number"
+                                          name="ref_invoice2_amount"
                                           className="form-control"
-                                          onWheel={inputOnWheelPrevent}
-                                          name="credit_note"
+                                          placeholder="Enter Claim Amount 2"
+                                          value={formData.ref_invoice2_amount}
+                                          onChange={handleChange}
+                                        />
+                                      </td>
+                                      <td>
+                                        <input
+                                          type="text"
+                                          name="ref_invoice2_remarks"
+                                          className="form-control"
+                                          placeholder="Enter Remarks 2"
+                                          value={formData.ref_invoice2_remarks}
+                                          onChange={handleChange}
                                         />
                                       </td>
                                     </tr>
+
+                                    {/* Row 3 */}
                                     <tr>
-                                      <td>Net Basic amount:</td>
-                                      <td className="btn_value">
-                                        <b></b>
+                                      <td>
+                                        <input
+                                          type="text"
+                                          name="ref_invoice3_no"
+                                          className="form-control"
+                                          placeholder="Enter Invoice No 3"
+                                          value={formData.ref_invoice3_no}
+                                          onChange={handleChange}
+                                        />
                                       </td>
-                                    </tr>
-                                    <tr>
-                                      <td>CGST:</td>
-                                      <td className="btn_value">
+                                      <td>
                                         <input
                                           type="number"
+                                          name="ref_invoice3_amount"
                                           className="form-control"
-                                          onWheel={inputOnWheelPrevent}
-                                          name="cgst"
+                                          placeholder="Enter Claim Amount 3"
+                                          value={formData.ref_invoice3_amount}
+                                          onChange={handleChange}
                                         />
-                                        <span className="ms-1">%</span>
+                                      </td>
+                                      <td>
+                                        <input
+                                          type="text"
+                                          name="ref_invoice3_remarks"
+                                          className="form-control"
+                                          placeholder="Enter Remarks 3"
+                                          value={formData.ref_invoice3_remarks}
+                                          onChange={handleChange}
+                                        />
                                       </td>
                                     </tr>
+
+                                    {/* Row 4 */}
                                     <tr>
-                                      <td>SGST:</td>
-                                      <td className="btn_value">
+                                      <td>
+                                        <input
+                                          type="text"
+                                          name="ref_invoice4_no"
+                                          className="form-control"
+                                          placeholder="Enter Invoice No 4"
+                                          value={formData.ref_invoice4_no}
+                                          onChange={handleChange}
+                                        />
+                                      </td>
+                                      <td>
                                         <input
                                           type="number"
+                                          name="ref_invoice4_amount"
                                           className="form-control"
-                                          onWheel={inputOnWheelPrevent}
-                                          name="sgst"
+                                          placeholder="Enter Claim Amount 4"
+                                          value={formData.ref_invoice4_amount}
+                                          onChange={handleChange}
                                         />
-                                        <span className="ms-1">%</span>
                                       </td>
-                                    </tr>
-                                    <tr>
-                                      <td>IGST:</td>
-                                      <td className="btn_value">
+                                      <td>
                                         <input
-                                          type="number"
+                                          type="text"
+                                          name="ref_invoice4_remarks"
                                           className="form-control"
-                                          onWheel={inputOnWheelPrevent}
-                                          name="igst"
+                                          placeholder="Enter Remarks 4"
+                                          value={formData.ref_invoice4_remarks}
+                                          onChange={handleChange}
                                         />
-                                        <span className="ms-1">%</span>
                                       </td>
-                                    </tr>
-                                    <tr>
-                                      <td>Net claim amount with GST:</td>
-                                      <td className="btn_value">
-                                        <b>{""}</b>
-                                      </td>
-                                    </tr>
-                                    <tr>
-                                      <td>Contractual SDBG Submission Date</td>
                                     </tr>
                                   </tbody>
                                 </table>
                               </div>
+
                               <div className="text-center">
                                 <button
                                   className="btn btn-sm btn-primary me-3"
@@ -254,6 +240,12 @@ const ClaimIncorrectDeductions = () => {
                                   }
                                 >
                                   BACK
+                                </button>
+                                <button
+                                  className="btn btn-sm btn-success"
+                                  type="submit"
+                                >
+                                  SUBMIT
                                 </button>
                               </div>
                             </div>
