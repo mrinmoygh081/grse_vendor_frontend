@@ -45,6 +45,8 @@ const POs = () => {
     const matchesSearchQuery =
       (po?.poNumber &&
         po?.poNumber.toLowerCase().includes(searchQuery.toLowerCase())) ||
+      (po?.po_creator &&
+        po?.po_creator.toLowerCase().includes(searchQuery.toLowerCase())) ||
       (po?.poType &&
         po?.poType.toLowerCase().includes(searchQuery.toLowerCase())) ||
       (po?.vendor_code &&
@@ -217,6 +219,8 @@ const POs = () => {
                           <span>
                             {po?.vendor_code} ({po.vendor_name})
                           </span>
+                          <span> | </span>
+                          <span>{po?.po_creator}</span>
                         </button>
                       </td>
                       {/* <td>

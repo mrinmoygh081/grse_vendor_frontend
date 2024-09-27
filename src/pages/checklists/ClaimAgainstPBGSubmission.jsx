@@ -399,14 +399,23 @@ const ClaimAgainstPBGSubmission = () => {
       const formDataToSend = new FormData();
       formDataToSend.append("purchasing_doc_no", id);
       formDataToSend.append("invoice_no", formData.invoiceNo);
-      formDataToSend.append("balance_claim_invoice", formData.balanceClaimInvoice);
+      formDataToSend.append(
+        "balance_claim_invoice",
+        formData.balanceClaimInvoice
+      );
       formDataToSend.append("claim_amount", formData.claimAmount);
       formDataToSend.append("percentage_of_claim", formData.percentageOfClaim);
       formDataToSend.append("invoice_filename", formData.invoiceFile);
-      formDataToSend.append("balance_claim_invoice_filename", formData.balanceClaimInvoiceFile);
-      
+      formDataToSend.append(
+        "balance_claim_invoice_filename",
+        formData.balanceClaimInvoiceFile
+      );
+
       // Add invoice date to the payload
-      formDataToSend.append("invoice_date", invoiceDate ? invoiceDate.toISOString().split('T')[0] : "");
+      formDataToSend.append(
+        "invoice_date",
+        invoiceDate ? invoiceDate.toISOString().split("T")[0] : ""
+      );
 
       const response = await apiCallBack(
         "POST",
@@ -477,7 +486,9 @@ const ClaimAgainstPBGSubmission = () => {
                                         <ReactDatePicker
                                           dateFormat="dd/MM/yyyy"
                                           selected={invoiceDate}
-                                          onChange={(date) => setInvoiceDate(date)}
+                                          onChange={(date) =>
+                                            setInvoiceDate(date)
+                                          }
                                           className="form-control"
                                           placeholderText="DD/MM/YYYY"
                                         />
@@ -579,6 +590,7 @@ const ClaimAgainstPBGSubmission = () => {
                         </div>
                       </div>
                     </div>
+
                     <div className="text-center mt-4">
                       <button
                         className="btn btn-primary"
@@ -601,4 +613,3 @@ const ClaimAgainstPBGSubmission = () => {
 };
 
 export default ClaimAgainstPBGSubmission;
-

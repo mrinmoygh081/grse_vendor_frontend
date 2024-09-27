@@ -123,28 +123,79 @@ const QAPSub = () => {
     }
   };
 
-  const getQapSave = async () => {
-    try {
-      const { status, data } = await apiCallBack(
-        "GET",
-        `po/getQapSave?reference_no=${formData.reference_no}`,
-        null,
-        token
-      );
-      if (status && data) {
-        const { remarks } = data[0];
-        setFormData((prev) => ({ ...prev, remarks }));
-      }
-    } catch (error) {
-      console.error("Error fetching drawing list:", error);
-    }
-  };
+  // const getQapSave = async () => {
+  //   try {
+  //     const { status, data } = await apiCallBack(
+  //       "GET",
+  //       `po/getQapSave?reference_no=${formData.reference_no}`,
+  //       null,
+  //       token
+  //     );
+  //     if (status && data) {
+  //       console.log("shree ram", data);
+  //       const { remarks } = data[0];
+  //       setFormData((prev) => ({ ...prev, remarks }));
+  //     }
+  //   } catch (error) {
+  //     console.error("Error fetching drawing list:", error);
+  //   }
+  // };
 
   // useEffect(() => {
   //   if (formDatainput?.reference_no) {
   //     getSDBGEntry(formDatainput?.reference_no);
   //   }
   // }, [formDatainput?.reference_no]);
+
+  const getQapSave = async () => {
+    try {
+      // API call to fetch saved QAP data
+      const { status, data } = await apiCallBack(
+        "GET",
+        `po/getQapSave?reference_no=${formData.reference_no}`,
+        null,
+        token
+      );
+
+      if (status && data?.length > 0) {
+        const { remarks, action_type, QapFile, supporting_doc } = data[0];
+
+        setFormData((prev) => ({
+          ...prev,
+          remarks: remarks || "",
+          action_type: action_type || "",
+          QapFile: QapFile || null,
+          supporting_doc: supporting_doc || [],
+        }));
+      } else {
+        setFormData((prev) => ({
+          ...prev,
+          remarks: "",
+          action_type: "",
+          QapFile: null,
+          supporting_doc: [],
+        }));
+      }
+    } catch (error) {
+      console.error("Error fetching QAP data:", error);
+
+      // Reset form fields on error to avoid stale data
+      setFormData((prev) => ({
+        ...prev,
+        remarks: "",
+        action_type: "",
+        QapFile: null,
+        supporting_doc: [],
+      }));
+    }
+  };
+
+  // useEffect to call getQapSave when reference_no changes
+  useEffect(() => {
+    if (formData?.reference_no) {
+      getQapSave();
+    }
+  }, [formData?.reference_no]);
 
   const deleteSavedQAP = async () => {
     try {
@@ -303,16 +354,23 @@ const QAPSub = () => {
       toast.warn("Remarks are mandatory fields!");
       return;
     }
+
+    // Delete saved QAP before updating
     await deleteSavedQAP();
 
+    // Prepare form data
     const formDataToSend = new FormData();
     formDataToSend.append("purchasing_doc_no", id);
     formDataToSend.append("remarks", remarks);
     formDataToSend.append("reference_no", reference_no ? reference_no : "");
     formDataToSend.append("action_type", action_type);
+
+    // Append QAP File
     if (QapFile) {
       formDataToSend.append("file", QapFile);
     }
+
+    // Append supporting documents (same format as updateQAP)
     supporting_doc.forEach((file) => {
       formDataToSend.append("supporting_doc", file);
     });
@@ -647,21 +705,22 @@ const QAPSub = () => {
                       accept=".pdf"
                     />
                     <div className="mt-2">
-                      {formData.supporting_doc.map((file, index) => (
-                        <div
-                          key={index}
-                          className="d-flex justify-content-between align-items-center mt-1"
-                        >
-                          <div>{file.name}</div>
-                          <button
-                            className="btn btn-danger btn-sm"
-                            type="button"
-                            onClick={() => removeFile(index)}
+                      {Array.isArray(formData.supporting_doc) &&
+                        formData.supporting_doc.map((file, index) => (
+                          <div
+                            key={index}
+                            className="d-flex justify-content-between align-items-center mt-1"
                           >
-                            Remove
-                          </button>
-                        </div>
-                      ))}
+                            <div>{file.name}</div>
+                            <button
+                              className="btn btn-danger btn-sm"
+                              type="button"
+                              onClick={() => removeFile(index)}
+                            >
+                              Remove
+                            </button>
+                          </div>
+                        ))}
                     </div>
                   </div>
                 </div>

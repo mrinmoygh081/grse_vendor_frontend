@@ -178,7 +178,10 @@ const Checklist = () => {
                               {/* <option value="ld-penalty-refund">
                                 Checklist for LD-Penalty Refund
                               </option> */}
-                              <option value="bill-other-claims">
+                              <option value="claim-against-jcc">
+                                Claim Against JCC
+                              </option>
+                              <option value="bill-incorrect-deductions">
                                 Checklist for Any Other Claims
                               </option>
                             </select>
@@ -252,6 +255,22 @@ const Checklist = () => {
                                                     "claim-against-pbg"
                                                   ) {
                                                     type = "claim-against-pbg";
+                                                  } else if (
+                                                    firstItem.btn_type ===
+                                                    "bill-incorrect-deductions"
+                                                  ) {
+                                                    type =
+                                                      "bill-incorrect-deductions";
+                                                  } else if (
+                                                    firstItem.btn_type ===
+                                                    "ld-penalty-refund"
+                                                  ) {
+                                                    type = "ld-penalty-refund";
+                                                  } else if (
+                                                    firstItem.btn_type ===
+                                                    "other-retentions"
+                                                  ) {
+                                                    type = "other-retentions";
                                                   }
 
                                                   navigate(
@@ -285,19 +304,29 @@ const Checklist = () => {
                                                   </button>
                                                 )}
                                               {isDO &&
-                                                (firstItem.btn_type ===
-                                                  "hybrid-bill-material" ||
-                                                  firstItem.btn_type ===
-                                                    "claim-against-pbg") && (
+                                                firstItem &&
+                                                [
+                                                  "hybrid-bill-material",
+                                                  "claim-against-pbg",
+                                                  "bill-incorrect-deductions",
+                                                  "other-retentions",
+                                                  "ld-penalty-refund",
+                                                ].includes(
+                                                  firstItem.btn_type
+                                                ) && (
                                                   <button
                                                     className="btn btn-sm btn-primary m-1"
                                                     onClick={() => {
-                                                      navigate(
-                                                        `/checklist/${firstItem.btn_type}/edit/${id}`,
-                                                        {
-                                                          state: `${firstItem?.btn_num}`,
-                                                        }
-                                                      );
+                                                      if (id) {
+                                                        // Ensure id exists before navigating
+                                                        navigate(
+                                                          `/checklist/${firstItem.btn_type}/edit/${id}`,
+                                                          {
+                                                            state:
+                                                              firstItem?.btn_num, // Pass btn_num in state
+                                                          }
+                                                        );
+                                                      }
                                                     }}
                                                   >
                                                     Action
