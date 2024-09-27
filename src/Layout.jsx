@@ -69,6 +69,9 @@ import NotFound from "./components/NotFound";
 import ServiceContractBillsView from "./pages/checklists/ServiceContractBillsView";
 import ServiceContractBillsEdit from "./pages/checklists/ServiceContractBillsEdit";
 import QapDrawing from "./pages/dashboard/QapDrawing";
+import ClaimAgainstJCCubmission from "./pages/checklists/ClaimAgainstJCCubmission";
+import ClaimIncorrectDeductionsview from "./pages/checklists/ClaimIncorrectDeductionsview";
+import ClaimIncorrectDeductionsEdit from "./pages/checklists/ClaimIncorrectDeductionsEdit";
 
 function Layout() {
   const { token, isLoggedIn, user } = useSelector((state) => state.auth);
@@ -164,8 +167,33 @@ function Layout() {
           element={<ClaimIncorrectDeductions />}
         /> */}
         <Route
-          path="/checklist/bill-other-claims/:id"
+          path="/checklist/bill-incorrect-deductions/:id"
           element={<ClaimIncorrectDeductions />}
+        />
+        <Route
+          path="/checklist/bill-incorrect-deductions/view/:id"
+          element={<ClaimIncorrectDeductionsview />}
+        />
+        <Route
+          path="/checklist/ld-penalty-refund/view/:id"
+          element={<ClaimIncorrectDeductionsview />}
+        />
+        <Route
+          path="/checklist/other-retentions/view/:id"
+          element={<ClaimIncorrectDeductionsview />}
+        />
+
+        <Route
+          path="/checklist/bill-incorrect-deductions/edit/:id"
+          element={<ClaimIncorrectDeductionsEdit />}
+        />
+        <Route
+          path="/checklist/ld-penalty-refund/edit/:id"
+          element={<ClaimIncorrectDeductionsEdit />}
+        />
+        <Route
+          path="/checklist/other-retentions/edit/:id"
+          element={<ClaimIncorrectDeductionsEdit />}
         />
         <Route
           path="/checklist/advance-bill-hybrid/:id"
@@ -178,6 +206,10 @@ function Layout() {
         <Route
           path="/checklist/advance-bill-hybrid/edit/:id"
           element={<AdvanceBillHybridEdit />}
+        />
+        <Route
+          path="/checklist/claim-against-jcc/:id"
+          element={<ClaimAgainstJCCubmission />}
         />
         <Route
           path="/checklist/claim-against-pbg/:id"

@@ -10,7 +10,7 @@ import { useSelector } from "react-redux";
 import { USER_VENDOR } from "../../constants/userConstants";
 import { toast } from "react-toastify";
 
-const ClaimIncorrectDeductions = () => {
+const ClaimAgainstJCCubmission = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const { user, token } = useSelector((state) => state.auth);
@@ -166,7 +166,7 @@ const ClaimIncorrectDeductions = () => {
         <div className="page d-flex flex-row flex-column-fluid">
           <SideBar />
           <div className="wrapper d-flex flex-column flex-row-fluid">
-            <Header title={"Checklist for Any Other Claims"} id={id} />
+            <Header title={"Checklist For Claim Against JCC"} id={id} />
             <div className="content d-flex flex-column flex-column-fluid">
               <div className="post d-flex flex-column-fluid">
                 <div className="container">
@@ -184,7 +184,7 @@ const ClaimIncorrectDeductions = () => {
                             >
                               <FaCaretLeft className="fs-20" />
                             </button>{" "}
-                            Checklist for Any Other Claims:
+                            Checklist For Claim Against JCC:
                           </h3>
                           <div className="card-body p-3">
                             <div className="tab-content">
@@ -205,17 +205,8 @@ const ClaimIncorrectDeductions = () => {
                                           value={formData.claimType}
                                           onChange={handleChange}
                                         >
-                                          <option value="">
-                                            Choose Your Claim Type
-                                          </option>
-                                          <option value="bill-incorrect-deductions">
-                                            Checklist for Incorrect Deductions
-                                          </option>
-                                          <option value="ld-penalty-refund">
-                                            Checklist for LD-Penalty Refund
-                                          </option>
-                                          <option value="other-retentions">
-                                            Other Retentions
+                                          <option value="claim-against-jcc">
+                                            Claim Against JCC
                                           </option>
                                         </select>
                                       </td>
@@ -527,4 +518,4 @@ const ClaimIncorrectDeductions = () => {
   );
 };
 
-export default ClaimIncorrectDeductions;
+export default ClaimAgainstJCCubmission;
