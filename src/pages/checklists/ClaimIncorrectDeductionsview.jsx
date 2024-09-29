@@ -15,6 +15,7 @@ const ClaimIncorrectDeductionsview = () => {
   const { user, token } = useSelector((state) => state.auth);
   const { id } = useParams();
   const navigate = useNavigate();
+  const [gstData, setGstData] = useState();
 
   const getData = async () => {
     try {
@@ -34,8 +35,27 @@ const ClaimIncorrectDeductionsview = () => {
     }
   };
 
+  const getGstData = async () => {
+    try {
+      const response = await apiCallBack(
+        "GET",
+        `getFilteredData?$tableName=lfa1&$select=ort02&$filter={"lifnr":"${user?.vendor_code}"}`,
+        null,
+        token
+      );
+      if (response?.status) {
+        setGstData(response?.data[0]);
+
+        // setInvoiceData(JSON.parse(response?.data[0]?.icgrn_nos));
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
+
   useEffect(() => {
     getData();
+    getGstData();
   }, []);
   return (
     <>
@@ -89,7 +109,9 @@ const ClaimIncorrectDeductionsview = () => {
                                     <tr>
                                       <td>GSTIN (Registration no) :</td>
                                       <td className="btn_value">
-                                        {"{GSTIN Number}"}
+                                        {gstData?.ort02
+                                          ? gstData.ort02
+                                          : "No GSTIN number"}
                                       </td>
                                     </tr>
                                     <tr>
@@ -119,42 +141,100 @@ const ClaimIncorrectDeductionsview = () => {
                                     {/* Row 1 */}
                                     <tr>
                                       <td>
-                                        <div className="btn_value">{}</div>
+                                        <div className="btn_value">
+                                          {data?.ref_invoice1_no}
+                                        </div>
                                       </td>
-                                      <td>{}</td>
-                                      <td>{}</td>
-                                      <td>{}</td>
+                                      <td>{data?.ref_invoice1_amount}</td>
+                                      <td>{data?.ref_invoice1_remarks}</td>
+                                      <td>
+                                        {" "}
+                                        {data?.ref_invoice1_file && (
+                                          <div style={{ marginTop: "8px" }}>
+                                            <a
+                                              href={`${process.env.REACT_APP_PDF_URL}btns/${data?.ref_invoice1_file}`}
+                                              target="_blank"
+                                              rel="noreferrer"
+                                            >
+                                              VIEW
+                                            </a>
+                                          </div>
+                                        )}
+                                      </td>
                                     </tr>
 
                                     {/* Repeat similar rows for Invoice 2, 3, and 4 */}
                                     {/* Row 2 */}
                                     <tr>
                                       <td>
-                                        <div className="btn_value">{}</div>
+                                        <div className="btn_value">
+                                          {data?.ref_invoice2_no}
+                                        </div>
                                       </td>
-                                      <td>{}</td>
-                                      <td>{}</td>
-                                      <td>{}</td>
+                                      <td>{data?.ref_invoice2_amount}</td>
+                                      <td>{data?.ref_invoice2_remarks}</td>
+                                      <td>
+                                        {" "}
+                                        {data?.ref_invoice2_file && (
+                                          <div style={{ marginTop: "8px" }}>
+                                            <a
+                                              href={`${process.env.REACT_APP_PDF_URL}btns/${data?.ref_invoice2_file}`}
+                                              target="_blank"
+                                              rel="noreferrer"
+                                            >
+                                              VIEW
+                                            </a>
+                                          </div>
+                                        )}
+                                      </td>
                                     </tr>
-
                                     {/* Row 3 */}
                                     <tr>
                                       <td>
-                                        <div className="btn_value">{}</div>
+                                        <div className="btn_value">
+                                          {data?.ref_invoice3_no}
+                                        </div>
                                       </td>
-                                      <td>{}</td>
-                                      <td>{}</td>
-                                      <td>{}</td>
+                                      <td>{data?.ref_invoice3_amount}</td>
+                                      <td>{data?.ref_invoice3_remarks}</td>
+                                      <td>
+                                        {" "}
+                                        {data?.ref_invoice3_file && (
+                                          <div style={{ marginTop: "8px" }}>
+                                            <a
+                                              href={`${process.env.REACT_APP_PDF_URL}btns/${data?.ref_invoice3_file}`}
+                                              target="_blank"
+                                              rel="noreferrer"
+                                            >
+                                              VIEW
+                                            </a>
+                                          </div>
+                                        )}
+                                      </td>
                                     </tr>
-
                                     {/* Row 4 */}
                                     <tr>
                                       <td>
-                                        <div className="btn_value">{}</div>
+                                        <div className="btn_value">
+                                          {data?.ref_invoice4_no}
+                                        </div>
                                       </td>
-                                      <td>{}</td>
-                                      <td>{}</td>
-                                      <td>{}</td>
+                                      <td>{data?.ref_invoice4_amount}</td>
+                                      <td>{data?.ref_invoice4_remarks}</td>
+                                      <td>
+                                        {" "}
+                                        {data?.ref_invoice4_file && (
+                                          <div style={{ marginTop: "8px" }}>
+                                            <a
+                                              href={`${process.env.REACT_APP_PDF_URL}btns/${data?.ref_invoice4_file}`}
+                                              target="_blank"
+                                              rel="noreferrer"
+                                            >
+                                              VIEW
+                                            </a>
+                                          </div>
+                                        )}
+                                      </td>
                                     </tr>
 
                                     {/* Total Claim Amount */}
