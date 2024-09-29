@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import SideBar from "../../components/SideBar";
 import Header from "../../components/Header";
@@ -15,6 +15,8 @@ const ClaimIncorrectDeductions = () => {
   const navigate = useNavigate();
   const { user, token } = useSelector((state) => state.auth);
   console.log(user, "useruser");
+  const [gstData, setGstData] = useState();
+  console.log(gstData, "gstData");
 
   const [formData, setFormData] = useState({
     ref_invoice1_no: "",
@@ -38,6 +40,26 @@ const ClaimIncorrectDeductions = () => {
     invoiceDate: null,
   });
 
+  const getData = async () => {
+    try {
+      const response = await apiCallBack(
+        "GET",
+        `getFilteredData?$tableName=lfa1&$select=ort02&$filter={"lifnr":"${user?.vendor_code}"}`,
+        null,
+        token
+      );
+      if (response?.status) {
+        setGstData(response?.data[0]);
+
+        // setInvoiceData(JSON.parse(response?.data[0]?.icgrn_nos));
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
+  useEffect(() => {
+    getData();
+  }, []);
   const handleChange = (e) => {
     const { name, value, files } = e.target;
     setFormData((prevData) => ({
@@ -235,7 +257,9 @@ const ClaimIncorrectDeductions = () => {
                                     <tr>
                                       <td>GSTIN (Registration no) :</td>
                                       <td className="btn_value">
-                                        {"{GSTIN Number}"}
+                                        {gstData?.ort02
+                                          ? gstData.ort02
+                                          : "No GSTIN number"}
                                       </td>
                                     </tr>
                                     <tr>
