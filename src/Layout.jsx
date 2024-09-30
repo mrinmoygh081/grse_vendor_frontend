@@ -168,7 +168,7 @@ function Layout() {
 
         {/* Advance Checklist  */}
         <Route
-          path="/checklist/advance-bill-hybrid/:id"
+          path="/checklist/bill-advance-payment/:id"
           element={<AdvanceBillHybrid />}
         />
         <Route
