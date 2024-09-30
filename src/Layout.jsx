@@ -72,6 +72,7 @@ import QapDrawing from "./pages/dashboard/QapDrawing";
 import ClaimAgainstJCCubmission from "./pages/checklists/ClaimAgainstJCCubmission";
 import ClaimIncorrectDeductionsview from "./pages/checklists/ClaimIncorrectDeductionsview";
 import ClaimIncorrectDeductionsEdit from "./pages/checklists/ClaimIncorrectDeductionsEdit";
+import AnyOtherClaim from "./pages/checklists/AnyOtherClaim";
 
 function Layout() {
   const { token, isLoggedIn, user } = useSelector((state) => state.auth);
@@ -200,16 +201,13 @@ function Layout() {
         />
 
         {/* Any Other Claim Checklist  */}
-        <Route
-          path="/checklist/any-other/:id"
-          element={<ClaimIncorrectDeductions />}
-        />
+        <Route path="/checklist/any-other/:id" element={<AnyOtherClaim />} />
         <Route
           path="/checklist/any-other/view/:id"
           element={<ClaimIncorrectDeductionsview />}
         />
         <Route
-          path="/checklist/any-other/view/:id"
+          path="/checklist/any-other/edit/:id"
           element={<ClaimIncorrectDeductionsview />}
         />
 
