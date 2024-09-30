@@ -168,15 +168,15 @@ function Layout() {
           element={<ClaimIncorrectDeductions />}
         />
         <Route
-          path="/checklist/advance-bill-hybrid/:id"
+          path="/checklist/bill-advance-payment/:id"
           element={<AdvanceBillHybrid />}
         />
         <Route
-          path="/checklist/advance-bill-hybrid/view/:id"
+          path="/checklist/bill-advance-payment/view/:id"
           element={<AdvanceBillHybridView />}
         />
         <Route
-          path="/checklist/advance-bill-hybrid/edit/:id"
+          path="/checklist/bill-advance-payment/edit/:id"
           element={<AdvanceBillHybridEdit />}
         />
         <Route
