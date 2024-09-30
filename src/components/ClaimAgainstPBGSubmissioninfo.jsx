@@ -11,12 +11,15 @@ import { TailSpin } from "react-loader-spinner";
 
 const ClaimAgainstPBGSubmissioninfo = ({ setNetPayableAmount }) => {
   const [data, setData] = useState(null);
+  const [datapbg, setDatapbg] = useState(null);
   const [InvoiceData, setInvoiceData] = useState(null);
   const [loadingtable, setLoadingtable] = useState(false);
   const { state } = useLocation();
   const { user, token } = useSelector((state) => state.auth);
   const { id } = useParams();
   const navigate = useNavigate();
+  console.log(datapbg, "datapbg");
+
   const getData = async () => {
     setLoadingtable(true);
     try {
@@ -39,9 +42,25 @@ const ClaimAgainstPBGSubmissioninfo = ({ setNetPayableAmount }) => {
       setLoadingtable(false);
     }
   };
+  const getDataPBG = async () => {
+    try {
+      const d = await apiCallBack(
+        "GET",
+        `po/btn/getBTNData?id=${id}`,
+        null,
+        token
+      );
+      if (d?.status) {
+        setDatapbg(d?.data);
+      }
+    } catch (error) {
+      console.error("Error fetching WDC list:", error);
+    }
+  };
 
   useEffect(() => {
     getData();
+    getDataPBG();
   }, []);
 
   return (
@@ -124,8 +143,8 @@ const ClaimAgainstPBGSubmissioninfo = ({ setNetPayableAmount }) => {
                   <tr>
                     <td>PBG</td>
                     <td className="btn_value">
-                      {checkTypeArr(data?.pbg_filename)
-                        ? data?.pbg_filename.map((item, i) => {
+                      {checkTypeArr(datapbg?.pbg_filename)
+                        ? datapbg?.pbg_filename.map((item, i) => {
                             return (
                               <a
                                 key={i}
