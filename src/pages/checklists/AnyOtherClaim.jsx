@@ -44,7 +44,7 @@ const AnyOtherClaim = () => {
     try {
       const response = await apiCallBack(
         "GET",
-        `getFilteredData?$tableName=lfa1&$select=ort02&$filter={"lifnr":"${user?.vendor_code}"}`,
+        `getFilteredData?$tableName=lfa1&$select=stcd3&$filter={"lifnr":"${user?.vendor_code}"}`,
         null,
         token
       );
@@ -257,8 +257,8 @@ const AnyOtherClaim = () => {
                                     <tr>
                                       <td>GSTIN (Registration no) :</td>
                                       <td className="btn_value">
-                                        {gstData?.ort02
-                                          ? gstData.ort02
+                                        {gstData?.stcd3
+                                          ? gstData.stcd3
                                           : "No GSTIN number"}
                                       </td>
                                     </tr>

@@ -181,7 +181,7 @@ const Checklist = () => {
                               <option value="claim-against-jcc">
                                 Claim Against JCC
                               </option>
-                              <option value="bill-incorrect-deductions">
+                              <option value="any-other">
                                 Checklist for Any Other Claims
                               </option>
                             </select>
@@ -259,18 +259,17 @@ const Checklist = () => {
                                                     firstItem.btn_type ===
                                                     "bill-incorrect-deductions"
                                                   ) {
-                                                    type =
-                                                      "bill-incorrect-deductions";
+                                                    type = "any-other";
                                                   } else if (
                                                     firstItem.btn_type ===
                                                     "ld-penalty-refund"
                                                   ) {
-                                                    type = "ld-penalty-refund";
+                                                    type = "any-other";
                                                   } else if (
                                                     firstItem.btn_type ===
                                                     "other-retentions"
                                                   ) {
-                                                    type = "other-retentions";
+                                                    type = "any-other";
                                                   }
 
                                                   navigate(
