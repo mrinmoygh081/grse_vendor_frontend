@@ -72,6 +72,7 @@ import QapDrawing from "./pages/dashboard/QapDrawing";
 import ClaimAgainstJCCubmission from "./pages/checklists/ClaimAgainstJCCubmission";
 import ClaimIncorrectDeductionsview from "./pages/checklists/ClaimIncorrectDeductionsview";
 import ClaimIncorrectDeductionsEdit from "./pages/checklists/ClaimIncorrectDeductionsEdit";
+import AnyOtherClaim from "./pages/checklists/AnyOtherClaim";
 
 function Layout() {
   const { token, isLoggedIn, user } = useSelector((state) => state.auth);
@@ -137,6 +138,7 @@ function Layout() {
         <Route path="/hr-compliance/:id" element={<HrCompliance />} />
         <Route path="/shipping-documents/:id" element={<Shippingdocuments />} />
         <Route path="/gate-in/:id" element={<GateInSub />} />
+        {/* Material Checklist  */}
         <Route
           path="/checklist/hybrid-bill-material/:id"
           element={<BillsMaterialHybrid />}
@@ -149,6 +151,7 @@ function Layout() {
           path="/checklist/hybrid-bill-material/view/:id"
           element={<BillsMaterialHybridView />}
         />
+        {/* Service Checklist  */}
         <Route
           path="/checklist/contract-bill-service/:id"
           element={<ServiceContractBills />}
@@ -162,11 +165,53 @@ function Layout() {
           path="/checklist/bill-service/edit/:id"
           element={<ServiceContractBillsEdit />}
         />
-        {/* <Route
-          path="/checklist/bill-incorrect-deductions/:id"
-          element={<ClaimIncorrectDeductions />}
-        /> */}
+
+        {/* Advance Checklist  */}
         <Route
+          path="/checklist/advance-bill-hybrid/:id"
+          element={<AdvanceBillHybrid />}
+        />
+        <Route
+          path="/checklist/bill-advance-payment/view/:id"
+          element={<AdvanceBillHybridView />}
+        />
+        <Route
+          path="/checklist/bill-advance-payment/edit/:id"
+          element={<AdvanceBillHybridEdit />}
+        />
+
+        {/* Claim Against PBG Checklist  */}
+        <Route
+          path="/checklist/claim-against-pbg/:id"
+          element={<ClaimAgainstPBGSubmission />}
+        />
+        <Route
+          path="/checklist/claim-against-pbg/view/:id"
+          element={<ClaimAgainstPBGSubmissionView />}
+        />
+        <Route
+          path="/checklist/claim-against-pbg/edit/:id"
+          element={<ClaimAgainstPBGSubmissionEdit />}
+        />
+
+        {/* JCC Checklist */}
+        <Route
+          path="/checklist/claim-against-jcc/:id"
+          element={<ClaimAgainstJCCubmission />}
+        />
+
+        {/* Any Other Claim Checklist  */}
+        <Route path="/checklist/any-other/:id" element={<AnyOtherClaim />} />
+        <Route
+          path="/checklist/any-other/view/:id"
+          element={<ClaimIncorrectDeductionsview />}
+        />
+        <Route
+          path="/checklist/any-other/edit/:id"
+          element={<ClaimIncorrectDeductionsview />}
+        />
+
+        {/* <Route
           path="/checklist/bill-incorrect-deductions/:id"
           element={<ClaimIncorrectDeductions />}
         />
@@ -195,54 +240,17 @@ function Layout() {
           path="/checklist/other-retentions/edit/:id"
           element={<ClaimIncorrectDeductionsEdit />}
         />
-        <Route
-          path="/checklist/advance-bill-hybrid/:id"
-          element={<AdvanceBillHybrid />}
-        />
-        <Route
-          path="/checklist/advance-bill-hybrid/view/:id"
-          element={<AdvanceBillHybridView />}
-        />
-        <Route
-          path="/checklist/advance-bill-hybrid/edit/:id"
-          element={<AdvanceBillHybridEdit />}
-        />
-        <Route
-          path="/checklist/claim-against-jcc/:id"
-          element={<ClaimAgainstJCCubmission />}
-        />
-        <Route
-          path="/checklist/claim-against-pbg/:id"
-          element={<ClaimAgainstPBGSubmission />}
-        />
-        <Route
-          path="/checklist/claim-against-pbg/view/:id"
-          element={<ClaimAgainstPBGSubmissionView />}
-        />
-        <Route
-          path="/checklist/claim-against-pbg/edit/:id"
-          element={<ClaimAgainstPBGSubmissionEdit />}
-        />
+        
+        
+        
         <Route
           path="/checklist/ld-penalty-refund/:id"
           element={<LDPenaltyRefund />}
-        />
+        /> */}
         <Route path="/bill-registration-number/:id" element={<BRNSub />} />
         <Route path="/payment-advise/:id" element={<PaymentAdvisesSub />} />
         <Route path="/pbg-upload/:id" element={<PBGuploadSub />} />
         <Route path="/bg-extension" element={<BGExtensionSub />} />
-        {/* {user?.department_id === 3 && (
-          <Route path="/dashboard/qa" element={<QapDashboard />} />
-        )}
-        {user?.department_id === 2 && (
-          <Route path="/dashboard/drawing" element={<QapDrawing />} />
-        )}
-        {user?.department_id === 15 && (
-          <>
-            <Route path="/dashboard/bg" element={<BGfinance />} />
-            <Route path="/dashboard/btn" element={<BTNfinance />} />
-          </>
-        )} */}
         {(user?.department_id === 3 || user?.department_id === 1) && (
           <Route path="/dashboard/qa" element={<QapDashboard />} />
         )}

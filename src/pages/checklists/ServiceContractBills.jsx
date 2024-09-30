@@ -159,10 +159,18 @@ const ServiceContractBills = () => {
     );
     if (d?.status) {
       setData({ ...data, wdcDetails: d?.data });
+    } else {
+      setData({ ...data, wdcDetails: null });
     }
   };
 
-  console.log(data);
+  useEffect(() => {
+    if (form?.wdc_number || form?.wdc_number !== "") {
+      checkWDCDetails();
+    }
+  }, [form?.wdc_number]);
+
+  console.log("data", data);
 
   return (
     <>
@@ -214,7 +222,7 @@ const ServiceContractBills = () => {
                                       </td>
                                     </tr>
                                     <tr>
-                                      <td>WDC no:</td>
+                                      <td>WDC/JCC no:</td>
                                       <td className="btn_value">
                                         <Select
                                           className="basic-single w_250"
