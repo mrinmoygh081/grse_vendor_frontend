@@ -205,13 +205,14 @@ function Layout() {
         {/* Any Other Claim Checklist  */}
         <Route path="/checklist/any-other/:id" element={<AnyOtherClaim />} />
         <Route
-          path="/checklist/any-other/:id"
+          path="/checklist/any-other/view/:id"
           element={<AnyOtherClaimview />}
         />
         <Route
-          path="/checklist/any-other/:id"
+          path="/checklist/any-other/edit/:id"
           element={<AnyOtherClaimviewEdit />}
         />
+
         <Route
           path="/checklist/any-other/view/:id"
           element={<ClaimIncorrectDeductionsview />}
