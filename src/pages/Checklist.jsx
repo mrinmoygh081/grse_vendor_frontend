@@ -308,21 +308,34 @@ const Checklist = () => {
                                                   "hybrid-bill-material",
                                                   "claim-against-pbg",
                                                   "bill-incorrect-deductions",
-                                                  "other-retentions",
                                                   "ld-penalty-refund",
+                                                  "other-retentions",
                                                 ].includes(
                                                   firstItem.btn_type
                                                 ) && (
                                                   <button
                                                     className="btn btn-sm btn-primary m-1"
                                                     onClick={() => {
+                                                      let type =
+                                                        firstItem.btn_type;
+
+                                                      if (
+                                                        firstItem.btn_type ===
+                                                          "bill-incorrect-deductions" ||
+                                                        firstItem.btn_type ===
+                                                          "ld-penalty-refund" ||
+                                                        firstItem.btn_type ===
+                                                          "other-retentions"
+                                                      ) {
+                                                        type = "any-other"; // Use "any-other" route for these types
+                                                      }
+
                                                       if (id) {
-                                                        // Ensure id exists before navigating
                                                         navigate(
-                                                          `/checklist/${firstItem.btn_type}/edit/${id}`,
+                                                          `/checklist/${type}/edit/${id}`,
                                                           {
                                                             state:
-                                                              firstItem?.btn_num, // Pass btn_num in state
+                                                              firstItem?.btn_num,
                                                           }
                                                         );
                                                       }
