@@ -39,7 +39,7 @@ const AnyOtherClaimview = () => {
     try {
       const response = await apiCallBack(
         "GET",
-        `getFilteredData?$tableName=lfa1&$select=stcd3&$filter={"lifnr":"${user?.vendor_code}"}`,
+        `po/btn/getGstnByPo?poNo=${id}`,
         null,
         token
       );
