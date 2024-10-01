@@ -44,7 +44,7 @@ const AnyOtherClaim = () => {
     try {
       const response = await apiCallBack(
         "GET",
-        `getFilteredData?$tableName=lfa1&$select=stcd3&$filter={"lifnr":"${user?.vendor_code}"}`,
+        `po/btn/getGstnByPo?poNo=${id}`,
         null,
         token
       );
@@ -69,7 +69,6 @@ const AnyOtherClaim = () => {
   };
 
   const handleSubmit = async () => {
-    // Validation: At least one Reference Invoice No must be filled
     const refInvoices = [
       {
         no: formData.ref_invoice1_no,
@@ -97,7 +96,6 @@ const AnyOtherClaim = () => {
       },
     ];
 
-    // Check if at least one Reference Invoice No is filled
     const isAnyInvoiceFilled = refInvoices.some((invoice) => invoice.no);
 
     if (!isAnyInvoiceFilled) {
@@ -105,7 +103,6 @@ const AnyOtherClaim = () => {
       return;
     }
 
-    // Check for mandatory fields when a Reference Invoice No is provided
     for (let i = 0; i < refInvoices.length; i++) {
       const invoice = refInvoices[i];
       if (
@@ -121,10 +118,23 @@ const AnyOtherClaim = () => {
       }
     }
 
-    // Create a new FormData object
+    if (!formData.claimType) {
+      toast.error("Claim Type is required.");
+      return;
+    }
+
+    if (!formData.invoiceReferenceNo) {
+      toast.error("Invoice/Letter Reference No. is required.");
+      return;
+    }
+
+    if (!formData.invoiceDate) {
+      toast.error("Invoice/Letter Date is required.");
+      return;
+    }
+
     const fDToSend = new FormData();
 
-    // Append all form fields to FormData
     fDToSend.append("purchasing_doc_no", id);
     fDToSend.append("ref_invoice1_no", formData.ref_invoice1_no);
     fDToSend.append("ref_invoice1_amount", formData.ref_invoice1_amount);
@@ -158,7 +168,6 @@ const AnyOtherClaim = () => {
     fDToSend.append("btn_type", formData.claimType);
 
     try {
-      // Send form-data to API
       const response = await apiCallBack(
         "POST",
         "po/btn/submitIncorrectDuct",
@@ -166,21 +175,19 @@ const AnyOtherClaim = () => {
         token
       );
 
-      // Handle successful response
       toast.success("Success:", response.data);
       navigate(`/invoice-and-payment-process/${id}`);
     } catch (error) {
-      // Handle error
       console.error("Error submitting form:", error);
     }
   };
 
-  // Calculate total claim amount
-  const totalClaimAmount =
+  const totalClaimAmount = (
     Number(formData.ref_invoice1_amount || 0) +
     Number(formData.ref_invoice2_amount || 0) +
     Number(formData.ref_invoice3_amount || 0) +
-    Number(formData.ref_invoice4_amount || 0);
+    Number(formData.ref_invoice4_amount || 0)
+  ).toFixed(2);
 
   return (
     <>
