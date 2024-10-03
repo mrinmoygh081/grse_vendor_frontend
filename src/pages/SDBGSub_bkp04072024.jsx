@@ -31,11 +31,7 @@ import jsPDF from "jspdf";
 import { checkTypeArr } from "../utils/smallFun";
 import { convertToEpoch, formatDate } from "../utils/getDateTimeNow";
 import DynamicButton from "../Helpers/DynamicButton";
-import {
-  ASSIGNER,
-  USER_GRSE_FINANCE,
-  USER_VENDOR,
-} from "../constants/userConstants";
+import { ASSIGNER, DEPT_FI, USER_VENDOR } from "../constants/userConstants";
 import SkeletonLoader from "../loader/SkeletonLoader";
 
 const SDBGSub = () => {
@@ -1628,7 +1624,7 @@ const SDBGSub = () => {
 
       {/* for finance officer and Assigner  */}
       {userType !== USER_VENDOR &&
-        user.department_id === USER_GRSE_FINANCE &&
+        user.department_id === DEPT_FI &&
         user.internal_role_id === ASSIGNER && (
           <div className={isAssignPopup ? "popup active" : "popup"}>
             <div className="card card-xxl-stretch mb-5 mb-xxl-8">
