@@ -15,7 +15,7 @@ import { TailSpin } from "react-loader-spinner";
 import { activityOptions } from "../data/btnData";
 import SkeletonLoader from "../loader/SkeletonLoader";
 import DynamicButton from "../Helpers/DynamicButton";
-import { ASSIGNER, USER_GRSE_FINANCE } from "../constants/userConstants";
+import { ASSIGNER, DEPT_FI } from "../constants/userConstants";
 
 const Checklist = () => {
   const { id } = useParams();
@@ -283,7 +283,7 @@ const Checklist = () => {
                                                 VIEW
                                               </button>
                                               {user?.department_id ===
-                                                USER_GRSE_FINANCE &&
+                                                DEPT_FI &&
                                                 user?.internal_role_id ===
                                                   ASSIGNER && (
                                                   <button

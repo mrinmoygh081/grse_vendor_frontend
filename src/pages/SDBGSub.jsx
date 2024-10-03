@@ -34,11 +34,7 @@ import jsPDF from "jspdf";
 import { checkTypeArr } from "../utils/smallFun";
 import { convertToEpoch, formatDate } from "../utils/getDateTimeNow";
 import DynamicButton from "../Helpers/DynamicButton";
-import {
-  ASSIGNER,
-  USER_GRSE_FINANCE,
-  USER_VENDOR,
-} from "../constants/userConstants";
+import { ASSIGNER, DEPT_FI, USER_VENDOR } from "../constants/userConstants";
 import SkeletonLoader from "../loader/SkeletonLoader";
 import { FaDownload } from "react-icons/fa";
 
@@ -586,7 +582,7 @@ const SDBGSub = () => {
                         {user?.user_type !== ASSIGNER && (
                           <>
                             {/* Finance Head (deptid = 15 and internal_role_Id 1) */}
-                            {user?.department_id === USER_GRSE_FINANCE &&
+                            {user?.department_id === DEPT_FI &&
                               user?.internal_role_id === ASSIGNER && (
                                 <>
                                   <p className="m-0 p-2">
@@ -632,8 +628,7 @@ const SDBGSub = () => {
                                   <th className="min-w-150px">Remarks</th>
                                   <th>Status</th>
                                   {(isDO ||
-                                    user?.department_id ===
-                                      USER_GRSE_FINANCE) && (
+                                    user?.department_id === DEPT_FI) && (
                                     <th className="min-w-150px">Action</th>
                                   )}
                                 </tr>
@@ -707,7 +702,7 @@ const SDBGSub = () => {
                                                         ite.some(
                                                           (data) =>
                                                             user?.department_id ===
-                                                              USER_GRSE_FINANCE &&
+                                                              DEPT_FI &&
                                                             data.status !==
                                                               "ASSIGNED"
                                                         )) ||
@@ -1341,8 +1336,7 @@ const SDBGSub = () => {
       )}
 
       {/* for finance officer  */}
-      {(user?.department_id === USER_GRSE_FINANCE ||
-        user.user_type === USER_VENDOR) && (
+      {(user?.department_id === DEPT_FI || user.user_type === USER_VENDOR) && (
         <div className={isCheckEntryPopup ? "popup active" : "popup"}>
           <div className="card card-xxl-stretch mb-5 mb-xxl-8">
             <div className="card-header border-0 pt-5">
@@ -1381,7 +1375,7 @@ const SDBGSub = () => {
                       <p>{formDatainput?.bg_file_no}</p>
                     ) : (
                       <>
-                        {user?.department_id === USER_GRSE_FINANCE ? (
+                        {user?.department_id === DEPT_FI ? (
                           <input
                             type="text"
                             className="form-control"
@@ -1778,7 +1772,7 @@ const SDBGSub = () => {
                 />
               </div>
             )} */}
-                {user?.department_id === USER_GRSE_FINANCE && (
+                {user?.department_id === DEPT_FI && (
                   <>
                     <div className="col-12">
                       <div className="mb-3 d-flex justify-content-between">
@@ -1864,7 +1858,7 @@ const SDBGSub = () => {
 
       {/* for finance officer and Assigner  */}
       {userType !== USER_VENDOR &&
-        user.department_id === USER_GRSE_FINANCE &&
+        user.department_id === DEPT_FI &&
         user.internal_role_id === ASSIGNER && (
           <div className={isAssignPopup ? "popup active" : "popup"}>
             <div className="card card-xxl-stretch mb-5 mb-xxl-8">
