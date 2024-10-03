@@ -5,7 +5,14 @@ import { useDispatch, useSelector } from "react-redux";
 import { reConfirm } from "../utils/reConfirm";
 import { logoutHandler } from "../redux/slices/loginSlice";
 import { poRemoveHandler } from "../redux/slices/poSlice";
-import { ASSIGNER, DEPT_IT } from "../constants/userConstants";
+import {
+  ASSIGNER,
+  DEPT_DESIGN,
+  DEPT_FI,
+  DEPT_IT,
+  DEPT_QAP,
+  USER_VENDOR,
+} from "../constants/userConstants";
 import { toast } from "react-toastify";
 import DynamicButton from "../Helpers/DynamicButton";
 import { apiCallBack } from "../utils/fetchAPIs";
@@ -20,8 +27,6 @@ const MainHeader = ({ title }) => {
     new_pw: "",
     confirm_pw: "",
   });
-  console.log("user", user.department_id);
-  console.log("user", DEPT_IT);
 
   const logOutFun = () => {
     dispatch(logoutHandler());
@@ -43,7 +48,8 @@ const MainHeader = ({ title }) => {
   const renderDashboardLinks = () => {
     return (
       <>
-        {(user?.department_id === DEPT_IT || user?.department_id === 3) && (
+        {(user?.department_id === DEPT_IT ||
+          user?.department_id === DEPT_QAP) && (
           <>
             <li className="nav-item">
               <Link className="nav-link text-black" to={`/dashboard/qa`}>
@@ -52,7 +58,8 @@ const MainHeader = ({ title }) => {
             </li>
           </>
         )}
-        {(user?.department_id === DEPT_IT || user?.department_id === 15) && (
+        {(user?.department_id === DEPT_IT ||
+          user?.department_id === DEPT_FI) && (
           <>
             <li className="nav-item">
               <Link className="nav-link text-black" to={`/dashboard/bg`}>
@@ -66,7 +73,8 @@ const MainHeader = ({ title }) => {
             </li>
           </>
         )}
-        {(user?.department_id === DEPT_IT || user?.department_id === 2) && (
+        {(user?.department_id === DEPT_IT ||
+          user?.department_id === DEPT_DESIGN) && (
           <>
             <li className="nav-item">
               <Link className="nav-link text-black" to={`/dashboard/drawing`}>
@@ -138,15 +146,16 @@ const MainHeader = ({ title }) => {
                   </Link>
                 </li>
               )}
-              {renderDashboardLinks()}
-              {user?.user_type !== 1 && user?.internal_role_id === ASSIGNER && (
-                <li className="nav-item">
-                  <Link className="nav-link text-black" to={`/authorisation`}>
-                    <FaCog className="me-2" />
-                    AUTHORIZATION
-                  </Link>
-                </li>
-              )}
+              {user?.user_type !== USER_VENDOR && renderDashboardLinks()}
+              {user?.user_type !== USER_VENDOR &&
+                user?.internal_role_id === ASSIGNER && (
+                  <li className="nav-item">
+                    <Link className="nav-link text-black" to={`/authorisation`}>
+                      <FaCog className="me-2" />
+                      AUTHORIZATION
+                    </Link>
+                  </li>
+                )}
               <li className="nav-item">
                 <Link
                   className="nav-link text-black"
