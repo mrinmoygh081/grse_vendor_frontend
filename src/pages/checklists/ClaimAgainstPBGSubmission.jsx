@@ -412,9 +412,13 @@ const ClaimAgainstPBGSubmission = () => {
       );
 
       // Add invoice date to the payload
+      // formDataToSend.append(
+      //   "invoice_date",
+      //   invoiceDate ? invoiceDate.toISOString().split("T")[0] : ""
+      // );
       formDataToSend.append(
         "invoice_date",
-        invoiceDate ? invoiceDate.toISOString().split("T")[0] : ""
+        invoiceDate ? Math.floor(new Date(invoiceDate).getTime() / 1000) : ""
       );
 
       const response = await apiCallBack(

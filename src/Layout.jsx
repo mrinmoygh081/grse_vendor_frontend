@@ -73,6 +73,8 @@ import ClaimAgainstJCCubmission from "./pages/checklists/ClaimAgainstJCCubmissio
 import ClaimIncorrectDeductionsview from "./pages/checklists/ClaimIncorrectDeductionsview";
 import ClaimIncorrectDeductionsEdit from "./pages/checklists/ClaimIncorrectDeductionsEdit";
 import AnyOtherClaim from "./pages/checklists/AnyOtherClaim";
+import AnyOtherClaimview from "./pages/checklists/AnyOtherClaimview";
+import AnyOtherClaimviewEdit from "./pages/checklists/AnyOtherClaimviewEdit";
 
 function Layout() {
   const { token, isLoggedIn, user } = useSelector((state) => state.auth);
@@ -202,6 +204,15 @@ function Layout() {
 
         {/* Any Other Claim Checklist  */}
         <Route path="/checklist/any-other/:id" element={<AnyOtherClaim />} />
+        <Route
+          path="/checklist/any-other/view/:id"
+          element={<AnyOtherClaimview />}
+        />
+        <Route
+          path="/checklist/any-other/edit/:id"
+          element={<AnyOtherClaimviewEdit />}
+        />
+
         <Route
           path="/checklist/any-other/view/:id"
           element={<ClaimIncorrectDeductionsview />}

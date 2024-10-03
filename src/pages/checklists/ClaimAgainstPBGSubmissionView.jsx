@@ -15,6 +15,7 @@ const ClaimAgainstPBGSubmissionView = () => {
   const { user, token } = useSelector((state) => state.auth);
   const { id } = useParams();
   const navigate = useNavigate();
+  const [datapbg, setDatapbg] = useState(null);
 
   // Fetch Data Function
   const getData = async () => {
@@ -34,6 +35,27 @@ const ClaimAgainstPBGSubmissionView = () => {
       console.error("Error fetching data:", error);
     }
   };
+
+  const getDatapbg = async () => {
+    try {
+      const d = await apiCallBack(
+        "GET",
+        `po/btn/getBTNData?id=${id}`,
+        null,
+        token
+      );
+      if (d?.status) {
+        setDatapbg(d?.data);
+      }
+    } catch (error) {
+      console.error("Error fetching WDC list:", error);
+    }
+  };
+
+  useEffect(() => {
+    getData();
+    getDatapbg();
+  }, []);
 
   useEffect(() => {
     getData();
@@ -126,8 +148,8 @@ const ClaimAgainstPBGSubmissionView = () => {
                                     <tr>
                                       <td>PBG</td>
                                       <td className="btn_value">
-                                        {checkTypeArr(data?.pbg_filename)
-                                          ? data?.pbg_filename.map(
+                                        {checkTypeArr(datapbg?.pbg_filename)
+                                          ? datapbg?.pbg_filename.map(
                                               (item, i) => {
                                                 return (
                                                   <a

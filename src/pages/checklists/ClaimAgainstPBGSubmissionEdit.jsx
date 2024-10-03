@@ -26,6 +26,7 @@ const ClaimAgainstPBGSubmissionEdit = () => {
   const [emp, setEmp] = useState([]);
   const [doForm, setDoForm] = useState(initialDODataPBG);
   const [netPayableAmount, setNetPayableAmount] = useState("");
+  const [datapbg, setDatapbg] = useState(null);
 
   useEffect(() => {
     const getEmp = async () => {
@@ -53,6 +54,26 @@ const ClaimAgainstPBGSubmissionEdit = () => {
 
     getEmp();
   }, [token]);
+
+  const getDataPBG = async () => {
+    try {
+      const d = await apiCallBack(
+        "GET",
+        `po/btn/getBTNData?id=${id}`,
+        null,
+        token
+      );
+      if (d?.status) {
+        setDatapbg(d?.data);
+      }
+    } catch (error) {
+      console.error("Error fetching WDC list:", error);
+    }
+  };
+
+  useEffect(() => {
+    getDataPBG();
+  }, []);
 
   const handleSubmit = async (status) => {
     if (!doForm.assign_to) {
