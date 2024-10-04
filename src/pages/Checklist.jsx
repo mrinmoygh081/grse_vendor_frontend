@@ -89,6 +89,12 @@ const Checklist = () => {
           uri = "assignToFiStaff";
         } else if (assign?.btn_type === "claim-against-pbg") {
           uri = "assignToFiStaff";
+        } else if (assign?.btn_type === "bill-incorrect-deductions") {
+          uri = "assignToFiStaff";
+        } else if (assign?.btn_type === "ld-penalty-refund") {
+          uri = "assignToFiStaff";
+        } else if (assign?.btn_type === "other-retentions") {
+          uri = "assignToFiStaff";
         }
         const res = await apiCallBack("POST", `po/btn/${uri}`, assign, token);
         if (res?.status) {
