@@ -73,9 +73,12 @@ const WDCSub = () => {
     status: "",
     work_title: "",
     work_done_by: "",
+    total_amount: "",
     guarantee_defect_liability_start_date: "",
     guarantee_defect_liability_end_date: "",
-    line_item_array: [line_item_fieldswdc],
+    jcc_job_start_date: "",
+    jcc_job_end_date: "",
+    // line_item_array: [line_item_fieldswdc],
   };
 
   const [isPopup, setIsPopup] = useState(false);
@@ -120,6 +123,8 @@ const WDCSub = () => {
   const fileoneInputRef = useRef(null);
   const filetwoInputRef = useRef(null);
   const filethreeInputRef = useRef(null);
+
+  console.log(viewData, "kkkkkkkkkkkkkkk");
 
   // const handleInputChange = (e, index, fieldName) => {
   //   const { value } = e.target;
@@ -376,10 +381,10 @@ const WDCSub = () => {
     try {
       // Copy the current form data to avoid direct mutations
       const formDataCopy = { ...formData };
-  
+
       // Log the initial form data to verify its content
       console.log("Initial Form Data:", formDataCopy);
-  
+
       // Validate if all required fields are filled
       if (
         formDataCopy.certifying_authority &&
@@ -389,57 +394,82 @@ const WDCSub = () => {
         formDataCopy.line_item_array.length > 0
       ) {
         let isValid = true; // Initialize validation flag
-  
+
         // Iterate over each line item for validation
         formDataCopy.line_item_array.forEach((item, index) => {
           console.log(`Validating line item ${index + 1}:`, item);
-  
+
           // Convert fields to strings if they are not strings already
-          const lineItemNo = item.line_item_no ? item.line_item_no.toString().trim() : "";
-          const claimQty = item.claim_qty ? item.claim_qty.toString().trim() : "";
-          const actualStartDate = item.actual_start_date ? item.actual_start_date.toString().trim() : "";
-          const actualCompletionDate = item.actual_completion_date ? item.actual_completion_date.toString().trim() : "";
-          const hinderanceInDays = item.hinderance_in_days !== null && item.hinderance_in_days !== undefined 
-                                    ? item.hinderance_in_days.toString().trim() : "";
-  
+          const lineItemNo = item.line_item_no
+            ? item.line_item_no.toString().trim()
+            : "";
+          const claimQty = item.claim_qty
+            ? item.claim_qty.toString().trim()
+            : "";
+          const actualStartDate = item.actual_start_date
+            ? item.actual_start_date.toString().trim()
+            : "";
+          const actualCompletionDate = item.actual_completion_date
+            ? item.actual_completion_date.toString().trim()
+            : "";
+          const hinderanceInDays =
+            item.hinderance_in_days !== null &&
+            item.hinderance_in_days !== undefined
+              ? item.hinderance_in_days.toString().trim()
+              : "";
+
           // Perform validation checks for each required field
           if (!lineItemNo) {
             toast.warn(`PO Line Item is required for item ${index + 1}`);
             isValid = false;
           }
-  
+
           if (!claimQty || isNaN(claimQty) || parseFloat(claimQty) <= 0) {
-            toast.warn(`Claim Quantity is required and should be a positive number for item ${index + 1}`);
+            toast.warn(
+              `Claim Quantity is required and should be a positive number for item ${
+                index + 1
+              }`
+            );
             isValid = false;
           }
-  
+
           if (!actualStartDate) {
             toast.warn(`Actual Start Date is required for item ${index + 1}`);
             isValid = false;
           }
-  
+
           if (!actualCompletionDate) {
-            toast.warn(`Actual Completion Date is required for item ${index + 1}`);
+            toast.warn(
+              `Actual Completion Date is required for item ${index + 1}`
+            );
             isValid = false;
           }
-  
-          if (hinderanceInDays === "" || isNaN(hinderanceInDays) || parseInt(hinderanceInDays) < 0) {
-            toast.warn(`Hinderance in Days is required and should be a non-negative number for item ${index + 1}`);
+
+          if (
+            hinderanceInDays === "" ||
+            isNaN(hinderanceInDays) ||
+            parseInt(hinderanceInDays) < 0
+          ) {
+            toast.warn(
+              `Hinderance in Days is required and should be a non-negative number for item ${
+                index + 1
+              }`
+            );
             isValid = false;
           }
         });
-  
+
         // If validation fails, log the error and return early
         if (!isValid) {
           console.log("Validation failed. Exiting submitHandler.");
           return;
         }
-  
+
         console.log("All validations passed. Proceeding with API call...");
-  
+
         // Create a FormData object to prepare data for the API call
         const fD = new FormData();
-  
+
         // Append fields to FormData
         fD.append("action_type", formDataCopy.action_type);
         fD.append("purchasing_doc_no", id); // Make sure 'ref_no' is defined correctly
@@ -449,20 +479,38 @@ const WDCSub = () => {
         fD.append("work_title", formDataCopy.work_title || "");
         fD.append("job_location", formDataCopy.job_location || "");
         fD.append("yard_no", formDataCopy.yard_no || "");
-        fD.append("inspection_note_ref_no", formDataCopy.inspection_note_ref_no || "");
-        fD.append("file_inspection_note_ref_no", formDataCopy.file_inspection_note_ref_no || "");
-        fD.append("hinderence_report_cerified_by_berth", formDataCopy.hinderence_report_cerified_by_berth || "");
-        fD.append("file_hinderence_report_cerified_by_berth", formDataCopy.file_hinderence_report_cerified_by_berth || "");
+        fD.append(
+          "inspection_note_ref_no",
+          formDataCopy.inspection_note_ref_no || ""
+        );
+        fD.append(
+          "file_inspection_note_ref_no",
+          formDataCopy.file_inspection_note_ref_no || ""
+        );
+        fD.append(
+          "hinderence_report_cerified_by_berth",
+          formDataCopy.hinderence_report_cerified_by_berth || ""
+        );
+        fD.append(
+          "file_hinderence_report_cerified_by_berth",
+          formDataCopy.file_hinderence_report_cerified_by_berth || ""
+        );
         fD.append("attendance_report", formDataCopy.attendance_report || "");
-        fD.append("file_attendance_report", formDataCopy.file_attendance_report || "");
+        fD.append(
+          "file_attendance_report",
+          formDataCopy.file_attendance_report || ""
+        );
         fD.append("unit", formDataCopy.unit || "");
         fD.append("stage_details", formDataCopy.stage_details || "");
         fD.append("assigned_to", formDataCopy.certifying_authority || "");
-        fD.append("line_item_array", JSON.stringify(formDataCopy.line_item_array));
-  
+        fD.append(
+          "line_item_array",
+          JSON.stringify(formDataCopy.line_item_array)
+        );
+
         // Make the API call using the FormData object
         const res = await apiCallBack("POST", "po/wdc/submitWdc", fD, token);
-  
+
         // Handle the API response
         if (res.status) {
           toast.success(res.message);
@@ -483,15 +531,7 @@ const WDCSub = () => {
       toast.error("Error submitting form: " + error.message);
     }
   };
-  
-  
-  
 
-
-  
-  
-  
-  
   //JCC *****************************************************
 
   const submitHandlerWdc = async (flag, ref_no) => {
@@ -499,72 +539,23 @@ const WDCSub = () => {
       // Create copies of formData and formDataWdc
       const formDataCopy = { ...formData };
       const formDataWdcCopy = { ...formDataWdc };
-  
+
       // Check if all main fields are filled
       if (
         formDataCopy.action_type &&
         formDataWdcCopy.remarks &&
         formDataCopy.certifying_authority &&
-        formDataWdcCopy.line_item_array &&
-        formDataWdcCopy.line_item_array.length > 0
+        formDataWdcCopy.total_amount
       ) {
-        let isValid = true; // Initialize validation flag
-  
-        // Iterate over each line item for validation
-        formDataWdcCopy.line_item_array.forEach((item, index) => {
-          console.log(`Validating line item ${index + 1}:`, item);
-  
-          // Convert fields to strings and trim spaces
-          const lineItemNo = item.line_item_no ? item.line_item_no.toString().trim() : "";
-          const claimQty = item.claim_qty ? item.claim_qty.toString().trim() : "";
-          const actualStartDate = item.actual_start_date ? item.actual_start_date.toString().trim() : "";
-          const actualCompletionDate = item.actual_completion_date ? item.actual_completion_date.toString().trim() : "";
-          const hinderanceInDays = item.delay_in_work_execution !== null && item.delay_in_work_execution !== undefined
-            ? item.delay_in_work_execution.toString().trim() : "";
-  
-          // Check if the line item is completely empty
-          if (!lineItemNo && !claimQty && !actualStartDate && !actualCompletionDate && hinderanceInDays === "" &&
-              !item.description && !item.rest_amount && !item.unit && !item.matarial_code &&
-              !item.target_amount && !item.po_rate) {
-            toast.warn(`Line item ${index + 1} is completely empty and should not be submitted.`);
-            isValid = false;
-            return; // Continue to the next iteration
-          }
-  
-          // Validate each field
-          if (!lineItemNo) {
-            toast.warn(`PO Line Item is required for line item ${index + 1}`);
-            isValid = false;
-          }
-  
-          if (!claimQty || isNaN(claimQty) || parseFloat(claimQty) <= 0) {
-            toast.warn(`Claim Quantity is required and should be a positive number for line item ${index + 1}`);
-            isValid = false;
-          }
-  
-          if (!actualStartDate) {
-            toast.warn(`Actual Start Date is required for line item ${index + 1}`);
-            isValid = false;
-          }
-  
-          if (!actualCompletionDate) {
-            toast.warn(`Actual Completion Date is required for line item ${index + 1}`);
-            isValid = false;
-          }
-  
-          if (hinderanceInDays === "" || isNaN(hinderanceInDays) || parseInt(hinderanceInDays) < 0) {
-            toast.warn(`Hinderance in Days is required and should be a non-negative number for line item ${index + 1}`);
-            isValid = false;
-          }
-        });
-  
+        let isValid = true;
+
         if (!isValid) {
           console.log("Validation failed. Exiting submitHandler.");
           return;
         }
-  
+
         console.log("All validations passed. Proceeding with API call...");
-  
+
         // Prepare form data for API call
         const formDataToSend = new FormData();
         formDataToSend.append("action_type", formDataCopy.action_type);
@@ -576,6 +567,7 @@ const WDCSub = () => {
         formDataToSend.append("job_location", formDataWdcCopy.job_location);
         formDataToSend.append("yard_no", formDataWdcCopy.yard_no);
         formDataToSend.append("assigned_to", formDataCopy.certifying_authority);
+        formDataToSend.append("total_amount", formDataWdcCopy.total_amount);
         formDataToSend.append(
           "guarantee_defect_liability_start_date",
           convertToEpoch(formDataWdcCopy.guarantee_defect_liability_start_date)
@@ -584,13 +576,15 @@ const WDCSub = () => {
           "guarantee_defect_liability_end_date",
           convertToEpoch(formDataWdcCopy.guarantee_defect_liability_end_date)
         );
-  
-        // Convert line_item_array to JSON string and append to FormData
         formDataToSend.append(
-          "line_item_array",
-          JSON.stringify(formDataWdcCopy.line_item_array)
+          "jcc_job_start_date",
+          convertToEpoch(formDataWdcCopy.jcc_job_start_date)
         );
-  
+        formDataToSend.append(
+          "jcc_job_end_date",
+          convertToEpoch(formDataWdcCopy.jcc_job_end_date)
+        );
+
         // Perform API call
         const res = await apiCallBack(
           "POST",
@@ -598,7 +592,7 @@ const WDCSub = () => {
           formDataToSend,
           token
         );
-  
+
         // Handle response
         if (res.status) {
           toast.success(res.message);
@@ -619,9 +613,7 @@ const WDCSub = () => {
       console.error("Error uploading file:", error);
     }
   };
-  
-  
-  
+
   // console.log("allData", allData);
   // console.log("viewData", viewData);
 
@@ -820,47 +812,35 @@ const WDCSub = () => {
   const submitHandlerActionJcc = async (flag, reference_no) => {
     try {
       const fD = new FormData();
-      
+
       fD.append("purchasing_doc_no", viewData?.purchasing_doc_no || "");
       fD.append("reference_no", reference_no || viewData.reference_no || "");
       fD.append("action_type", viewData?.action_type || "");
       fD.append("remarks", viewData?.remarks || "");
       fD.append("status", flag);
-  
+
       const newErrors = [];
-  
+
       // Validate the remarks if flag is REJECTED
       if (flag === "REJECTED" && (!remarks || remarks.trim() === "")) {
         newErrors.push("Remarks are required when rejecting.");
       }
-  
+
       // Validate each line item in doFormJcc
-      viewData.line_item_array.forEach((item, index) => {
-        const doItem = doFormJcc[index];
-        // Add your additional validation logic here if needed
-      });
-  
+
       // If there are validation errors, display them and return early
       if (newErrors.length > 0) {
         newErrors.forEach((error) => toast.warn(error));
         return; // Stop execution if there are errors
       }
-  
-      // Proceed with line item processing after validation
-      const lineItemArray = viewData.line_item_array.map((item, index) => ({
-        line_item_no: item.line_item_no || "",
-        status: doFormJcc[index]?.status || "",
-      }));
-  
-      fD.append("line_item_array", JSON.stringify(lineItemArray));
-  
+
       // Only append remarks once, based on the flag
       if (flag === "REJECTED") {
         fD.set("remarks", remarks); // Use set to ensure only one instance of remarks
       }
-  
+
       const res = await apiCallBack("POST", "po/wdc/submitWdc", fD, token);
-  
+
       if (res.status) {
         toast.success(res.message);
         setIsPopupJccView(false);
@@ -877,9 +857,6 @@ const WDCSub = () => {
       console.error("Error uploading file:", error);
     }
   };
-   
-  
-  
 
   const getAvailableAmount = async (item) => {
     try {
@@ -911,7 +888,7 @@ const WDCSub = () => {
         null,
         token
       );
-      console.log(res,"resresresresres")
+      console.log(res, "resresresresres");
       if (res?.status) {
         return {
           description: res?.data?.description,
@@ -950,7 +927,7 @@ const WDCSub = () => {
   //   }
   // };
 
-   // purana code hai ye mera
+  // purana code hai ye mera
 
   // const handleFieldChange = async (index, fieldName, value) => {
   //   // Copy the current state to avoid direct mutations
@@ -1004,14 +981,14 @@ const WDCSub = () => {
   const handleFieldChange = async (index, fieldName, value) => {
     // Copy the current state to avoid direct mutations
     const updatedFields = [...dynamicFields];
-  
+
     if (fieldName === "line_item_no") {
       const lineItemNo = value;
-  
+
       try {
         // Fetch corresponding data for the selected Line Item No
         const getRestData = await getAvailableAmount(lineItemNo);
-  
+
         // Update fields based on fetched data
         updatedFields[index] = {
           ...updatedFields[index],
@@ -1028,10 +1005,10 @@ const WDCSub = () => {
     } else if (fieldName === "claim_qty") {
       const claimQty = parseFloat(value) || 0; // Convert to number for comparison
       const openQty = parseFloat(updatedFields[index].rest_amount_wdc) || 0; // Convert to number for comparison
-  
+
       console.log(claimQty, "claimQty"); // Should reflect the latest value
       console.log(openQty, "openQty");
-  
+
       // Check if Claim Quantity is greater than Open Quantity
       if (claimQty > openQty) {
         toast.warn(
@@ -1039,25 +1016,24 @@ const WDCSub = () => {
         );
         return; // Exit the function to prevent further processing
       }
-  
+
       // Only update Claim Quantity if the value is valid
       updatedFields[index] = { ...updatedFields[index], claim_qty: value };
     } else {
       // Update other fields directly
       updatedFields[index] = { ...updatedFields[index], [fieldName]: value };
     }
-  
+
     // Update the state with the modified dynamic fields
     setDynamicFields(updatedFields);
     setFormData((prevFormData) => ({
       ...prevFormData,
       line_item_array: updatedFields,
     }));
-  
+
     // Log the updated state for debugging
     console.log("Updated Fields:", updatedFields);
   };
-  
 
   // const handleFieldChangeWdc = async (index, fieldName, value) => {
   //   const updatedFields = [...dynamicFieldsWdc];
@@ -1126,7 +1102,6 @@ const WDCSub = () => {
       line_item_array: updatedFields,
     }));
   };
-  
 
   const handleDateChange = (index, fieldName, date) => {
     const updatedFields = [...dynamicFields];
@@ -1635,13 +1610,17 @@ const WDCSub = () => {
                                 {field.rest_amount_wdc} {field.unit}
                               </td>
                               <td>
-                              <input
-  type="text"
-  value={dynamicFields[index].claim_qty || ""}
-  onChange={(e) => handleFieldChange(index, "claim_qty", e.target.value)}
-/>
-
-
+                                <input
+                                  type="text"
+                                  value={dynamicFields[index].claim_qty || ""}
+                                  onChange={(e) =>
+                                    handleFieldChange(
+                                      index,
+                                      "claim_qty",
+                                      e.target.value
+                                    )
+                                  }
+                                />
                               </td>
                               <td>
                                 {" "}
@@ -1845,6 +1824,28 @@ const WDCSub = () => {
                         />
                       </div>
                     </div>
+                    <div className="col-12 col-md-3">
+                      <div className="mb-3">
+                        <label className="form-label">
+                          Final totoal executed value{" "}
+                          <span className="red">*</span>{" "}
+                        </label>
+                        <input
+                          name=""
+                          type="number"
+                          id=""
+                          rows="4"
+                          className="form-control"
+                          value={formDataWdc?.total_amount}
+                          onChange={(e) =>
+                            setFormDataWdc({
+                              ...formDataWdc,
+                              total_amount: e.target.value,
+                            })
+                          }
+                        />
+                      </div>
+                    </div>
                     {/* guarantee_defect_liability_start_date: "",
     guarantee_defect_liability_end_date: "", */}
                     <div className="col-12 col-md-3">
@@ -1890,162 +1891,42 @@ const WDCSub = () => {
                       </div>
                     </div>
 
-                    <table className="table table-bordered table-striped">
-                      <thead>
-                        <tr>
-                          <th>PO LineItem</th>
-                          <th>Service Code</th>
-                          <th>Description</th>
-                          <th>PO Quantity</th>
-                          <th>Claim Quantity</th>
-                          <th>PO Rate</th>
-                          <th>Total</th>
-                          <th>Actual Start Date</th>
-                          <th>Actual Completion date</th>
-                          <th>Delay in work execution</th>
-                          <th>Action</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {dynamicFieldsWdc.map((field, index) => (
-                          <Fragment key={index}>
-                            {console.log(field, "field")}
-                            <tr>
-                              <td>
-                                <select
-                                  name={`line_item_${index}`}
-                                  id={`line_item_${index}`}
-                                  className="form-select"
-                                  value={field.line_item_no}
-                                  onChange={(e) => {
-                                    handleFieldChangeWdc(
-                                      index,
-                                      "line_item_no",
-                                      e.target.value
-                                    );
-                                    // getAvailableAmount(e.target.value, index);
-                                  }}
-                                >
-                                  <option value="">Choose PO Line Item</option>
-                                  {checkTypeArr(lineItemData) &&
-                                    lineItemData.map((item, i) => (
-                                      <option
-                                        value={item?.material_item_number}
-                                        key={i}
-                                      >
-                                        {item?.material_item_number}
-                                      </option>
-                                    ))}
-                                </select>
-                              </td>
-                              <td>{field.matarial_code}</td>
-                              <td>{field.description}</td>
-                              {/* <td>{field.po_qty}</td> */}
-                              <td>{field.rest_amount_wdc}</td>
-                              <td>
-                                <input
-                                  type="number"
-                                  className="form-control"
-                                  step="0.001"
-                                  value={
-                                    dynamicFieldsWdc[index].claim_qty || ""
-                                  }
-                                  // value={field.claim_qty}
-                                  onChange={(e) =>
-                                    handleFieldChangeWdc(
-                                      index,
-                                      "claim_qty",
-                                      e.target.value
-                                    )
-                                  }
-                                />
-                              </td>
-                              <td>{field.po_rate}</td>
-                              <td>
-                                {isNaN(field.claim_qty) || isNaN(field.po_rate)
-                                  ? 0
-                                  : field.claim_qty * field.po_rate}
-                              </td>
-                              {/* <td>
-                                {field.rest_amount} {field.unit}
-                              </td> */}
-
-                              <td>
-                                {" "}
-                                <ReactDatePicker
-                                  selected={field.actual_start_date}
-                                  onChange={(date) =>
-                                    handleDateChangeWdc(
-                                      index,
-                                      "actual_start_date",
-                                      date
-                                    )
-                                  }
-                                  dateFormat="dd/MM/yyyy"
-                                  className="form-control"
-                                  placeholderText="DD/MM/YYYY"
-                                />
-                              </td>
-                              <td>
-                                <ReactDatePicker
-                                  selected={field.actual_completion_date}
-                                  onChange={(date) =>
-                                    handleDateChangeWdc(
-                                      index,
-                                      "actual_completion_date",
-                                      date
-                                    )
-                                  }
-                                  dateFormat="dd/MM/yyyy"
-                                  className="form-control"
-                                  placeholderText="DD/MM/YYYY"
-                                />
-                              </td>
-                              <td>
-                                <input
-                                  type="number"
-                                  className="form-control"
-                                  value={field.delay_in_work_execution}
-                                  onChange={(e) =>
-                                    handleFieldChangeWdc(
-                                      index,
-                                      "delay_in_work_execution",
-                                      e.target.value
-                                    )
-                                  }
-                                />
-                              </td>
-                              {/* <td>
-                                <input
-                                  type="text"
-                                  className="form-control"
-                                  value={field.hinderance_in_days}
-                                  onChange={(e) =>
-                                    handleFieldChange(
-                                      index,
-                                      "hinderance_in_days",
-                                      e.target.value
-                                    )
-                                  }
-                                />
-                              </td> */}
-                              <td>
-                                {index === dynamicFieldsWdc.length - 1 && (
-                                  <FaPlus
-                                    onClick={() =>
-                                      setDynamicFieldsWdc([
-                                        ...dynamicFieldsWdc,
-                                        line_item_fieldswdc,
-                                      ])
-                                    }
-                                  />
-                                )}
-                              </td>
-                            </tr>
-                          </Fragment>
-                        ))}
-                      </tbody>
-                    </table>
+                    <div className="col-12 col-md-3">
+                      <div className="mb-3">
+                        <label className="form-label">Job Start Date</label>
+                        <ReactDatePicker
+                          selected={formDataWdc?.jcc_job_start_date}
+                          onChange={(date) =>
+                            setFormDataWdc({
+                              ...formDataWdc,
+                              jcc_job_start_date: date,
+                            })
+                          }
+                          dateFormat="dd/MM/yyyy"
+                          className="form-control"
+                          placeholderText="DD/MM/YYYY"
+                        />
+                      </div>
+                    </div>
+                    <div className="col-12 col-md-3">
+                      <div className="mb-3">
+                        <label className="form-label">
+                          Job Completion Date
+                        </label>
+                        <ReactDatePicker
+                          selected={formDataWdc?.jcc_job_end_date}
+                          onChange={(date) =>
+                            setFormDataWdc({
+                              ...formDataWdc,
+                              jcc_job_end_date: date,
+                            })
+                          }
+                          dateFormat="dd/MM/yyyy"
+                          className="form-control"
+                          placeholderText="DD/MM/YYYY"
+                        />
+                      </div>
+                    </div>
 
                     <div className="col-12 col-md-6">
                       <div className="mb-3">
@@ -2077,7 +1958,6 @@ const WDCSub = () => {
                         />
                       </div>
                     </div>
-
                     <div className="col-12 col-md-6">
                       <div className="mb-3">
                         <label className="form-label">
@@ -2140,8 +2020,8 @@ const WDCSub = () => {
                   onClick={() => {
                     setViewData(null);
                     setIsSecPopup(false);
-                    setRemarks("")
-                    setShowRemarksPopup("")
+                    setRemarks("");
+                    setShowRemarksPopup("");
                   }}
                 >
                   Close
@@ -2414,7 +2294,7 @@ const WDCSub = () => {
               <div className="card-header border-0 pt-5 pb-3">
                 <h3 className="card-title align-items-start flex-column">
                   <span className="card-label fw-bold fs-3 mb-1">
-                    All Data for{" "}
+                    ffffff All Data{" "}
                     {viewData?.reference_no && `for ${viewData?.reference_no}`}
                   </span>
                 </h3>
@@ -2424,7 +2304,7 @@ const WDCSub = () => {
                     setViewData(null);
                     setIsjccActionSecPopup(false);
                     setShowRemarksPopupjcc(false);
-                    setRemarks("")
+                    setRemarks("");
                   }}
                 >
                   Close
@@ -2471,7 +2351,10 @@ const WDCSub = () => {
                       <p>
                         {" "}
                         {viewData?.guarantee_defect_liability_start_date &&
-                          formatDate(viewData?.guarantee_defect_liability_start_date * 1000)}
+                          formatDate(
+                            viewData?.guarantee_defect_liability_start_date *
+                              1000
+                          )}
                       </p>
                     </div>
                   </div>
@@ -2489,6 +2372,27 @@ const WDCSub = () => {
                       </p>
                     </div>
                   </div>
+
+                  <div className="col-12 col-md-6">
+                    <div className="mb-3">
+                      <label className="form-label">Job Start Date</label>
+                      <p>
+                        {" "}
+                        {viewData?.jcc_job_start_date &&
+                          formatDate(viewData?.jcc_job_start_date * 1000)}
+                      </p>
+                    </div>
+                  </div>
+                  <div className="col-12 col-md-6">
+                    <div className="mb-3">
+                      <label className="form-label">Job Completion Date</label>
+                      <p>
+                        {" "}
+                        {viewData?.jcc_job_end_date &&
+                          formatDate(viewData?.jcc_job_end_date * 1000)}
+                      </p>
+                    </div>
+                  </div>
                   <div className="col-12 col-md-6">
                     <div className="mb-3">
                       <label className="form-label">Certifying Authority</label>
@@ -2500,6 +2404,14 @@ const WDCSub = () => {
                       </p>
                     </div>
                   </div>
+                  <div className="col-12 col-md-6">
+                    <div className="mb-3">
+                      <label className="form-label">
+                        Final totoal executed value
+                      </label>
+                      <p>{viewData?.total_amount}</p>
+                    </div>
+                  </div>
 
                   {/* <div className="col-12 col-md-6">
                 <div className="mb-3">
@@ -2507,63 +2419,6 @@ const WDCSub = () => {
                   <p>{viewData?.line_item_no}</p>
                 </div>
               </div> */}
-
-                  <table className="table table-bordered table-striped">
-                    <thead>
-                      <tr>
-                        <th>PO LineItem</th>
-                        <th>Service Code</th>
-                        <th>Description</th>
-                        <th>PO Quantity</th>
-                        <th>Claim Quantity</th>
-                        <th>PO Rate</th>
-                        <th>Total</th>
-                        <th>Actual Start Date</th>
-                        <th>Actual Completion Date</th>
-                        <th>Delay In Work Execution</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {checkTypeArr(viewData?.line_item_array) &&
-                        viewData?.line_item_array.map((field, index) => (
-                          <Fragment key={index}>
-                            <tr>
-                              <td>
-                                <span>{field?.line_item_no}</span>
-                              </td>
-
-                              <td>{field?.matarial_code}</td>
-                              <td>{field?.description}</td>
-                              <td>{field?.rest_amount_wdc}</td>
-                              <td>{field?.claim_qty}</td>
-                              <td>{field?.po_rate}</td>
-                              <td>{field?.claim_qty * field?.po_rate}</td>
-                              <td>
-                                {field?.actual_start_date &&
-                                  formatDate(field?.actual_start_date)}
-                              </td>
-                              <td>
-                                {field?.actual_completion_date &&
-                                  formatDate(field?.actual_completion_date)}
-                              </td>
-                              <td>{field?.delay_in_work_execution}</td>
-                              {/* <td>
-                                <select
-                                  className="form-select"
-                                  onChange={(e) =>
-                                    handleInputChangejcc(e, index, "status")
-                                  }
-                                >
-                                  <option value="">Select</option>
-                                  <option value="APPROVED">Approved</option>
-                                  <option value="REJECTED">Rejected</option>
-                                </select>
-                              </td> */}
-                            </tr>
-                          </Fragment>
-                        ))}
-                    </tbody>
-                  </table>
 
                   {/* <div className="col-12 col-md-6">
                 <div className="mb-3">
@@ -2581,7 +2436,9 @@ const WDCSub = () => {
                         <label className="form-label">Status</label>
                         <select
                           className="form-select"
-                          onChange={(e) => handleInputChangeOnejcc(e, "statusjcc")}
+                          onChange={(e) =>
+                            handleInputChangeOnejcc(e, "statusjcc")
+                          }
                         >
                           <option value="">Select</option>
                           <option value="APPROVED">Approved</option>
@@ -2929,6 +2786,14 @@ const WDCSub = () => {
               <div className="col-12 col-md-6">
                 <div className="mb-3">
                   <label className="form-label">
+                    Final totoal executed value
+                  </label>
+                  <p>{viewData?.total_amount}</p>
+                </div>
+              </div>
+              <div className="col-12 col-md-6">
+                <div className="mb-3">
+                  <label className="form-label">
                     Guarantee Defect Start Date
                   </label>
                   {/* <p>{viewData?.guarantee_defect_liability_start_date}</p> */}
@@ -2956,6 +2821,30 @@ const WDCSub = () => {
                   </p>
                 </div>
               </div>
+
+              <div className="col-12 col-md-6">
+                <div className="mb-3">
+                  <label className="form-label">Job Start Date</label>
+
+                  <p>
+                    {" "}
+                    {viewData?.jcc_job_start_date &&
+                      formatEpochToDate(viewData?.jcc_job_start_date)}
+                  </p>
+                </div>
+              </div>
+
+              <div className="col-12 col-md-6">
+                <div className="mb-3">
+                  <label className="form-label">Job Completion Date</label>
+
+                  <p>
+                    {" "}
+                    {viewData?.jcc_job_end_date &&
+                      formatEpochToDate(viewData?.jcc_job_end_date)}
+                  </p>
+                </div>
+              </div>
               <div className="col-12 col-md-6">
                 <div className="mb-3">
                   <label className="form-label">Certifying Authority</label>
@@ -2972,54 +2861,6 @@ const WDCSub = () => {
                 </div>
               </div> */}
 
-              <table className="table table-bordered table-striped">
-                <thead>
-                  <tr>
-                    <th>PO LineItem</th>
-                    <th>Service Code</th>
-                    <th>Description</th>
-                    <th>PO Quantity</th>
-                    <th>Claim Quantity</th>
-                    <th>PO Rate</th>
-                    <th>Total</th>
-                    <th>Actual Start Date</th>
-                    <th>Actual Completion Date</th>
-                    <th>Delay In Work Execution</th>
-                    {/* {viewData?.status === "APPROVED" && <th>Status</th>} */}
-                  </tr>
-                </thead>
-                <tbody>
-                  {checkTypeArr(viewData?.line_item_array) &&
-                    viewData?.line_item_array.map((field, index) => (
-                      <Fragment key={index}>
-                        <tr>
-                          <td>
-                            <span>{field?.line_item_no}</span>
-                          </td>
-
-                          <td>{field?.matarial_code}</td>
-                          <td>{field?.description}</td>
-                          <td>{field?.rest_amount_wdc}</td>
-                          <td>{field?.claim_qty}</td>
-                          <td>{field?.po_rate}</td>
-                          <td>{field?.claim_qty * field?.po_rate}</td>
-                          <td>
-                            {field?.actual_start_date &&
-                              formatDate(field?.actual_start_date)}
-                          </td>
-                          <td>
-                            {field?.actual_completion_date &&
-                              formatDate(field?.actual_completion_date)}
-                          </td>
-                          <td>{field?.delay_in_work_execution}</td>
-                          {/* {viewData?.status === "APPROVED" && (
-                            <td>{field?.status}</td>
-                          )} */}
-                        </tr>
-                      </Fragment>
-                    ))}
-                </tbody>
-              </table>
               {/* <div className="col-12 col-md-6">
                 <div className="mb-3">
                   <label className="form-label">Stage Details</label>
