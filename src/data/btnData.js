@@ -124,6 +124,27 @@ export const initialDataService = {
   total_price: "",
 };
 
+export const initialDataJCC = {
+  btn_num: "", // Button number
+  purchasing_doc_no: "", // Purchasing document number
+  vendor_code: "", // Vendor code
+  invoice_no: "", // Invoice number
+  invoice_value: "", // Invoice value
+  yard: "", // Yard information
+  jcc_filename: "", // JCC file name
+  invoice_filename: "", // Invoice file name
+  invoice_type: "", // Invoice type
+  invoice_date: "", // Invoice date
+  bill_certifing_authority: "", // Bill certifying authority
+  net_claim_amount: "", // Net claim amount
+  jcc_ref_number: "", // JCC reference number
+  jcc_job_start_date: "", // JCC job start date
+  jcc_job_end_date: "", // JCC job end date
+  hsn_gstn_icgrn: "", // HSN code, GSTIN, ICGRN
+  remarks: "", // Remarks
+  suppoting_invoice_filename: "", // Supporting invoice file name
+};
+
 export const initialEmpData = {
   finance_authority: "",
   btn_num: "",

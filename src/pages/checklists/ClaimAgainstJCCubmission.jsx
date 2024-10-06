@@ -6,7 +6,6 @@ import Header from "../../components/Header";
 import Footer from "../../components/Footer";
 import { useSelector } from "react-redux";
 import { USER_VENDOR } from "../../constants/userConstants";
-import { actionHandlerServiceBTN } from "../../Helpers/BTNChecklist";
 import {
   checkTypeArr,
   inputFileChange,
@@ -17,85 +16,29 @@ import { apiCallBack } from "../../utils/fetchAPIs";
 import { convertToEpoch, formatDate } from "../../utils/getDateTimeNow";
 import { FaCaretLeft } from "react-icons/fa";
 import { D_S_INVOICE, E_INVOICE } from "../../constants/BTNContants";
-import { initialDataService } from "../../data/btnData";
+import { initialDataJCC, initialDataService } from "../../data/btnData";
 import DynamicButton from "../../Helpers/DynamicButton";
 import { toast } from "react-toastify";
-import {
-  ESI_COMP,
-  LEAVE_COMP,
-  PF_COMP,
-  WAGE_COMP,
-} from "../../constants/constants";
 import ReactDatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
+import { Toast } from "react-bootstrap";
 
 const ClaimAgainstJCCubmission = () => {
   const navigate = useNavigate();
   const { user, token } = useSelector((state) => state.auth);
   const { id } = useParams();
-  const [data, setData] = useState({
-    wdcDetails: null,
-    initial: null,
-  });
+  const [data, setData] = useState("");
   const [emp, setEmp] = useState([]);
-  const [form, setForm] = useState(initialDataService);
+  const [form, setForm] = useState(initialDataJCC);
   const [wdcNo, setWdcNo] = useState([]);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  console.log(data, "data abhi");
 
-  const calNetClaimAmount = (invoice_value, debit_note, credit_note) => {
-    invoice_value = parseInt(invoice_value) || 0;
-    debit_note = parseInt(debit_note) || 0;
-    credit_note = parseInt(credit_note) || 0;
-
-    const net_claim_amount = invoice_value + debit_note - credit_note;
-
-    setForm((prevForm) => ({
-      ...prevForm,
-      net_claim_amount: net_claim_amount,
-    }));
-  };
-
-  useEffect(() => {
-    const { invoice_value, debit_note, credit_note } = form;
-    if (invoice_value || debit_note || credit_note) {
-      calNetClaimAmount(invoice_value, debit_note, credit_note);
-    }
-  }, [form?.invoice_value, form?.debit_note, form?.credit_note]);
-
-  const calNetClaimAmountwithGST = (net_claim_amount, cgst, sgst, igst) => {
-    cgst = parseFloat(cgst) || 0;
-    sgst = parseFloat(sgst) || 0;
-    igst = parseFloat(igst) || 0;
-
-    const totalGST = (cgst + sgst + igst) / 100;
-    let netWithGST = net_claim_amount * (1 + totalGST);
-    netWithGST = parseFloat(netWithGST.toFixed(2));
-    setForm((prevForm) => ({
-      ...prevForm,
-      net_claim_amt_gst: netWithGST,
-    }));
-  };
-  useEffect(() => {
-    const { net_claim_amount, cgst, sgst, igst } = form;
-    if (net_claim_amount || cgst || sgst || igst) {
-      calNetClaimAmountwithGST(net_claim_amount, cgst, sgst, igst);
-    }
-  }, [form?.net_claim_amount, form?.cgst, form?.sgst, form?.igst]);
-
-  useEffect(() => {
-    if (checkTypeArr(data?.wdcDetails?.line_item_array)) {
-      let total_price = data?.wdcDetails?.line_item_array.reduce(
-        (acc, curr) => {
-          return Number(curr?.po_rate) * Number(curr?.claim_qty) + acc;
-        },
-        0
-      );
-      setForm({ ...form, total_price: total_price });
-    }
-  }, [data?.wdcDetails?.line_item_array]);
-
-  const getWDCList = async () => {
+  console.log(data, "datadata");
+  const getJCCListDropdown = async () => {
     const d = await apiCallBack(
       "GET",
-      `po/btn/getWdcInfoServiceHybrid?type=list&purchasing_doc_no=${id}`,
+      `po/btn/jcc?type=jcclist&poNo=${id}`,
       null,
       null
     );
@@ -111,19 +54,6 @@ const ClaimAgainstJCCubmission = () => {
       toast.info("WDC Not Found!");
     }
   };
-
-  const getData = async () => {
-    const d = await apiCallBack(
-      "GET",
-      `po/btn/initServiceHybrid?poNo=${id}`,
-      null,
-      token
-    );
-    if (d?.status) {
-      setData({ ...data, initial: d?.data });
-    }
-  };
-
   const getEmp = async () => {
     try {
       const data = await apiCallBack("GET", `po/wdc/grseEmpList`, null, token);
@@ -141,9 +71,21 @@ const ClaimAgainstJCCubmission = () => {
     }
   };
 
+  const getJCCList = async () => {
+    const d = await apiCallBack(
+      "GET",
+      `po/btn/jcc?type=init&poNo=${id}`,
+      null,
+      token
+    );
+    if (d?.status) {
+      setData({ ...data, initial: d?.data });
+    }
+  };
+
   useEffect(() => {
-    getData();
-    getWDCList();
+    getJCCList();
+    getJCCListDropdown();
     getEmp();
   }, []);
 
@@ -151,18 +93,150 @@ const ClaimAgainstJCCubmission = () => {
     if (!form.wdc_number || form.wdc_number === "") {
       return toast.info("Select a WDC Number");
     }
+
     const d = await apiCallBack(
       "GET",
-      `po/btn/getWdcInfoServiceHybrid?reference_no=${form?.wdc_number}`,
+      `po/btn/jcc?type=jccinfo&reference_no=${form?.wdc_number}`,
       null,
       token
     );
+
     if (d?.status) {
       setData({ ...data, wdcDetails: d?.data });
+      toast.success(d?.message);
+    } else {
+      toast.warning(d?.message || "An error occurred");
     }
   };
 
   console.log(data);
+
+  const actionHandlerJCCBTN = async () => {
+    try {
+      setIsSubmitting(true); // Start loading
+
+      const {
+        btn_num,
+        purchasing_doc_no,
+        vendor_code,
+        invoice_no,
+        invoice_value,
+        yard,
+        jcc_filename,
+        invoice_filename,
+        invoice_type,
+        invoice_date,
+        bill_certifing_authority,
+        net_claim_amount,
+        jcc_ref_number,
+        hsn_gstn_icgrn,
+        remarks,
+        suppoting_invoice_filename,
+      } = form;
+
+      // Validation checks
+      if (!bill_certifing_authority || bill_certifing_authority === "") {
+        return toast.warn("Please choose a GRSE officer.");
+      }
+      if (!invoice_type || invoice_type.trim() === "") {
+        return toast.warning("Please choose Invoice Type.");
+      }
+      if (!invoice_no || invoice_no === "") {
+        return toast.warning("Invoice number is mandatory.");
+      }
+      if (!invoice_filename || invoice_filename === "") {
+        return toast.warning("Invoice file is mandatory.");
+      }
+      if (!invoice_value || invoice_value.trim() === "") {
+        return toast.warning("Basic value is mandatory.");
+      }
+      if (!net_claim_amount || net_claim_amount.trim() === "") {
+        return toast.warning("Net Claim Amount  is mandatory.");
+      }
+      if (!hsn_gstn_icgrn) {
+        return toast.warning(
+          "Please verify the HSN code, GSTIN, and Tax rate as per the PO."
+        );
+      }
+      console.log(wdcNo, "wdcNowdcNo");
+
+      // Fetch JCC data from your data response
+      const jccJobStartDate = data?.wdcDetails?.jcc_job_start_date;
+      const jccJobEndDate = data?.wdcDetails?.jcc_job_end_date;
+
+      // Ensure that the dates are properly formatted (assuming they are in seconds from API)
+      const formattedJccJobStartDate = jccJobStartDate
+        ? Math.floor(jccJobStartDate) // No need for Date conversion as it's already in seconds
+        : null;
+
+      const formattedJccJobEndDate = jccJobEndDate
+        ? Math.floor(jccJobEndDate) // Already in seconds, no need for conversion
+        : null;
+
+      // FormData object for submitting form data
+      const formDataToSend = new FormData();
+      formDataToSend.append("purchasing_doc_no", id);
+      formDataToSend.append("btn_num", btn_num);
+      formDataToSend.append("vendor_code", data?.initial?.vendor_code);
+      formDataToSend.append("invoice_no", invoice_no);
+      formDataToSend.append("invoice_value", invoice_value);
+      formDataToSend.append("yard", data?.wdcDetails?.yard_no);
+
+      // Append JCC dates
+      formDataToSend.append(
+        "jcc_job_start_date",
+        formattedJccJobStartDate || ""
+      );
+      formDataToSend.append("jcc_job_end_date", formattedJccJobEndDate || "");
+
+      formDataToSend.append("jcc_ref_number", data?.wdcDetails?.reference_no);
+      formDataToSend.append("hsn_gstn_icgrn", hsn_gstn_icgrn);
+      formDataToSend.append("remarks", remarks);
+      formDataToSend.append(
+        "bill_certifing_authority",
+        bill_certifing_authority
+      );
+      formDataToSend.append("net_claim_amount", net_claim_amount);
+      formDataToSend.append("invoice_type", invoice_type);
+      formDataToSend.append("invoice_date", invoice_date);
+
+      // Attach files if they exist
+      if (invoice_filename) {
+        formDataToSend.append("invoice_filename", invoice_filename);
+      }
+      if (suppoting_invoice_filename) {
+        formDataToSend.append(
+          "suppoting_invoice_filename",
+          suppoting_invoice_filename
+        );
+      }
+      if (jcc_filename) {
+        formDataToSend.append("jcc_filename", jcc_filename);
+      }
+
+      // API call
+      const response = await apiCallBack(
+        "POST",
+        "po/btn/submit-jcc",
+        formDataToSend,
+        token
+      );
+
+      // Handle response
+      if (response?.status) {
+        toast.success(response?.message);
+        setForm(initialDataService); // Reset the form after submission
+        navigate(`/invoice-and-payment-process/${id}`);
+      } else {
+        toast.error(response?.message);
+      }
+    } catch (error) {
+      console.error("Error in actionHandlerJCCBTN:", error);
+      toast.error("An error occurred: " + error.message);
+    } finally {
+      setIsSubmitting(false); // End loading
+    }
+  };
 
   return (
     <>
@@ -214,7 +288,7 @@ const ClaimAgainstJCCubmission = () => {
                                       </td>
                                     </tr>
                                     <tr>
-                                      <td>WDC no:</td>
+                                      <td>JCC No:</td>
                                       <td className="btn_value">
                                         <Select
                                           className="basic-single w_250"
@@ -253,72 +327,50 @@ const ClaimAgainstJCCubmission = () => {
                                       </td>
                                     </tr>
                                     <tr>
-                                      <td>Stage:</td>
+                                      <td>JOB Completion Certificate:</td>
                                       <td className="btn_value">
-                                        <b>{data?.wdcDetails?.stage_details}</b>
-                                      </td>
-                                    </tr>
-                                    <tr>
-                                      <td>Work Title:</td>
-                                      <td className="btn_value">
-                                        <b>{data?.wdcDetails?.work_title}</b>
-                                      </td>
-                                    </tr>
-                                    <tr>
-                                      <td>WDC Certifying Authority:</td>
-                                      <td className="btn_value">
-                                        <b>
-                                          {data?.wdcDetails?.assigned_to_name} (
-                                          {data?.wdcDetails?.assigned_to})
-                                        </b>
+                                        <div className="btn_value">
+                                          <div className="me-4">
+                                            <label htmlFor="">
+                                              Attach Approved JCC
+                                            </label>
+                                            <input
+                                              type="file"
+                                              className="form-control"
+                                              name="jcc_filename"
+                                              onChange={(e) =>
+                                                inputFileChange(
+                                                  e,
+                                                  form,
+                                                  setForm
+                                                )
+                                              }
+                                              accept=".pdf"
+                                            />
+                                          </div>
+                                          <div>
+                                            <label htmlFor="">Remarks</label>
+                                            <input
+                                              type="text"
+                                              className="form-control me-3"
+                                              name="remarks"
+                                              value={form?.remarks}
+                                              placeholder="Enter remarks"
+                                              onChange={(e) =>
+                                                inputTypeChange(
+                                                  e,
+                                                  form,
+                                                  setForm
+                                                )
+                                              }
+                                            />
+                                          </div>
+                                        </div>
                                       </td>
                                     </tr>
                                   </tbody>
                                 </table>
-                                <table className="table table-striped table-bordered table_height">
-                                  <thead>
-                                    <tr>
-                                      <th>PO Line Item No</th>
-                                      <th>Service Code</th>
-                                      <th>Description</th>
-                                      <th>UOM</th>
-                                      <th>Claim Qty</th>
-                                      <th>PO Rate</th>
-                                      <th>Total Claim</th>
-                                      <th>Delay</th>
-                                    </tr>
-                                  </thead>
-                                  <tbody>
-                                    {checkTypeArr(
-                                      data?.wdcDetails?.line_item_array
-                                    ) &&
-                                      data?.wdcDetails?.line_item_array.map(
-                                        (item, i) => (
-                                          <tr key={i}>
-                                            <td>{item?.line_item_no}</td>
-                                            <td>{item?.service_code}</td>
-                                            <td>{item?.description}</td>
-                                            <td>{item?.unit}</td>
-                                            <td>{item?.claim_qty}</td>
-                                            <td>{item?.po_rate}</td>
-                                            <td>
-                                              {parseFloat(
-                                                Number(item?.po_rate) *
-                                                  Number(item?.claim_qty)
-                                              ).toFixed(2)}
-                                            </td>
-                                            <td>{item?.delay}</td>
-                                          </tr>
-                                        )
-                                      )}
-                                    <tr>
-                                      <td colSpan={6}>Total:</td>
-                                      <td colSpan={2}>
-                                        <b>{form?.total_price}</b>
-                                      </td>
-                                    </tr>
-                                  </tbody>
-                                </table>
+
                                 <table
                                   className="table table-striped table-bordered table_height"
                                   style={{ marginBottom: "120px" }}
@@ -329,7 +381,6 @@ const ClaimAgainstJCCubmission = () => {
                                       <td className="btn_value">
                                         <select
                                           name="invoice_type"
-                                          id=""
                                           className="form-select"
                                           onChange={(e) =>
                                             inputTypeChange(e, form, setForm)
@@ -361,7 +412,7 @@ const ClaimAgainstJCCubmission = () => {
                                                 className="form-control me-3"
                                                 name="invoice_no"
                                                 value={form?.invoice_no}
-                                                placeholder="invoice number"
+                                                placeholder="Enter invoice number"
                                                 onChange={(e) =>
                                                   inputTypeChange(
                                                     e,
@@ -379,33 +430,20 @@ const ClaimAgainstJCCubmission = () => {
                                                 selected={
                                                   form.invoice_date
                                                     ? new Date(
-                                                        form.invoice_date
+                                                        form.invoice_date * 1000
                                                       )
                                                     : null
                                                 }
-                                                onChange={(date) => {
+                                                onChange={(date) =>
                                                   setForm((prevData) => ({
                                                     ...prevData,
                                                     invoice_date:
-                                                      convertToEpoch(date) *
-                                                      1000,
-                                                  }));
-                                                }}
+                                                      convertToEpoch(date), // Convert date to epoch in seconds
+                                                  }))
+                                                }
                                                 dateFormat="dd/MM/yyyy"
                                                 className="form-control"
                                               />
-                                              {/* <input
-                                                type="date"
-                                                className="form-control"
-                                                name="invoice_date"
-                                                onChange={(e) =>
-                                                  inputFileChange(
-                                                    e,
-                                                    form,
-                                                    setForm
-                                                  )
-                                                }
-                                              /> */}
                                             </div>
                                           </div>
                                           <div className="btn_value">
@@ -451,7 +489,7 @@ const ClaimAgainstJCCubmission = () => {
                                     )}
                                     {form?.invoice_type === E_INVOICE && (
                                       <tr>
-                                        <td>E-Invoice No :</td>
+                                        <td>E-Invoice No:</td>
                                         <td>
                                           <div className="btn_value">
                                             <div className="me-4">
@@ -463,7 +501,7 @@ const ClaimAgainstJCCubmission = () => {
                                                 className="form-control me-3"
                                                 name="invoice_no"
                                                 value={form?.invoice_no}
-                                                placeholder="invoice number"
+                                                placeholder="Enter invoice number"
                                                 onChange={(e) =>
                                                   inputTypeChange(
                                                     e,
@@ -481,18 +519,18 @@ const ClaimAgainstJCCubmission = () => {
                                                 selected={
                                                   form.invoice_date
                                                     ? new Date(
-                                                        form.invoice_date
+                                                        form.invoice_date * 1000
                                                       )
                                                     : null
                                                 }
-                                                onChange={(date) => {
+                                                onChange={(date) =>
                                                   setForm((prevData) => ({
                                                     ...prevData,
                                                     invoice_date:
                                                       convertToEpoch(date) *
                                                       1000,
-                                                  }));
-                                                }}
+                                                  }))
+                                                }
                                                 dateFormat="dd/MM/yyyy"
                                                 className="form-control"
                                               />
@@ -541,7 +579,7 @@ const ClaimAgainstJCCubmission = () => {
                                     )}
 
                                     <tr>
-                                      <td>Basic value:</td>
+                                      <td>Invoice Value:</td>
                                       <td className="btn_value">
                                         <input
                                           type="number"
@@ -555,11 +593,19 @@ const ClaimAgainstJCCubmission = () => {
                                         />
                                       </td>
                                     </tr>
-
                                     <tr>
-                                      <td>Net Claim Amount: </td>
+                                      <td>Claim Amount:</td>
                                       <td className="btn_value">
-                                        <b>{form?.net_claim_amount}</b>
+                                        <input
+                                          type="number"
+                                          className="form-control"
+                                          onWheel={inputOnWheelPrevent}
+                                          name="net_claim_amount"
+                                          value={form?.net_claim_amount}
+                                          onChange={(e) =>
+                                            inputTypeChange(e, form, setForm)
+                                          }
+                                        />
                                       </td>
                                     </tr>
 
@@ -572,7 +618,6 @@ const ClaimAgainstJCCubmission = () => {
                                           isClearable={true}
                                           isSearchable={true}
                                           name="bill_certifing_authority"
-                                          id="emp"
                                           options={emp}
                                           value={
                                             emp.filter(
@@ -654,20 +699,13 @@ const ClaimAgainstJCCubmission = () => {
                                 {user?.user_type === USER_VENDOR && (
                                   <button
                                     type="button"
-                                    className="btn fw-bold btn-primary me-3"
-                                    onClick={() =>
-                                      actionHandlerServiceBTN(
-                                        "ServiceBills",
-                                        token,
-                                        user,
-                                        id,
-                                        form,
-                                        setForm,
-                                        navigate
-                                      )
-                                    }
+                                    className={`btn fw-bold btn-primary me-3 ${
+                                      isSubmitting && "disabled"
+                                    }`}
+                                    onClick={actionHandlerJCCBTN}
+                                    disabled={isSubmitting}
                                   >
-                                    SUBMIT
+                                    {isSubmitting ? "Submitting..." : "SUBMIT"}
                                   </button>
                                 )}
                                 <button

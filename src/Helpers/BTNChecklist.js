@@ -288,6 +288,118 @@ export const actionHandlerServiceBTN = async (
     toast.error("Error:", error.message);
   }
 };
+
+//JCC
+// export const actionHandlerJCCBTN = async (
+//   flag,
+//   token,
+//   user,
+//   id,
+//   form,
+//   setForm,
+//   navigate
+// ) => {
+//   try {
+//     // Destructuring form fields
+//     const {
+//       btn_num,
+//       purchasing_doc_no,
+//       vendor_code,
+//       invoice_no,
+//       invoice_value,
+//       yard,
+//       jcc_filename,
+//       invoice_filename,
+//       invoice_type,
+//       invoice_date,
+//       bill_certifing_authority,
+//       net_claim_amount,
+//       jcc_ref_number,
+//       jcc_job_start_date,
+//       jcc_job_end_date,
+//       hsn_gstn_icgrn,
+//       remarks,
+//       suppoting_invoice_filename, // Added suppoting_invoice_filename to the form
+//     } = form;
+
+//     // Validation checks for mandatory fields
+//     // if (!purchasing_doc_no || purchasing_doc_no === "") {
+//     //   return toast.warn("Purchasing document number is mandatory.");
+//     // }
+//     // if (!bill_certifing_authority || bill_certifing_authority === "") {
+//     //   return toast.warn("Please choose a GRSE officer.");
+//     // }
+//     // if (!invoice_type || invoice_type.trim() === "") {
+//     //   return toast.warning("Please choose Invoice Type.");
+//     // }
+//     // if (!invoice_no || invoice_no === "") {
+//     //   return toast.warning("Invoice number is mandatory.");
+//     // }
+//     // if (!invoice_filename || invoice_filename === "") {
+//     //   return toast.warning("Invoice file is mandatory.");
+//     // }
+//     // if (!invoice_value || invoice_value.trim() === "") {
+//     //   return toast.warning("Basic value is mandatory.");
+//     // }
+//     // if (!hsn_gstn_icgrn) {
+//     //   return toast.warning(
+//     //     "Please verify the HSN code, GSTIN, and Tax rate as per the PO."
+//     //   );
+//     // }
+
+//     // FormData object for submitting form data
+//     const formDataToSend = new FormData();
+//     formDataToSend.append("purchasing_doc_no", purchasing_doc_no);
+//     formDataToSend.append("btn_num", btn_num);
+//     formDataToSend.append("vendor_code", vendor_code);
+//     formDataToSend.append("invoice_no", invoice_no);
+//     formDataToSend.append("invoice_value", invoice_value);
+//     formDataToSend.append("yard", yard);
+//     formDataToSend.append("jcc_ref_number", jcc_ref_number);
+//     formDataToSend.append("jcc_job_start_date", jcc_job_start_date);
+//     formDataToSend.append("jcc_job_end_date", jcc_job_end_date);
+//     formDataToSend.append("hsn_gstn_icgrn", hsn_gstn_icgrn);
+//     formDataToSend.append("remarks", remarks);
+//     formDataToSend.append("bill_certifing_authority", bill_certifing_authority);
+//     formDataToSend.append("net_claim_amount", net_claim_amount);
+//     formDataToSend.append("invoice_type", invoice_type);
+//     formDataToSend.append("invoice_date", invoice_date);
+
+//     // Attach files if they exist
+//     if (invoice_filename) {
+//       formDataToSend.append("invoice_filename", invoice_filename);
+//     }
+//     if (suppoting_invoice_filename) {
+//       formDataToSend.append(
+//         "suppoting_invoice_filename",
+//         suppoting_invoice_filename
+//       ); // Add supporting invoice file
+//     }
+//     if (jcc_filename) {
+//       formDataToSend.append("jcc_filename", jcc_filename);
+//     }
+
+//     // API call
+//     const response = await apiCallBack(
+//       "POST",
+//       "po/btn/jcc-submit",
+//       formDataToSend,
+//       token
+//     );
+
+//     // Handle response
+//     if (response?.status) {
+//       toast.success(response?.message);
+//       setForm(initialDataService); // Reset form to initial state
+//       navigate(`/invoice-and-payment-process/${id}`); // Redirect to appropriate page
+//     } else {
+//       toast.error(response?.message);
+//     }
+//   } catch (error) {
+//     console.error("Error in actionHandlerJCCBTN:", error);
+//     toast.error("An error occurred: " + error.message);
+//   }
+// };
 export const actionHandlerServiceByEmp = async (
   empForm,
   setEmpForm,
