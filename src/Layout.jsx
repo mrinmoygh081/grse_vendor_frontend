@@ -2,6 +2,7 @@ import React, { lazy, Suspense } from "react";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { ASSIGNER } from "./constants/userConstants";
+
 // import Login from "./pages/Login";
 // import POArchived from "./pages/POArchived";
 // import PODetails from "./pages/PODetails";
@@ -182,6 +183,14 @@ const QapDrawing = lazy(() => import("./pages/dashboard/QapDrawing"));
 const ClaimAgainstJCCubmission = lazy(() =>
   import("./pages/checklists/ClaimAgainstJCCubmission")
 );
+
+const ClaimAgainstJCCubmissionView = lazy(() =>
+  import("./pages/checklists/ClaimAgainstJCCubmissionView")
+);
+const ClaimAgainstJCCubmissionEdit = lazy(() =>
+  import("./pages/checklists/ClaimAgainstJCCubmissionEdit")
+);
+
 const ClaimIncorrectDeductionsview = lazy(() =>
   import("./pages/checklists/ClaimIncorrectDeductionsview")
 );
@@ -325,6 +334,14 @@ function Layout() {
           <Route
             path="/checklist/claim-against-jcc/:id"
             element={<ClaimAgainstJCCubmission />}
+          />
+          <Route
+            path="/checklist/claim-against-jcc/view/:id"
+            element={<ClaimAgainstJCCubmissionView />}
+          />
+          <Route
+            path="/checklist/claim-against-jcc/edit/:id"
+            element={<ClaimAgainstJCCubmissionEdit />}
           />
 
           {/* Any Other Claim Checklist  */}

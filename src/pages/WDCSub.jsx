@@ -8,7 +8,8 @@ import { apiCallBack } from "../utils/fetchAPIs";
 import Select from "react-select";
 import { toast } from "react-toastify";
 import { reConfirm } from "../utils/reConfirm";
-import ReactDatePicker from "react-datepicker";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 import {
   calDatesDiff,
   convertToEpoch,
@@ -1624,7 +1625,7 @@ const WDCSub = () => {
                               </td>
                               <td>
                                 {" "}
-                                <ReactDatePicker
+                                <DatePicker
                                   selected={field.actual_start_date}
                                   onChange={(date) =>
                                     handleDateChange(
@@ -1639,7 +1640,7 @@ const WDCSub = () => {
                                 />
                               </td>
                               <td>
-                                <ReactDatePicker
+                                <DatePicker
                                   selected={field.actual_completion_date}
                                   onChange={(date) =>
                                     handleDateChange(
@@ -1853,7 +1854,7 @@ const WDCSub = () => {
                         <label className="form-label">
                           Guarantee Defect Start Date
                         </label>
-                        <ReactDatePicker
+                        <DatePicker
                           selected={
                             formDataWdc?.guarantee_defect_liability_start_date
                           }
@@ -1874,7 +1875,7 @@ const WDCSub = () => {
                         <label className="form-label">
                           Guarantee Defect End Date
                         </label>
-                        <ReactDatePicker
+                        <DatePicker
                           selected={
                             formDataWdc?.guarantee_defect_liability_end_date
                           }
@@ -1894,7 +1895,7 @@ const WDCSub = () => {
                     <div className="col-12 col-md-3">
                       <div className="mb-3">
                         <label className="form-label">Job Start Date</label>
-                        <ReactDatePicker
+                        <DatePicker
                           selected={formDataWdc?.jcc_job_start_date}
                           onChange={(date) =>
                             setFormDataWdc({
@@ -1913,7 +1914,7 @@ const WDCSub = () => {
                         <label className="form-label">
                           Job Completion Date
                         </label>
-                        <ReactDatePicker
+                        <DatePicker
                           selected={formDataWdc?.jcc_job_end_date}
                           onChange={(date) =>
                             setFormDataWdc({

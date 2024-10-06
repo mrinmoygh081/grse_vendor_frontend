@@ -95,6 +95,8 @@ const Checklist = () => {
           uri = "assignToFiStaff";
         } else if (assign?.btn_type === "other-retentions") {
           uri = "assignToFiStaff";
+        } else if (assign?.btn_type === "claim-against-jcc") {
+          uri = "assignToFiStaff";
         }
         const res = await apiCallBack("POST", `po/btn/${uri}`, assign, token);
         if (res?.status) {
@@ -276,6 +278,11 @@ const Checklist = () => {
                                                     "other-retentions"
                                                   ) {
                                                     type = "any-other";
+                                                  } else if (
+                                                    firstItem.btn_type ===
+                                                    "claim-against-jcc"
+                                                  ) {
+                                                    type = "claim-against-jcc";
                                                   }
 
                                                   navigate(
@@ -316,6 +323,7 @@ const Checklist = () => {
                                                   "bill-incorrect-deductions",
                                                   "ld-penalty-refund",
                                                   "other-retentions",
+                                                  "claim-against-jcc",
                                                 ].includes(
                                                   firstItem.btn_type
                                                 ) && (
@@ -333,7 +341,7 @@ const Checklist = () => {
                                                         firstItem.btn_type ===
                                                           "other-retentions"
                                                       ) {
-                                                        type = "any-other"; // Use "any-other" route for these types
+                                                        type = "any-other";
                                                       }
 
                                                       if (id) {
