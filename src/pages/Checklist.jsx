@@ -43,7 +43,7 @@ const Checklist = () => {
       await getEmpList();
       await getData();
       await createPayment();
-      setLoading(false); // Set loading to false after data is fetched
+      setLoading(false);
     };
 
     fetchData();
@@ -174,18 +174,12 @@ const Checklist = () => {
                               <option value="contract-bill-service">
                                 Checklist for Service PO
                               </option>
-                              {/* <option value="bill-incorrect-deductions">
-                                Checklist for Incorrect Deductions
-                              </option> */}
-                              <option value="bill-advance-payment">
+                              <option value="advance-bill">
                                 Checklist for Advance Payment
                               </option>
                               <option value="claim-against-pbg">
                                 Checklist for Claim Against PBG
                               </option>
-                              {/* <option value="ld-penalty-refund">
-                                Checklist for LD-Penalty Refund
-                              </option> */}
                               <option value="claim-against-jcc">
                                 Claim Against JCC
                               </option>
@@ -228,6 +222,7 @@ const Checklist = () => {
                                   {Object.keys(groupedBG).map((it, index) => {
                                     let items = groupedBG[it];
                                     let firstItem = items[0];
+                                    console.log("firstItem", firstItem);
                                     return (
                                       <Fragment key={index}>
                                         <tr>
@@ -254,10 +249,9 @@ const Checklist = () => {
                                                     type = "bill-service";
                                                   } else if (
                                                     firstItem.btn_type ===
-                                                    "advance-bill-hybrid"
+                                                    "advance-bill"
                                                   ) {
-                                                    type =
-                                                      "advance-bill-hybrid";
+                                                    type = "advance-bill";
                                                   } else if (
                                                     firstItem.btn_type ===
                                                     "claim-against-pbg"

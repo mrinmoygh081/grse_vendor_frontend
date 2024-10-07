@@ -6,7 +6,7 @@ import { checkTypeArr } from "../../utils/smallFun";
 import Footer from "../../components/Footer";
 import SideBar from "../../components/SideBar";
 import Header from "../../components/Header";
-import BTNAdvanceVendorInfo from "../../components/BTNAdvancelVendorInfo";
+import BTNAdvanceVendorInfo from "../../components/BTNAdvanceVendorInfo";
 import { formatDate } from "../../utils/getDateTimeNow";
 import { inputOnWheelPrevent } from "../../utils/inputOnWheelPrevent";
 import { actionHandlerByDO } from "../../Helpers/BTNChecklist";
