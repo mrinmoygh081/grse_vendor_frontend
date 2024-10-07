@@ -305,6 +305,15 @@ const ClaimAgainstJCCubmissionEdit = () => {
                                       </td>
                                     </tr>
                                     <tr>
+                                      <td>Total Amount:</td>
+                                      <td className="btn_value">
+                                        <b>
+                                          {" "}
+                                          <b>{form?.total_amount || "N/A"}</b>
+                                        </b>
+                                      </td>
+                                    </tr>
+                                    <tr>
                                       <td>JOB Completion Certificate:</td>
                                       <td className="btn_value">
                                         <div className="btn_value">
@@ -409,7 +418,7 @@ const ClaimAgainstJCCubmissionEdit = () => {
                                             </div>
                                             <div>
                                               <label htmlFor="">
-                                                Invoice Date
+                                                Invoice Date :
                                               </label>
                                               <span>
                                                 {formatDate(
@@ -452,15 +461,6 @@ const ClaimAgainstJCCubmissionEdit = () => {
                                       </tr>
                                     )}
 
-                                    <tr>
-                                      <td>Invoice Value:</td>
-                                      <td className="btn_value">
-                                        <b>
-                                          {" "}
-                                          <b>{form?.invoice_value || "N/A"}</b>
-                                        </b>
-                                      </td>
-                                    </tr>
                                     <tr>
                                       <td>Claim Amount:</td>
                                       <td className="btn_value">
@@ -629,7 +629,7 @@ const ClaimAgainstJCCubmissionEdit = () => {
                                                     BACK
                                                   </button>
                                                 </div>
-                                                <div className="col-6 text-end">
+                                                {/* <div className="col-6 text-end">
                                                   {showRemarks ? (
                                                     <>
                                                       <input
@@ -664,7 +664,7 @@ const ClaimAgainstJCCubmissionEdit = () => {
                                                       REJECT
                                                     </button>
                                                   )}
-                                                </div>
+                                                </div> */}
                                               </div>
                                             </div>
                                           </div>
@@ -674,7 +674,7 @@ const ClaimAgainstJCCubmissionEdit = () => {
                                   </tbody>
                                 </table>
                               </div>
-                              <div className="text-center">
+                              {/* <div className="text-center">
                                 <button
                                   className="btn fw-bold btn-primary me-3"
                                   type="button"
@@ -686,7 +686,7 @@ const ClaimAgainstJCCubmissionEdit = () => {
                                 >
                                   BACK
                                 </button>
-                              </div>
+                              </div> */}
                             </div>
                           </div>
                         </div>

@@ -120,7 +120,6 @@ const ClaimAgainstJCCubmission = () => {
         purchasing_doc_no,
         vendor_code,
         invoice_no,
-        invoice_value,
         yard,
         jcc_filename,
         invoice_filename,
@@ -146,9 +145,6 @@ const ClaimAgainstJCCubmission = () => {
       }
       if (!invoice_filename || invoice_filename === "") {
         return toast.warning("Invoice file is mandatory.");
-      }
-      if (!invoice_value || invoice_value.trim() === "") {
-        return toast.warning("Basic value is mandatory.");
       }
       if (!net_claim_amount || net_claim_amount.trim() === "") {
         return toast.warning("Net Claim Amount  is mandatory.");
@@ -179,7 +175,6 @@ const ClaimAgainstJCCubmission = () => {
       formDataToSend.append("btn_num", btn_num);
       formDataToSend.append("vendor_code", data?.initial?.vendor_code);
       formDataToSend.append("invoice_no", invoice_no);
-      formDataToSend.append("invoice_value", invoice_value);
       formDataToSend.append("yard", data?.wdcDetails?.yard_no);
 
       // Append JCC dates
@@ -327,6 +322,18 @@ const ClaimAgainstJCCubmission = () => {
                                       </td>
                                     </tr>
                                     <tr>
+                                      <td>Total Amount:</td>
+                                      <td className="btn_value">
+                                        <b>
+                                          {" "}
+                                          <b>
+                                            {data?.wdcDetails?.total_amount ||
+                                              "N/A"}
+                                          </b>
+                                        </b>
+                                      </td>
+                                    </tr>
+                                    <tr>
                                       <td>JOB Completion Certificate:</td>
                                       <td className="btn_value">
                                         <div className="btn_value">
@@ -438,7 +445,7 @@ const ClaimAgainstJCCubmission = () => {
                                                   setForm((prevData) => ({
                                                     ...prevData,
                                                     invoice_date:
-                                                      convertToEpoch(date), // Convert date to epoch in seconds
+                                                      convertToEpoch(date),
                                                   }))
                                                 }
                                                 dateFormat="dd/MM/yyyy"
@@ -527,8 +534,7 @@ const ClaimAgainstJCCubmission = () => {
                                                   setForm((prevData) => ({
                                                     ...prevData,
                                                     invoice_date:
-                                                      convertToEpoch(date) *
-                                                      1000,
+                                                      convertToEpoch(date),
                                                   }))
                                                 }
                                                 dateFormat="dd/MM/yyyy"
@@ -578,21 +584,6 @@ const ClaimAgainstJCCubmission = () => {
                                       </tr>
                                     )}
 
-                                    <tr>
-                                      <td>Invoice Value:</td>
-                                      <td className="btn_value">
-                                        <input
-                                          type="number"
-                                          className="form-control"
-                                          onWheel={inputOnWheelPrevent}
-                                          name="invoice_value"
-                                          value={form?.invoice_value}
-                                          onChange={(e) =>
-                                            inputTypeChange(e, form, setForm)
-                                          }
-                                        />
-                                      </td>
-                                    </tr>
                                     <tr>
                                       <td>Claim Amount:</td>
                                       <td className="btn_value">
