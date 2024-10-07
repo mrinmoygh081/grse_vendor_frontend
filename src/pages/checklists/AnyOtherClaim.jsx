@@ -252,13 +252,13 @@ const AnyOtherClaim = () => {
                                     <tr>
                                       <td>Vendor Name :</td>
                                       <td className="btn_value">
-                                        {user?.name}
+                                        {gstData?.name1 ? gstData.name1 : ""}
                                       </td>
                                     </tr>
                                     <tr>
                                       <td>Vendor Code :</td>
                                       <td className="btn_value">
-                                        {user?.vendor_code}
+                                        {gstData?.lifnr ? gstData.lifnr : ""}
                                       </td>
                                     </tr>
                                     <tr>
