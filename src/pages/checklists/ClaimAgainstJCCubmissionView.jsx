@@ -294,7 +294,7 @@ const ClaimAgainstJCCubmissionView = () => {
                                             </div>
                                             <div>
                                               <label htmlFor="">
-                                                Invoice Date
+                                                Invoice Date :
                                               </label>
                                               <span>
                                                 {formatDate(
@@ -337,15 +337,6 @@ const ClaimAgainstJCCubmissionView = () => {
                                       </tr>
                                     )}
 
-                                    <tr>
-                                      <td>Invoice Value:</td>
-                                      <td className="btn_value">
-                                        <b>
-                                          {" "}
-                                          <b>{form?.invoice_value || "N/A"}</b>
-                                        </b>
-                                      </td>
-                                    </tr>
                                     <tr>
                                       <td>Claim Amount:</td>
                                       <td className="btn_value">
