@@ -35,7 +35,6 @@
 
 // export default DynamicButton;
 
-
 import React, { useState } from "react";
 import { reConfirm } from "../utils/reConfirm";
 
@@ -51,17 +50,17 @@ const DynamicButton = ({ label, onClick, className, confirmMessage }) => {
         confirmMessage
       );
     }
-    
+
     // Call action without confirmation
     handleActionWithPromise();
   };
 
   const handleActionWithPromise = () => {
     setLoading(true);
-    
+
     // Ensure onClick returns a Promise
     const result = onClick();
-    
+
     // Check if result is a Promise
     if (result && typeof result.finally === "function") {
       result.finally(() => setLoading(false));
@@ -74,7 +73,7 @@ const DynamicButton = ({ label, onClick, className, confirmMessage }) => {
   return (
     <button
       onClick={handleClick}
-      className={`btn btn-sm fw-bold ${className}`}
+      className={`btn fw-bold ${className}`}
       type="button"
       disabled={loading}
     >

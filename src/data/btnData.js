@@ -169,31 +169,18 @@ export const initialDataAdvance = {
   invoice_no: "",
   invoice_filename: "",
   invoice_value: "",
-  debit_note: "",
-  credit_note: "",
+  invoice_supporting_filename: "",
   net_claim_amount: 0,
   cgst: "",
   sgst: "",
   igst: "",
   net_with_gst: 0,
-  debit_credit_filename: "",
-  gate_entry_no: "",
-  gate_entry_date: "",
-  get_entry_filename: "",
-  total_icgrn_value: "",
-  hsn_gstn_icgrn: false,
-  agree_to_declaration: false,
-  c_sdbg_filename: "",
-  demand_raise_filename: "",
-  pbg_filename: "",
-  grn_nos: "",
-  yard_no: "",
-  icgrn_nos: "",
   associated_po: [
     {
       a_po: "",
     },
   ],
+  hsn_gstn_icgrn: false,
 };
 
 export const initialDODataAdvance = {

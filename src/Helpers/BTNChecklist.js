@@ -1,7 +1,7 @@
 import { toast } from "react-toastify";
 import { apiCallBack } from "../utils/fetchAPIs";
 import { convertToEpoch } from "../utils/getDateTimeNow";
-import { initialDataService } from "../data/btnData";
+import { initialDataAdvance, initialDataService } from "../data/btnData";
 import { TYPE_GRN, TYPE_SERVICE } from "../constants/BTNContants";
 
 export const getGrnIcgrnByInvoice = async (po, invoice_no, token) => {
@@ -207,7 +207,6 @@ export const actionHandlerServiceBTN = async (
       agree_to_declaration,
       total_price,
     } = form;
-    console.log("bill_certifing_authority", bill_certifing_authority);
     if (!wdc_number || wdc_number === "") {
       return toast.warn("WDC number is mandatory.");
     }
@@ -487,147 +486,84 @@ export const actionHandlerServiceByEmp = async (
 };
 
 // Advance bill hybrid paylod submit button
-export const actionHandlerAdvancebillHybrid = async (
+export const actionHandlerAdvancebill = async (
   flag,
   token,
-  user,
   id,
   form,
   setForm,
-  initialData,
   navigate
 ) => {
   try {
     const {
-      btn_num,
-      purchasing_doc_no,
+      yard,
+      stage,
+      invoice_type,
       invoice_no,
       invoice_filename,
       invoice_value,
-      e_invoice_filename,
-      debit_note,
-      credit_note,
-      debit_credit_filename,
+      invoice_supporting_filename,
       net_claim_amount,
-      net_with_gst,
       cgst,
       sgst,
       igst,
-      net_claim_amt_gst,
-      updated_by,
-      created_at,
-      created_by_id,
-      vendor_code,
-      btn_type,
-      status,
-      c_level1_doc_sub_date,
-      c_level2_doc_sub_date,
-      c_level3_doc_sub_date,
-      c_level1_doc_name,
-      c_level2_doc_name,
-      c_level3_doc_name,
-      a_level1_doc_sub_date,
-      a_level2_doc_sub_date,
-      a_level3_doc_sub_date,
-      a_level1_doc_name,
-      a_level2_doc_name,
-      a_level3_doc_name,
+      net_with_gst,
+      associated_po,
       hsn_gstn_tax,
     } = form;
-
-    // if (!hsn_gstn_tax) {
-    //   toast.warning("Please check the HSN code, GSTIN, Tax rate is as per PO!");
-    //   return;
-    // }
-    // if (total_price !== net_claim_amount) {
-    //   toast.warning("Total price and net claim amount should be equal!");
-    //   return;
-    // }
+    if (!hsn_gstn_tax) {
+      return toast.warning(
+        "Please check the HSN code, GSTIN, Tax rate is as per PO."
+      );
+    }
+    if (!invoice_type || invoice_type === "") {
+      return toast.warning("Please select the invoice type!");
+    }
+    if (!invoice_no || invoice_no === "") {
+      return toast.warning("Please fill up the invoice number!");
+    }
+    if (!invoice_value || invoice_value === "") {
+      return toast.warning("Please fill up the basic value!");
+    }
+    if (!invoice_filename || invoice_filename === "") {
+      return toast.warning("Please select the invoice file!");
+    }
     let fDToSend = new FormData();
-    fDToSend.append("btn_num", null);
+    fDToSend.append("yard", yard);
+    fDToSend.append("stage", stage);
     fDToSend.append("purchasing_doc_no", id);
     fDToSend.append("invoice_no", invoice_no);
     fDToSend.append("invoice_value", invoice_value);
-    fDToSend.append("debit_note", debit_note);
-    fDToSend.append("credit_note", credit_note);
+    fDToSend.append("invoice_type", invoice_type);
     fDToSend.append("net_claim_amount", net_claim_amount);
     fDToSend.append("net_with_gst", net_with_gst);
     fDToSend.append("cgst", cgst);
     fDToSend.append("sgst", sgst);
-    fDToSend.append("igst", igst || "");
-    fDToSend.append("net_claim_amt_gst", net_claim_amt_gst || "");
-    fDToSend.append("updated_by", updated_by);
-    fDToSend.append("created_at", created_at);
-    fDToSend.append("created_by_id", user.vendor_code);
-    fDToSend.append("vendor_code", vendor_code);
-    fDToSend.append("btn_type", btn_type);
-    fDToSend.append("status", "SUBMITED");
-    fDToSend.append(
-      "c_level1_doc_sub_date",
-      convertToEpoch(new Date(c_level1_doc_sub_date))
-    );
-    fDToSend.append(
-      "c_level2_doc_sub_date",
-      convertToEpoch(new Date(c_level2_doc_sub_date))
-    );
-    fDToSend.append(
-      "c_level3_doc_sub_date",
-      convertToEpoch(new Date(c_level3_doc_sub_date))
-    );
-    fDToSend.append(
-      "a_level1_doc_sub_date",
-      convertToEpoch(new Date(a_level1_doc_sub_date))
-    );
-    fDToSend.append(
-      "a_level2_doc_sub_date",
-      convertToEpoch(new Date(a_level2_doc_sub_date))
-    );
-    fDToSend.append(
-      "a_level3_doc_sub_date",
-      convertToEpoch(new Date(a_level3_doc_sub_date))
-    );
+    fDToSend.append("igst", igst);
+    fDToSend.append("associated_po", associated_po);
 
     if (invoice_filename) {
       fDToSend.append("invoice_filename", invoice_filename);
     }
-    if (e_invoice_filename) {
-      fDToSend.append("e_invoice_filename", e_invoice_filename);
-    }
-    if (debit_credit_filename) {
-      fDToSend.append("debit_credit_filename", debit_credit_filename);
-    }
-    if (c_level1_doc_name) {
-      fDToSend.append("c_level1_doc_name", c_level1_doc_name);
-    }
-    if (c_level2_doc_name) {
-      fDToSend.append("c_level2_doc_name", c_level2_doc_name);
-    }
-    if (c_level3_doc_name) {
-      fDToSend.append("c_level3_doc_name", c_level3_doc_name);
-    }
-    if (a_level1_doc_name) {
-      fDToSend.append("a_level1_doc_name", a_level1_doc_name);
-    }
-    if (a_level2_doc_name) {
-      fDToSend.append("a_level2_doc_name", a_level2_doc_name);
-    }
-    if (a_level3_doc_name) {
-      fDToSend.append("a_level3_doc_name", a_level3_doc_name);
+    if (invoice_supporting_filename) {
+      fDToSend.append(
+        "invoice_supporting_filename",
+        invoice_supporting_filename
+      );
     }
 
     console.log("fDToSend", fDToSend);
 
     const response = await apiCallBack(
       "POST",
-      "po/btn/submitAdvBillHybrid",
+      "po/btn/submit-abh",
       fDToSend,
       token
     );
 
     if (response?.status) {
       toast.success(response?.message);
-      setForm(initialData);
-      // getData();
+      setForm(initialDataAdvance);
       navigate(`/invoice-and-payment-process/${id}`);
     } else {
       toast.error(response?.message);

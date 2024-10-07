@@ -304,15 +304,15 @@ function Layout() {
 
           {/* Advance Checklist  */}
           <Route
-            path="/checklist/bill-advance-payment/:id"
+            path="/checklist/advance-bill/:id"
             element={<AdvanceBillHybrid />}
           />
           <Route
-            path="/checklist/bill-advance-payment/view/:id"
+            path="/checklist/advance-bill/view/:id"
             element={<AdvanceBillHybridView />}
           />
           <Route
-            path="/checklist/bill-advance-payment/edit/:id"
+            path="/checklist/advance-bill/edit/:id"
             element={<AdvanceBillHybridEdit />}
           />
 

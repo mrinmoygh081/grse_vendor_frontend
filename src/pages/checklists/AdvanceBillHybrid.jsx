@@ -11,16 +11,15 @@ import {
 import { inputOnWheelPrevent } from "../../utils/inputOnWheelPrevent";
 import { apiCallBack } from "../../utils/fetchAPIs";
 import { useSelector } from "react-redux";
-import { actionHandlerAdvancebillHybrid } from "../../Helpers/BTNChecklist";
+import { actionHandlerAdvancebill } from "../../Helpers/BTNChecklist";
 import { USER_VENDOR } from "../../constants/userConstants";
 import DynamicButton from "../../Helpers/DynamicButton";
 import { D_S_INVOICE, E_INVOICE } from "../../constants/BTNContants";
 import { FaPlus } from "react-icons/fa";
 import { initialDataAdvance } from "../../data/btnData";
+import { formatDate } from "../../utils/getDateTimeNow";
 
 const AdvanceBillHybrid = () => {
-  const [isPopup, setIsPopup] = useState(false);
-  const [isSecPopup, setIsSecPopup] = useState(false);
   const { user, token } = useSelector((state) => state.auth);
   const { id } = useParams();
   const navigate = useNavigate();
@@ -47,13 +46,10 @@ const AdvanceBillHybrid = () => {
 
   const getData = async () => {
     try {
-      const payload = {
-        poNo: id,
-      };
       const d = await apiCallBack(
-        "POST",
-        `po/btn/getAdvBillHybrid`,
-        payload,
+        "GET",
+        `po/btn/abh?type=init&poNo=${id}`,
+        null,
         token
       );
       if (d?.status) {
@@ -67,21 +63,21 @@ const AdvanceBillHybrid = () => {
     getData();
   }, []);
 
-  useEffect(() => {
-    if (data) {
-      const firstEntry = data[0];
-      setForm({
-        ...form,
-        purchasing_doc_no: firstEntry.purchasing_doc_no,
-        vendor_code: firstEntry.vendor_code,
-        vendor_name: firstEntry.vendor_name,
-        a_sdbg_date: firstEntry.a_sdbg_sub_date,
-        c_sdbg_date: firstEntry.c_sdbg_sub_date,
-        c_sdbg_filename: firstEntry.c_sdbg_filename,
-        c_sdbg_file_path: firstEntry.c_sdbg_file_path,
-      });
-    }
-  }, [data]);
+  // useEffect(() => {
+  //   if (data) {
+  //     const firstEntry = data[0];
+  //     setForm({
+  //       ...form,
+  //       purchasing_doc_no: firstEntry.purchasing_doc_no,
+  //       vendor_code: firstEntry.vendor_code,
+  //       vendor_name: firstEntry.vendor_name,
+  //       a_sdbg_date: firstEntry.a_sdbg_sub_date,
+  //       c_sdbg_date: firstEntry.c_sdbg_sub_date,
+  //       c_sdbg_filename: firstEntry.c_sdbg_filename,
+  //       c_sdbg_file_path: firstEntry.c_sdbg_file_path,
+  //     });
+  //   }
+  // }, [data]);
 
   // calculate gst function
   useEffect(() => {
@@ -99,9 +95,11 @@ const AdvanceBillHybrid = () => {
 
     setForm((prevForm) => ({
       ...prevForm,
-      net_claim_amt_gst: netClaimAmountWithGST.toFixed(2),
+      net_with_gst: netClaimAmountWithGST.toFixed(2),
     }));
   };
+
+  console.log("form", form);
 
   return (
     <>
@@ -185,134 +183,17 @@ const AdvanceBillHybrid = () => {
                                     <tr>
                                       <td>Vendor</td>
                                       <td>
-                                        <b></b>
+                                        <b>
+                                          {`${data?.vendor_name} (${data?.vendor_code})`}
+                                        </b>
                                       </td>
                                     </tr>
                                     <tr>
                                       <td>Vendor GSTIN No</td>
                                       <td>
-                                        <b></b>
+                                        <b> {`${data?.vendor_gstno}`}</b>
                                       </td>
                                     </tr>
-                                    <tr>
-                                      <td>Choose Invoice Type</td>
-                                      <td className="btn_value">
-                                        <select
-                                          name="invoice_type"
-                                          id=""
-                                          className="form-select"
-                                          onChange={(e) =>
-                                            inputTypeChange(e, form, setForm)
-                                          }
-                                        >
-                                          <option value="">
-                                            Choose Invoice Type
-                                          </option>
-                                          <option value={D_S_INVOICE}>
-                                            Digitally Signed Invoice
-                                          </option>
-                                          <option value={E_INVOICE}>
-                                            EInvoice
-                                          </option>
-                                        </select>
-                                      </td>
-                                    </tr>
-                                    {form?.invoice_type === D_S_INVOICE && (
-                                      <tr>
-                                        <td>Digitally Signed Invoice:</td>
-                                        <td>
-                                          <div className="btn_value">
-                                            <input
-                                              type="text"
-                                              className="form-control me-3"
-                                              name="invoice_no"
-                                              value={form?.invoice_no}
-                                              placeholder="invoice number"
-                                              onChange={(e) =>
-                                                setForm({
-                                                  ...form,
-                                                  invoice_no: e.target.value,
-                                                })
-                                              }
-                                            />
-                                            <DynamicButton
-                                              label="CHECK"
-                                              onClick={() => {}}
-                                              className="btn btn-primary btn-sm m-4"
-                                            />
-                                          </div>
-                                          <div className="btn_value">
-                                            <div className="me-4">
-                                              <label htmlFor="">
-                                                Invoice File
-                                              </label>
-                                              <input
-                                                type="file"
-                                                className="form-control"
-                                                name="invoice_filename"
-                                                onChange={(e) =>
-                                                  inputFileChange(
-                                                    e,
-                                                    form,
-                                                    setForm
-                                                  )
-                                                }
-                                                accept=".pdf"
-                                              />
-                                            </div>
-                                            <div>
-                                              <label htmlFor="">
-                                                Supporting Documents
-                                              </label>
-                                              <input
-                                                type="file"
-                                                className="form-control"
-                                                name="invoice_supporting_doc"
-                                                onChange={(e) =>
-                                                  inputFileChange(
-                                                    e,
-                                                    form,
-                                                    setForm
-                                                  )
-                                                }
-                                                accept=".pdf"
-                                              />
-                                            </div>
-                                          </div>
-                                        </td>
-                                      </tr>
-                                    )}
-                                    {form?.invoice_type === E_INVOICE && (
-                                      <tr>
-                                        <td>E-Invoice No :</td>
-                                        <td className="btn_value">
-                                          <input
-                                            type="text"
-                                            className="form-control me-2"
-                                            name="invoice_no"
-                                            placeholder="E-Invoice number"
-                                            value={form?.invoice_no}
-                                            onChange={(e) =>
-                                              inputTypeChange(e, form, setForm)
-                                            }
-                                          />
-                                          <input
-                                            type="file"
-                                            className="form-control"
-                                            name="invoice_filename"
-                                            onChange={(e) =>
-                                              inputFileChange(e, form, setForm)
-                                            }
-                                            accept=".pdf"
-                                          />
-                                          <DynamicButton
-                                            label="CHECK"
-                                            onClick={() => {}}
-                                            className="btn btn-primary btn-sm m-4"
-                                          />
-                                        </td>
-                                      </tr>
-                                    )}
 
                                     <tr>
                                       <td>Additional PO:</td>
@@ -355,6 +236,100 @@ const AdvanceBillHybrid = () => {
                                         </button>
                                       </td>
                                     </tr>
+                                    <tr>
+                                      <td>Choose Invoice Type</td>
+                                      <td className="btn_value">
+                                        <select
+                                          name="invoice_type"
+                                          id=""
+                                          className="form-select"
+                                          onChange={(e) =>
+                                            inputTypeChange(e, form, setForm)
+                                          }
+                                        >
+                                          <option value="">
+                                            Choose Invoice Type
+                                          </option>
+                                          <option value={D_S_INVOICE}>
+                                            Digitally Signed Invoice
+                                          </option>
+                                          <option value={E_INVOICE}>
+                                            EInvoice
+                                          </option>
+                                        </select>
+                                      </td>
+                                    </tr>
+                                    {(form?.invoice_type === D_S_INVOICE ||
+                                      form?.invoice_type === E_INVOICE) && (
+                                      <tr>
+                                        <td>
+                                          {form?.invoice_type === D_S_INVOICE &&
+                                            "Digitally Signed Invoice: "}{" "}
+                                          {form?.invoice_type === E_INVOICE &&
+                                            "E-Invoice No: "}
+                                        </td>
+                                        <td>
+                                          <div className="btn_value">
+                                            <div className="me-4 mb-2">
+                                              <label htmlFor="">
+                                                Invoice Number
+                                              </label>
+                                              <input
+                                                type="text"
+                                                className="form-control me-3"
+                                                name="invoice_no"
+                                                value={form?.invoice_no}
+                                                placeholder="invoice number"
+                                                onChange={(e) =>
+                                                  setForm({
+                                                    ...form,
+                                                    invoice_no: e.target.value,
+                                                  })
+                                                }
+                                              />
+                                            </div>
+                                          </div>
+                                          <div className="btn_value">
+                                            <div className="me-4">
+                                              <label htmlFor="">
+                                                Invoice File
+                                              </label>
+                                              <input
+                                                type="file"
+                                                className="form-control"
+                                                name="invoice_filename"
+                                                onChange={(e) =>
+                                                  inputFileChange(
+                                                    e,
+                                                    form,
+                                                    setForm
+                                                  )
+                                                }
+                                                accept=".pdf"
+                                              />
+                                            </div>
+                                            <div>
+                                              <label htmlFor="">
+                                                Supporting Documents
+                                              </label>
+                                              <input
+                                                type="file"
+                                                className="form-control"
+                                                name="invoice_supporting_filename"
+                                                onChange={(e) =>
+                                                  inputFileChange(
+                                                    e,
+                                                    form,
+                                                    setForm
+                                                  )
+                                                }
+                                                accept=".pdf"
+                                              />
+                                            </div>
+                                          </div>
+                                        </td>
+                                      </tr>
+                                    )}
                                     <tr>
                                       <td>Basic value:</td>
                                       <td className="btn_value">
@@ -427,7 +402,7 @@ const AdvanceBillHybrid = () => {
                                     <tr>
                                       <td>Net claim amount with GST:</td>
                                       <td className="btn_value">
-                                        <b>{form?.net_claim_amt_gst}</b>
+                                        <b>{form?.net_with_gst}</b>
                                       </td>
                                     </tr>
                                     <tr>
@@ -435,25 +410,85 @@ const AdvanceBillHybrid = () => {
                                         Contractual Submission of Drawing:
                                       </td>
                                       <td className="btn_value">
-                                        <b></b>
+                                        <b>
+                                          {data?.c_drawing_date
+                                            ? formatDate(data.c_drawing_date)
+                                            : "NA"}
+                                        </b>
                                       </td>
                                     </tr>
 
                                     <tr>
                                       <td>Actual Submission of Drawing:</td>
                                       <td className="btn_value">
-                                        <b></b>
+                                        <b>
+                                          {data?.a_drawing_date
+                                            ? formatDate(data.a_drawing_date)
+                                            : "NA"}
+                                        </b>
                                       </td>
                                     </tr>
                                     <tr>
                                       <td>Submission of Advance BG / IB:</td>
                                       <td className="btn_value">
-                                        <b></b>
+                                        <b>
+                                          {data?.abgFileName && (
+                                            <a
+                                              href={`${process.env.REACT_APP_PDF_URL}submitSDBG/${data?.abgFileName}`}
+                                              target="_blank"
+                                              rel="noreferrer"
+                                            >
+                                              VIEW
+                                            </a>
+                                          )}
+                                          &nbsp;&nbsp;
+                                          {data?.ibFileName && (
+                                            <a
+                                              href={`${process.env.REACT_APP_PDF_URL}submitSDBG/${data?.ibFileName}`}
+                                              target="_blank"
+                                              rel="noreferrer"
+                                            >
+                                              VIEW
+                                            </a>
+                                          )}
+                                          {!data?.abgFileName &&
+                                            !data?.ibFileName &&
+                                            "Not Uploaded"}
+                                        </b>
                                       </td>
                                     </tr>
                                     <tr>
                                       <td colSpan="2">
-                                        <div className="form-check">
+                                        <div
+                                          className="form-check"
+                                          onClick={() =>
+                                            setForm({
+                                              ...form,
+                                              hsn_gstn_icgrn:
+                                                !form?.hsn_gstn_icgrn,
+                                            })
+                                          }
+                                        >
+                                          <input
+                                            type="checkbox"
+                                            className="form-check-input"
+                                            id="hsn_gstn_icgrn"
+                                            name="hsn_gstn_icgrn"
+                                            checked={form?.hsn_gstn_icgrn}
+                                            onChange={(e) =>
+                                              e.stopPropagation()
+                                            }
+                                          />
+                                          <label
+                                            className="form-check-label"
+                                            htmlFor="hsn_gstn_icgrn"
+                                          >
+                                            Whether HSN code, GSTIN, Tax rate is
+                                            as per PO
+                                          </label>
+                                        </div>
+
+                                        {/* <div className="form-check">
                                           <input
                                             type="checkbox"
                                             className="form-check-input"
@@ -470,11 +505,18 @@ const AdvanceBillHybrid = () => {
                                           <label
                                             className="form-check-label"
                                             htmlFor="hsn_gstn_icgrn"
+                                            onClick={() =>
+                                              setForm({
+                                                ...form,
+                                                hsn_gstn_tax:
+                                                  !form?.hsn_gstn_tax,
+                                              })
+                                            }
                                           >
                                             Whether HSN code, GSTIN, Tax rate is
                                             as per PO
                                           </label>
-                                        </div>
+                                        </div> */}
                                       </td>
                                     </tr>
                                   </tbody>
@@ -482,24 +524,23 @@ const AdvanceBillHybrid = () => {
                               </div>
                               <div className="text-center">
                                 {user?.user_type === USER_VENDOR && (
-                                  <button
-                                    type="button"
-                                    className="btn fw-bold btn-primary me-3"
-                                    onClick={() =>
-                                      actionHandlerAdvancebillHybrid(
-                                        "AdvanceBillHybrid",
-                                        token,
-                                        user,
-                                        id,
-                                        form,
-                                        setForm,
-                                        initialDataAdvance,
-                                        navigate
-                                      )
-                                    }
-                                  >
-                                    SUBMIT
-                                  </button>
+                                  <>
+                                    <DynamicButton
+                                      label="SUBMIT"
+                                      onClick={() =>
+                                        actionHandlerAdvancebill(
+                                          "AdvanceBill",
+                                          token,
+                                          id,
+                                          form,
+                                          setForm,
+                                          navigate
+                                        )
+                                      }
+                                      className="btn fw-bold btn-primary me-3"
+                                      type="submit"
+                                    />
+                                  </>
                                 )}
                                 <button
                                   className="btn fw-bold btn-primary me-3"
@@ -526,60 +567,6 @@ const AdvanceBillHybrid = () => {
           </div>
         </div>
       </div>
-      <div className={isPopup ? "popup active" : "popup"}>
-        <div className="card card-xxl-stretch mb-5 mb-xxl-8">
-          <div className="card-header border-0 pt-5">
-            <h3 className="card-title align-items-start flex-column">
-              <span className="card-label fw-bold fs-3 mb-1">
-                Upload Invoice
-              </span>
-            </h3>
-            <button
-              className="btn fw-bold btn-danger"
-              onClick={() => setIsPopup(false)}
-            >
-              Close
-            </button>
-          </div>
-          <form>
-            <div className="row">
-              <div className="col-12">
-                <div className="mb-3">
-                  <label className="form-label">
-                    Invoice Number <span className="star">*</span>
-                  </label>
-                  <input type="text" className="form-control" />
-                </div>
-              </div>
-              <div className="col-12">
-                <div className="mb-3">
-                  <label className="form-label">
-                    Invoice <span className="star">*</span>
-                  </label>
-                  <input type="file" className="form-control" />
-                </div>
-              </div>
-              <div className="col-12">
-                <div className="mb-3">
-                  <label className="form-label">Remarks</label>
-                  <textarea
-                    name=""
-                    id=""
-                    rows="4"
-                    className="form-control"
-                  ></textarea>
-                </div>
-              </div>
-              <div className="col-12">
-                <div className="mb-3">
-                  <button className="btn fw-bold btn-primary">UPDATE</button>
-                </div>
-              </div>
-            </div>
-          </form>
-        </div>
-      </div>
-      {/* {console.log(isSecPopup)} */}
     </>
   );
 };
