@@ -97,6 +97,8 @@ const Checklist = () => {
           uri = "assignToFiStaff";
         } else if (assign?.btn_type === "claim-against-jcc") {
           uri = "assignToFiStaff";
+        } else if (assign?.btn_type === "advance-bill") {
+          uri = "assignToFiStaff";
         }
         const res = await apiCallBack("POST", `po/btn/${uri}`, assign, token);
         if (res?.status) {
@@ -318,6 +320,7 @@ const Checklist = () => {
                                                   "ld-penalty-refund",
                                                   "other-retentions",
                                                   "claim-against-jcc",
+                                                  "advance-bill",
                                                 ].includes(
                                                   firstItem.btn_type
                                                 ) && (

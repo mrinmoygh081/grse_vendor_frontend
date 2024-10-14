@@ -1,7 +1,11 @@
 import { toast } from "react-toastify";
 import { apiCallBack } from "../utils/fetchAPIs";
 import { convertToEpoch } from "../utils/getDateTimeNow";
-import { initialDataAdvance, initialDataService } from "../data/btnData";
+import {
+  initialDataAdvance,
+  initialDataService,
+  initialDODataAdvance,
+} from "../data/btnData";
 import { TYPE_GRN, TYPE_SERVICE } from "../constants/BTNContants";
 
 export const getGrnIcgrnByInvoice = async (po, invoice_no, token) => {
@@ -159,7 +163,7 @@ export const actionHandlerByDO = async (
 
     const response = await apiCallBack(
       "POST",
-      "po/btn/BillsMaterialHybridByDO",
+      "po/btn/submit-abh-do",
       doForm,
       token
     );
@@ -509,9 +513,9 @@ export const actionHandlerAdvancebill = async (
       igst,
       net_with_gst,
       associated_po,
-      hsn_gstn_tax,
+      hsn_gstn_icgrn,
     } = form;
-    if (!hsn_gstn_tax) {
+    if (!hsn_gstn_icgrn) {
       return toast.warning(
         "Please check the HSN code, GSTIN, Tax rate is as per PO."
       );
