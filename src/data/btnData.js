@@ -166,6 +166,7 @@ export const initialDataAdvance = {
   yard: "",
   stage: "1",
   invoice_type: "",
+  invoice_date: "",
   invoice_no: "",
   invoice_filename: "",
   invoice_value: "",

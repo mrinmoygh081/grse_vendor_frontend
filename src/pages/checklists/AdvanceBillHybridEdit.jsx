@@ -16,6 +16,7 @@ import {
 import Select from "react-select";
 import { initialDataAdvance, initialDODataAdvance } from "../../data/btnData";
 import { toast } from "react-toastify";
+import DynamicButton from "../../Helpers/DynamicButton";
 
 const AdvanceBillHybridEdit = () => {
   const navigate = useNavigate();
@@ -28,6 +29,8 @@ const AdvanceBillHybridEdit = () => {
   const [data, setData] = useState(null);
   const [doData, setDoData] = useState(null);
   const [emp, setEmp] = useState([]);
+  const [showRemarks, setShowRemarks] = useState(false);
+  const [remarks, setRemarks] = useState("");
 
   const [doForm, setDoForm] = useState(initialDODataAdvance);
 
@@ -168,6 +171,32 @@ const AdvanceBillHybridEdit = () => {
     } catch (error) {
       toast.error("An error occurred during submission.");
       console.error("Error submitting form:", error);
+    }
+  };
+
+  const rejectBTN = async () => {
+    try {
+      let payload = {
+        btn_num: state,
+        status: "REJECTED",
+        rejectedMessage: remarks,
+        purchasing_doc_no: id,
+      };
+      const response = await apiCallBack(
+        "POST",
+        "po/btn/submit-abh-do",
+        payload,
+        token
+      );
+      if (response.status) {
+        toast.success(response.message || "Rejected successfully");
+        navigate(`/invoice-and-payment-process/${id}`);
+      } else {
+        toast.error(response.message || "Error rejecting the BTN");
+      }
+    } catch (error) {
+      console.error("Error rejecting the BTN:", error);
+      toast.error("Error rejecting the BTN");
     }
   };
 
@@ -361,23 +390,52 @@ const AdvanceBillHybridEdit = () => {
                                   PO and recommanded for release of payment
                                   subject to satutatory deduction
                                 </p>
-                                <div className="text-center">
-                                  <button
-                                    className="btn btn-primary me-3"
-                                    onClick={handleSubmit}
-                                  >
-                                    SUBMIT
-                                  </button>
-                                  <button
-                                    className="btn fw-bold btn-primary"
-                                    onClick={() =>
-                                      navigate(
-                                        `/invoice-and-payment-process/${id}`
-                                      )
-                                    }
-                                  >
-                                    BACK
-                                  </button>
+                                <div className="row">
+                                  <div className="col-6 text-start">
+                                    <button
+                                      className="btn btn-primary me-3"
+                                      onClick={handleSubmit}
+                                    >
+                                      SUBMIT
+                                    </button>
+                                    <button
+                                      className="btn fw-bold btn-primary me-3"
+                                      onClick={() =>
+                                        navigate(
+                                          `/invoice-and-payment-process/${id}`
+                                        )
+                                      }
+                                    >
+                                      BACK
+                                    </button>
+                                  </div>
+                                  <div className="col-6 text-end">
+                                    {showRemarks ? (
+                                      <>
+                                        <input
+                                          type="text"
+                                          placeholder="Enter remarks"
+                                          value={remarks}
+                                          onChange={(e) =>
+                                            setRemarks(e.target.value)
+                                          }
+                                          className="form-control mb-2"
+                                        />
+                                        <DynamicButton
+                                          label="Submit Rejection"
+                                          className="btn fw-bold btn-danger"
+                                          onClick={rejectBTN}
+                                        />
+                                      </>
+                                    ) : (
+                                      <button
+                                        className="btn fw-bold btn-danger"
+                                        onClick={() => setShowRemarks(true)}
+                                      >
+                                        REJECT
+                                      </button>
+                                    )}
+                                  </div>
                                 </div>
                               </div>
                             </div>
