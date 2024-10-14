@@ -18,7 +18,8 @@ import { D_S_INVOICE, E_INVOICE } from "../../constants/BTNContants";
 import { FaPlus } from "react-icons/fa";
 import { initialDataAdvance } from "../../data/btnData";
 import { formatDate } from "../../utils/getDateTimeNow";
-
+import ReactDatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 const AdvanceBillHybrid = () => {
   const { user, token } = useSelector((state) => state.auth);
   const { id } = useParams();
@@ -345,6 +346,25 @@ const AdvanceBillHybrid = () => {
                                         />
                                       </td>
                                     </tr>
+
+                                    <tr>
+                                      <td>Invoice Date:</td>
+                                      <td className="btn_value">
+                                        <ReactDatePicker
+                                          dateFormat="dd/MM/yyyy"
+                                          selected={form?.invoice_date}
+                                          onChange={(date) =>
+                                            setForm({
+                                              ...form,
+                                              invoice_date: date,
+                                            })
+                                          }
+                                          className="form-control"
+                                          placeholderText="DD/MM/YYYY"
+                                        />
+                                      </td>
+                                    </tr>
+
                                     <tr>
                                       <td>Net Claim Amount:</td>
                                       <td className="btn_value">

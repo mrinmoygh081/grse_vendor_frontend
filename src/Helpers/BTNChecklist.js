@@ -504,6 +504,7 @@ export const actionHandlerAdvancebill = async (
       stage,
       invoice_type,
       invoice_no,
+      invoice_date,
       invoice_filename,
       invoice_value,
       invoice_supporting_filename,
@@ -538,6 +539,7 @@ export const actionHandlerAdvancebill = async (
     fDToSend.append("purchasing_doc_no", id);
     fDToSend.append("invoice_no", invoice_no);
     fDToSend.append("invoice_value", invoice_value);
+    fDToSend.append("invoice_date", new Date(invoice_date).getTime());
     fDToSend.append("invoice_type", invoice_type);
     fDToSend.append("net_claim_amount", net_claim_amount);
     fDToSend.append("net_with_gst", net_with_gst);

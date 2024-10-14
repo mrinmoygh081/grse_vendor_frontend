@@ -94,6 +94,12 @@ const BTNAdvanceVendorInfo = ({ navigate, id, data }) => {
                   </td>
                 </tr>
                 <tr>
+                  <td>Invoice Date:</td>
+                  <td className="btn_value">
+                    <b className="me-3"> {formatDate(data?.invoice_date)}</b>
+                  </td>
+                </tr>
+                <tr>
                   <td>Net claim amount:</td>
                   <td className="btn_value">
                     <b>
