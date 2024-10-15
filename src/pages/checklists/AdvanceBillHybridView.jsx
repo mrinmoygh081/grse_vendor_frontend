@@ -79,7 +79,8 @@ const AdvanceBillHybridView = () => {
                           />
                         </div>
                       </div>
-                      {doData && (
+                      {(doData?.recomend_payment === "YES" ||
+                        doData?.recomend_payment === "NO") && (
                         <div className="col-12">
                           <div className="card">
                             <h3 className="m-3">ENTRY BY DEALING OFFICER:</h3>
