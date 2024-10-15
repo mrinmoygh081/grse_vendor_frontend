@@ -141,6 +141,10 @@ const AdvanceBillHybridEdit = () => {
       toast.error("Please select a Finance Authority.");
       return;
     }
+    if (!doForm.recomend_payment) {
+      toast.error("Please select a Recomend Payment.");
+      return;
+    }
 
     const payload = {
       btn_num: state,
