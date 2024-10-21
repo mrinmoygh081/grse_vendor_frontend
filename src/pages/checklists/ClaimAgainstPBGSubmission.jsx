@@ -460,32 +460,7 @@ const ClaimAgainstPBGSubmission = () => {
                                 <table className="table table-striped table-bordered table_height">
                                   <tbody style={{ maxHeight: "100%" }}>
                                     <tr>
-                                      <td>Original Invoice No :</td>
-                                      <td className="btn_value">
-                                        <input
-                                          type="text"
-                                          className="form-control me-2"
-                                          name="invoiceNo"
-                                          placeholder="Invoice No"
-                                          value={formData.invoiceNo}
-                                          onChange={handleChange}
-                                        />
-                                        <input
-                                          type="file"
-                                          className="form-control"
-                                          name="invoiceFile"
-                                          accept=".pdf"
-                                          onChange={handleChange}
-                                        />
-                                        <DynamicButton
-                                          label="CHECK"
-                                          onClick={getGrnIcgrnByInvoice}
-                                          className="btn btn-primary btn-sm m-4"
-                                        />
-                                      </td>
-                                    </tr>
-                                    <tr>
-                                      <td>Invoice Date:</td>
+                                      <td>Claim Invoice Date:</td>
                                       <td className="btn_value">
                                         <ReactDatePicker
                                           dateFormat="dd/MM/yyyy"
@@ -516,6 +491,64 @@ const ClaimAgainstPBGSubmission = () => {
                                           accept=".pdf"
                                           onChange={handleChange}
                                         />
+                                      </td>
+                                    </tr>
+                                    <tr>
+                                      <td>Original Invoice No :</td>
+                                      <td className="btn_value">
+                                        <input
+                                          type="text"
+                                          className="form-control me-2"
+                                          name="invoiceNo"
+                                          placeholder="Invoice No"
+                                          value={formData.invoiceNo}
+                                          onChange={handleChange}
+                                        />
+                                        <input
+                                          type="file"
+                                          className="form-control"
+                                          name="invoiceFile"
+                                          accept=".pdf"
+                                          onChange={handleChange}
+                                        />
+                                        <DynamicButton
+                                          label="CHECK"
+                                          onClick={getGrnIcgrnByInvoice}
+                                          className="btn btn-primary btn-sm m-4"
+                                        />
+                                      </td>
+                                    </tr>
+                                    <tr>
+                                      <td>Original Invoice Date:</td>
+                                      <td className="btn_value">
+                                        <ReactDatePicker
+                                          dateFormat="dd/MM/yyyy"
+                                          selected={invoiceDate}
+                                          onChange={(date) =>
+                                            setInvoiceDate(date)
+                                          }
+                                          className="form-control"
+                                          placeholderText="DD/MM/YYYY"
+                                        />
+                                      </td>
+                                    </tr>
+                                    <tr>
+                                      <td>ICGRN Nos </td>
+                                      <td className="btn_value">
+                                        <p>
+                                          {checkTypeArr(
+                                            InvoiceData?.icgrn_nos
+                                          ) &&
+                                            InvoiceData?.icgrn_nos?.map(
+                                              (item, i) => (
+                                                <b key={i} className="mx-2">
+                                                  {item?.grn_no
+                                                    ? item.grn_no
+                                                    : "NA"}
+                                                </b>
+                                              )
+                                            )}
+                                        </p>
                                       </td>
                                     </tr>
                                     <tr>
@@ -565,25 +598,6 @@ const ClaimAgainstPBGSubmission = () => {
                                               }
                                             )
                                           : "PBG NOT SUBMITTED"}
-                                      </td>
-                                    </tr>
-                                    <tr>
-                                      <td>ICGRN Nos </td>
-                                      <td className="btn_value">
-                                        <p>
-                                          {checkTypeArr(
-                                            InvoiceData?.icgrn_nos
-                                          ) &&
-                                            InvoiceData?.icgrn_nos?.map(
-                                              (item, i) => (
-                                                <b key={i} className="mx-2">
-                                                  {item?.grn_no
-                                                    ? item.grn_no
-                                                    : "NA"}
-                                                </b>
-                                              )
-                                            )}
-                                        </p>
                                       </td>
                                     </tr>
                                   </tbody>

@@ -155,9 +155,9 @@ const BTNAdvanceVendorInfo = ({ navigate, id, data }) => {
                 <tr>
                   <td>Submission of Advance BG / IB / Other Document:</td>
                   <td className="btn_value">
-                    {data?.pbg_filename && data.pbg_filename !== "" ? (
+                    {data?.abgFileName && data.abgFileName !== "" ? (
                       <a
-                        href={`${process.env.REACT_APP_PDF_URL}btns/${data.pbg_filename}`}
+                        href={`${process.env.REACT_APP_PDF_URL}submitSDBG/${data.abgFileName}`}
                         target="_blank"
                         rel="noreferrer"
                       >

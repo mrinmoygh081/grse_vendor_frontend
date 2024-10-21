@@ -102,7 +102,6 @@ const AdvanceBillHybridEdit = () => {
         0.25,
         max_ld
       );
-
       setDoForm((prevForm) => ({
         ...prevForm,
         p_drg_amount: penaltyAmount,
@@ -119,16 +118,21 @@ const AdvanceBillHybridEdit = () => {
   console.log("doForm", doForm);
   // calculate total_deduction
   useEffect(() => {
-    if (data?.net_claim_amount && doForm?.p_drg_amount) {
+    const { c_drawing_date, p_drg_amount } = doForm;
+
+    if (data?.net_claim_amount) {
       let net = Number(data?.net_claim_amount);
       let max_deduct = (net * doForm.max_ld) / 100;
 
       let total_deduction = parseInt(
         Math.min(doForm?.p_drg_amount, max_deduct)
       );
+      if (!c_drawing_date || c_drawing_date == "") {
+        total_deduction = 0;
+      }
       let net_payable_amount = parseInt(net - total_deduction);
 
-      setDoForm({ ...doForm, total_deduction, net_payable_amount });
+      setDoForm((prev) => ({ ...prev, total_deduction, net_payable_amount }));
     }
   }, [data?.net_claim_amount, doForm?.p_drg_amount, doForm.max_ld]);
 
@@ -328,7 +332,10 @@ const AdvanceBillHybridEdit = () => {
                                             <label>Amount:</label>
                                             <p>
                                               {" "}
-                                              &#8377; {doForm.p_drg_amount}
+                                              &#8377;{" "}
+                                              {doForm.p_drg_amount
+                                                ? doForm.p_drg_amount
+                                                : 0}
                                             </p>
                                           </div>
                                         </td>
@@ -362,6 +369,10 @@ const AdvanceBillHybridEdit = () => {
                                             {isNaN(doForm?.net_payable_amount)
                                               ? 0
                                               : doForm?.net_payable_amount}
+                                            {console.log(
+                                              "doForm?.net_payable_amount",
+                                              doForm?.net_payable_amount
+                                            )}
                                           </b>
                                         </td>
                                       </tr>
