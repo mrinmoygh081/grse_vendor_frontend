@@ -237,45 +237,6 @@ const SyncComponent = () => {
                 className="btn btn-primary btn-sm mt-2"
               />
             </div>
-
-            <div className="col-md-6">
-              <h3>Upload Unsynced Data</h3>
-
-              <label htmlFor="">Select From Date You want to Sync Data:</label>
-              <DatePicker
-                selected={selectedDate?.dataSync}
-                onChange={(date) =>
-                  setSelectedDate({ ...selectedDate, dataSync: date })
-                }
-                className="form-control my-2"
-                placeholderText="Select Date"
-                maxDate={new Date(new Date().setDate(new Date().getDate() - 1))}
-              />
-              <DynamicButton
-                label="UPLOAD DATA"
-                onClick={() => DataUploadHndlar()}
-                className="btn btn-primary btn-sm mt-2"
-              />
-            </div>
-            <div className="col-md-6">
-              <h3>Upload Unsynced File</h3>
-
-              <label htmlFor="">Select From Date You want to Sync File:</label>
-              <DatePicker
-                selected={selectedDate?.fileSync}
-                onChange={(date) =>
-                  setSelectedDate({ ...selectedDate, fileSync: date })
-                }
-                className="form-control my-2"
-                placeholderText="Select Date"
-                maxDate={new Date(new Date().setDate(new Date().getDate() - 1))}
-              />
-              <DynamicButton
-                label="UPLOAD FILE"
-                onClick={uploadFileHandler}
-                className="btn btn-primary btn-sm mt-2"
-              />
-            </div>
           </div>
 
           {/* New section for Sync Download and Sync Upload */}
