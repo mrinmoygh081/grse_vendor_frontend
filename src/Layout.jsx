@@ -2,6 +2,7 @@ import React, { lazy, Suspense } from "react";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { ASSIGNER } from "./constants/userConstants";
+import ChakraLoader from "./components/ChakraLoader";
 
 // import Login from "./pages/Login";
 // import POArchived from "./pages/POArchived";
@@ -210,7 +211,7 @@ function Layout() {
   if (!token || !isLoggedIn) {
     return (
       <BrowserRouter>
-        <Suspense fallback={<div>Loading...</div>}>
+        <Suspense fallback={<ChakraLoader />}>
           <Routes>
             <Route path="/" element={<Login />} />
             <Route path="/registration" element={<Registration />} />
@@ -225,7 +226,7 @@ function Layout() {
   if (user?.department_id === 19) {
     return (
       <BrowserRouter>
-        <Suspense fallback={<div>Loading...</div>}>
+        <Suspense fallback={<ChakraLoader />}>
           <Routes>
             <Route path="*" element={<Navigate to="/synci-data" replace />} />
             <Route path="/synci-data" element={<SyncComponent />} />
@@ -237,7 +238,7 @@ function Layout() {
 
   return (
     <BrowserRouter>
-      <Suspense fallback={<div>Loading...</div>}>
+      <Suspense fallback={<ChakraLoader />}>
         <Routes>
           <Route path="/" element={<POs />} />
           <Route path="/wdc" element={<WBS />} />
