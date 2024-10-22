@@ -320,6 +320,7 @@ import { checkTypeArr } from "../../utils/smallFun";
 import DynamicButton from "../../Helpers/DynamicButton";
 import ReactDatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css"; // Import CSS for the date picker
+import { formatDate, formatEpochToDate } from "../../utils/getDateTimeNow";
 
 const ClaimAgainstPBGSubmission = () => {
   const [formData, setFormData] = useState({
@@ -521,15 +522,7 @@ const ClaimAgainstPBGSubmission = () => {
                                     <tr>
                                       <td>Original Invoice Date:</td>
                                       <td className="btn_value">
-                                        <ReactDatePicker
-                                          dateFormat="dd/MM/yyyy"
-                                          selected={invoiceDate}
-                                          onChange={(date) =>
-                                            setInvoiceDate(date)
-                                          }
-                                          className="form-control"
-                                          placeholderText="DD/MM/YYYY"
-                                        />
+                                        {formatDate(InvoiceData?.invoice_date)}
                                       </td>
                                     </tr>
                                     <tr>
