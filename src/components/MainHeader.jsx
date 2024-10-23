@@ -147,7 +147,7 @@ const MainHeader = ({ title }) => {
                 </li>
               )}
               {user?.user_type !== USER_VENDOR && renderDashboardLinks()}
-              {user?.user_type !== USER_VENDOR &&
+              {/* {user?.user_type !== USER_VENDOR &&
                 user?.internal_role_id === ASSIGNER && (
                   <li className="nav-item">
                     <Link className="nav-link text-black" to={`/authorisation`}>
@@ -155,7 +155,17 @@ const MainHeader = ({ title }) => {
                       AUTHORIZATION
                     </Link>
                   </li>
-                )}
+                )} */}
+              {(user?.vendor_code === "600233" ||
+                user?.vendor_code === "602717") && (
+                <li className="nav-item">
+                  <Link className="nav-link text-black" to={`/authorisation`}>
+                    <FaCog className="me-2" />
+                    AUTHORIZATION
+                  </Link>
+                </li>
+              )}
+
               <li className="nav-item">
                 <Link
                   className="nav-link text-black"
