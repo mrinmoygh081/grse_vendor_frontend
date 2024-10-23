@@ -121,8 +121,9 @@ const AdvanceBillHybridEdit = () => {
     const { c_drawing_date, p_drg_amount } = doForm;
 
     if (data?.total_po_netwr) {
-      let net = Number(data?.total_po_netwr);
-      let max_deduct = (net * doForm.max_ld) / 100;
+      let net = Number(data?.net_claim_amount);
+      let poTotalVaue = data?.total_po_netwr;
+      let max_deduct = (poTotalVaue * doForm.max_ld) / 100;
 
       let total_deduction = parseInt(
         Math.min(doForm?.p_drg_amount, max_deduct)
@@ -130,6 +131,7 @@ const AdvanceBillHybridEdit = () => {
       if (!c_drawing_date || c_drawing_date == "") {
         total_deduction = 0;
       }
+      // check
       let net_payable_amount = parseInt(net - total_deduction);
 
       setDoForm((prev) => ({ ...prev, total_deduction, net_payable_amount }));
