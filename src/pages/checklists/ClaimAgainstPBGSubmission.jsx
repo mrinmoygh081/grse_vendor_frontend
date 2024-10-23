@@ -461,20 +461,6 @@ const ClaimAgainstPBGSubmission = () => {
                                 <table className="table table-striped table-bordered table_height">
                                   <tbody style={{ maxHeight: "100%" }}>
                                     <tr>
-                                      <td>Claim Invoice Date:</td>
-                                      <td className="btn_value">
-                                        <ReactDatePicker
-                                          dateFormat="dd/MM/yyyy"
-                                          selected={invoiceDate}
-                                          onChange={(date) =>
-                                            setInvoiceDate(date)
-                                          }
-                                          className="form-control"
-                                          placeholderText="DD/MM/YYYY"
-                                        />
-                                      </td>
-                                    </tr>
-                                    <tr>
                                       <td>Balance Claim Invoice :</td>
                                       <td className="btn_value">
                                         <input
@@ -491,6 +477,20 @@ const ClaimAgainstPBGSubmission = () => {
                                           name="balanceClaimInvoiceFile"
                                           accept=".pdf"
                                           onChange={handleChange}
+                                        />
+                                      </td>
+                                    </tr>
+                                    <tr>
+                                      <td>Balance Claim Invoice Date:</td>
+                                      <td className="btn_value">
+                                        <ReactDatePicker
+                                          dateFormat="dd/MM/yyyy"
+                                          selected={invoiceDate}
+                                          onChange={(date) =>
+                                            setInvoiceDate(date)
+                                          }
+                                          className="form-control"
+                                          placeholderText="DD/MM/YYYY"
                                         />
                                       </td>
                                     </tr>
@@ -604,11 +604,20 @@ const ClaimAgainstPBGSubmission = () => {
 
                     <div className="text-center mt-4">
                       <button
-                        className="btn btn-primary"
+                        className="btn btn-primary me-3"
                         type="submit"
                         disabled={!formData.invoiceNo}
                       >
                         Submit
+                      </button>
+                      <button
+                        type="button"
+                        className="btn btn-primary"
+                        onClick={() =>
+                          navigate(`/invoice-and-payment-process/${id}`)
+                        }
+                      >
+                        BACK
                       </button>
                     </div>
                   </form>

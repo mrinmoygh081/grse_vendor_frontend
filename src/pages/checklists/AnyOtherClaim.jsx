@@ -336,7 +336,7 @@ const AnyOtherClaim = () => {
                                         />
                                       </td>
                                       <td>
-                                        <input
+                                        <textarea
                                           type="text"
                                           name="ref_invoice1_remarks"
                                           className="form-control"
@@ -381,7 +381,7 @@ const AnyOtherClaim = () => {
                                         />
                                       </td>
                                       <td>
-                                        <input
+                                        <textarea
                                           type="text"
                                           name="ref_invoice2_remarks"
                                           className="form-control"
@@ -425,7 +425,7 @@ const AnyOtherClaim = () => {
                                         />
                                       </td>
                                       <td>
-                                        <input
+                                        <textarea
                                           type="text"
                                           name="ref_invoice3_remarks"
                                           className="form-control"
@@ -469,7 +469,7 @@ const AnyOtherClaim = () => {
                                         />
                                       </td>
                                       <td>
-                                        <input
+                                        <textarea
                                           type="text"
                                           name="ref_invoice4_remarks"
                                           className="form-control"
