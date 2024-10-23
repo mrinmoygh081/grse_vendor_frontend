@@ -131,7 +131,7 @@ const AdvanceBillHybridEdit = () => {
       if (!c_drawing_date || c_drawing_date == "") {
         total_deduction = 0;
       }
-      // check
+      // check cal
       let net_payable_amount = parseInt(net - total_deduction);
 
       setDoForm((prev) => ({ ...prev, total_deduction, net_payable_amount }));
