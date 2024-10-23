@@ -94,11 +94,11 @@ const AdvanceBillHybridEdit = () => {
   useEffect(() => {
     const { a_drawing_date, c_drawing_date, max_ld } = doForm;
 
-    if (a_drawing_date && c_drawing_date && data?.net_claim_amount) {
+    if (a_drawing_date && c_drawing_date && data?.total_po_netwr) {
       const penaltyAmount = calculatePenalty(
         c_drawing_date,
         a_drawing_date,
-        data.net_claim_amount,
+        data.total_po_netwr,
         0.25,
         max_ld
       );
@@ -111,7 +111,7 @@ const AdvanceBillHybridEdit = () => {
     doForm.a_drawing_date,
     doForm.c_drawing_date,
     doForm.max_ld,
-    data?.net_claim_amount,
+    data?.total_po_netwr,
   ]);
 
   console.log(data, "data");
@@ -120,8 +120,8 @@ const AdvanceBillHybridEdit = () => {
   useEffect(() => {
     const { c_drawing_date, p_drg_amount } = doForm;
 
-    if (data?.net_claim_amount) {
-      let net = Number(data?.net_claim_amount);
+    if (data?.total_po_netwr) {
+      let net = Number(data?.total_po_netwr);
       let max_deduct = (net * doForm.max_ld) / 100;
 
       let total_deduction = parseInt(
@@ -134,7 +134,7 @@ const AdvanceBillHybridEdit = () => {
 
       setDoForm((prev) => ({ ...prev, total_deduction, net_payable_amount }));
     }
-  }, [data?.net_claim_amount, doForm?.p_drg_amount, doForm.max_ld]);
+  }, [data?.total_po_netwr, doForm?.p_drg_amount, doForm.max_ld]);
 
   //submision do form
 
@@ -270,6 +270,12 @@ const AdvanceBillHybridEdit = () => {
                                         <td>BTN Number:</td>
                                         <td className="btn_value">
                                           <b>{state}</b>
+                                        </td>
+                                      </tr>
+                                      <tr>
+                                        <td>PO Value:</td>
+                                        <td className="btn_value">
+                                          <b>{data?.total_po_netwr}</b>
                                         </td>
                                       </tr>
 

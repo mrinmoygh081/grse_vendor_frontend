@@ -196,6 +196,9 @@ const ClaimIncorrectDeductionsview = lazy(() =>
   import("./pages/checklists/ClaimIncorrectDeductionsview")
 );
 const AnyOtherClaim = lazy(() => import("./pages/checklists/AnyOtherClaim"));
+const LDRefundSupplyMaterial = lazy(() =>
+  import("./pages/checklists/LDRefundSupplyMaterial")
+);
 const AnyOtherClaimview = lazy(() =>
   import("./pages/checklists/AnyOtherClaimview")
 );
@@ -363,6 +366,13 @@ function Layout() {
           <Route
             path="/checklist/any-other/edit/:id"
             element={<ClaimIncorrectDeductionsview />}
+          />
+
+          {/* LD REFUND FOR SUPPLU MATERIAL SUMMERY */}
+
+          <Route
+            path="/checklist/ld-refund-supply-material/:id"
+            element={<LDRefundSupplyMaterial />}
           />
 
           {/* <Route
