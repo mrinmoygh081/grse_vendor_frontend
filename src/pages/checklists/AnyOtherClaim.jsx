@@ -238,7 +238,7 @@ const AnyOtherClaim = () => {
                                             Choose Your Claim Type
                                           </option>
                                           <option value="bill-incorrect-deductions">
-                                            Checklist for Incorrect Deductions
+                                            Checklist for Excess Deductions
                                           </option>
                                           <option value="ld-penalty-refund">
                                             Checklist for LD-Penalty Refund
