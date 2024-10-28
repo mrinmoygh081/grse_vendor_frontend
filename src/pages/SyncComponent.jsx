@@ -17,8 +17,8 @@ const SyncComponent = () => {
     fileSync: new Date(new Date().setDate(new Date().getDate() - 1)),
   });
   const [selectedDatetoday, setSelectedDatetoday] = useState({
-    dataSync: new Date(new Date().setDate(new Date().getDate() - 1)),
-    fileSync: new Date(new Date().setDate(new Date().getDate() - 1)),
+    sync_date: new Date(new Date().setDate(new Date().getDate() - 1)),
+    datasync_date: new Date(new Date().setDate(new Date().getDate() - 1)),
   });
 
   const dispatch = useDispatch();
@@ -49,8 +49,6 @@ const SyncComponent = () => {
   //   }
   // };
 
-  console.log("selectedDate", selectedDate);
-
   const DataUploadHndlar = async () => {
     try {
       console.log("formData?.data", selectedDate?.dataSync);
@@ -77,7 +75,7 @@ const SyncComponent = () => {
   // const fileDownloadHandler = async () => {
   //   try {
   //     let payload = {
-  //       sync_date: new Date(selectedDate).getTime(),
+  //       sync_date: new Date(selectedDatetoday).getTime(),
   //     };
   //     const response = apiCallBack(
   //       "POST",
@@ -92,6 +90,54 @@ const SyncComponent = () => {
   //     );
   //   }
   // };
+
+  const fileDownloadHandler = async () => {
+    try {
+      // Directly access the sync_date field and convert it to the required format
+      let payload = {
+        sync_date: new Date(selectedDatetoday.sync_date).getTime(),
+      };
+
+      const response = await apiCallBack(
+        "POST",
+        "sync/sync_file_zip",
+        payload,
+        null
+      );
+
+      // Show success message
+      toast.success(response.data.message || "File sync successful");
+    } catch (error) {
+      // Show error message
+      toast.error(
+        "File sync failed: " + (error.response?.data?.message || error.message)
+      );
+    }
+  };
+  // downlod file
+  const uplodFileDownloadHandler = async () => {
+    try {
+      // Directly access the sync_date field and convert it to the required format
+      let payload = {
+        datasync_date: new Date(selectedDatetoday.datasync_date).getTime(),
+      };
+
+      const response = await apiCallBack(
+        "POST",
+        "sync/sync_download ",
+        payload,
+        null
+      );
+
+      // Show success message
+      toast.success(response.data.message || "File sync successful");
+    } catch (error) {
+      // Show error message
+      toast.error(
+        "File sync failed: " + (error.response?.data?.message || error.message)
+      );
+    }
+  };
 
   const uploadFileHandler = async () => {
     try {
@@ -238,10 +284,10 @@ const SyncComponent = () => {
               />
             </div>
           </div>
-
-          {/* New section for Sync Download and Sync Upload */}
-          <div className="row mt-4">
-            {/* <div className="col-md-6">
+          <div className="row">
+            {/* New section for Sync Download and Sync Upload */}
+            <div className="col-md-6">
+              {/* <div className="col-md-6">
               <h3>Download Unsynced File</h3>
               <DatePicker
                 selected={selectedDate}
@@ -257,6 +303,49 @@ const SyncComponent = () => {
                 className="btn btn-primary btn-sm mt-2"
               />
             </div> */}
+
+              <DatePicker
+                selected={selectedDatetoday?.sync_date}
+                onChange={(date) =>
+                  setSelectedDatetoday({
+                    ...selectedDatetoday,
+                    sync_date: date,
+                  })
+                }
+                className="form-control my-2"
+                placeholderText="Select Date"
+                // Uncomment maxDate if you want to restrict future dates
+                maxDate={new Date(new Date().setDate(new Date().getDate() - 1))}
+              />
+
+              <DynamicButton
+                label="SYNC FILE"
+                onClick={fileDownloadHandler}
+                className="btn btn-primary btn-sm mt-2"
+              />
+            </div>
+
+            <div className="col-md-6">
+              <DatePicker
+                selected={selectedDatetoday?.datasync_date}
+                onChange={(date) =>
+                  setSelectedDatetoday({
+                    ...selectedDatetoday,
+                    datasync_date: date,
+                  })
+                }
+                className="form-control my-2"
+                placeholderText="Select Date"
+                // Uncomment maxDate if you want to restrict future dates
+                maxDate={new Date(new Date().setDate(new Date().getDate() - 1))}
+              />
+
+              <DynamicButton
+                label="SYNC DATA"
+                onClick={uplodFileDownloadHandler}
+                className="btn btn-primary btn-sm mt-2"
+              />
+            </div>
           </div>
         </div>
       </div>

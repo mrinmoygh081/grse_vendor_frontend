@@ -37,6 +37,7 @@ import DynamicButton from "../Helpers/DynamicButton";
 import { ASSIGNER, DEPT_FI, USER_VENDOR } from "../constants/userConstants";
 import SkeletonLoader from "../loader/SkeletonLoader";
 import { FaDownload } from "react-icons/fa";
+import "react-datepicker/dist/react-datepicker.css";
 
 const SDBGSub = () => {
   const dispatch = useDispatch();
