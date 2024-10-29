@@ -287,6 +287,27 @@ const SyncComponent = () => {
           <div className="row">
             {/* New section for Sync Download and Sync Upload */}
             <div className="col-md-6">
+              <DatePicker
+                selected={selectedDatetoday?.datasync_date}
+                onChange={(date) =>
+                  setSelectedDatetoday({
+                    ...selectedDatetoday,
+                    datasync_date: date,
+                  })
+                }
+                className="form-control my-2"
+                placeholderText="Select Date"
+                // Uncomment maxDate if you want to restrict future dates
+                maxDate={new Date(new Date().setDate(new Date().getDate() - 1))}
+              />
+
+              <DynamicButton
+                label="SYNC DATA"
+                onClick={uplodFileDownloadHandler}
+                className="btn btn-success btn-sm mt-2"
+              />
+            </div>
+            <div className="col-md-6">
               {/* <div className="col-md-6">
               <h3>Download Unsynced File</h3>
               <DatePicker
@@ -321,29 +342,7 @@ const SyncComponent = () => {
               <DynamicButton
                 label="SYNC FILE"
                 onClick={fileDownloadHandler}
-                className="btn btn-primary btn-sm mt-2"
-              />
-            </div>
-
-            <div className="col-md-6">
-              <DatePicker
-                selected={selectedDatetoday?.datasync_date}
-                onChange={(date) =>
-                  setSelectedDatetoday({
-                    ...selectedDatetoday,
-                    datasync_date: date,
-                  })
-                }
-                className="form-control my-2"
-                placeholderText="Select Date"
-                // Uncomment maxDate if you want to restrict future dates
-                maxDate={new Date(new Date().setDate(new Date().getDate() - 1))}
-              />
-
-              <DynamicButton
-                label="SYNC DATA"
-                onClick={uplodFileDownloadHandler}
-                className="btn btn-primary btn-sm mt-2"
+                className="btn btn-success btn-sm mt-2"
               />
             </div>
           </div>
