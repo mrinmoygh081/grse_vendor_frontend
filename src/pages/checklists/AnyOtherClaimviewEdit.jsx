@@ -239,8 +239,19 @@ const AnyOtherClaimviewEdit = () => {
                                       <td>Invoice/Letter Reference No. :</td>
                                       <td className="btn_value">
                                         {data?.letter_reference_no}
+                                        <span style={{ marginLeft: "16px" }}>
+                                          {/* Adjust the margin value as needed */}
+                                          <a
+                                            href={`${process.env.REACT_APP_PDF_URL}btns/${data?.ref_invoice1_file}`}
+                                            target="_blank"
+                                            rel="noreferrer"
+                                          >
+                                            VIEW
+                                          </a>
+                                        </span>
                                       </td>
                                     </tr>
+
                                     <tr>
                                       <td>Invoice/Letter Date:</td>
                                       <td className="btn_value">
