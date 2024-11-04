@@ -188,8 +188,11 @@ const Checklist = () => {
                               <option value="any-other">
                                 Checklist for Any Other Claims
                               </option>
-                              <option value="ld-refund-supply-material">
+                              {/* <option value="ld-refund-supply-material">
                                 LD Refund for Supply Material
+                              </option> */}
+                              <option value="ld-penalty-refund">
+                                Checklist for LD-Penalty Refund
                               </option>
                             </select>
                           </div>

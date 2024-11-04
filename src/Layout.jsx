@@ -371,7 +371,7 @@ function Layout() {
           {/* LD REFUND FOR SUPPLU MATERIAL SUMMERY */}
 
           <Route
-            path="/checklist/ld-refund-supply-material/:id"
+            path="/checklist/ld-penalty-refund/:id"
             element={<LDRefundSupplyMaterial />}
           />
 

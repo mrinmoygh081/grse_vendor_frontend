@@ -243,9 +243,9 @@ const AnyOtherClaim = () => {
                                           <option value="bill-incorrect-deductions">
                                             Checklist for Excess Deductions
                                           </option>
-                                          <option value="ld-penalty-refund">
+                                          {/* <option value="ld-penalty-refund">
                                             Checklist for LD-Penalty Refund
-                                          </option>
+                                          </option> */}
                                           <option value="other-retentions">
                                             Other Retentions
                                           </option>

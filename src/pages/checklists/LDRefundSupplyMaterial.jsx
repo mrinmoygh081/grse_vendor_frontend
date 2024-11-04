@@ -3,32 +3,219 @@ import { useNavigate, useParams } from "react-router-dom";
 import SideBar from "../../components/SideBar";
 import Header from "../../components/Header";
 import Footer from "../../components/Footer";
-import axios from "axios";
+import { FaCaretLeft, FaPlus } from "react-icons/fa";
+import ReactDatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 import { apiCallBack } from "../../utils/fetchAPIs";
 import { useSelector } from "react-redux";
+import { USER_VENDOR } from "../../constants/userConstants";
 import { toast } from "react-toastify";
-import { checkTypeArr } from "../../utils/smallFun";
+import { Button } from "react-bootstrap";
 import DynamicButton from "../../Helpers/DynamicButton";
-import ReactDatePicker from "react-datepicker";
-import "react-datepicker/dist/react-datepicker.css"; // Import CSS for the date picker
-import { formatDate, formatEpochToDate } from "../../utils/getDateTimeNow";
+import * as XLSX from "xlsx";
 
 const LDRefundSupplyMaterial = () => {
-  const [formData, setFormData] = useState({
-    invoiceNo: "",
-    balanceClaimInvoice: "",
-    claimAmount: "",
-    percentageOfClaim: "",
-    invoiceFile: null,
-    balanceClaimInvoiceFile: null,
-  });
-  const [invoiceDate, setInvoiceDate] = useState(null); // New state for invoice date
-  const [data, setData] = useState(null);
-  const [InvoiceData, setInvoiceData] = useState();
-  const { user, token } = useSelector((state) => state.auth);
-
   const { id } = useParams();
   const navigate = useNavigate();
+  const { user, token } = useSelector((state) => state.auth);
+  console.log(user, "useruser");
+  const [gstData, setGstData] = useState();
+  console.log(gstData, "gstData");
+
+  const [formData, setFormData] = useState({
+    ref_invoice1_no: "",
+    ref_invoice1_amount: "",
+    ref_invoice1_remarks: "",
+    ref_invoice1_file: null,
+    invoice_file: null,
+    invoice_attachment_file: null,
+    worksheet_excel_file: null,
+    po_amendment_file: null,
+    ref_invoice2_no: "",
+    ref_invoice2_amount: "",
+    ref_invoice2_remarks: "",
+    ref_invoice2_file: null,
+    ref_invoice3_no: "",
+    ref_invoice3_amount: "",
+    ref_invoice3_remarks: "",
+    ref_invoice3_file: null,
+    ref_invoice4_no: "",
+    ref_invoice4_amount: "",
+    ref_invoice4_remarks: "",
+    ref_invoice4_file: null,
+    claimType: "",
+    invoiceReferenceNo: "",
+    invoiceDate: null,
+  });
+
+  // const handleInputChange = (field, index, e) => {
+  //   const newRows = { ...rows };
+  //   newRows[field][index] = e.target.value;
+  //   setRows(newRows);
+  // };
+
+  const handleDownloadTemplate = () => {
+    // Define a blank worksheet
+    const worksheet = XLSX.utils.aoa_to_sheet([
+      ["Column 1", "Column 2", "Column 3"], // Headers for the template
+      ["", "", ""], // Empty row for data entry
+    ]);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Template");
+
+    // Generate Excel file and trigger download
+    XLSX.writeFile(workbook, "Worksheet_Template.xlsx");
+  };
+
+  const getData = async () => {
+    try {
+      const response = await apiCallBack(
+        "GET",
+        `po/btn/getGstnByPo?poNo=${id}`,
+        null,
+        token
+      );
+      if (response?.status) {
+        setGstData(response?.data[0]);
+
+        // setInvoiceData(JSON.parse(response?.data[0]?.icgrn_nos));
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
+  useEffect(() => {
+    getData();
+  }, []);
+  const handleChange = (e) => {
+    const { name, value, files } = e.target;
+    setFormData((prevData) => ({
+      ...prevData,
+      [name]: files ? files[0] : value,
+    }));
+  };
+
+  const handleSubmit = async () => {
+    const refInvoices = [
+      {
+        no: formData.ref_invoice1_no,
+        amount: formData.ref_invoice1_amount,
+        file: formData.ref_invoice1_file,
+        remarks: formData.ref_invoice1_remarks,
+      },
+      {
+        no: formData.ref_invoice2_no,
+        amount: formData.ref_invoice2_amount,
+        file: formData.ref_invoice2_file,
+        remarks: formData.ref_invoice2_remarks,
+      },
+      {
+        no: formData.ref_invoice3_no,
+        amount: formData.ref_invoice3_amount,
+        file: formData.ref_invoice3_file,
+        remarks: formData.ref_invoice3_remarks,
+      },
+      {
+        no: formData.ref_invoice4_no,
+        amount: formData.ref_invoice4_amount,
+        file: formData.ref_invoice4_file,
+        remarks: formData.ref_invoice4_remarks,
+      },
+    ];
+
+    const isAnyInvoiceFilled = refInvoices.some((invoice) => invoice.no);
+
+    if (!isAnyInvoiceFilled) {
+      toast.error("At least one Reference Invoice No is required.");
+      return;
+    }
+
+    for (let i = 0; i < refInvoices.length; i++) {
+      const invoice = refInvoices[i];
+      if (
+        invoice.no &&
+        (!invoice.amount || !invoice.file || !invoice.remarks)
+      ) {
+        toast.error(
+          `Claim Amount, Invoice File, and Remarks are mandatory for Reference Invoice No ${
+            i + 1
+          }.`
+        );
+        return;
+      }
+    }
+
+    if (!formData.claimType) {
+      toast.error("Claim Type is required.");
+      return;
+    }
+
+    if (!formData.invoiceReferenceNo) {
+      toast.error("Invoice/Letter Reference No. is required.");
+      return;
+    }
+
+    if (!formData.invoiceDate) {
+      toast.error("Invoice/Letter Date is required.");
+      return;
+    }
+
+    const fDToSend = new FormData();
+
+    fDToSend.append("purchasing_doc_no", id);
+    fDToSend.append("ref_invoice1_no", formData.ref_invoice1_no);
+    fDToSend.append("ref_invoice1_amount", formData.ref_invoice1_amount);
+    fDToSend.append("ref_invoice1_file", formData.ref_invoice1_file);
+    fDToSend.append("invoice_file", formData.invoice_file);
+    fDToSend.append("ref_invoice1_remarks", formData.ref_invoice1_remarks);
+
+    fDToSend.append("ref_invoice2_no", formData.ref_invoice2_no);
+    fDToSend.append("ref_invoice2_amount", formData.ref_invoice2_amount);
+    fDToSend.append("ref_invoice2_file", formData.ref_invoice2_file);
+    fDToSend.append("ref_invoice2_remarks", formData.ref_invoice2_remarks);
+
+    fDToSend.append("ref_invoice3_no", formData.ref_invoice3_no);
+    fDToSend.append("ref_invoice3_amount", formData.ref_invoice3_amount);
+    fDToSend.append("ref_invoice3_file", formData.ref_invoice3_file);
+    fDToSend.append("ref_invoice3_remarks", formData.ref_invoice3_remarks);
+
+    fDToSend.append("ref_invoice4_no", formData.ref_invoice4_no);
+    fDToSend.append("ref_invoice4_amount", formData.ref_invoice4_amount);
+    fDToSend.append("ref_invoice4_file", formData.ref_invoice4_file);
+    fDToSend.append("ref_invoice4_remarks", formData.ref_invoice4_remarks);
+
+    fDToSend.append("letter_reference_no", formData.invoiceReferenceNo);
+    fDToSend.append(
+      "letter_date",
+      formData.invoiceDate
+        ? Math.floor(new Date(formData.invoiceDate).getTime() / 1000)
+        : ""
+    );
+
+    fDToSend.append("total_claim_amount", totalClaimAmount);
+    fDToSend.append("btn_type", formData.claimType);
+
+    try {
+      const response = await apiCallBack(
+        "POST",
+        "po/btn/submitIncorrectDuct",
+        fDToSend,
+        token
+      );
+
+      toast.success("Success:", response.data);
+      navigate(`/invoice-and-payment-process/${id}`);
+    } catch (error) {
+      console.error("Error submitting form:", error);
+    }
+  };
+
+  const totalClaimAmount = (
+    Number(formData.ref_invoice1_amount || 0) +
+    Number(formData.ref_invoice2_amount || 0) +
+    Number(formData.ref_invoice3_amount || 0) +
+    Number(formData.ref_invoice4_amount || 0)
+  ).toFixed(2);
 
   return (
     <>
@@ -36,7 +223,7 @@ const LDRefundSupplyMaterial = () => {
         <div className="page d-flex flex-row flex-column-fluid">
           <SideBar />
           <div className="wrapper d-flex flex-column flex-row-fluid">
-            <Header title={"LD Refund For Supply Material Summery"} id={id} />
+            <Header title={"checklist for LD REFUND"} id={id} />
             <div className="content d-flex flex-column flex-column-fluid">
               <div className="post d-flex flex-column-fluid">
                 <div className="container">
@@ -44,17 +231,169 @@ const LDRefundSupplyMaterial = () => {
                     <div className="row g-5 g-xl-8">
                       <div className="col-12">
                         <div className="card">
-                          <h3 className="m-3">
-                            LD Refund For Supply Material Summery:
+                          <h3 className="d-flex align-items-center m-3">
+                            <button
+                              className="btn_icon me-3"
+                              type="button"
+                              onClick={() =>
+                                navigate(`/invoice-and-payment-process/${id}`)
+                              }
+                            >
+                              <FaCaretLeft className="fs-20" />
+                            </button>{" "}
+                            checklist for LD REFUND:
                           </h3>
                           <div className="card-body p-3">
                             <div className="tab-content">
                               <div className="table-responsive">
                                 <table className="table table-striped table-bordered table_height">
+                                  <tbody>
+                                    <tr>
+                                      <td>Claim Type:</td>
+                                      <td className="btn_value">
+                                        <select
+                                          name="claimType"
+                                          className="form-select"
+                                          style={{
+                                            width: "85%",
+                                            fontSize: "10px",
+                                            padding: "13px",
+                                          }}
+                                          value={formData.claimType}
+                                          onChange={handleChange}
+                                        >
+                                          <option value="ld-penalty-refund">
+                                            Checklist for LD-Penalty Refund
+                                          </option>
+                                        </select>
+                                      </td>
+                                    </tr>
+                                    <tr>
+                                      <td>Vendor Name :</td>
+                                      <td className="btn_value">
+                                        {gstData?.name1 ? gstData.name1 : ""}
+                                      </td>
+                                    </tr>
+                                    <tr>
+                                      <td>Vendor Code :</td>
+                                      <td className="btn_value">
+                                        {gstData?.lifnr ? gstData.lifnr : ""}
+                                      </td>
+                                    </tr>
+                                    <tr>
+                                      <td>GSTIN (Registration no) :</td>
+                                      <td className="btn_value">
+                                        {gstData?.stcd3
+                                          ? gstData.stcd3
+                                          : "No GSTIN number"}
+                                      </td>
+                                    </tr>
+                                    <tr>
+                                      <td>Invoice/Letter Reference No. :</td>
+                                      <td className="btn_value">
+                                        <input
+                                          type="text"
+                                          name="invoiceReferenceNo"
+                                          className="form-control  me-2"
+                                          placeholder="Enter Reference No"
+                                          value={formData.invoiceReferenceNo}
+                                          onChange={handleChange}
+                                        />
+                                        <input
+                                          type="file"
+                                          className="form-control"
+                                          name="invoice_file"
+                                          accept=".pdf"
+                                          onChange={handleChange}
+                                        />
+                                      </td>
+                                    </tr>
+                                    <tr>
+                                      <td>Invoice/Letter Date:</td>
+                                      <td className="btn_value">
+                                        <ReactDatePicker
+                                          selected={formData.invoiceDate}
+                                          onChange={(date) =>
+                                            setFormData((prevData) => ({
+                                              ...prevData,
+                                              invoiceDate: date,
+                                            }))
+                                          }
+                                          dateFormat="dd/MM/yyyy"
+                                          className="form-control"
+                                          placeholderText="DD/MM/YYYY"
+                                        />
+                                      </td>
+                                    </tr>
+                                    <tr>
+                                      <td>Attachment:</td>
+                                      <td className="btn_value">
+                                        <input
+                                          type="file"
+                                          className="form-control"
+                                          name="invoice_attachment_file"
+                                          accept=".pdf"
+                                          onChange={handleChange}
+                                        />
+                                      </td>
+                                    </tr>
+                                    <tr>
+                                      <td>PO Amendment Copy :</td>
+                                      <td className="btn_value">
+                                        <input
+                                          type="file"
+                                          className="form-control"
+                                          name="po_amendment_file"
+                                          accept=".xlsx, .xls"
+                                          onChange={handleChange}
+                                        />
+                                      </td>
+                                    </tr>
+                                    <tr>
+                                      <td>Worksheet Excel Upload:</td>
+                                      <td className="btn_value">
+                                        <div
+                                          style={{
+                                            display: "flex",
+                                            alignItems: "center",
+                                          }}
+                                        >
+                                          <input
+                                            type="file"
+                                            className="form-control"
+                                            name="worksheet_excel_file"
+                                            accept=".xlsx, .xls"
+                                            onChange={handleChange}
+                                          />
+                                          <span
+                                            style={{
+                                              marginLeft: "10px",
+                                              fontSize: "12px",
+                                              color: "#888",
+                                            }}
+                                          >
+                                            Required format: .xlsx, .xls
+                                          </span>
+                                          <button
+                                            type="button"
+                                            onClick={handleDownloadTemplate}
+                                            className="btn btn-secondary"
+                                            style={{ marginLeft: "15px" }}
+                                          >
+                                            Download Template
+                                          </button>
+                                        </div>
+                                      </td>
+                                    </tr>
+                                  </tbody>
+                                </table>
+                                <table className="table table-striped table-bordered table_height">
                                   <thead>
                                     <tr>
-                                      <th className="min-w-150px">SL NIO</th>
-                                      <th className="min-w-150px">NEW BTN</th>
+                                      <th>Reference Invoice No</th>
+                                      <th>Claim Amount</th>
+                                      <th>Remarks</th>
+                                      <th>File(Only Excel):</th>
                                     </tr>
                                   </thead>
                                   <tbody>
@@ -67,6 +406,8 @@ const LDRefundSupplyMaterial = () => {
                                             name="ref_invoice1_no"
                                             className="form-control"
                                             placeholder="Enter Invoice No 1"
+                                            value={formData.ref_invoice1_no}
+                                            onChange={handleChange}
                                           />
                                         </div>
                                       </td>
@@ -76,6 +417,8 @@ const LDRefundSupplyMaterial = () => {
                                           name="ref_invoice1_amount"
                                           className="form-control"
                                           placeholder="Enter Claim Amount 1"
+                                          value={formData.ref_invoice1_amount}
+                                          onChange={handleChange}
                                         />
                                       </td>
                                       <td>
@@ -84,6 +427,8 @@ const LDRefundSupplyMaterial = () => {
                                           name="ref_invoice1_remarks"
                                           className="form-control"
                                           placeholder="Enter Remarks 1"
+                                          value={formData.ref_invoice1_remarks}
+                                          onChange={handleChange}
                                         />
                                       </td>
                                       <td>
@@ -91,35 +436,205 @@ const LDRefundSupplyMaterial = () => {
                                           type="file"
                                           name="ref_invoice1_file"
                                           className="form-control"
+                                          onChange={handleChange}
+                                          accept=".xlsx, .xls"
                                         />
+                                      </td>
+                                    </tr>
+
+                                    {/* Repeat similar rows for Invoice 2, 3, and 4 */}
+                                    {/* Row 2 */}
+                                    <tr>
+                                      <td>
+                                        <div className="btn_value">
+                                          <input
+                                            type="text"
+                                            name="ref_invoice2_no"
+                                            className="form-control"
+                                            placeholder="Enter Invoice No 2"
+                                            value={formData.ref_invoice2_no}
+                                            onChange={handleChange}
+                                          />
+                                        </div>
+                                      </td>
+                                      <td>
+                                        <input
+                                          type="number"
+                                          name="ref_invoice2_amount"
+                                          className="form-control"
+                                          placeholder="Enter Claim Amount 2"
+                                          value={formData.ref_invoice2_amount}
+                                          onChange={handleChange}
+                                        />
+                                      </td>
+                                      <td>
+                                        <textarea
+                                          type="text"
+                                          name="ref_invoice2_remarks"
+                                          className="form-control"
+                                          placeholder="Enter Remarks 2"
+                                          value={formData.ref_invoice2_remarks}
+                                          onChange={handleChange}
+                                        />
+                                      </td>
+                                      <td>
+                                        <input
+                                          type="file"
+                                          name="ref_invoice2_file"
+                                          className="form-control"
+                                          accept=".xlsx, .xls"
+                                          onChange={handleChange}
+                                        />
+                                      </td>
+                                    </tr>
+
+                                    {/* Row 3 */}
+                                    <tr>
+                                      <td>
+                                        <div className="btn_value">
+                                          <input
+                                            type="text"
+                                            name="ref_invoice3_no"
+                                            className="form-control"
+                                            placeholder="Enter Invoice No 3"
+                                            value={formData.ref_invoice3_no}
+                                            onChange={handleChange}
+                                          />
+                                        </div>
+                                      </td>
+                                      <td>
+                                        <input
+                                          type="number"
+                                          name="ref_invoice3_amount"
+                                          className="form-control"
+                                          placeholder="Enter Claim Amount 3"
+                                          value={formData.ref_invoice3_amount}
+                                          onChange={handleChange}
+                                        />
+                                      </td>
+                                      <td>
+                                        <textarea
+                                          type="text"
+                                          name="ref_invoice3_remarks"
+                                          className="form-control"
+                                          placeholder="Enter Remarks 3"
+                                          value={formData.ref_invoice3_remarks}
+                                          onChange={handleChange}
+                                        />
+                                      </td>
+                                      <td>
+                                        <input
+                                          type="file"
+                                          name="ref_invoice3_file"
+                                          className="form-control"
+                                          accept=".xlsx, .xls"
+                                          onChange={handleChange}
+                                        />
+                                      </td>
+                                    </tr>
+
+                                    {/* Row 4 */}
+                                    <tr>
+                                      <td>
+                                        <div className="btn_value">
+                                          <input
+                                            type="text"
+                                            name="ref_invoice4_no"
+                                            className="form-control"
+                                            placeholder="Enter Invoice No 4"
+                                            value={formData.ref_invoice4_no}
+                                            onChange={handleChange}
+                                          />
+                                        </div>
+                                      </td>
+                                      <td>
+                                        <input
+                                          type="number"
+                                          name="ref_invoice4_amount"
+                                          className="form-control"
+                                          placeholder="Enter Claim Amount 4"
+                                          value={formData.ref_invoice4_amount}
+                                          onChange={handleChange}
+                                        />
+                                      </td>
+                                      <td>
+                                        <textarea
+                                          type="text"
+                                          name="ref_invoice4_remarks"
+                                          className="form-control"
+                                          placeholder="Enter Remarks 4"
+                                          value={formData.ref_invoice4_remarks}
+                                          onChange={handleChange}
+                                        />
+                                      </td>
+                                      <td>
+                                        <input
+                                          type="file"
+                                          name="ref_invoice4_file"
+                                          className="form-control"
+                                          accept=".xlsx, .xls"
+                                          onChange={handleChange}
+                                        />
+                                      </td>
+                                    </tr>
+
+                                    {/* Total Claim Amount */}
+                                    <tr>
+                                      <td colSpan={3} className="text-end">
+                                        <strong>Total Claim Amount:</strong>
+                                      </td>
+                                      <td>
+                                        <b>{totalClaimAmount}</b>
                                       </td>
                                     </tr>
                                   </tbody>
                                 </table>
                               </div>
+                              <div className="text-center">
+                                {user?.user_type === USER_VENDOR && (
+                                  <button
+                                    type="button"
+                                    className="btn fw-bold btn-primary me-3"
+                                    onClick={() => handleSubmit()}
+                                  >
+                                    SUBMIT
+                                  </button>
+                                )}
+                                <button
+                                  className="btn fw-bold btn-primary me-3"
+                                  type="button"
+                                  onClick={() =>
+                                    navigate(
+                                      `/invoice-and-payment-process/${id}`
+                                    )
+                                  }
+                                >
+                                  BACK
+                                </button>
+                              </div>
+
+                              {/* <div className="text-center">
+                                <button
+                                  className="btn btn-sm btn-primary me-3"
+                                  type="button"
+                                  onClick={() =>
+                                    navigate(`/bill-other-claims/${id}`)
+                                  }
+                                >
+                                  BACK
+                                </button>
+                                <button
+                                  className="btn btn-sm btn-success"
+                                  type="submit"
+                                  onClick={() => handleSubmit()}
+                                >
+                                  SUBMIT
+                                </button>
+                              </div> */}
                             </div>
                           </div>
                         </div>
                       </div>
-                    </div>
-
-                    <div className="text-center mt-4">
-                      <button
-                        className="btn btn-primary me-3"
-                        type="submit"
-                        disabled={!formData.invoiceNo}
-                      >
-                        Submit
-                      </button>
-                      <button
-                        type="button"
-                        className="btn btn-primary"
-                        onClick={() =>
-                          navigate(`/invoice-and-payment-process/${id}`)
-                        }
-                      >
-                        BACK
-                      </button>
                     </div>
                   </form>
                 </div>
