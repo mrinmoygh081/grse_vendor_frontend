@@ -12,6 +12,7 @@ import { USER_VENDOR } from "../../constants/userConstants";
 import { toast } from "react-toastify";
 import { Button } from "react-bootstrap";
 import DynamicButton from "../../Helpers/DynamicButton";
+import * as XLSX from "xlsx";
 
 const LDRefundSupplyMaterial = () => {
   const { id } = useParams();
@@ -28,6 +29,8 @@ const LDRefundSupplyMaterial = () => {
     ref_invoice1_file: null,
     invoice_file: null,
     invoice_attachment_file: null,
+    worksheet_excel_file: null,
+    po_amendment_file: null,
     ref_invoice2_no: "",
     ref_invoice2_amount: "",
     ref_invoice2_remarks: "",
@@ -45,42 +48,23 @@ const LDRefundSupplyMaterial = () => {
     invoiceDate: null,
   });
 
-  const [isPopup, setIsPopup] = useState(false);
-  const [rows, setRows] = useState({
-    slNo: [""],
-    newBtn: [""],
-    oldBtn: [""],
-    oldInvoiceNo: [""],
-    oldInvoiceDate: [""],
-    poLineItemSlNo: [""],
-    basicAmount: [""],
-    scheduleDeliveryBeforeAmendment: [""],
-    amendmentNumber: [""],
-    amendmentDate: [""],
-    scheduleDeliveryAfterAmendment: [""],
-    actualDeliveryDate: [""],
-    supportingDocument: [""],
-    delayBeforeAmendment: [""],
-    delayAfterAmendment: [""],
-    ldDeductedValue: [""],
-    ldToBeDeductedDays: [""],
-    ldToBeDeductedValue: [""],
-    ldToBeRefunded: [""],
-  });
-  // const [dynamicFields, setDynamicFields] = useState([line_item_fields]);
+  // const handleInputChange = (field, index, e) => {
+  //   const newRows = { ...rows };
+  //   newRows[field][index] = e.target.value;
+  //   setRows(newRows);
+  // };
 
-  const handleAddRow = () => {
-    const newRows = { ...rows };
-    Object.keys(newRows).forEach((field) => {
-      newRows[field].push(""); // Add an empty input for each field
-    });
-    setRows(newRows);
-  };
+  const handleDownloadTemplate = () => {
+    // Define a blank worksheet
+    const worksheet = XLSX.utils.aoa_to_sheet([
+      ["Column 1", "Column 2", "Column 3"], // Headers for the template
+      ["", "", ""], // Empty row for data entry
+    ]);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Template");
 
-  const handleInputChange = (field, index, e) => {
-    const newRows = { ...rows };
-    newRows[field][index] = e.target.value;
-    setRows(newRows);
+    // Generate Excel file and trigger download
+    XLSX.writeFile(workbook, "Worksheet_Template.xlsx");
   };
 
   const getData = async () => {
@@ -233,10 +217,6 @@ const LDRefundSupplyMaterial = () => {
     Number(formData.ref_invoice4_amount || 0)
   ).toFixed(2);
 
-  const handleClosePopup = () => {
-    setIsPopup(false);
-  };
-
   return (
     <>
       <div className="d-flex flex-column flex-root">
@@ -360,13 +340,49 @@ const LDRefundSupplyMaterial = () => {
                                     <tr>
                                       <td>PO Amendment Copy :</td>
                                       <td className="btn_value">
-                                        <button
-                                          type="button"
-                                          onClick={() => setIsPopup(true)}
-                                          className="btn fw-bold btn-primary mx-3"
+                                        <input
+                                          type="file"
+                                          className="form-control"
+                                          name="po_amendment_file"
+                                          accept=".xlsx, .xls"
+                                          onChange={handleChange}
+                                        />
+                                      </td>
+                                    </tr>
+                                    <tr>
+                                      <td>Worksheet Excel Upload:</td>
+                                      <td className="btn_value">
+                                        <div
+                                          style={{
+                                            display: "flex",
+                                            alignItems: "center",
+                                          }}
                                         >
-                                          Working sheet
-                                        </button>
+                                          <input
+                                            type="file"
+                                            className="form-control"
+                                            name="worksheet_excel_file"
+                                            accept=".xlsx, .xls"
+                                            onChange={handleChange}
+                                          />
+                                          <span
+                                            style={{
+                                              marginLeft: "10px",
+                                              fontSize: "12px",
+                                              color: "#888",
+                                            }}
+                                          >
+                                            Required format: .xlsx, .xls
+                                          </span>
+                                          <button
+                                            type="button"
+                                            onClick={handleDownloadTemplate}
+                                            className="btn btn-secondary"
+                                            style={{ marginLeft: "15px" }}
+                                          >
+                                            Download Template
+                                          </button>
+                                        </div>
                                       </td>
                                     </tr>
                                   </tbody>
@@ -377,7 +393,7 @@ const LDRefundSupplyMaterial = () => {
                                       <th>Reference Invoice No</th>
                                       <th>Claim Amount</th>
                                       <th>Remarks</th>
-                                      <th>Invoice File</th>
+                                      <th>File(Only Excel):</th>
                                     </tr>
                                   </thead>
                                   <tbody>
@@ -421,6 +437,7 @@ const LDRefundSupplyMaterial = () => {
                                           name="ref_invoice1_file"
                                           className="form-control"
                                           onChange={handleChange}
+                                          accept=".xlsx, .xls"
                                         />
                                       </td>
                                     </tr>
@@ -465,6 +482,7 @@ const LDRefundSupplyMaterial = () => {
                                           type="file"
                                           name="ref_invoice2_file"
                                           className="form-control"
+                                          accept=".xlsx, .xls"
                                           onChange={handleChange}
                                         />
                                       </td>
@@ -509,6 +527,7 @@ const LDRefundSupplyMaterial = () => {
                                           type="file"
                                           name="ref_invoice3_file"
                                           className="form-control"
+                                          accept=".xlsx, .xls"
                                           onChange={handleChange}
                                         />
                                       </td>
@@ -553,6 +572,7 @@ const LDRefundSupplyMaterial = () => {
                                           type="file"
                                           name="ref_invoice4_file"
                                           className="form-control"
+                                          accept=".xlsx, .xls"
                                           onChange={handleChange}
                                         />
                                       </td>
@@ -622,58 +642,6 @@ const LDRefundSupplyMaterial = () => {
             </div>
             <Footer />
           </div>
-        </div>
-      </div>
-
-      <div className={isPopup ? "popup popup_lgx active" : "popup popup_lgx"}>
-        <div className="card card-xxl-stretch mb-5 mb-xxl-8">
-          <div className="card-header border-0 pt-5 pb-3">
-            <h3 className="card-title align-items-start flex-column"></h3>
-            <button
-              className="btn fw-bold btn-danger"
-              onClick={handleClosePopup}
-            >
-              Close
-            </button>
-          </div>
-          <form>
-            <div className="card-body p-3">
-              <div className="tab-content">
-                <button
-                  type="button"
-                  className="btn btn-outline-secondary mt-3"
-                  onClick={handleAddRow}
-                >
-                  <FaPlus /> Add Row
-                </button>
-                <div className="table-responsive">
-                  <table className="table table-striped table-bordered table_height">
-                    <tbody>
-                      {Object.keys(rows).map((field) => (
-                        <tr key={field}>
-                          <td>{field.toUpperCase().replace(/_/g, " ")}:</td>
-                          <td className="btn_value">
-                            {rows[field].map((value, index) => (
-                              <div key={index} className="input-group mb-2">
-                                <input
-                                  type="text"
-                                  value={value}
-                                  onChange={(e) =>
-                                    handleInputChange(field, index, e)
-                                  }
-                                  className="form-control"
-                                />
-                              </div>
-                            ))}
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-              </div>
-            </div>
-          </form>
         </div>
       </div>
     </>
