@@ -105,7 +105,9 @@ export const actionHandlerBTN = async (
     fDToSend.append("igst", igst);
     fDToSend.append("associated_po", JSON.stringify(associated_po));
     fDToSend.append("invoice_filename", invoice_filename);
-    fDToSend.append("invoice_supporting_doc", invoice_supporting_doc);
+    if (invoice_supporting_doc) {
+      fDToSend.append("invoice_supporting_doc", invoice_supporting_doc);
+    }
 
     if (debit_credit_filename) {
       fDToSend.append("debit_credit_filename", debit_credit_filename);
