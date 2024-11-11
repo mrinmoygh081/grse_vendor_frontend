@@ -157,10 +157,10 @@ export default function Login() {
     let res = await postAPI("auth2/login", loginData, null);
     if (res?.status) {
       dispatch(loginHandler(res));
-      toast.success("Successfully logged in");
+      toast.success(res?.message);
       navigate("/"); // Redirect to dashboard after successful login
     } else {
-      toast.error("Please provide correct username and password");
+      toast.error(res?.message);
     }
     setIsLoading(false);
   };

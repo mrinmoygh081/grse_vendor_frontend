@@ -132,11 +132,7 @@ const Shippingdocuments = () => {
         }
         getData();
       } else {
-        // Handle failure, log error details
-        console.error("Failed to upload Shipping Document:", response?.error);
-        toast.error(
-          `Failed to upload Shipping Document: ${response?.error?.message}`
-        );
+        toast.error(`Failed to upload Shipping Document: ${response?.message}`);
       }
     } catch (error) {
       // Handle unexpected errors
