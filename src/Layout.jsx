@@ -199,6 +199,12 @@ const AnyOtherClaim = lazy(() => import("./pages/checklists/AnyOtherClaim"));
 const LDRefundSupplyMaterial = lazy(() =>
   import("./pages/checklists/LDRefundSupplyMaterial")
 );
+const LDRefundSupplyMaterialView = lazy(() =>
+  import("./pages/checklists/LDRefundSupplyMaterialView")
+);
+const LDRefundSupplyMaterialEdit = lazy(() =>
+  import("./pages/checklists/LDRefundSupplyMaterialEdit")
+);
 const AnyOtherClaimview = lazy(() =>
   import("./pages/checklists/AnyOtherClaimview")
 );
@@ -373,6 +379,14 @@ function Layout() {
           <Route
             path="/checklist/ld-penalty-refund/:id"
             element={<LDRefundSupplyMaterial />}
+          />
+          <Route
+            path="/checklist/ld-penalty-refund/view/:id"
+            element={<LDRefundSupplyMaterialView />}
+          />
+          <Route
+            path="/checklist/ld-penalty-refund/edit/:id"
+            element={<LDRefundSupplyMaterialEdit />}
           />
 
           {/* <Route

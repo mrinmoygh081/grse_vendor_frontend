@@ -272,11 +272,6 @@ const Checklist = () => {
                                                     type = "any-other";
                                                   } else if (
                                                     firstItem.btn_type ===
-                                                    "ld-penalty-refund"
-                                                  ) {
-                                                    type = "any-other";
-                                                  } else if (
-                                                    firstItem.btn_type ===
                                                     "other-retentions"
                                                   ) {
                                                     type = "any-other";
@@ -285,6 +280,11 @@ const Checklist = () => {
                                                     "claim-against-jcc"
                                                   ) {
                                                     type = "claim-against-jcc";
+                                                  } else if (
+                                                    firstItem.btn_type ===
+                                                    "ld-penalty-refund"
+                                                  ) {
+                                                    type = "ld-penalty-refund";
                                                   }
 
                                                   navigate(
@@ -339,8 +339,6 @@ const Checklist = () => {
                                                       if (
                                                         firstItem.btn_type ===
                                                           "bill-incorrect-deductions" ||
-                                                        firstItem.btn_type ===
-                                                          "ld-penalty-refund" ||
                                                         firstItem.btn_type ===
                                                           "other-retentions"
                                                       ) {

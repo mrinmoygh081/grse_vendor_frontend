@@ -20,7 +20,8 @@ const LDRefundSupplyMaterial = () => {
   const { user, token } = useSelector((state) => state.auth);
   console.log(user, "useruser");
   const [gstData, setGstData] = useState();
-  console.log(gstData, "gstData");
+  const [fileUploadResponses, setFileUploadResponses] = useState({});
+  console.log(fileUploadResponses, "fileUploadResponses");
 
   const [formData, setFormData] = useState({
     ref_invoice1_no: "",
@@ -28,7 +29,7 @@ const LDRefundSupplyMaterial = () => {
     ref_invoice1_remarks: "",
     ref_invoice1_file: null,
     invoice_file: null,
-    invoice_attachment_file: null,
+    // invoice_attachment_file: null,
     worksheet_excel_file: null,
     po_amendment_file: null,
     ref_invoice2_no: "",
@@ -87,6 +88,14 @@ const LDRefundSupplyMaterial = () => {
   useEffect(() => {
     getData();
   }, []);
+  // const handleChange = (e) => {
+  //   const { name, value, files } = e.target;
+  //   setFormData((prevData) => ({
+  //     ...prevData,
+  //     [name]: files ? files[0] : value,
+  //   }));
+  // };
+
   const handleChange = (e) => {
     const { name, value, files } = e.target;
     setFormData((prevData) => ({
@@ -95,118 +104,98 @@ const LDRefundSupplyMaterial = () => {
     }));
   };
 
-  const handleSubmit = async () => {
-    const refInvoices = [
-      {
-        no: formData.ref_invoice1_no,
-        amount: formData.ref_invoice1_amount,
-        file: formData.ref_invoice1_file,
-        remarks: formData.ref_invoice1_remarks,
-      },
-      {
-        no: formData.ref_invoice2_no,
-        amount: formData.ref_invoice2_amount,
-        file: formData.ref_invoice2_file,
-        remarks: formData.ref_invoice2_remarks,
-      },
-      {
-        no: formData.ref_invoice3_no,
-        amount: formData.ref_invoice3_amount,
-        file: formData.ref_invoice3_file,
-        remarks: formData.ref_invoice3_remarks,
-      },
-      {
-        no: formData.ref_invoice4_no,
-        amount: formData.ref_invoice4_amount,
-        file: formData.ref_invoice4_file,
-        remarks: formData.ref_invoice4_remarks,
-      },
-    ];
-
-    const isAnyInvoiceFilled = refInvoices.some((invoice) => invoice.no);
-
-    if (!isAnyInvoiceFilled) {
-      toast.error("At least one Reference Invoice No is required.");
+  const handleFileUpload = async (fileName) => {
+    const fileToUpload = formData[fileName];
+    if (!fileToUpload) {
+      console.error(`No file selected for ${fileName}`);
+      toast.error(`Please select a file for ${fileName}`);
       return;
     }
 
-    for (let i = 0; i < refInvoices.length; i++) {
-      const invoice = refInvoices[i];
-      if (
-        invoice.no &&
-        (!invoice.amount || !invoice.file || !invoice.remarks)
-      ) {
-        toast.error(
-          `Claim Amount, Invoice File, and Remarks are mandatory for Reference Invoice No ${
-            i + 1
-          }.`
-        );
-        return;
-      }
-    }
-
-    if (!formData.claimType) {
-      toast.error("Claim Type is required.");
-      return;
-    }
-
-    if (!formData.invoiceReferenceNo) {
-      toast.error("Invoice/Letter Reference No. is required.");
-      return;
-    }
-
-    if (!formData.invoiceDate) {
-      toast.error("Invoice/Letter Date is required.");
-      return;
-    }
-
-    const fDToSend = new FormData();
-
-    fDToSend.append("purchasing_doc_no", id);
-    fDToSend.append("ref_invoice1_no", formData.ref_invoice1_no);
-    fDToSend.append("ref_invoice1_amount", formData.ref_invoice1_amount);
-    fDToSend.append("ref_invoice1_file", formData.ref_invoice1_file);
-    fDToSend.append("invoice_file", formData.invoice_file);
-    fDToSend.append("ref_invoice1_remarks", formData.ref_invoice1_remarks);
-
-    fDToSend.append("ref_invoice2_no", formData.ref_invoice2_no);
-    fDToSend.append("ref_invoice2_amount", formData.ref_invoice2_amount);
-    fDToSend.append("ref_invoice2_file", formData.ref_invoice2_file);
-    fDToSend.append("ref_invoice2_remarks", formData.ref_invoice2_remarks);
-
-    fDToSend.append("ref_invoice3_no", formData.ref_invoice3_no);
-    fDToSend.append("ref_invoice3_amount", formData.ref_invoice3_amount);
-    fDToSend.append("ref_invoice3_file", formData.ref_invoice3_file);
-    fDToSend.append("ref_invoice3_remarks", formData.ref_invoice3_remarks);
-
-    fDToSend.append("ref_invoice4_no", formData.ref_invoice4_no);
-    fDToSend.append("ref_invoice4_amount", formData.ref_invoice4_amount);
-    fDToSend.append("ref_invoice4_file", formData.ref_invoice4_file);
-    fDToSend.append("ref_invoice4_remarks", formData.ref_invoice4_remarks);
-
-    fDToSend.append("letter_reference_no", formData.invoiceReferenceNo);
-    fDToSend.append(
-      "letter_date",
-      formData.invoiceDate
-        ? Math.floor(new Date(formData.invoiceDate).getTime() / 1000)
-        : ""
-    );
-
-    fDToSend.append("total_claim_amount", totalClaimAmount);
-    fDToSend.append("btn_type", formData.claimType);
+    const uploadData = new FormData();
+    uploadData.append(fileName, fileToUpload);
 
     try {
       const response = await apiCallBack(
         "POST",
-        "po/btn/submitIncorrectDuct",
-        fDToSend,
+        "po/btn/fileUpload",
+        uploadData,
         token
       );
 
-      toast.success("Success:", response.data);
-      navigate(`/invoice-and-payment-process/${id}`);
+      if (response?.status) {
+        // Save the entire response data in the fileUploadResponses state
+        setFileUploadResponses((prevResponses) => ({
+          ...prevResponses,
+          [fileName]: response.data,
+        }));
+
+        // Update formData to store only the filename for this file
+        setFormData((prevData) => ({
+          ...prevData,
+          [fileName]: response.data.filename,
+        }));
+
+        toast.success(response.message);
+      }
+    } catch (error) {
+      console.error("Error uploading file:", error);
+      toast.error("File upload failed. Please try again.");
+    }
+  };
+
+  // Example submit function using the filename from fileUploadResponses
+  const handleSubmit = async () => {
+    const payload = {
+      purchasing_doc_no: id,
+      btn_type: "ld-penalty-refund",
+      total_claim_amount: totalClaimAmount,
+      letter_reference_no: formData.letter_reference_no,
+      letter_date: formData.invoiceDate
+        ? Math.floor(new Date(formData.invoiceDate).getTime() / 1000)
+        : "",
+
+      // Include file names from fileUploadResponses state
+      invoice_file: fileUploadResponses.invoice_file?.filename,
+      worksheet_excel_file: fileUploadResponses.worksheet_excel_file?.filename,
+      po_amendment_file: fileUploadResponses.po_amendment_file?.filename,
+
+      // Invoice details
+      ref_invoice1_no: formData.ref_invoice1_no,
+      ref_invoice1_amount: formData.ref_invoice1_amount,
+      ref_invoice1_file: fileUploadResponses.ref_invoice1_file?.filename,
+      ref_invoice1_remarks: formData.ref_invoice1_remarks,
+
+      ref_invoice2_no: formData.ref_invoice2_no,
+      ref_invoice2_amount: formData.ref_invoice2_amount,
+      ref_invoice2_file: fileUploadResponses.ref_invoice2_file?.filename,
+      ref_invoice2_remarks: formData.ref_invoice2_remarks,
+
+      ref_invoice3_no: formData.ref_invoice3_no,
+      ref_invoice3_amount: formData.ref_invoice3_amount,
+      ref_invoice3_file: fileUploadResponses.ref_invoice3_file?.filename,
+      ref_invoice3_remarks: formData.ref_invoice3_remarks,
+
+      ref_invoice4_no: formData.ref_invoice4_no,
+      ref_invoice4_amount: formData.ref_invoice4_amount,
+      ref_invoice4_file: fileUploadResponses.ref_invoice4_file?.filename,
+      ref_invoice4_remarks: formData.ref_invoice4_remarks,
+    };
+
+    try {
+      const response = await apiCallBack(
+        "POST",
+        "po/btn/submitLd",
+        payload,
+        token
+      );
+      if (response?.status) {
+        toast.success("Form submitted successfully!");
+        navigate(`/invoice-and-payment-process/${id}`);
+      }
     } catch (error) {
       console.error("Error submitting form:", error);
+      toast.error("Form submission failed. Please try again.");
     }
   };
 
@@ -301,11 +290,20 @@ const LDRefundSupplyMaterial = () => {
                                         />
                                         <input
                                           type="file"
-                                          className="form-control"
+                                          className="form-control me-3"
                                           name="invoice_file"
                                           accept=".pdf"
                                           onChange={handleChange}
                                         />
+                                        <button
+                                          type="button"
+                                          className="btn btn-success btn-sm"
+                                          onClick={() =>
+                                            handleFileUpload("invoice_file")
+                                          }
+                                        >
+                                          Upload
+                                        </button>
                                       </td>
                                     </tr>
                                     <tr>
@@ -325,7 +323,7 @@ const LDRefundSupplyMaterial = () => {
                                         />
                                       </td>
                                     </tr>
-                                    <tr>
+                                    {/* <tr>
                                       <td>Attachment:</td>
                                       <td className="btn_value">
                                         <input
@@ -336,17 +334,51 @@ const LDRefundSupplyMaterial = () => {
                                           onChange={handleChange}
                                         />
                                       </td>
-                                    </tr>
+                                      <td>
+                                        <div className="btn_value">
+                                          <input
+                                            type="file"
+                                            name="invoice_attachment_file"
+                                            accept=".pdf"
+                                            className="form-control me-3"
+                                            onChange={handleChange}
+                                          />
+                                          <button
+                                            type="button"
+                                            className="btn btn-success btn-sm"
+                                            onClick={() =>
+                                              handleFileUpload(
+                                                "invoice_attachment_file"
+                                              )
+                                            }
+                                          >
+                                            Upload
+                                          </button>
+                                        </div>
+                                      </td>
+                                    </tr> */}
                                     <tr>
                                       <td>PO Amendment Copy :</td>
-                                      <td className="btn_value">
-                                        <input
-                                          type="file"
-                                          className="form-control"
-                                          name="po_amendment_file"
-                                          accept=".xlsx, .xls"
-                                          onChange={handleChange}
-                                        />
+                                      <td>
+                                        <div className="btn_value">
+                                          <input
+                                            type="file"
+                                            name="po_amendment_file"
+                                            className="form-control me-3"
+                                            onChange={handleChange}
+                                          />
+                                          <button
+                                            type="button"
+                                            className="btn btn-success btn-sm"
+                                            onClick={() =>
+                                              handleFileUpload(
+                                                "po_amendment_file"
+                                              )
+                                            }
+                                          >
+                                            Upload
+                                          </button>
+                                        </div>
                                       </td>
                                     </tr>
                                     <tr>
@@ -360,11 +392,22 @@ const LDRefundSupplyMaterial = () => {
                                         >
                                           <input
                                             type="file"
-                                            className="form-control"
+                                            className="form-control me-3"
                                             name="worksheet_excel_file"
                                             accept=".xlsx, .xls"
                                             onChange={handleChange}
                                           />
+                                          <button
+                                            type="button"
+                                            className="btn btn-success btn-sm"
+                                            onClick={() =>
+                                              handleFileUpload(
+                                                "worksheet_excel_file"
+                                              )
+                                            }
+                                          >
+                                            Upload
+                                          </button>
                                           <span
                                             style={{
                                               marginLeft: "10px",
@@ -422,7 +465,7 @@ const LDRefundSupplyMaterial = () => {
                                         />
                                       </td>
                                       <td>
-                                        <textarea
+                                        <input
                                           type="text"
                                           name="ref_invoice1_remarks"
                                           className="form-control"
@@ -432,13 +475,25 @@ const LDRefundSupplyMaterial = () => {
                                         />
                                       </td>
                                       <td>
-                                        <input
-                                          type="file"
-                                          name="ref_invoice1_file"
-                                          className="form-control"
-                                          onChange={handleChange}
-                                          accept=".xlsx, .xls"
-                                        />
+                                        <div className="btn_value">
+                                          <input
+                                            type="file"
+                                            name="ref_invoice1_file"
+                                            className="form-control me-3"
+                                            onChange={handleChange}
+                                          />
+                                          <button
+                                            type="button"
+                                            className="btn btn-success btn-sm"
+                                            onClick={() =>
+                                              handleFileUpload(
+                                                "ref_invoice1_file"
+                                              )
+                                            }
+                                          >
+                                            Upload
+                                          </button>
+                                        </div>
                                       </td>
                                     </tr>
 
@@ -468,7 +523,7 @@ const LDRefundSupplyMaterial = () => {
                                         />
                                       </td>
                                       <td>
-                                        <textarea
+                                        <input
                                           type="text"
                                           name="ref_invoice2_remarks"
                                           className="form-control"
@@ -478,13 +533,25 @@ const LDRefundSupplyMaterial = () => {
                                         />
                                       </td>
                                       <td>
-                                        <input
-                                          type="file"
-                                          name="ref_invoice2_file"
-                                          className="form-control"
-                                          accept=".xlsx, .xls"
-                                          onChange={handleChange}
-                                        />
+                                        <div className="btn_value">
+                                          <input
+                                            type="file"
+                                            name="ref_invoice2_file"
+                                            className="form-control me-3"
+                                            onChange={handleChange}
+                                          />
+                                          <button
+                                            type="button"
+                                            className="btn btn-success btn-sm"
+                                            onClick={() =>
+                                              handleFileUpload(
+                                                "ref_invoice2_file"
+                                              )
+                                            }
+                                          >
+                                            Upload
+                                          </button>
+                                        </div>
                                       </td>
                                     </tr>
 
@@ -513,7 +580,7 @@ const LDRefundSupplyMaterial = () => {
                                         />
                                       </td>
                                       <td>
-                                        <textarea
+                                        <input
                                           type="text"
                                           name="ref_invoice3_remarks"
                                           className="form-control"
@@ -523,13 +590,25 @@ const LDRefundSupplyMaterial = () => {
                                         />
                                       </td>
                                       <td>
-                                        <input
-                                          type="file"
-                                          name="ref_invoice3_file"
-                                          className="form-control"
-                                          accept=".xlsx, .xls"
-                                          onChange={handleChange}
-                                        />
+                                        <div className="btn_value">
+                                          <input
+                                            type="file"
+                                            name="ref_invoice3_file"
+                                            className="form-control me-3"
+                                            onChange={handleChange}
+                                          />
+                                          <button
+                                            type="button"
+                                            className="btn btn-success btn-sm"
+                                            onClick={() =>
+                                              handleFileUpload(
+                                                "ref_invoice3_file"
+                                              )
+                                            }
+                                          >
+                                            Upload
+                                          </button>
+                                        </div>
                                       </td>
                                     </tr>
 
@@ -558,7 +637,7 @@ const LDRefundSupplyMaterial = () => {
                                         />
                                       </td>
                                       <td>
-                                        <textarea
+                                        <input
                                           type="text"
                                           name="ref_invoice4_remarks"
                                           className="form-control"
@@ -568,13 +647,25 @@ const LDRefundSupplyMaterial = () => {
                                         />
                                       </td>
                                       <td>
-                                        <input
-                                          type="file"
-                                          name="ref_invoice4_file"
-                                          className="form-control"
-                                          accept=".xlsx, .xls"
-                                          onChange={handleChange}
-                                        />
+                                        <div className="btn_value">
+                                          <input
+                                            type="file"
+                                            name="ref_invoice4_file"
+                                            className="form-control me-3"
+                                            onChange={handleChange}
+                                          />
+                                          <button
+                                            type="button"
+                                            className="btn btn-success btn-sm"
+                                            onClick={() =>
+                                              handleFileUpload(
+                                                "ref_invoice4_file"
+                                              )
+                                            }
+                                          >
+                                            Upload
+                                          </button>
+                                        </div>
                                       </td>
                                     </tr>
 
