@@ -256,7 +256,7 @@ const SyncComponent = () => {
               />
             </div>
           </div>
-          <div className="row">
+          {/* <div className="row">
             <div className="col-md-6 py-4">
               <h3>Download Unsynced Data</h3>
               <DatePicker
@@ -300,7 +300,7 @@ const SyncComponent = () => {
                 className="btn btn-success btn-sm mt-2"
               />
             </div>
-          </div>
+          </div> */}
         </div>
       </div>
       <div className="d-flex mt-3">

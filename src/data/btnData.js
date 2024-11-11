@@ -2,6 +2,7 @@ export const initialData = {
   yard: "",
   stage: "1",
   invoice_no: "",
+  invoice_type: "",
   invoice_filename: "",
   invoice_value: "",
   debit_note: "",

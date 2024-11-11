@@ -333,31 +333,66 @@ const BillsMaterialHybrid = () => {
                                     {form?.invoice_type === E_INVOICE && (
                                       <tr>
                                         <td>E-Invoice No :</td>
-                                        <td className="btn_value">
-                                          <input
-                                            type="text"
-                                            className="form-control me-2"
-                                            name="invoice_no"
-                                            placeholder="E-Invoice number"
-                                            value={form?.invoice_no}
-                                            onChange={(e) =>
-                                              inputTypeChange(e, form, setForm)
-                                            }
-                                          />
-                                          <input
-                                            type="file"
-                                            className="form-control"
-                                            name="invoice_filename"
-                                            onChange={(e) =>
-                                              inputFileChange(e, form, setForm)
-                                            }
-                                            accept=".pdf"
-                                          />
-                                          <DynamicButton
-                                            label="CHECK"
-                                            onClick={getGrnIcgrnHandler}
-                                            className="btn btn-primary btn-sm m-4"
-                                          />
+                                        <td>
+                                          <div className="btn_value">
+                                            <input
+                                              type="text"
+                                              className="form-control me-2"
+                                              name="invoice_no"
+                                              placeholder="E-Invoice number"
+                                              value={form?.invoice_no}
+                                              onChange={(e) =>
+                                                inputTypeChange(
+                                                  e,
+                                                  form,
+                                                  setForm
+                                                )
+                                              }
+                                            />
+                                            <DynamicButton
+                                              label="CHECK"
+                                              onClick={getGrnIcgrnHandler}
+                                              className="btn btn-primary btn-sm m-4"
+                                            />
+                                          </div>
+                                          <div className="btn_value">
+                                            <div className="me-4">
+                                              <label htmlFor="">
+                                                Invoice File
+                                              </label>
+                                              <input
+                                                type="file"
+                                                className="form-control"
+                                                name="invoice_filename"
+                                                onChange={(e) =>
+                                                  inputFileChange(
+                                                    e,
+                                                    form,
+                                                    setForm
+                                                  )
+                                                }
+                                                accept=".pdf"
+                                              />
+                                            </div>
+                                            <div>
+                                              <label htmlFor="">
+                                                Supporting Documents
+                                              </label>
+                                              <input
+                                                type="file"
+                                                className="form-control"
+                                                name="invoice_supporting_doc"
+                                                onChange={(e) =>
+                                                  inputFileChange(
+                                                    e,
+                                                    form,
+                                                    setForm
+                                                  )
+                                                }
+                                                accept=".pdf"
+                                              />
+                                            </div>
+                                          </div>
                                         </td>
                                       </tr>
                                     )}
