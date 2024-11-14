@@ -13,6 +13,7 @@ import { toast } from "react-toastify";
 import { Button } from "react-bootstrap";
 import DynamicButton from "../../Helpers/DynamicButton";
 import * as XLSX from "xlsx";
+import { IoClose } from "react-icons/io5";
 
 const LDRefundSupplyMaterial = () => {
   const { id } = useParams();
@@ -22,6 +23,7 @@ const LDRefundSupplyMaterial = () => {
   const [gstData, setGstData] = useState();
   const [fileUploadResponses, setFileUploadResponses] = useState({});
   console.log(fileUploadResponses, "fileUploadResponses");
+  const [fileUploaded, setFileUploaded] = useState(false);
 
   const [formData, setFormData] = useState({
     ref_invoice1_no: "",
@@ -96,16 +98,22 @@ const LDRefundSupplyMaterial = () => {
   //   }));
   // };
 
-  const handleChange = (e) => {
+  const handleChange = async (e) => {
     const { name, value, files } = e.target;
+
+    // Update formData with file details
     setFormData((prevData) => ({
       ...prevData,
       [name]: files ? files[0] : value,
     }));
+
+    // If files are selected, initiate file upload
+    if (files) {
+      await handleFileUpload(name, files[0]);
+    }
   };
 
-  const handleFileUpload = async (fileName) => {
-    const fileToUpload = formData[fileName];
+  const handleFileUpload = async (fileName, fileToUpload) => {
     if (!fileToUpload) {
       console.error(`No file selected for ${fileName}`);
       toast.error(`Please select a file for ${fileName}`);
@@ -124,17 +132,23 @@ const LDRefundSupplyMaterial = () => {
       );
 
       if (response?.status) {
-        // Save the entire response data in the fileUploadResponses state
-        setFileUploadResponses((prevResponses) => ({
-          ...prevResponses,
-          [fileName]: response.data,
-        }));
+        // Fix path by replacing backslashes with forward slashes and removing extra 'uploads/'
+        const filePath = response.data.path.replace(/\\/g, "/"); // Replace backslashes with forward slashes
+        const fileUrl = `${process.env.REACT_APP_PDF_URL}${
+          filePath.startsWith("uploads/")
+            ? filePath.slice("uploads/".length)
+            : "uploads/" + filePath
+        }`;
 
-        // Update formData to store only the filename for this file
+        // Save file details in formData
         setFormData((prevData) => ({
           ...prevData,
           [fileName]: response.data.filename,
+          fileUrl: fileUrl,
         }));
+
+        // Set fileUploaded state to true, which hides the file input and shows the view button
+        setFileUploaded(true);
 
         toast.success(response.message);
       }
@@ -283,29 +297,44 @@ const LDRefundSupplyMaterial = () => {
                                         <input
                                           type="text"
                                           name="invoiceReferenceNo"
-                                          className="form-control  me-2"
+                                          className="form-control me-2"
                                           placeholder="Enter Reference No"
                                           value={formData.invoiceReferenceNo}
                                           onChange={handleChange}
                                         />
-                                        <input
-                                          type="file"
-                                          className="form-control me-3"
-                                          name="invoice_file"
-                                          accept=".pdf"
-                                          onChange={handleChange}
-                                        />
-                                        <button
-                                          type="button"
-                                          className="btn btn-success btn-sm"
-                                          onClick={() =>
-                                            handleFileUpload("invoice_file")
-                                          }
-                                        >
-                                          Upload
-                                        </button>
+
+                                        {!fileUploaded && (
+                                          <input
+                                            type="file"
+                                            className="form-control me-3"
+                                            name="invoice_file"
+                                            accept=".pdf,.xlsx"
+                                            onChange={handleChange}
+                                          />
+                                        )}
+
+                                        {fileUploaded && (
+                                          <div className="d-flex align-items-center">
+                                            <a
+                                              href={formData.fileUrl}
+                                              target="_blank"
+                                              rel="noreferrer"
+                                              className="btn btn-primary btn-sm me-2"
+                                            >
+                                              View Uploaded File
+                                            </a>
+                                            <button className="btn btn-sm fw-bold btn-danger d-flex">
+                                              <IoClose
+                                                className="cursor-pointer"
+                                                size={20}
+                                                // onClick={() => handleRemoveFile()}
+                                              />
+                                            </button>
+                                          </div>
+                                        )}
                                       </td>
                                     </tr>
+
                                     <tr>
                                       <td>Invoice/Letter Date:</td>
                                       <td className="btn_value">
@@ -361,23 +390,33 @@ const LDRefundSupplyMaterial = () => {
                                       <td>PO Amendment Copy :</td>
                                       <td>
                                         <div className="btn_value">
-                                          <input
-                                            type="file"
-                                            name="po_amendment_file"
-                                            className="form-control me-3"
-                                            onChange={handleChange}
-                                          />
-                                          <button
-                                            type="button"
-                                            className="btn btn-success btn-sm"
-                                            onClick={() =>
-                                              handleFileUpload(
-                                                "po_amendment_file"
-                                              )
-                                            }
-                                          >
-                                            Upload
-                                          </button>
+                                          {!fileUploaded && (
+                                            <input
+                                              type="file"
+                                              name="po_amendment_file"
+                                              className="form-control me-3"
+                                              onChange={handleChange}
+                                            />
+                                          )}
+                                          {fileUploaded && (
+                                            <div className="d-flex align-items-center">
+                                              <a
+                                                href={formData.fileUrl}
+                                                target="_blank"
+                                                rel="noreferrer"
+                                                className="btn btn-primary btn-sm me-2"
+                                              >
+                                                View Uploaded File
+                                              </a>
+                                              <button className="btn btn-sm fw-bold btn-danger d-flex">
+                                                <IoClose
+                                                  className="cursor-pointer"
+                                                  size={20}
+                                                  // onClick={() => handleRemoveFile()}
+                                                />
+                                              </button>
+                                            </div>
+                                          )}
                                         </div>
                                       </td>
                                     </tr>
@@ -417,14 +456,17 @@ const LDRefundSupplyMaterial = () => {
                                           >
                                             Required format: .xlsx, .xls
                                           </span>
-                                          <button
-                                            type="button"
-                                            onClick={handleDownloadTemplate}
-                                            className="btn btn-secondary"
-                                            style={{ marginLeft: "15px" }}
+                                          <a
+                                            href={`${process.env.REACT_APP_PDF_URL}/ld_sample_excel/LD_Reversal.xlsx`}
+                                            target="_blank"
+                                            rel="noreferrer"
+                                            className="btn btn-success btn-sm"
+                                            style={{
+                                              marginLeft: "20px",
+                                            }}
                                           >
-                                            Download Template
-                                          </button>
+                                            VIEW
+                                          </a>
                                         </div>
                                       </td>
                                     </tr>
