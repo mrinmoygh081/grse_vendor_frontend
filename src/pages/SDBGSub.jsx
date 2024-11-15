@@ -1565,10 +1565,13 @@ const SDBGSub = () => {
                   <div className="mb-3">
                     <label className="form-label">Claim Period</label>
                     <p>
-                      {formDatainput?.claim_priod
+                      {/* {formDatainput?.claim_priod
                         ? new Date(
                             formDatainput?.claim_priod * 1000
                           ).toLocaleDateString()
+                        : ""} */}
+                      {formDatainput?.claim_priod
+                        ? formatDate(formDatainput.claim_priod * 1000)
                         : ""}
                     </p>
                   </div>

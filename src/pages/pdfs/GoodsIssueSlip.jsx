@@ -165,11 +165,11 @@ function GoodsIssueSlip() {
                 <tr>
                   <td colSpan={2}>
                     <h6 className="text-center pb-3">Issued To</h6>
-                    <h6 className="text-center">DCG1</h6>
+                    <h6 className="text-center"></h6>
                   </td>
                   <td colSpan={1}>
                     <h6 className="text-center pb-3">Issued By</h6>
-                    <h6 className="text-center">DCG1</h6>
+                    <h6 className="text-center"></h6>
                   </td>
                   <td colSpan={3}>
                     <h6 className="text-center pb-3">Authorized By</h6>
