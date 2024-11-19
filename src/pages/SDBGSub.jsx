@@ -1163,6 +1163,7 @@ const SDBGSub = () => {
                       value={formDatainput?.bg_ammount || ""}
                       onChange={handleInputChange2}
                       onWheel={(e) => inputOnWheelPrevent(e)}
+                      step="any"
                     />
                   </div>
                 </div>
