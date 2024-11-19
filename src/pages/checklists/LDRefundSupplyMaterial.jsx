@@ -160,7 +160,6 @@ const LDRefundSupplyMaterial = () => {
     }
   };
 
-  // Example submit function using the filename from fileUploadResponses
   const handleSubmit = async () => {
     const payload = {
       purchasing_doc_no: id,
@@ -171,12 +170,10 @@ const LDRefundSupplyMaterial = () => {
         ? Math.floor(new Date(formData.invoiceDate).getTime() / 1000)
         : "",
 
-      // Include file names from fileUploadResponses state
       invoice_file: fileUploadResponses.invoice_file?.filename,
       worksheet_excel_file: fileUploadResponses.worksheet_excel_file?.filename,
       po_amendment_file: fileUploadResponses.po_amendment_file?.filename,
 
-      // Invoice details
       ref_invoice1_no: formData.ref_invoice1_no,
       ref_invoice1_amount: formData.ref_invoice1_amount,
       ref_invoice1_file: fileUploadResponses.ref_invoice1_file?.filename,
