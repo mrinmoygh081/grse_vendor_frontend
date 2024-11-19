@@ -272,7 +272,12 @@ const BillsMaterialHybridView = () => {
                                             </label>
                                             <br />
                                             {/* <b>{doData?.btn_num}</b> */}
-                                            <b>{"25/04/2024"}</b>
+                                            <b>
+                                              {"25/04/2024"}
+                                              {/* {formatDate(
+                                              doData?.c_drawing_date
+                                                  )} */}
+                                            </b>
                                             <b></b>
                                           </div>
                                           <div className="me-3">
@@ -455,6 +460,11 @@ const BillsMaterialHybridView = () => {
                                     </tbody>
                                   </table>
                                 </div>
+                                <p>
+                                  Certified that Invoice has been verified w.r.t
+                                  PO and recommanded for release of payment
+                                  subject to satutatory deduction.
+                                </p>
                                 <div className="text-center">
                                   {user?.user_type !== 1 && (
                                     <>

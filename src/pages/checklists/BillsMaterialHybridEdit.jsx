@@ -44,6 +44,9 @@ const BillsMaterialHybridEdit = () => {
   const [showRemarks, setShowRemarks] = useState(false);
   const [remarks, setRemarks] = useState("");
 
+  console.log(data, "abhiniyt");
+  console.log(doForm, "clone");
+
   // const calNetClaimAmount = (invoice_value, debit_note, credit_note) => {
   //   if (typeof invoice_value !== "number") {
   //     invoice_value = parseInt(invoice_value) || 0;
@@ -101,7 +104,7 @@ const BillsMaterialHybridEdit = () => {
   };
 
   useEffect(() => {
-    let net = data?.icgrn_total;
+    let net = data?.net_with_gst;
     if (net) {
       let report = calculateNetPay(
         net,
@@ -122,7 +125,7 @@ const BillsMaterialHybridEdit = () => {
       });
     }
   }, [
-    data?.icgrn_total,
+    data?.net_with_gst,
     doForm?.ld_amount,
     doForm?.o_ret_per,
     doForm?.p_estimate_amount,
