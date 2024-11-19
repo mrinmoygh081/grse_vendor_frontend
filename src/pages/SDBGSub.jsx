@@ -1766,6 +1766,12 @@ const SDBGSub = () => {
                     </div>
                   )}
                 </div>
+                <div className="col-12">
+                  <label className="form-check-label" htmlFor="isConfirmedBG">
+                    Correct and Confirmed BG in Prescribed Format is being
+                    forwarded.
+                  </label>
+                </div>
 
                 {/* {showRemarksInput && (
               <div className="col-12 mb-3">
