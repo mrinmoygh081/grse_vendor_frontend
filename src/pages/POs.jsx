@@ -161,7 +161,7 @@ const POs = () => {
                     </option>
                     <option value="ICGRN">ICGRN</option>
                     <option value="WDC">WDC</option>
-                    <option value="BTN">BTN</option>
+                    <option value="PAYMENT">PAYMENT</option>
                   </select>
                 </div>
               </div>

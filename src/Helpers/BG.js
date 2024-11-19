@@ -66,7 +66,7 @@ export const BGEntry = async (formDatainput, token, flag) => {
     bank_pin_code === "" ||
     bg_no === "" ||
     bg_date === "" ||
-    bg_ammount === "" ||
+    // bg_ammount === "" ||
     bg_recived_date === "" ||
     validity_date === "" ||
     claim_priod === "" ||
@@ -75,7 +75,10 @@ export const BGEntry = async (formDatainput, token, flag) => {
     toast.warn("Please enter the required fields!");
     return false;
   }
-
+  if (!bg_ammount || isNaN(Number(bg_ammount))) {
+    toast.warn("Please enter a valid BG Amount!");
+    return false;
+  }
   let form = {
     ...formDatainput,
     // bg_date: convertToEpoch(bg_date),
@@ -97,6 +100,7 @@ export const BGEntry = async (formDatainput, token, flag) => {
     // extension_date6: convertToEpoch(extension_date6),
     claim_priod: convertToEpochh(new Date(formDatainput.claim_priod * 1000)),
     reference_no: reference_no,
+    bg_ammount: parseFloat(formDatainput.bg_ammount),
     status: flag,
     remarks:
       flag === "FORWARD_TO_FINANCE"
