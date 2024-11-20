@@ -160,11 +160,19 @@ const SDBGSub = () => {
     }
   };
 
+  // const handleInputChange2 = (e) => {
+  //   const { name, value } = e.target;
+  //   setFormDatainput((prevData) => ({
+  //     ...prevData,
+  //     [name]: value,
+  //   }));
+  // };
+
   const handleInputChange2 = (e) => {
     const { name, value } = e.target;
     setFormDatainput((prevData) => ({
       ...prevData,
-      [name]: value,
+      [name]: value.toUpperCase(),
     }));
   };
 
@@ -837,6 +845,7 @@ const SDBGSub = () => {
                   setFormData({
                     sdbgFile: null,
                     remarks: "",
+                    bg_no: "",
                   });
                 }}
               >
