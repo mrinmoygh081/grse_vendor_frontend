@@ -207,7 +207,8 @@ const Checklist = () => {
                           <table className="table table-striped table-bordered table_height">
                             <thead>
                               <tr className="border-0">
-                                <th>Date</th>
+                                <th className="min-w-150px">Date</th>
+                                <th className="min-w-150px">Invoice No</th>
                                 <th>BTN Type</th>
                                 <th>Net Claim Amount</th>
                                 <th>Amount Before Statutory Deduction</th>
@@ -234,7 +235,7 @@ const Checklist = () => {
                                     return (
                                       <Fragment key={index}>
                                         <tr>
-                                          <td colSpan={5}>
+                                          <td colSpan={6}>
                                             <b>{it}</b>
                                           </td>
                                           <td>
@@ -390,6 +391,7 @@ const Checklist = () => {
                                               <td>
                                                 {formatDate(item?.created_at)}
                                               </td>
+                                              <td>{item?.invoice_no}</td>
                                               <td>{item?.btn_type}</td>
                                               <td>{item?.net_claim_amount}</td>
                                               <td>
