@@ -162,9 +162,9 @@ const BTNMaterialVendorInfo = ({ navigate, id }) => {
                   <tr>
                     <td>Supporting Documents :</td>
                     <td className="btn_value">
-                      {data?.invoice_supporting_doc ? (
+                      {data?.suppoting_invoice_filename ? (
                         <a
-                          href={`${process.env.REACT_APP_PDF_URL}btns/${data?.invoice_supporting_doc}`}
+                          href={`${process.env.REACT_APP_PDF_URL}btns/${data?.suppoting_invoice_filename}`}
                           target="_blank"
                           rel="noreferrer"
                         >
