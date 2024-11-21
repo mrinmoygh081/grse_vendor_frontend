@@ -236,11 +236,12 @@ const Checklist = () => {
                                   {Object.keys(groupedBG).map((it, index) => {
                                     let items = groupedBG[it];
                                     let firstItem = items[0];
-                                    {
-                                      /* console.log("firstItem", firstItem);
-                                    console.log("items", items);
-                                    console.log("it", it); */
-                                    }
+                                    items = items.sort(
+                                      (a, b) =>
+                                        Number(a.created_at) -
+                                        Number(b.created_at)
+                                    );
+
                                     return (
                                       <Fragment key={index}>
                                         <tr>
@@ -424,6 +425,10 @@ const Checklist = () => {
                                             <tr key={i}>
                                               <td>
                                                 {formatDate(item?.created_at)}
+                                                {console.log(
+                                                  item?.created_at,
+                                                  "OBPS"
+                                                )}
                                               </td>
                                               <td className="tdrowadd">
                                                 {item?.assign_by_name}{" "}
