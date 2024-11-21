@@ -36,7 +36,7 @@ const Checklist = () => {
   const [slug, setSlug] = useState("");
   const [paymentData, setPaymentData] = useState("");
   const [loading, setLoading] = useState(true);
-  console.log("user", user);
+  console.log("groupedBG", groupedBG);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -203,15 +203,20 @@ const Checklist = () => {
                             ADD
                           </button>
                         </div>
-                        <div className="table-responsive position-relative">
-                          <table className="table table-striped table-bordered table_height">
+                        <div
+                          className="table-responsive position-relative"
+                          style={{ overflowX: "auto" }}
+                        >
+                          <table
+                            className="table table-striped table-bordered table_height"
+                            style={{ whiteSpace: "nowrap" }}
+                          >
                             <thead>
                               <tr className="border-0">
-                                <th className="min-w-150px">Date</th>
-                                <th className="min-w-150px">Invoice No</th>
-                                <th>BTN Type</th>
-                                <th>Net Claim Amount</th>
-                                <th>Amount Before Statutory Deduction</th>
+                                <th>Date</th>
+                                <th>Assign By</th>
+                                <th>Assign TO</th>
+                                <th>Assign To FI</th>
                                 <th>Status</th>
                                 <th>Action</th>
                               </tr>
@@ -231,13 +236,42 @@ const Checklist = () => {
                                   {Object.keys(groupedBG).map((it, index) => {
                                     let items = groupedBG[it];
                                     let firstItem = items[0];
-                                    console.log("firstItem", firstItem);
+                                    {
+                                      /* console.log("firstItem", firstItem);
+                                    console.log("items", items);
+                                    console.log("it", it); */
+                                    }
                                     return (
                                       <Fragment key={index}>
                                         <tr>
-                                          <td colSpan={6}>
-                                            <b>{it}</b>
+                                          <td
+                                            colSpan={7}
+                                            style={{
+                                              whiteSpace: "pre-wrap",
+                                              padding: "10px 0",
+                                            }}
+                                          >
+                                            <b>BTN No:</b>
+                                            {it}{" "}
+                                            &nbsp;&nbsp;&nbsp;||&nbsp;&nbsp;&nbsp;{" "}
+                                            <b>Invoice Number:</b>{" "}
+                                            {groupedBG[it][0]
+                                              ? groupedBG[it][0]?.invoice_no
+                                              : "NA"}{" "}
+                                            &nbsp;&nbsp;&nbsp;||&nbsp;&nbsp;&nbsp;
+                                            <b>BTN Type:</b>{" "}
+                                            {groupedBG[it][0]
+                                              ? groupedBG[it][0]?.btn_type
+                                              : "NA"}{" "}
+                                            &nbsp;&nbsp;&nbsp;||&nbsp;&nbsp;&nbsp;
+                                            <b>Net Claim Amount:</b>{" "}
+                                            {groupedBG[it][0]
+                                              ? groupedBG[it][0]
+                                                  ?.net_claim_amount
+                                              : "NA"}
+                                            (without GST)
                                           </td>
+
                                           <td>
                                             <div className="view-button-container">
                                               <button
@@ -391,11 +425,21 @@ const Checklist = () => {
                                               <td>
                                                 {formatDate(item?.created_at)}
                                               </td>
-                                              <td>{item?.invoice_no}</td>
-                                              <td>{item?.btn_type}</td>
-                                              <td>{item?.net_claim_amount}</td>
-                                              <td>
-                                                {item?.net_payable_amount}
+                                              <td className="tdrowadd">
+                                                {item?.assign_by_name}{" "}
+                                                {item?.assign_by &&
+                                                  `(${item.assign_by})`}
+                                              </td>
+
+                                              <td className="tdrowadd">
+                                                {item?.assign_to_name}{" "}
+                                                {item?.assign_to &&
+                                                  `(${item.assign_to})`}
+                                              </td>
+                                              <td className="tdrowadd">
+                                                {item?.assign_to_fi_name}{" "}
+                                                {item?.assign_to_fi &&
+                                                  `(${item.assign_to_fi})`}
                                               </td>
                                               <td
                                                 className={`${clrLegend(
@@ -404,7 +448,6 @@ const Checklist = () => {
                                               >
                                                 {item?.status}
                                               </td>
-                                              <td></td>
                                             </tr>
                                           ))}
                                       </Fragment>

@@ -951,4 +951,9 @@ input[type="number"] {
   white-space: nowrap; 
 }
 
-
+/* cheklist table css */
+.tdrowadd {
+  white-space: nowrap; /* Prevent text wrapping */
+  text-overflow: ellipsis; /* Add "..." if the content is too long */
+  overflow: hidden; /* Hide overflowing text */
+}
