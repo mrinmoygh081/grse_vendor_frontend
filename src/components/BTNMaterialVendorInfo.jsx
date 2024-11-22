@@ -176,7 +176,7 @@ const BTNMaterialVendorInfo = ({ navigate, id }) => {
                           VIEW
                         </a>
                       ) : (
-                        data?.suppoting_invoice_file_path("Not Submitted")
+                        "Not Submitted"
                       )}
                     </td>
                   </tr>
