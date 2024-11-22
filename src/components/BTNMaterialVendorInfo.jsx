@@ -1,7 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { USER_VENDOR } from "../constants/userConstants";
 import { checkTypeArr } from "../utils/smallFun";
-import { formatDate, formatFilePath } from "../utils/getDateTimeNow";
+import {
+  formatDate,
+  formatFilePath,
+  formatFilePathBTN,
+} from "../utils/getDateTimeNow";
 import { apiCallBack } from "../utils/fetchAPIs";
 import { useLocation } from "react-router-dom";
 import { useSelector } from "react-redux";
@@ -148,7 +152,7 @@ const BTNMaterialVendorInfo = ({ navigate, id }) => {
                       <b className="me-3">
                         {data?.invoice_no ? data.invoice_no : "NA"}
                       </b>
-                      {data?.invoice_file_path && (
+                      {data?.invoice_file_path ? (
                         <a
                           href={formatFilePath(data?.invoice_file_path)}
                           target="_blank"
@@ -159,6 +163,16 @@ const BTNMaterialVendorInfo = ({ navigate, id }) => {
                         >
                           View File
                         </a>
+                      ) : data?.invoice_filename ? (
+                        <a
+                          href={formatFilePathBTN(data?.invoice_filename)}
+                          target="_blank"
+                          rel="noreferrer"
+                        >
+                          VIEW
+                        </a>
+                      ) : (
+                        "NA"
                       )}
                     </td>
                   </tr>
@@ -169,6 +183,16 @@ const BTNMaterialVendorInfo = ({ navigate, id }) => {
                         <a
                           href={formatFilePath(
                             data?.suppoting_invoice_file_path
+                          )}
+                          target="_blank"
+                          rel="noreferrer"
+                        >
+                          VIEW
+                        </a>
+                      ) : data?.suppoting_invoice_filename ? (
+                        <a
+                          href={formatFilePathBTN(
+                            data?.suppoting_invoice_filename
                           )}
                           target="_blank"
                           rel="noreferrer"
@@ -195,6 +219,14 @@ const BTNMaterialVendorInfo = ({ navigate, id }) => {
                       data?.debit_credit_file_path !== "" ? (
                         <a
                           href={formatFilePath(data?.debit_credit_file_path)}
+                          target="_blank"
+                          rel="noreferrer"
+                        >
+                          VIEW
+                        </a>
+                      ) : data?.debit_credit_filename ? (
+                        <a
+                          href={formatFilePathBTN(data?.debit_credit_filename)}
                           target="_blank"
                           rel="noreferrer"
                         >
@@ -301,6 +333,14 @@ const BTNMaterialVendorInfo = ({ navigate, id }) => {
                       data.demand_raise_file_path !== "" ? (
                         <a
                           href={formatFilePath(data?.demand_raise_file_path)}
+                          target="_blank"
+                          rel="noreferrer"
+                        >
+                          VIEW
+                        </a>
+                      ) : data?.demand_raise_filename ? (
+                        <a
+                          href={formatFilePathBTN(data?.demand_raise_filename)}
                           target="_blank"
                           rel="noreferrer"
                         >
