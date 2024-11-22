@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { USER_VENDOR } from "../constants/userConstants";
 import { checkTypeArr } from "../utils/smallFun";
-import { formatDate } from "../utils/getDateTimeNow";
+import { formatDate, formatFilePath } from "../utils/getDateTimeNow";
 import { apiCallBack } from "../utils/fetchAPIs";
 import { useLocation } from "react-router-dom";
 import { useSelector } from "react-redux";
@@ -148,13 +148,16 @@ const BTNMaterialVendorInfo = ({ navigate, id }) => {
                       <b className="me-3">
                         {data?.invoice_no ? data.invoice_no : "NA"}
                       </b>
-                      {data?.invoice_filename && (
+                      {data?.invoice_file_path && (
                         <a
-                          href={`${process.env.REACT_APP_PDF_URL}btns/${data?.invoice_filename}`}
+                          href={formatFilePath(data?.invoice_file_path)}
                           target="_blank"
                           rel="noreferrer"
+                          style={{
+                            marginRight: "10px",
+                          }}
                         >
-                          VIEW
+                          View File
                         </a>
                       )}
                     </td>
@@ -162,16 +165,18 @@ const BTNMaterialVendorInfo = ({ navigate, id }) => {
                   <tr>
                     <td>Supporting Documents :</td>
                     <td className="btn_value">
-                      {data?.suppoting_invoice_filename ? (
+                      {data?.suppoting_invoice_file_path ? (
                         <a
-                          href={`${process.env.REACT_APP_PDF_URL}btns/${data?.suppoting_invoice_filename}`}
+                          href={formatFilePath(
+                            data?.suppoting_invoice_file_path
+                          )}
                           target="_blank"
                           rel="noreferrer"
                         >
                           VIEW
                         </a>
                       ) : (
-                        "Not Submitted"
+                        data?.suppoting_invoice_file_path("Not Submitted")
                       )}
                     </td>
                   </tr>
@@ -186,10 +191,10 @@ const BTNMaterialVendorInfo = ({ navigate, id }) => {
                   <tr>
                     <td>Debit/Credit Note:</td>
                     <td className="btn_value">
-                      {data?.debit_credit_filename &&
-                      data?.debit_credit_filename !== "" ? (
+                      {data?.debit_credit_file_path &&
+                      data?.debit_credit_file_path !== "" ? (
                         <a
-                          href={`${process.env.REACT_APP_PDF_URL}btns/${data?.debit_credit_filename}`}
+                          href={formatFilePath(data?.debit_credit_file_path)}
                           target="_blank"
                           rel="noreferrer"
                         >
@@ -292,10 +297,10 @@ const BTNMaterialVendorInfo = ({ navigate, id }) => {
                   <tr>
                     <td>Demand raised by production/PP&C if any</td>
                     <td className="btn_value">
-                      {data?.demand_raise_filename &&
-                      data.demand_raise_filename !== "" ? (
+                      {data?.demand_raise_file_path &&
+                      data.demand_raise_file_path !== "" ? (
                         <a
-                          href={`${process.env.REACT_APP_PDF_URL}btns/${data.demand_raise_filename}`}
+                          href={formatFilePath(data?.demand_raise_file_path)}
                           target="_blank"
                           rel="noreferrer"
                         >

@@ -15,7 +15,7 @@ import {
   USER_VENDOR,
 } from "../constants/userConstants";
 import { checkTypeArr } from "../utils/smallFun";
-import { formatDate } from "../utils/getDateTimeNow";
+import { formatDate, formatFilePath } from "../utils/getDateTimeNow";
 import DynamicButton from "../Helpers/DynamicButton";
 import SkeletonLoader from "../loader/SkeletonLoader";
 import DatePicker from "react-datepicker";
@@ -212,11 +212,13 @@ const HrCompliance = () => {
                                               <td className="table_center">
                                                 {item.file_name && (
                                                   <a
-                                                    href={`${process.env.REACT_APP_PDF_URL}hrComplianceUpload/${item.file_name}`}
+                                                    href={formatFilePath(
+                                                      item.file_path
+                                                    )}
                                                     target="_blank"
                                                     rel="noreferrer"
                                                   >
-                                                    Click Here
+                                                    View File
                                                   </a>
                                                 )}
                                               </td>

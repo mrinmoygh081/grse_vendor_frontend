@@ -266,10 +266,9 @@ const Checklist = () => {
                                               : "NA"}{" "}
                                             &nbsp;&nbsp;&nbsp;||&nbsp;&nbsp;&nbsp;
                                             <b>Net Claim Amount:</b>{" "}
-                                            {groupedBG[it][0]
-                                              ? groupedBG[it][0]
-                                                  ?.net_claim_amount
-                                              : "NA"}
+                                            {groupedBG[it][0]?.net_claim_amount
+                                              ? `₹ ${groupedBG[it][0]?.net_claim_amount}`
+                                              : "NA"}{" "}
                                             (without GST)
                                           </td>
 
