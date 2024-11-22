@@ -18,7 +18,7 @@ import {
 } from "../../utils/smallFun";
 import { inputOnWheelPrevent } from "../../utils/inputOnWheelPrevent";
 import { apiCallBack } from "../../utils/fetchAPIs";
-import { formatDate } from "../../utils/getDateTimeNow";
+import { formatDate, formatFilePath } from "../../utils/getDateTimeNow";
 import { toast } from "react-toastify";
 import { initialData } from "../../data/btnData";
 import DynamicButton from "../../Helpers/DynamicButton";
@@ -576,12 +576,16 @@ const BillsMaterialHybrid = () => {
                                               (item, i) => {
                                                 return (
                                                   <a
-                                                    href={`${process.env.REACT_APP_PDF_URL}submitSDBG/${item?.file_name}`}
+                                                    href={formatFilePath(
+                                                      item.file_path
+                                                    )}
                                                     target="_blank"
                                                     rel="noreferrer"
-                                                    key={i}
+                                                    style={{
+                                                      marginRight: "10px",
+                                                    }}
                                                   >
-                                                    VIEW
+                                                    View File
                                                   </a>
                                                 );
                                               }
@@ -634,15 +638,16 @@ const BillsMaterialHybrid = () => {
                                                 (item, i) => {
                                                   return (
                                                     <a
-                                                      href={`${process.env.REACT_APP_PDF_URL}submitSDBG/${item?.file_name}`}
+                                                      href={formatFilePath(
+                                                        item.file_path
+                                                      )}
                                                       target="_blank"
                                                       rel="noreferrer"
-                                                      key={i}
                                                       style={{
                                                         marginRight: "10px",
                                                       }}
                                                     >
-                                                      VIEW
+                                                      View File
                                                     </a>
                                                   );
                                                 }
@@ -806,15 +811,16 @@ const BillsMaterialHybrid = () => {
                                               (item, i) => {
                                                 return (
                                                   <a
-                                                    key={i}
-                                                    href={`${process.env.REACT_APP_PDF_URL}submitSDBG/${item?.file_name}`}
+                                                    href={formatFilePath(
+                                                      item.file_path
+                                                    )}
                                                     target="_blank"
                                                     rel="noreferrer"
                                                     style={{
                                                       marginRight: "10px",
                                                     }}
                                                   >
-                                                    VIEW
+                                                    View File
                                                   </a>
                                                 );
                                               }

@@ -15,6 +15,7 @@ import { clrLegend } from "../utils/clrLegend";
 import { FaMinus, FaPlus } from "react-icons/fa";
 import SkeletonLoader from "../loader/SkeletonLoader";
 import DynamicButton from "../Helpers/DynamicButton";
+import "react-datepicker/dist/react-datepicker.css";
 
 const DemandManagement = () => {
   let line_item_fields = {
@@ -508,7 +509,8 @@ const DemandManagement = () => {
 
                                                     {item.delivery_date &&
                                                       formatDate(
-                                                        item.delivery_date
+                                                        item.delivery_date *
+                                                          1000
                                                       )}
                                                   </td>
                                                   <td>{item.remarks}</td>

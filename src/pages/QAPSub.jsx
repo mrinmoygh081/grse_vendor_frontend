@@ -11,7 +11,7 @@ import { reConfirm } from "../utils/reConfirm";
 import { clrLegend } from "../utils/clrLegend";
 import { SUBMITTED, ACCEPTED } from "../constants/BGconstants";
 import { groupedByRefNo } from "../utils/groupedByReq";
-import { formatDate } from "../utils/getDateTimeNow";
+import { formatDate, formatFilePath } from "../utils/getDateTimeNow";
 import DynamicButton from "../Helpers/DynamicButton";
 import SkeletonLoader from "../loader/SkeletonLoader";
 
@@ -546,11 +546,13 @@ const QAPSub = () => {
                                                   <td>
                                                     {qap.file_name && (
                                                       <a
-                                                        href={`${process.env.REACT_APP_PDF_URL}qap/${qap.file_name}`}
+                                                        href={formatFilePath(
+                                                          qap.file_path
+                                                        )}
                                                         target="_blank"
                                                         rel="noreferrer"
                                                       >
-                                                        click Here
+                                                        View File
                                                       </a>
                                                     )}
                                                   </td>
@@ -561,11 +563,13 @@ const QAPSub = () => {
                                                       ).map((doc, idx) => (
                                                         <div key={idx}>
                                                           <a
-                                                            href={`${process.env.REACT_APP_PDF_URL}qap/supporting_doc/${doc.file_name}`}
+                                                            href={formatFilePath(
+                                                              doc.file_path
+                                                            )}
                                                             target="_blank"
                                                             rel="noreferrer"
                                                           >
-                                                            click Here
+                                                            View File
                                                           </a>
                                                         </div>
                                                       ))}

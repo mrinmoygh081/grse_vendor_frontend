@@ -9,7 +9,7 @@ import { toast } from "react-toastify";
 import moment from "moment";
 import { REQUESTED, SUBMITTED } from "../constants/BGconstants";
 import { checkTypeArr } from "../utils/smallFun";
-import { formatDate } from "../utils/getDateTimeNow";
+import { formatDate, formatFilePath } from "../utils/getDateTimeNow";
 import DynamicButton from "../Helpers/DynamicButton";
 import SkeletonLoader from "../loader/SkeletonLoader";
 
@@ -113,7 +113,7 @@ const Shippingdocuments = () => {
 
       const response = await apiCallBack(
         "POST",
-        "po/shippingDocuments",
+        "po/shippingDocuments/sdoc",
         formDataToSend,
         token
       );
@@ -218,11 +218,13 @@ const Shippingdocuments = () => {
                                           <td>
                                             {item.file_name && (
                                               <a
-                                                href={`${process.env.REACT_APP_PDF_URL}shippingDocuments/${item.file_name}`}
+                                                href={formatFilePath(
+                                                  item.file_path
+                                                )}
                                                 target="_blank"
                                                 rel="noreferrer"
                                               >
-                                                Click Here
+                                                View File
                                               </a>
                                             )}
                                           </td>
