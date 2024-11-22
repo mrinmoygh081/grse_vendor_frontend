@@ -168,7 +168,9 @@ const BTNfinance = () => {
                       <option value="REJECTED">REJECTED</option>
                       <option value="BANK">BANK</option>
                       <option value="HOLD">HOLD</option>
-                      <option value="PROCESSED">PROCESSED</option>
+                      <option value="PROCESS">PROCESS</option>
+                      <option value="D-RETURN">D-RETURN</option>
+                      <option value="APPROVE">APPROVE</option>
                     </select>
                   </div>
                 </div>

@@ -236,7 +236,7 @@ const Checklist = () => {
                                   {Object.keys(groupedBG).map((it, index) => {
                                     let items = groupedBG[it];
                                     let firstItem = items[0];
-                                    items = items.sort(
+                                    items = [...items].sort(
                                       (a, b) =>
                                         Number(a.created_at) -
                                         Number(b.created_at)
