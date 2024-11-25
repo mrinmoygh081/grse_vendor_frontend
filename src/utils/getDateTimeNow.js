@@ -101,7 +101,7 @@ export const formatDashedDate = (epochTime) => {
 };
 
 export const formatFilePath = (path) => {
-  const fileDefaultPath = process.env.REACT_APP_PDF_URL_OBPS;
+  const fileDefaultPath = process.env.REACT_APP_PDF_URL;
   if (!path || typeof path != "string") {
     return fileDefaultPath + "/NO-FILE";
   }
@@ -111,7 +111,7 @@ export const formatFilePath = (path) => {
 };
 
 export const formatFilePathBTN = (path) => {
-  const fileDefaultPath = process.env.REACT_APP_PDF_URL_OBPS;
+  const fileDefaultPath = process.env.REACT_APP_PDF_URL;
   if (!path || typeof path != "string") {
     return fileDefaultPath + "/NO-FILE";
   }
