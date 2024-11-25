@@ -141,6 +141,25 @@ const DisplayStoreActions = () => {
     }),
     {}
   );
+  // const filteredPdfData = Object.keys(groupByPdfData).reduce(
+  //   (acc, key) => ({
+  //     ...acc,
+  //     [key]: groupByPdfData[key]
+  //       .filter((item) =>
+  //         Object.values(item).some(
+  //           (value) =>
+  //             value &&
+  //             value.toString().toLowerCase().includes(searchQuery.toLowerCase())
+  //         )
+  //       )
+  //       .filter((item) =>
+  //         key === "gate_entry"
+  //           ? !item.gateEntryNo?.toLowerCase().startsWith("n")
+  //           : true
+  //       ), // Apply case-insensitive filter for Gate Entry No
+  //   }),
+  //   {}
+  // );
 
   return (
     <>
