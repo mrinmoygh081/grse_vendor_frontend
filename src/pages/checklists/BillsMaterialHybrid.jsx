@@ -125,11 +125,11 @@ const BillsMaterialHybrid = () => {
         } = response.data;
         setForm({
           ...form,
-          gate_entry_no: gate_entry_no,
+          gate_entry_no,
           gate_entry_date: formatDate(gate_entry_date),
-          grn_nos: grn_nos,
-          icgrn_nos: icgrn_nos,
-          total_price: total_price,
+          grn_nos,
+          icgrn_nos,
+          total_price,
         });
       } else if (response && response.message) {
         toast.warn(response.message);

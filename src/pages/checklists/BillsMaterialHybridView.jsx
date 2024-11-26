@@ -22,71 +22,10 @@ const BillsMaterialHybridView = () => {
   const { user, token } = useSelector((state) => state.auth);
   const { id } = useParams();
   const { state } = useLocation();
-
-  // const [impDates, setImpDates] = useState(null);
-  // const [data, setData] = useState(null);
   const [doData, setDoData] = useState(null);
   const [form, setForm] = useState(initialData);
   initialDOData.btn_num = state;
   const [doForm, setDoForm] = useState(initialDOData);
-
-  console.log("doData", doData);
-
-  // const calNetClaimAmount = (invoice_value, debit_note, credit_note) => {
-  //   if (typeof invoice_value !== "number") {
-  //     invoice_value = parseInt(invoice_value) || 0;
-  //   }
-  //   if (typeof debit_note !== "number") {
-  //     debit_note = parseInt(debit_note) || 0;
-  //   }
-  //   if (typeof credit_note !== "number") {
-  //     credit_note = parseInt(credit_note) || 0;
-  //   }
-  //   // setForm({
-  //   //   ...form,
-  //   //   net_claim_amount:
-  //   //     parseInt(invoice_value) + parseInt(debit_note) - parseInt(credit_note),
-  //   // });
-  // };
-
-  // useEffect(() => {
-  //   const { invoice_value, debit_note, credit_note } = form;
-  //   if (invoice_value || debit_note || credit_note) {
-  //     calNetClaimAmount(invoice_value, debit_note, credit_note);
-  //   }
-  // }, [form?.invoice_value, form?.debit_note, form?.credit_note]);
-
-  // const getBTNData = async () => {
-  //   try {
-  //     const d = await apiCallBack(
-  //       "GET",
-  //       `po/btn/getBTNData?id=${id}`,
-  //       null,
-  //       token
-  //     );
-  //     if (d?.status) {
-  //       setImpDates(d?.data);
-  //     }
-  //   } catch (error) {
-  //     console.error("Error fetching WDC list:", error);
-  //   }
-  // };
-
-  // const getDataByBTN = async () => {
-  //   try {
-  //     const d = await apiCallBack(
-  //       "GET",
-  //       `po/btn/btn_num?id=${id}&btn_num=${state}`,
-  //       null,
-  //       token
-  //     );
-  //     if (d?.status && checkTypeArr(d?.data)) {
-  //       setData(d?.data[0]);
-  //     }
-  //   } catch (error) {
-  //     console.error("Error fetching WDC list:", error);
-  //   }
-  // };
 
   const getBTNDOData = async () => {
     try {
@@ -116,86 +55,6 @@ const BillsMaterialHybridView = () => {
       setDoForm({ ...doForm, ld_amount: p_amt });
     }
   }, [doForm?.ld_c_date, doForm?.ld_ge_date]);
-
-  // useEffect(() => {
-  //   const {
-  //     a_sdbg_date,
-  //     a_drawing_date,
-  //     a_ilms_date,
-  //     a_qap_date,
-  //     c_sdbg_date,
-  //     c_drawing_date,
-  //     c_ilms_date,
-  //     c_qap_date,
-  //   } = form;
-  //   let p_sdbg = 0;
-  //   let p_drg = 0;
-  //   let p_qap = 0;
-  //   let p_ilms = 0;
-  //   if (data?.total_price) {
-  //     const { total_price } = data;
-  //     if (a_sdbg_date && c_sdbg_date) {
-  //       p_sdbg = calculatePenalty(
-  //         c_sdbg_date,
-  //         a_sdbg_date,
-  //         total_price,
-  //         0.5,
-  //         5
-  //       );
-  //     }
-  //     if (a_drawing_date && c_drawing_date) {
-  //       p_drg = calculatePenalty(
-  //         c_drawing_date,
-  //         a_drawing_date,
-  //         total_price,
-  //         0.25,
-  //         2
-  //       );
-  //     }
-  //     if (a_qap_date && c_qap_date) {
-  //       p_qap = calculatePenalty(c_qap_date, a_qap_date, total_price, 0.25, 2);
-  //     }
-  //     if (a_ilms_date && c_ilms_date) {
-  //       p_ilms = calculatePenalty(
-  //         c_ilms_date,
-  //         a_ilms_date,
-  //         total_price,
-  //         0.25,
-  //         2
-  //       );
-  //     }
-  //   }
-  //   setDoForm({
-  //     ...doForm,
-  //     p_sdbg_amount: p_sdbg,
-  //     p_drg_amount: p_drg,
-  //     p_qap_amount: p_qap,
-  //     p_ilms_amount: p_ilms,
-  //   });
-  // }, [form]);
-
-  // useEffect(() => {
-  //   if (data) {
-  //     setForm(data);
-  //   }
-  //   if (impDates) {
-  //     setForm({
-  //       ...form,
-  //       c_sdbg_date: impDates?.c_sdbg_date || "",
-  //       c_drawing_date: impDates?.c_drawing_date || "",
-  //       c_qap_date: impDates?.c_qap_date || "",
-  //       c_ilms_date: impDates?.c_ilms_date || "",
-  //       a_sdbg_date: impDates?.a_sdbg_date || "",
-  //       a_drawing_date: impDates?.a_drawing_date || "",
-  //       a_qap_date: impDates?.a_qap_date || "",
-  //       a_ilms_date: impDates?.a_ilms_date || "",
-  //     });
-  //   }
-  // }, [impDates, data]);
-
-  // console.log("data", data);
-  // console.log("doForm", doForm);
-  //   console.log("doData", doData);
 
   return (
     <>
@@ -249,21 +108,18 @@ const BillsMaterialHybridView = () => {
                                               Gate Entry Date:
                                             </label>
                                             <br />
-                                            {/* <b>{doData?.btn_num}</b> */}
                                             <b>
-                                              {"25/04/2024"}
-                                              {/* {formatDate(
-                                              doData?.c_drawing_date
-                                                  )} */}
+                                              {doData?.ld_ge_date &&
+                                                formatDate(
+                                                  doData?.ld_ge_date * 1000
+                                                )}
                                             </b>
-                                            <b></b>
                                           </div>
                                           <div className="me-3">
                                             <label htmlFor="CLD">
                                               Contractual Delivery Date:
                                             </label>
                                             <br />
-                                            {/* <b>{doData?.contractual_ld}</b> */}
                                             <b>
                                               {doData?.contractual_ld &&
                                                 formatDate(

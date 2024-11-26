@@ -172,8 +172,6 @@ const ServiceContractBillsEdit = () => {
         item.lineLD = ld;
         estimatedLD += ld;
       }
-      console.log("empForm?.max_ld", empForm?.max_ld);
-      console.log("empForm?.value", empForm?.value);
       let max_penalty_amount =
         (Number(empForm?.value) * Number(empForm?.max_ld)) / 100;
       console.log("max_penalty_amount", max_penalty_amount);
