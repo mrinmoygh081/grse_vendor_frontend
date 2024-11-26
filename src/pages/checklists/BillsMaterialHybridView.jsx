@@ -111,8 +111,10 @@ const BillsMaterialHybridView = () => {
                                             </label>
                                             <br />
                                             <b>
-                                              {doForm?.ld_ge_date &&
-                                                formatDate(doForm?.ld_ge_date)}
+                                              {doData?.ld_ge_date &&
+                                                formatDate(
+                                                  doData?.ld_ge_date * 1000
+                                                )}
                                             </b>
                                           </div>
                                           <div className="me-3">
