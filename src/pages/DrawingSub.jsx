@@ -9,7 +9,7 @@ import { toast } from "react-toastify";
 import { reConfirm } from "../utils/reConfirm";
 import { clrLegend } from "../utils/clrLegend";
 import { groupedByRefNo } from "../utils/groupedByReq";
-import { formatDate } from "../utils/getDateTimeNow";
+import { formatDate, formatFilePath } from "../utils/getDateTimeNow";
 import Select from "react-select";
 import { logOutFun } from "../utils/logOutFun";
 import DynamicButton from "../Helpers/DynamicButton";
@@ -392,15 +392,15 @@ const DrawingSub = () => {
                                                     )}
                                                   </td>
                                                   <td className="table_center">
-                                                    {item.file_name && (
-                                                      <a
-                                                        href={`${process.env.REACT_APP_PDF_URL}submitDrawing/${item.file_name}`}
-                                                        target="_blank"
-                                                        rel="noreferrer"
-                                                      >
-                                                        Click Here
-                                                      </a>
-                                                    )}
+                                                    <a
+                                                      href={formatFilePath(
+                                                        item.file_path
+                                                      )}
+                                                      target="_blank"
+                                                      rel="noreferrer"
+                                                    >
+                                                      View File
+                                                    </a>
                                                   </td>
                                                   <td className="table_center">
                                                     {item.created_by_id}

@@ -2,16 +2,21 @@ import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { apiCallBack } from "../../utils/fetchAPIs";
-import { checkTypeArr } from "../../utils/smallFun";
+import { calculatePenalty, checkTypeArr } from "../../utils/smallFun";
 import Footer from "../../components/Footer";
 import SideBar from "../../components/SideBar";
 import Header from "../../components/Header";
 import BTNAdvanceVendorInfo from "../../components/BTNAdvanceVendorInfo";
 import { formatDate } from "../../utils/getDateTimeNow";
 import { inputOnWheelPrevent } from "../../utils/inputOnWheelPrevent";
-import { actionHandlerByDO } from "../../Helpers/BTNChecklist";
+import {
+  actionHandlerByDO,
+  actionHandlerByDOhybrid,
+} from "../../Helpers/BTNChecklist";
 import Select from "react-select";
 import { initialDataAdvance, initialDODataAdvance } from "../../data/btnData";
+import { toast } from "react-toastify";
+import DynamicButton from "../../Helpers/DynamicButton";
 
 const AdvanceBillHybridEdit = () => {
   const navigate = useNavigate();
@@ -19,29 +24,26 @@ const AdvanceBillHybridEdit = () => {
   const { user, token } = useSelector((state) => state.auth);
   const { id } = useParams();
   const { state } = useLocation();
-  console.log(state, "statestatestatestatestate");
 
   const [impDates, setImpDates] = useState(null);
   const [data, setData] = useState(null);
   const [doData, setDoData] = useState(null);
   const [emp, setEmp] = useState([]);
+  const [showRemarks, setShowRemarks] = useState(false);
+  const [remarks, setRemarks] = useState("");
 
-  const [form, setForm] = useState(initialDataAdvance);
   const [doForm, setDoForm] = useState(initialDODataAdvance);
 
   const getDataByBTN = async () => {
     try {
-      const payload = {
-        btn_num: state,
-      };
       const response = await apiCallBack(
-        "POST",
-        "po/btn/getAdvBillHybridBTN",
-        payload,
+        "GET",
+        `po/btn/abh?type=details&btn_num=${state}`,
+        null,
         token
       );
-      if (response?.status && checkTypeArr(response?.data)) {
-        setData(response.data[0]);
+      if (response?.status) {
+        setData(response.data);
       }
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -74,13 +76,147 @@ const AdvanceBillHybridEdit = () => {
     getDataByBTN();
     getEmp();
   }, []);
+
+  useEffect(() => {
+    if (data) {
+      setDoForm((prevForm) => ({
+        ...prevForm,
+        a_drawing_date: data.a_drawing_date
+          ? new Date(data.a_drawing_date).toISOString().slice(0, 10)
+          : prevForm.a_drawing_date,
+        c_drawing_date: data.c_drawing_date || prevForm.c_drawing_date,
+        max_ld: data.max_ld || prevForm.max_ld,
+      }));
+    }
+  }, [data]);
+
+  // Calculate penalty amount whenever relevant fields change
+  useEffect(() => {
+    const { a_drawing_date, c_drawing_date, max_ld } = doForm;
+
+    if (a_drawing_date && c_drawing_date && data?.total_po_netwr) {
+      const penaltyAmount = calculatePenalty(
+        c_drawing_date,
+        a_drawing_date,
+        data.total_po_netwr,
+        0.25,
+        max_ld
+      );
+      setDoForm((prevForm) => ({
+        ...prevForm,
+        p_drg_amount: penaltyAmount,
+      }));
+    }
+  }, [
+    doForm.a_drawing_date,
+    doForm.c_drawing_date,
+    doForm.max_ld,
+    data?.total_po_netwr,
+  ]);
+
+  console.log(data, "data");
+  console.log("doForm", doForm);
+  // calculate total_deduction
+  useEffect(() => {
+    const { c_drawing_date, p_drg_amount } = doForm;
+
+    if (data?.total_po_netwr) {
+      let net = Number(data?.net_claim_amount);
+      let poTotalVaue = data?.total_po_netwr;
+      let max_deduct = (poTotalVaue * doForm.max_ld) / 100;
+
+      let total_deduction = parseInt(
+        Math.min(doForm?.p_drg_amount, max_deduct)
+      );
+      if (!c_drawing_date || c_drawing_date == "") {
+        total_deduction = 0;
+      }
+      // check cal
+      let net_payable_amount = parseInt(net - total_deduction);
+
+      setDoForm((prev) => ({ ...prev, total_deduction, net_payable_amount }));
+    }
+  }, [data?.total_po_netwr, doForm?.p_drg_amount, doForm.max_ld]);
+
+  //submision do form
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    // Check required fields before submission
+    if (!doForm.assign_to) {
+      toast.error("Please select a Finance Authority.");
+      return;
+    }
+    if (!doForm.recomend_payment) {
+      toast.error("Please select a Recomend Payment.");
+      return;
+    }
+
+    const payload = {
+      btn_num: state,
+      drg_penalty: doForm.p_drg_amount,
+      net_payable_amount: doForm.net_payable_amount,
+      penalty_rate: doForm.max_ld,
+      penalty_ammount: doForm.total_deduction,
+      recomend_payment: doForm.recomend_payment,
+      assign_to: doForm.assign_to,
+      a_drawing_date: new Date(doForm.a_drawing_date).getTime(),
+      purchasing_doc_no: id,
+    };
+
+    try {
+      const response = await apiCallBack(
+        "POST",
+        "po/btn/submit-abh-do",
+        payload,
+        token
+      );
+      if (response?.status) {
+        toast.success(response?.message);
+        setDoForm(initialDODataAdvance);
+        navigate(`/invoice-and-payment-process/${id}`);
+      } else {
+        toast.error(response?.message || "Submission failed.");
+      }
+    } catch (error) {
+      toast.error("An error occurred during submission.");
+      console.error("Error submitting form:", error);
+    }
+  };
+
+  const rejectBTN = async () => {
+    try {
+      let payload = {
+        btn_num: state,
+        status: "REJECTED",
+        rejectedMessage: remarks,
+        purchasing_doc_no: id,
+      };
+      const response = await apiCallBack(
+        "POST",
+        "po/btn/submit-abh-do",
+        payload,
+        token
+      );
+      if (response.status) {
+        toast.success(response.message || "Rejected successfully");
+        navigate(`/invoice-and-payment-process/${id}`);
+      } else {
+        toast.error(response.message || "Error rejecting the BTN");
+      }
+    } catch (error) {
+      console.error("Error rejecting the BTN:", error);
+      toast.error("Error rejecting the BTN");
+    }
+  };
+
   return (
     <>
       <div className="d-flex flex-column flex-root">
         <div className="page d-flex flex-row flex-column-fluid">
           <SideBar />
           <div className="wrapper d-flex flex-column flex-row-fluid">
-            <Header title={"Bills for Advance Payment"} id={id} />
+            <Header title={"Advance Bill"} id={id} />
             <div className="content d-flex flex-column flex-column-fluid">
               <div className="post d-flex flex-column-fluid">
                 <div className="container">
@@ -88,11 +224,15 @@ const AdvanceBillHybridEdit = () => {
                     <div className="row g-5 g-xl-8">
                       <div className="col-12">
                         <div className="card">
-                          <h3 className="m-3">Bills for Advance Payment:</h3>
-                          <BTNAdvanceVendorInfo navigate={navigate} id={id} />
+                          <h3 className="m-3">Advance Bill:</h3>
+                          <BTNAdvanceVendorInfo
+                            navigate={navigate}
+                            id={id}
+                            data={data}
+                          />
                         </div>
                       </div>
-                      {true && (
+                      {isDO && (
                         <div className="col-12">
                           <div className="card">
                             <h3 className="m-3">ENTRY BY DEALING OFFICER:</h3>
@@ -113,17 +253,16 @@ const AdvanceBillHybridEdit = () => {
                                             id="emp"
                                             options={emp}
                                             value={
-                                              emp &&
                                               emp.filter(
                                                 (item) =>
                                                   item.value ===
-                                                  doForm?.certifying_authority
+                                                  doForm?.assign_to
                                               )[0]
                                             }
                                             onChange={(val) =>
                                               setDoForm({
                                                 ...doForm,
-                                                certifying_authority: val.value,
+                                                assign_to: val.value,
                                               })
                                             }
                                           />
@@ -136,113 +275,89 @@ const AdvanceBillHybridEdit = () => {
                                         </td>
                                       </tr>
                                       <tr>
-                                        <td>Liquidated damage</td>
+                                        <td>PO Value:</td>
                                         <td className="btn_value">
-                                          <div className="me-3">
-                                            <label htmlFor="GED">
-                                              Gate Entry Date:
-                                            </label>
-                                            <input
-                                              type="date"
-                                              className="form-control "
-                                              id="GED"
-                                              value={doForm?.ld_ge_date}
-                                              onChange={(e) =>
-                                                setDoForm({
-                                                  ...doForm,
-                                                  ld_ge_date: e.target.value,
-                                                })
-                                              }
-                                            />
-                                          </div>
-                                          <div className="me-3">
-                                            <label htmlFor="CLD">
-                                              Contractual Delivery Date:
-                                            </label>
-                                            <input
-                                              type="date"
-                                              className="form-control"
-                                              id="CLD"
-                                              value={doForm?.ld_c_date}
-                                              onChange={(e) =>
-                                                setDoForm({
-                                                  ...doForm,
-                                                  ld_c_date: e.target.value,
-                                                })
-                                              }
-                                            />
-                                          </div>
-                                          <div>
-                                            <label>Amount:</label>
-                                            <p>&#8377; {doForm?.ld_amount}</p>
-                                          </div>
+                                          <b>{data?.total_po_netwr}</b>
                                         </td>
                                       </tr>
+
                                       <tr>
-                                        <td>Penalty for Drawing submission</td>
+                                        <td>
+                                          Penalty Percentage
+                                          <div className="d-flex gap-2 align-items-center">
+                                            <span>Max Penalty </span>
+                                            <select
+                                              name="max_ld"
+                                              id=""
+                                              className="form-select"
+                                              style={{ maxWidth: "100px" }}
+                                              onChange={(e) =>
+                                                setDoForm({
+                                                  ...doForm,
+                                                  max_ld: e.target.value,
+                                                })
+                                              }
+                                            >
+                                              <option value="1">1%</option>
+                                              <option value="2">2%</option>
+                                            </select>
+                                          </div>
+                                        </td>
                                         <td className="btn_value">
                                           <div className="me-3">
                                             <label htmlFor="DADD">
                                               Actual Delivery Date:
                                             </label>
-                                            <p>
-                                              <b>
-                                                {form?.a_drawing_date &&
-                                                  formatDate(
-                                                    form?.a_drawing_date
-                                                  )}
-                                              </b>
-                                            </p>
+                                            <input
+                                              type="date"
+                                              id="DADD"
+                                              className="form-control"
+                                              value={doForm.a_drawing_date}
+                                              onChange={(e) =>
+                                                setDoForm({
+                                                  ...doForm,
+                                                  a_drawing_date:
+                                                    e.target.value,
+                                                })
+                                              }
+                                            />
                                           </div>
                                           <div className="me-3">
                                             <label htmlFor="DCDD">
                                               Contractual Delivery Date:
                                             </label>
-                                            <p>
+                                            <p aria-label="Contractual Delivery Date">
                                               <b>
-                                                {form?.c_drawing_date &&
-                                                  formatDate(
-                                                    form?.c_drawing_date
+                                                <b>
+                                                  {formatDate(
+                                                    doForm.c_drawing_date
                                                   )}
+                                                </b>
                                               </b>
                                             </p>
                                           </div>
                                           <div>
                                             <label>Amount:</label>
                                             <p>
-                                              &#8377; {doForm?.p_drg_amount}
+                                              {" "}
+                                              &#8377;{" "}
+                                              {doForm.p_drg_amount
+                                                ? doForm.p_drg_amount
+                                                : 0}
                                             </p>
                                           </div>
                                         </td>
                                       </tr>
-                                      <tr>
-                                        <td>Estimated Penalty </td>
+                                      {/* <tr>
+                                        <td>Net payable amount </td>
                                         <td className="btn_value">
                                           <p>
                                             {" "}
                                             &#8377; {doForm?.p_estimate_amount}
                                           </p>
                                         </td>
-                                      </tr>
-                                      <tr>
-                                        <td>Other deduction if any </td>
-                                        <td className="btn_value">
-                                          <input
-                                            type="number"
-                                            name=""
-                                            id=""
-                                            className="form-control"
-                                            value={doForm?.o_deduction}
-                                            onChange={(e) =>
-                                              setDoForm({
-                                                ...doForm,
-                                                o_deduction: e.target.value,
-                                              })
-                                            }
-                                            onWheel={inputOnWheelPrevent}
-                                          />
-                                        </td>
-                                      </tr>
+                                      </tr> */}
+
                                       <tr>
                                         <td>Total deductions</td>
                                         <td>
@@ -262,7 +377,32 @@ const AdvanceBillHybridEdit = () => {
                                             {isNaN(doForm?.net_payable_amount)
                                               ? 0
                                               : doForm?.net_payable_amount}
+                                            {console.log(
+                                              "doForm?.net_payable_amount",
+                                              doForm?.net_payable_amount
+                                            )}
                                           </b>
+                                        </td>
+                                      </tr>
+                                      <tr>
+                                        <td>Recommended for payment </td>
+                                        <td className="btn_value">
+                                          <select
+                                            name="recomend_payment"
+                                            id=""
+                                            className="form-select"
+                                            style={{ maxWidth: "100px" }}
+                                            onChange={(e) =>
+                                              setDoForm({
+                                                ...doForm,
+                                                recomend_payment:
+                                                  e.target.value,
+                                              })
+                                            }
+                                          >
+                                            <option value="YES">YES</option>
+                                            <option value="NO">NO</option>
+                                          </select>
                                         </td>
                                       </tr>
                                     </tbody>
@@ -273,33 +413,52 @@ const AdvanceBillHybridEdit = () => {
                                   PO and recommanded for release of payment
                                   subject to satutatory deduction
                                 </p>
-                                <div className="text-center">
-                                  <button
-                                    type="button"
-                                    className="btn fw-bold btn-primary me-3"
-                                    onClick={() =>
-                                      actionHandlerByDO(
-                                        doForm,
-                                        setDoForm,
-                                        initialDataAdvance,
-                                        navigate,
-                                        id,
-                                        token
-                                      )
-                                    }
-                                  >
-                                    SUBMIT
-                                  </button>
-                                  <button
-                                    className="btn fw-bold btn-primary"
-                                    onClick={() =>
-                                      navigate(
-                                        `/invoice-and-payment-process/${id}`
-                                      )
-                                    }
-                                  >
-                                    BACK
-                                  </button>
+                                <div className="row">
+                                  <div className="col-6 text-start">
+                                    <button
+                                      className="btn btn-primary me-3"
+                                      onClick={handleSubmit}
+                                    >
+                                      SUBMIT
+                                    </button>
+                                    <button
+                                      className="btn fw-bold btn-primary me-3"
+                                      onClick={() =>
+                                        navigate(
+                                          `/invoice-and-payment-process/${id}`
+                                        )
+                                      }
+                                    >
+                                      BACK
+                                    </button>
+                                  </div>
+                                  <div className="col-6 text-end">
+                                    {showRemarks ? (
+                                      <>
+                                        <input
+                                          type="text"
+                                          placeholder="Enter remarks"
+                                          value={remarks}
+                                          onChange={(e) =>
+                                            setRemarks(e.target.value)
+                                          }
+                                          className="form-control mb-2"
+                                        />
+                                        <DynamicButton
+                                          label="Submit Rejection"
+                                          className="btn fw-bold btn-danger"
+                                          onClick={rejectBTN}
+                                        />
+                                      </>
+                                    ) : (
+                                      <button
+                                        className="btn fw-bold btn-danger"
+                                        onClick={() => setShowRemarks(true)}
+                                      >
+                                        REJECT
+                                      </button>
+                                    )}
+                                  </div>
                                 </div>
                               </div>
                             </div>

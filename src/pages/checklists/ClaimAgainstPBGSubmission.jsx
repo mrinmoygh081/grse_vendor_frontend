@@ -320,6 +320,7 @@ import { checkTypeArr } from "../../utils/smallFun";
 import DynamicButton from "../../Helpers/DynamicButton";
 import ReactDatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css"; // Import CSS for the date picker
+import { formatDate, formatEpochToDate } from "../../utils/getDateTimeNow";
 
 const ClaimAgainstPBGSubmission = () => {
   const [formData, setFormData] = useState({
@@ -460,6 +461,40 @@ const ClaimAgainstPBGSubmission = () => {
                                 <table className="table table-striped table-bordered table_height">
                                   <tbody style={{ maxHeight: "100%" }}>
                                     <tr>
+                                      <td>Balance Claim Invoice :</td>
+                                      <td className="btn_value">
+                                        <input
+                                          type="text"
+                                          className="form-control me-2"
+                                          name="balanceClaimInvoice"
+                                          placeholder="Balance Claim Invoice"
+                                          value={formData.balanceClaimInvoice}
+                                          onChange={handleChange}
+                                        />
+                                        <input
+                                          type="file"
+                                          className="form-control"
+                                          name="balanceClaimInvoiceFile"
+                                          accept=".pdf"
+                                          onChange={handleChange}
+                                        />
+                                      </td>
+                                    </tr>
+                                    <tr>
+                                      <td>Balance Claim Invoice Date:</td>
+                                      <td className="btn_value">
+                                        <ReactDatePicker
+                                          dateFormat="dd/MM/yyyy"
+                                          selected={invoiceDate}
+                                          onChange={(date) =>
+                                            setInvoiceDate(date)
+                                          }
+                                          className="form-control"
+                                          placeholderText="DD/MM/YYYY"
+                                        />
+                                      </td>
+                                    </tr>
+                                    <tr>
                                       <td>Original Invoice No :</td>
                                       <td className="btn_value">
                                         <input
@@ -485,37 +520,28 @@ const ClaimAgainstPBGSubmission = () => {
                                       </td>
                                     </tr>
                                     <tr>
-                                      <td>Invoice Date:</td>
+                                      <td>Original Invoice Date:</td>
                                       <td className="btn_value">
-                                        <ReactDatePicker
-                                          dateFormat="dd/MM/yyyy"
-                                          selected={invoiceDate}
-                                          onChange={(date) =>
-                                            setInvoiceDate(date)
-                                          }
-                                          className="form-control"
-                                          placeholderText="DD/MM/YYYY"
-                                        />
+                                        {formatDate(InvoiceData?.invoice_date)}
                                       </td>
                                     </tr>
                                     <tr>
-                                      <td>Balance Claim Invoice :</td>
+                                      <td>ICGRN Nos </td>
                                       <td className="btn_value">
-                                        <input
-                                          type="text"
-                                          className="form-control me-2"
-                                          name="balanceClaimInvoice"
-                                          placeholder="Balance Claim Invoice"
-                                          value={formData.balanceClaimInvoice}
-                                          onChange={handleChange}
-                                        />
-                                        <input
-                                          type="file"
-                                          className="form-control"
-                                          name="balanceClaimInvoiceFile"
-                                          accept=".pdf"
-                                          onChange={handleChange}
-                                        />
+                                        <p>
+                                          {checkTypeArr(
+                                            InvoiceData?.icgrn_nos
+                                          ) &&
+                                            InvoiceData?.icgrn_nos?.map(
+                                              (item, i) => (
+                                                <b key={i} className="mx-2">
+                                                  {item?.grn_no
+                                                    ? item.grn_no
+                                                    : "NA"}
+                                                </b>
+                                              )
+                                            )}
+                                        </p>
                                       </td>
                                     </tr>
                                     <tr>
@@ -567,25 +593,6 @@ const ClaimAgainstPBGSubmission = () => {
                                           : "PBG NOT SUBMITTED"}
                                       </td>
                                     </tr>
-                                    <tr>
-                                      <td>ICGRN Nos </td>
-                                      <td className="btn_value">
-                                        <p>
-                                          {checkTypeArr(
-                                            InvoiceData?.icgrn_nos
-                                          ) &&
-                                            InvoiceData?.icgrn_nos?.map(
-                                              (item, i) => (
-                                                <b key={i} className="mx-2">
-                                                  {item?.grn_no
-                                                    ? item.grn_no
-                                                    : "NA"}
-                                                </b>
-                                              )
-                                            )}
-                                        </p>
-                                      </td>
-                                    </tr>
                                   </tbody>
                                 </table>
                               </div>
@@ -597,11 +604,20 @@ const ClaimAgainstPBGSubmission = () => {
 
                     <div className="text-center mt-4">
                       <button
-                        className="btn btn-primary"
+                        className="btn btn-primary me-3"
                         type="submit"
                         disabled={!formData.invoiceNo}
                       >
                         Submit
+                      </button>
+                      <button
+                        type="button"
+                        className="btn btn-primary"
+                        onClick={() =>
+                          navigate(`/invoice-and-payment-process/${id}`)
+                        }
+                      >
+                        BACK
                       </button>
                     </div>
                   </form>

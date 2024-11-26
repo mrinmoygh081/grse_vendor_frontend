@@ -102,7 +102,7 @@ const ClaimAgainstPBGSubmissionView = () => {
                                         {data?.invoice_filename && (
                                           <div style={{ marginTop: "8px" }}>
                                             <a
-                                              href={`${process.env.REACT_APP_PDF_URL}submitSDBG/${data?.invoice_filename}`}
+                                              href={`${process.env.REACT_APP_PDF_URL}btns/${data?.invoice_filename}`}
                                               target="_blank"
                                               rel="noreferrer"
                                             >
@@ -122,7 +122,7 @@ const ClaimAgainstPBGSubmissionView = () => {
                                         {data?.balance_claim_invoice_filename && (
                                           <div style={{ marginTop: "8px" }}>
                                             <a
-                                              href={`${process.env.REACT_APP_PDF_URL}submitSDBG/${data?.balance_claim_invoice_filename}`}
+                                              href={`${process.env.REACT_APP_PDF_URL}btns/${data?.balance_claim_invoice_filename}`}
                                               target="_blank"
                                               rel="noreferrer"
                                             >

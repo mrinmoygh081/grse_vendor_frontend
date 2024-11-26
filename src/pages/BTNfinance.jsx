@@ -55,7 +55,7 @@ const BTNfinance = () => {
   };
 
   const handleViewInvoice = (invoiceFilename) => {
-    const pdfUrl = `${process.env.REACT_APP_PDF_URL}/btns/${invoiceFilename}`;
+    const pdfUrl = `${process.env.REACT_APP_PDF_URL}btns/${invoiceFilename}`;
     window.open(pdfUrl, "_blank");
   };
 
@@ -164,12 +164,13 @@ const BTNfinance = () => {
                       <option value="FORWARD_TO_FINANCE">
                         FORWARD_TO_FINANCE
                       </option>
-                      <option value="RECEIVED">RECEIVED</option>
                       <option value="RETURN_TO_DO">RETURN_TO_DO</option>
                       <option value="REJECTED">REJECTED</option>
                       <option value="BANK">BANK</option>
                       <option value="HOLD">HOLD</option>
-                      <option value="PROCESSED">PROCESSED</option>
+                      <option value="PROCESS">PROCESS</option>
+                      <option value="D-RETURN">D-RETURN</option>
+                      <option value="APPROVE">APPROVE</option>
                     </select>
                   </div>
                 </div>

@@ -294,6 +294,11 @@ const BillsMaterialHybridView = () => {
                                     </tbody>
                                   </table>
                                 </div>
+                                <p>
+                                  Certified that Invoice has been verified w.r.t
+                                  PO and recommanded for release of payment
+                                  subject to satutatory deduction.
+                                </p>
                                 <div className="text-center">
                                   {user?.user_type !== 1 && (
                                     <>

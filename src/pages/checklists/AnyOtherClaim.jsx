@@ -5,6 +5,7 @@ import Header from "../../components/Header";
 import Footer from "../../components/Footer";
 import { FaCaretLeft } from "react-icons/fa";
 import ReactDatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 import { apiCallBack } from "../../utils/fetchAPIs";
 import { useSelector } from "react-redux";
 import { USER_VENDOR } from "../../constants/userConstants";
@@ -23,6 +24,7 @@ const AnyOtherClaim = () => {
     ref_invoice1_amount: "",
     ref_invoice1_remarks: "",
     ref_invoice1_file: null,
+    invoice_file: null,
     ref_invoice2_no: "",
     ref_invoice2_amount: "",
     ref_invoice2_remarks: "",
@@ -139,6 +141,7 @@ const AnyOtherClaim = () => {
     fDToSend.append("ref_invoice1_no", formData.ref_invoice1_no);
     fDToSend.append("ref_invoice1_amount", formData.ref_invoice1_amount);
     fDToSend.append("ref_invoice1_file", formData.ref_invoice1_file);
+    fDToSend.append("invoice_file", formData.invoice_file);
     fDToSend.append("ref_invoice1_remarks", formData.ref_invoice1_remarks);
 
     fDToSend.append("ref_invoice2_no", formData.ref_invoice2_no);
@@ -238,11 +241,11 @@ const AnyOtherClaim = () => {
                                             Choose Your Claim Type
                                           </option>
                                           <option value="bill-incorrect-deductions">
-                                            Checklist for Incorrect Deductions
+                                            Checklist for Excess Deductions
                                           </option>
-                                          <option value="ld-penalty-refund">
+                                          {/* <option value="ld-penalty-refund">
                                             Checklist for LD-Penalty Refund
-                                          </option>
+                                          </option> */}
                                           <option value="other-retentions">
                                             Other Retentions
                                           </option>
@@ -275,9 +278,16 @@ const AnyOtherClaim = () => {
                                         <input
                                           type="text"
                                           name="invoiceReferenceNo"
-                                          className="form-control"
+                                          className="form-control  me-2"
                                           placeholder="Enter Reference No"
                                           value={formData.invoiceReferenceNo}
+                                          onChange={handleChange}
+                                        />
+                                        <input
+                                          type="file"
+                                          className="form-control"
+                                          name="invoice_file"
+                                          accept=".pdf"
                                           onChange={handleChange}
                                         />
                                       </td>
@@ -336,7 +346,7 @@ const AnyOtherClaim = () => {
                                         />
                                       </td>
                                       <td>
-                                        <input
+                                        <textarea
                                           type="text"
                                           name="ref_invoice1_remarks"
                                           className="form-control"
@@ -381,7 +391,7 @@ const AnyOtherClaim = () => {
                                         />
                                       </td>
                                       <td>
-                                        <input
+                                        <textarea
                                           type="text"
                                           name="ref_invoice2_remarks"
                                           className="form-control"
@@ -425,7 +435,7 @@ const AnyOtherClaim = () => {
                                         />
                                       </td>
                                       <td>
-                                        <input
+                                        <textarea
                                           type="text"
                                           name="ref_invoice3_remarks"
                                           className="form-control"
@@ -469,7 +479,7 @@ const AnyOtherClaim = () => {
                                         />
                                       </td>
                                       <td>
-                                        <input
+                                        <textarea
                                           type="text"
                                           name="ref_invoice4_remarks"
                                           className="form-control"

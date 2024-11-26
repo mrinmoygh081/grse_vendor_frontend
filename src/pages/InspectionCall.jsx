@@ -7,7 +7,7 @@ import { useSelector } from "react-redux";
 import { apiCallBack } from "../utils/fetchAPIs";
 import { toast } from "react-toastify";
 import { checkTypeArr } from "../utils/smallFun";
-import { formatDate } from "../utils/getDateTimeNow";
+import { formatDate, formatFilePath } from "../utils/getDateTimeNow";
 import DynamicButton from "../Helpers/DynamicButton";
 import SkeletonLoader from "../loader/SkeletonLoader";
 
@@ -65,7 +65,7 @@ const InspectionCall = () => {
 
       const response = await apiCallBack(
         "POST",
-        "po/inspectionCallLetter",
+        "po/inspectionCallLetter/insp",
         formDataToSend,
         token
       );
@@ -151,11 +151,13 @@ const InspectionCall = () => {
                                           <td>
                                             {inspection.file_name && (
                                               <a
-                                                href={`${process.env.REACT_APP_PDF_URL}inspectionCallLetter/${inspection.file_name}`}
+                                                href={formatFilePath(
+                                                  inspection.file_path
+                                                )}
                                                 target="_blank"
                                                 rel="noreferrer"
                                               >
-                                                Click Here
+                                                View File
                                               </a>
                                             )}
                                           </td>

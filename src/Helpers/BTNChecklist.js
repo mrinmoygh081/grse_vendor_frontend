@@ -1,7 +1,11 @@
 import { toast } from "react-toastify";
 import { apiCallBack } from "../utils/fetchAPIs";
 import { convertToEpoch } from "../utils/getDateTimeNow";
-import { initialDataAdvance, initialDataService } from "../data/btnData";
+import {
+  initialDataAdvance,
+  initialDataService,
+  initialDODataAdvance,
+} from "../data/btnData";
 import { TYPE_GRN, TYPE_SERVICE } from "../constants/BTNContants";
 
 export const getGrnIcgrnByInvoice = async (po, invoice_no, token) => {
@@ -101,7 +105,9 @@ export const actionHandlerBTN = async (
     fDToSend.append("igst", igst);
     fDToSend.append("associated_po", JSON.stringify(associated_po));
     fDToSend.append("invoice_filename", invoice_filename);
-    fDToSend.append("invoice_supporting_doc", invoice_supporting_doc);
+    if (invoice_supporting_doc) {
+      fDToSend.append("invoice_supporting_doc", invoice_supporting_doc);
+    }
 
     if (debit_credit_filename) {
       fDToSend.append("debit_credit_filename", debit_credit_filename);
@@ -500,6 +506,7 @@ export const actionHandlerAdvancebill = async (
       stage,
       invoice_type,
       invoice_no,
+      invoice_date,
       invoice_filename,
       invoice_value,
       invoice_supporting_filename,
@@ -509,9 +516,9 @@ export const actionHandlerAdvancebill = async (
       igst,
       net_with_gst,
       associated_po,
-      hsn_gstn_tax,
+      hsn_gstn_icgrn,
     } = form;
-    if (!hsn_gstn_tax) {
+    if (!hsn_gstn_icgrn) {
       return toast.warning(
         "Please check the HSN code, GSTIN, Tax rate is as per PO."
       );
@@ -534,6 +541,7 @@ export const actionHandlerAdvancebill = async (
     fDToSend.append("purchasing_doc_no", id);
     fDToSend.append("invoice_no", invoice_no);
     fDToSend.append("invoice_value", invoice_value);
+    fDToSend.append("invoice_date", new Date(invoice_date).getTime());
     fDToSend.append("invoice_type", invoice_type);
     fDToSend.append("net_claim_amount", net_claim_amount);
     fDToSend.append("net_with_gst", net_with_gst);

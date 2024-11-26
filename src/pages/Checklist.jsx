@@ -36,7 +36,7 @@ const Checklist = () => {
   const [slug, setSlug] = useState("");
   const [paymentData, setPaymentData] = useState("");
   const [loading, setLoading] = useState(true);
-  console.log("user", user);
+  console.log("groupedBG", groupedBG);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -96,6 +96,8 @@ const Checklist = () => {
         } else if (assign?.btn_type === "other-retentions") {
           uri = "assignToFiStaff";
         } else if (assign?.btn_type === "claim-against-jcc") {
+          uri = "assignToFiStaff";
+        } else if (assign?.btn_type === "advance-bill") {
           uri = "assignToFiStaff";
         }
         const res = await apiCallBack("POST", `po/btn/${uri}`, assign, token);
@@ -186,6 +188,12 @@ const Checklist = () => {
                               <option value="any-other">
                                 Checklist for Any Other Claims
                               </option>
+                              {/* <option value="ld-refund-supply-material">
+                                LD Refund for Supply Material
+                              </option> */}
+                              <option value="ld-penalty-refund">
+                                Checklist for LD-Penalty Refund
+                              </option>
                             </select>
                           </div>
                           <button
@@ -195,14 +203,20 @@ const Checklist = () => {
                             ADD
                           </button>
                         </div>
-                        <div className="table-responsive position-relative">
-                          <table className="table table-striped table-bordered table_height">
+                        <div
+                          className="table-responsive position-relative"
+                          style={{ overflowX: "auto" }}
+                        >
+                          <table
+                            className="table table-striped table-bordered table_height"
+                            style={{ whiteSpace: "nowrap" }}
+                          >
                             <thead>
                               <tr className="border-0">
                                 <th>Date</th>
-                                <th>BTN Type</th>
-                                <th>Net Claim Amount</th>
-                                <th>Amount Before Statutory Deduction</th>
+                                <th>Assign By</th>
+                                <th>Assign TO</th>
+                                <th>Assign To FI</th>
                                 <th>Status</th>
                                 <th>Action</th>
                               </tr>
@@ -222,13 +236,42 @@ const Checklist = () => {
                                   {Object.keys(groupedBG).map((it, index) => {
                                     let items = groupedBG[it];
                                     let firstItem = items[0];
-                                    console.log("firstItem", firstItem);
+                                    items = [...items].sort(
+                                      (a, b) =>
+                                        Number(a.created_at) -
+                                        Number(b.created_at)
+                                    );
+
                                     return (
                                       <Fragment key={index}>
                                         <tr>
-                                          <td colSpan={5}>
-                                            <b>{it}</b>
+                                          <td
+                                            colSpan={7}
+                                            style={{
+                                              whiteSpace: "pre-wrap",
+                                              padding: "10px 0",
+                                            }}
+                                          >
+                                            <b>BTN No:</b>
+                                            {it}{" "}
+                                            &nbsp;&nbsp;&nbsp;||&nbsp;&nbsp;&nbsp;{" "}
+                                            <b>Invoice Number:</b>{" "}
+                                            {groupedBG[it][0]
+                                              ? groupedBG[it][0]?.invoice_no
+                                              : "NA"}{" "}
+                                            &nbsp;&nbsp;&nbsp;||&nbsp;&nbsp;&nbsp;
+                                            <b>BTN Type:</b>{" "}
+                                            {groupedBG[it][0]
+                                              ? groupedBG[it][0]?.btn_type
+                                              : "NA"}{" "}
+                                            &nbsp;&nbsp;&nbsp;||&nbsp;&nbsp;&nbsp;
+                                            <b>Net Claim Amount:</b>{" "}
+                                            {groupedBG[it][0]?.net_claim_amount
+                                              ? `₹ ${groupedBG[it][0]?.net_claim_amount}`
+                                              : "NA"}{" "}
+                                            (without GST)
                                           </td>
+
                                           <td>
                                             <div className="view-button-container">
                                               <button
@@ -264,11 +307,6 @@ const Checklist = () => {
                                                     type = "any-other";
                                                   } else if (
                                                     firstItem.btn_type ===
-                                                    "ld-penalty-refund"
-                                                  ) {
-                                                    type = "any-other";
-                                                  } else if (
-                                                    firstItem.btn_type ===
                                                     "other-retentions"
                                                   ) {
                                                     type = "any-other";
@@ -277,6 +315,11 @@ const Checklist = () => {
                                                     "claim-against-jcc"
                                                   ) {
                                                     type = "claim-against-jcc";
+                                                  } else if (
+                                                    firstItem.btn_type ===
+                                                    "ld-penalty-refund"
+                                                  ) {
+                                                    type = "ld-penalty-refund";
                                                   }
 
                                                   navigate(
@@ -318,6 +361,7 @@ const Checklist = () => {
                                                   "ld-penalty-refund",
                                                   "other-retentions",
                                                   "claim-against-jcc",
+                                                  "advance-bill",
                                                 ].includes(
                                                   firstItem.btn_type
                                                 ) && (
@@ -330,8 +374,6 @@ const Checklist = () => {
                                                       if (
                                                         firstItem.btn_type ===
                                                           "bill-incorrect-deductions" ||
-                                                        firstItem.btn_type ===
-                                                          "ld-penalty-refund" ||
                                                         firstItem.btn_type ===
                                                           "other-retentions"
                                                       ) {
@@ -382,11 +424,26 @@ const Checklist = () => {
                                             <tr key={i}>
                                               <td>
                                                 {formatDate(item?.created_at)}
+                                                {console.log(
+                                                  item?.created_at,
+                                                  "OBPS"
+                                                )}
                                               </td>
-                                              <td>{item?.btn_type}</td>
-                                              <td>{item?.net_claim_amount}</td>
-                                              <td>
-                                                {item?.net_payable_amount}
+                                              <td className="tdrowadd">
+                                                {item?.assign_by_name}{" "}
+                                                {item?.assign_by &&
+                                                  `(${item.assign_by})`}
+                                              </td>
+
+                                              <td className="tdrowadd">
+                                                {item?.assign_to_name}{" "}
+                                                {item?.assign_to &&
+                                                  `(${item.assign_to})`}
+                                              </td>
+                                              <td className="tdrowadd">
+                                                {item?.assign_to_fi_name}{" "}
+                                                {item?.assign_to_fi &&
+                                                  `(${item.assign_to_fi})`}
                                               </td>
                                               <td
                                                 className={`${clrLegend(
@@ -395,7 +452,6 @@ const Checklist = () => {
                                               >
                                                 {item?.status}
                                               </td>
-                                              <td></td>
                                             </tr>
                                           ))}
                                       </Fragment>

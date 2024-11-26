@@ -16,9 +16,9 @@ const SyncComponent = () => {
     dataSync: new Date(new Date().setDate(new Date().getDate() - 1)),
     fileSync: new Date(new Date().setDate(new Date().getDate() - 1)),
   });
-  const [selectedDatetoday, setSelectedDatetoday] = useState({
-    dataSync: new Date(new Date().setDate(new Date().getDate() - 1)),
-    fileSync: new Date(new Date().setDate(new Date().getDate() - 1)),
+  const [selectedDateDown, setSelectedDateDown] = useState({
+    datasync_date: new Date(new Date().setDate(new Date().getDate() - 1)),
+    filesync_date: new Date(new Date().setDate(new Date().getDate() - 1)),
   });
 
   const dispatch = useDispatch();
@@ -49,8 +49,6 @@ const SyncComponent = () => {
   //   }
   // };
 
-  console.log("selectedDate", selectedDate);
-
   const DataUploadHndlar = async () => {
     try {
       console.log("formData?.data", selectedDate?.dataSync);
@@ -77,7 +75,7 @@ const SyncComponent = () => {
   // const fileDownloadHandler = async () => {
   //   try {
   //     let payload = {
-  //       sync_date: new Date(selectedDate).getTime(),
+  //       sync_date: new Date(selectedDateDown).getTime(),
   //     };
   //     const response = apiCallBack(
   //       "POST",
@@ -92,6 +90,54 @@ const SyncComponent = () => {
   //     );
   //   }
   // };
+
+  const fileDownloadHandler = async () => {
+    try {
+      // Directly access the sync_date field and convert it to the required format
+      let payload = {
+        sync_date: new Date(selectedDateDown.filesync_date).getTime(),
+      };
+
+      const response = await apiCallBack(
+        "POST",
+        "sync/sync_file_zip",
+        payload,
+        null
+      );
+
+      // Show success message
+      toast.success(response.data.message || "File sync successful");
+    } catch (error) {
+      // Show error message
+      toast.error(
+        "File sync failed: " + (error.response?.data?.message || error.message)
+      );
+    }
+  };
+  // downlod file
+  const uplodFileDownloadHandler = async () => {
+    try {
+      // Directly access the sync_date field and convert it to the required format
+      let payload = {
+        datasync_date: new Date(selectedDateDown.datasync_date).getTime(),
+      };
+
+      const response = await apiCallBack(
+        "POST",
+        "sync/sync_download ",
+        payload,
+        null
+      );
+
+      // Show success message
+      toast.success(response.data.message || "File sync successful");
+    } catch (error) {
+      // Show error message
+      toast.error(
+        "File sync failed: " + (error.response?.data?.message || error.message)
+      );
+    }
+  };
 
   const uploadFileHandler = async () => {
     try {
@@ -141,34 +187,6 @@ const SyncComponent = () => {
         </div>
         <div className="card-body">
           <div className="row">
-            {/* <div className="col-md-6">
-              <h3>Download Unsynced Data</h3>
-              <ol>
-                <li>
-                  Copy The Zip File named as sync_data.zip stored in the other
-                  server in a specific path
-                  (/var/www/html/obps/obps_backend/sync/zipData/
-                  {"<Latest Date>"})
-                </li>
-                <li>
-                  Transfer the sync_data.zip file from the other server to the
-                  this server where this website is running on.
-                </li>
-                <li>
-                  Open a specific folder path to this server
-                  (/var/www/html/obps/obps_backend/sync/otherServerData/Data){" "}
-                </li>
-                <li>Create a Directory named as today's date (DD-MM-YYYY)</li>
-                <li>
-                  Paste the copied sync_data.zip inside the today's date folder
-                </li>
-              </ol> 
-              <DynamicButton
-                label="DOWNLOAD DATA"
-                onClick={() => downloadDataHandler()}
-                className="btn btn-primary btn-sm mt-2"
-              />
-            </div> */}
             <div className="col-md-6">
               <h3>Upload Unsynced Data</h3>
               <ol>
@@ -237,66 +255,52 @@ const SyncComponent = () => {
                 className="btn btn-primary btn-sm mt-2"
               />
             </div>
-
-            <div className="col-md-6">
-              <h3>Upload Unsynced Data</h3>
-
-              <label htmlFor="">Select From Date You want to Sync Data:</label>
-              <DatePicker
-                selected={selectedDate?.dataSync}
-                onChange={(date) =>
-                  setSelectedDate({ ...selectedDate, dataSync: date })
-                }
-                className="form-control my-2"
-                placeholderText="Select Date"
-                maxDate={new Date(new Date().setDate(new Date().getDate() - 1))}
-              />
-              <DynamicButton
-                label="UPLOAD DATA"
-                onClick={() => DataUploadHndlar()}
-                className="btn btn-primary btn-sm mt-2"
-              />
-            </div>
-            <div className="col-md-6">
-              <h3>Upload Unsynced File</h3>
-
-              <label htmlFor="">Select From Date You want to Sync File:</label>
-              <DatePicker
-                selected={selectedDate?.fileSync}
-                onChange={(date) =>
-                  setSelectedDate({ ...selectedDate, fileSync: date })
-                }
-                className="form-control my-2"
-                placeholderText="Select Date"
-                maxDate={new Date(new Date().setDate(new Date().getDate() - 1))}
-              />
-              <DynamicButton
-                label="UPLOAD FILE"
-                onClick={uploadFileHandler}
-                className="btn btn-primary btn-sm mt-2"
-              />
-            </div>
           </div>
-
-          {/* New section for Sync Download and Sync Upload */}
-          <div className="row mt-4">
-            {/* <div className="col-md-6">
-              <h3>Download Unsynced File</h3>
+          {/* <div className="row">
+            <div className="col-md-6 py-4">
+              <h3>Download Unsynced Data</h3>
               <DatePicker
-                selected={selectedDate}
-                onChange={(date) => setSelectedDate(date)}
+                selected={selectedDateDown?.datasync_date}
+                onChange={(date) =>
+                  setSelectedDateDown({
+                    ...selectedDateDown,
+                    datasync_date: date,
+                  })
+                }
                 className="form-control my-2"
                 placeholderText="Select Date"
-                maxDate={new Date()}
+                maxDate={new Date(new Date().setDate(new Date().getDate() - 1))}
               />
 
               <DynamicButton
-                label="DOWNLOAD FILE"
+                label="DOWNLOAD DATA"
+                onClick={uplodFileDownloadHandler}
+                className="btn btn-success btn-sm mt-2"
+              />
+            </div>
+            <div className="col-md-6 py-4">
+              <h3>Downlaod Unsynced File</h3>
+              <DatePicker
+                selected={selectedDateDown?.filesync_date}
+                onChange={(date) =>
+                  setSelectedDateDown({
+                    ...selectedDateDown,
+                    filesync_date: date,
+                  })
+                }
+                className="form-control my-2"
+                placeholderText="Select Date"
+                // Uncomment maxDate if you want to restrict future dates
+                maxDate={new Date(new Date().setDate(new Date().getDate() - 1))}
+              />
+
+              <DynamicButton
+                label="DOWNLOAD FILED"
                 onClick={fileDownloadHandler}
-                className="btn btn-primary btn-sm mt-2"
+                className="btn btn-success btn-sm mt-2"
               />
-            </div> */}
-          </div>
+            </div>
+          </div> */}
         </div>
       </div>
       <div className="d-flex mt-3">

@@ -32,11 +32,16 @@ import { poRemoveHandler } from "../redux/slices/poSlice";
 import { groupedByActionType, groupedByRefNo } from "../utils/groupedByReq";
 import jsPDF from "jspdf";
 import { checkTypeArr } from "../utils/smallFun";
-import { convertToEpoch, formatDate } from "../utils/getDateTimeNow";
+import {
+  convertToEpoch,
+  formatDate,
+  formatFilePath,
+} from "../utils/getDateTimeNow";
 import DynamicButton from "../Helpers/DynamicButton";
 import { ASSIGNER, DEPT_FI, USER_VENDOR } from "../constants/userConstants";
 import SkeletonLoader from "../loader/SkeletonLoader";
 import { FaDownload } from "react-icons/fa";
+import "react-datepicker/dist/react-datepicker.css";
 
 const SDBGSub = () => {
   const dispatch = useDispatch();
@@ -159,11 +164,25 @@ const SDBGSub = () => {
     }
   };
 
+  // const handleInputChange2 = (e) => {
+  //   const { name, value } = e.target;
+  //   setFormDatainput((prevData) => ({
+  //     ...prevData,
+  //     [name]: value,
+  //   }));
+  // };
+
   const handleInputChange2 = (e) => {
     const { name, value } = e.target;
+
+    if (value.length > 45) {
+      alert("Input cannot exceed 45 characters.");
+      return;
+    }
+
     setFormDatainput((prevData) => ({
       ...prevData,
-      [name]: value,
+      [name]: value.toUpperCase(),
     }));
   };
 
@@ -744,7 +763,9 @@ const SDBGSub = () => {
                                                         <td>{data?.bg_no}</td>
                                                         <td>
                                                           <a
-                                                            href={`${process.env.REACT_APP_PDF_URL}/submitSDBG/${data.file_name}`}
+                                                            href={formatFilePath(
+                                                              data.file_path
+                                                            )}
                                                             target="_blank"
                                                             rel="noreferrer"
                                                           >
@@ -836,6 +857,7 @@ const SDBGSub = () => {
                   setFormData({
                     sdbgFile: null,
                     remarks: "",
+                    bg_no: "",
                   });
                 }}
               >
@@ -1030,17 +1052,20 @@ const SDBGSub = () => {
                 <div className="col-md-6 col-12">
                   <div className="mb-3">
                     <label className="form-label">Bankers Address1</label>
-                    &nbsp;&nbsp;
-                    <span className="mandatorystart">*</span>
                     <input
                       type="text"
                       className="form-control"
                       name="bank_addr1"
                       value={formDatainput?.bank_addr1 || ""}
                       onChange={handleInputChange2}
+                      maxLength={45}
                     />
+                    <small>
+                      {formDatainput?.bank_addr1?.length || 0}/45 characters
+                    </small>
                   </div>
                 </div>
+
                 <div className="col-md-6 col-12">
                   <div className="mb-3">
                     <label className="form-label">Bankers Address2</label>
@@ -1050,9 +1075,14 @@ const SDBGSub = () => {
                       name="bank_addr2"
                       value={formDatainput?.bank_addr2 || ""}
                       onChange={handleInputChange2}
+                      maxLength={45} // Restrict user input directly
                     />
+                    <small>
+                      {formDatainput?.bank_addr2?.length || 0}/45 characters
+                    </small>
                   </div>
                 </div>
+
                 <div className="col-md-6 col-12">
                   <div className="mb-3">
                     <label className="form-label">Bankers Address3</label>
@@ -1062,9 +1092,14 @@ const SDBGSub = () => {
                       name="bank_addr3"
                       value={formDatainput?.bank_addr3 || ""}
                       onChange={handleInputChange2}
+                      maxLength={45} // Restrict user input directly
                     />
+                    <small>
+                      {formDatainput?.bank_addr3?.length || 0}/45 characters
+                    </small>
                   </div>
                 </div>
+
                 <div className="col-md-6 col-12">
                   <div className="mb-3">
                     <label className="form-label">Bankers City</label>
@@ -1162,6 +1197,7 @@ const SDBGSub = () => {
                       value={formDatainput?.bg_ammount || ""}
                       onChange={handleInputChange2}
                       onWheel={(e) => inputOnWheelPrevent(e)}
+                      step="any"
                     />
                   </div>
                 </div>
@@ -1564,10 +1600,13 @@ const SDBGSub = () => {
                   <div className="mb-3">
                     <label className="form-label">Claim Period</label>
                     <p>
-                      {formDatainput?.claim_priod
+                      {/* {formDatainput?.claim_priod
                         ? new Date(
                             formDatainput?.claim_priod * 1000
                           ).toLocaleDateString()
+                        : ""} */}
+                      {formDatainput?.claim_priod
+                        ? formatDate(formDatainput.claim_priod * 1000)
                         : ""}
                     </p>
                   </div>
@@ -1760,6 +1799,12 @@ const SDBGSub = () => {
                       />
                     </div>
                   )}
+                </div>
+                <div className="col-12">
+                  <label className="form-check-label" htmlFor="isConfirmedBG">
+                    Correct and Confirmed BG in Prescribed Format is being
+                    forwarded.
+                  </label>
                 </div>
 
                 {/* {showRemarksInput && (

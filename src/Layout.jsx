@@ -2,6 +2,7 @@ import React, { lazy, Suspense } from "react";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { ASSIGNER } from "./constants/userConstants";
+import ChakraLoader from "./components/ChakraLoader";
 
 // import Login from "./pages/Login";
 // import POArchived from "./pages/POArchived";
@@ -195,6 +196,15 @@ const ClaimIncorrectDeductionsview = lazy(() =>
   import("./pages/checklists/ClaimIncorrectDeductionsview")
 );
 const AnyOtherClaim = lazy(() => import("./pages/checklists/AnyOtherClaim"));
+const LDRefundSupplyMaterial = lazy(() =>
+  import("./pages/checklists/LDRefundSupplyMaterial")
+);
+const LDRefundSupplyMaterialView = lazy(() =>
+  import("./pages/checklists/LDRefundSupplyMaterialView")
+);
+const LDRefundSupplyMaterialEdit = lazy(() =>
+  import("./pages/checklists/LDRefundSupplyMaterialEdit")
+);
 const AnyOtherClaimview = lazy(() =>
   import("./pages/checklists/AnyOtherClaimview")
 );
@@ -210,7 +220,7 @@ function Layout() {
   if (!token || !isLoggedIn) {
     return (
       <BrowserRouter>
-        <Suspense fallback={<div>Loading...</div>}>
+        <Suspense fallback={<ChakraLoader />}>
           <Routes>
             <Route path="/" element={<Login />} />
             <Route path="/registration" element={<Registration />} />
@@ -225,7 +235,7 @@ function Layout() {
   if (user?.department_id === 19) {
     return (
       <BrowserRouter>
-        <Suspense fallback={<div>Loading...</div>}>
+        <Suspense fallback={<ChakraLoader />}>
           <Routes>
             <Route path="*" element={<Navigate to="/synci-data" replace />} />
             <Route path="/synci-data" element={<SyncComponent />} />
@@ -237,7 +247,7 @@ function Layout() {
 
   return (
     <BrowserRouter>
-      <Suspense fallback={<div>Loading...</div>}>
+      <Suspense fallback={<ChakraLoader />}>
         <Routes>
           <Route path="/" element={<POs />} />
           <Route path="/wdc" element={<WBS />} />
@@ -362,6 +372,21 @@ function Layout() {
           <Route
             path="/checklist/any-other/edit/:id"
             element={<ClaimIncorrectDeductionsview />}
+          />
+
+          {/* LD REFUND FOR SUPPLU MATERIAL SUMMERY */}
+
+          <Route
+            path="/checklist/ld-penalty-refund/:id"
+            element={<LDRefundSupplyMaterial />}
+          />
+          <Route
+            path="/checklist/ld-penalty-refund/view/:id"
+            element={<LDRefundSupplyMaterialView />}
+          />
+          <Route
+            path="/checklist/ld-penalty-refund/edit/:id"
+            element={<LDRefundSupplyMaterialEdit />}
           />
 
           {/* <Route

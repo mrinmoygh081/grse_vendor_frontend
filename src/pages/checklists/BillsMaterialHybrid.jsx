@@ -18,7 +18,7 @@ import {
 } from "../../utils/smallFun";
 import { inputOnWheelPrevent } from "../../utils/inputOnWheelPrevent";
 import { apiCallBack } from "../../utils/fetchAPIs";
-import { formatDate } from "../../utils/getDateTimeNow";
+import { formatDate, formatFilePath } from "../../utils/getDateTimeNow";
 import { toast } from "react-toastify";
 import { initialData } from "../../data/btnData";
 import DynamicButton from "../../Helpers/DynamicButton";
@@ -338,31 +338,66 @@ const BillsMaterialHybrid = () => {
                                     {form?.invoice_type === E_INVOICE && (
                                       <tr>
                                         <td>E-Invoice No :</td>
-                                        <td className="btn_value">
-                                          <input
-                                            type="text"
-                                            className="form-control me-2"
-                                            name="invoice_no"
-                                            placeholder="E-Invoice number"
-                                            value={form?.invoice_no}
-                                            onChange={(e) =>
-                                              inputTypeChange(e, form, setForm)
-                                            }
-                                          />
-                                          <input
-                                            type="file"
-                                            className="form-control"
-                                            name="invoice_filename"
-                                            onChange={(e) =>
-                                              inputFileChange(e, form, setForm)
-                                            }
-                                            accept=".pdf"
-                                          />
-                                          <DynamicButton
-                                            label="CHECK"
-                                            onClick={getGrnIcgrnHandler}
-                                            className="btn btn-primary btn-sm m-4"
-                                          />
+                                        <td>
+                                          <div className="btn_value">
+                                            <input
+                                              type="text"
+                                              className="form-control me-2"
+                                              name="invoice_no"
+                                              placeholder="E-Invoice number"
+                                              value={form?.invoice_no}
+                                              onChange={(e) =>
+                                                inputTypeChange(
+                                                  e,
+                                                  form,
+                                                  setForm
+                                                )
+                                              }
+                                            />
+                                            <DynamicButton
+                                              label="CHECK"
+                                              onClick={getGrnIcgrnHandler}
+                                              className="btn btn-primary btn-sm m-4"
+                                            />
+                                          </div>
+                                          <div className="btn_value">
+                                            <div className="me-4">
+                                              <label htmlFor="">
+                                                Invoice File
+                                              </label>
+                                              <input
+                                                type="file"
+                                                className="form-control"
+                                                name="invoice_filename"
+                                                onChange={(e) =>
+                                                  inputFileChange(
+                                                    e,
+                                                    form,
+                                                    setForm
+                                                  )
+                                                }
+                                                accept=".pdf"
+                                              />
+                                            </div>
+                                            <div>
+                                              <label htmlFor="">
+                                                Supporting Documents
+                                              </label>
+                                              <input
+                                                type="file"
+                                                className="form-control"
+                                                name="invoice_supporting_doc"
+                                                onChange={(e) =>
+                                                  inputFileChange(
+                                                    e,
+                                                    form,
+                                                    setForm
+                                                  )
+                                                }
+                                                accept=".pdf"
+                                              />
+                                            </div>
+                                          </div>
                                         </td>
                                       </tr>
                                     )}
@@ -546,12 +581,16 @@ const BillsMaterialHybrid = () => {
                                               (item, i) => {
                                                 return (
                                                   <a
-                                                    href={`${process.env.REACT_APP_PDF_URL}submitSDBG/${item?.file_name}`}
+                                                    href={formatFilePath(
+                                                      item.file_path
+                                                    )}
                                                     target="_blank"
                                                     rel="noreferrer"
-                                                    key={i}
+                                                    style={{
+                                                      marginRight: "10px",
+                                                    }}
                                                   >
-                                                    VIEW
+                                                    View File
                                                   </a>
                                                 );
                                               }
@@ -604,15 +643,16 @@ const BillsMaterialHybrid = () => {
                                                 (item, i) => {
                                                   return (
                                                     <a
-                                                      href={`${process.env.REACT_APP_PDF_URL}submitSDBG/${item?.file_name}`}
+                                                      href={formatFilePath(
+                                                        item.file_path
+                                                      )}
                                                       target="_blank"
                                                       rel="noreferrer"
-                                                      key={i}
                                                       style={{
                                                         marginRight: "10px",
                                                       }}
                                                     >
-                                                      VIEW
+                                                      View File
                                                     </a>
                                                   );
                                                 }
@@ -776,15 +816,16 @@ const BillsMaterialHybrid = () => {
                                               (item, i) => {
                                                 return (
                                                   <a
-                                                    key={i}
-                                                    href={`${process.env.REACT_APP_PDF_URL}submitSDBG/${item?.file_name}`}
+                                                    href={formatFilePath(
+                                                      item.file_path
+                                                    )}
                                                     target="_blank"
                                                     rel="noreferrer"
                                                     style={{
                                                       marginRight: "10px",
                                                     }}
                                                   >
-                                                    VIEW
+                                                    View File
                                                   </a>
                                                 );
                                               }

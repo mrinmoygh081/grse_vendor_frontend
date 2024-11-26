@@ -8,7 +8,7 @@ import Footer from "../../components/Footer";
 import { FaCaretLeft } from "react-icons/fa";
 import { formatDate } from "../../utils/getDateTimeNow";
 
-const AnyOtherClaimview = () => {
+const LDRefundSupplyMaterialView = () => {
   const [data, setData] = useState(null);
   const [InvoiceData, setInvoiceData] = useState(null);
   const { state } = useLocation();
@@ -122,6 +122,38 @@ const AnyOtherClaimview = () => {
                                           {/* Adjust the margin value as needed */}
                                           <a
                                             href={`${process.env.REACT_APP_PDF_URL}btns/${data?.ref_invoice1_file}`}
+                                            target="_blank"
+                                            rel="noreferrer"
+                                          >
+                                            VIEW
+                                          </a>
+                                        </span>
+                                      </td>
+                                    </tr>
+                                    <tr>
+                                      <td>PO Amendment Copy. :</td>
+                                      <td className="btn_value">
+                                        {data?.letter_reference_no}
+                                        <span style={{ marginLeft: "16px" }}>
+                                          {/* Adjust the margin value as needed */}
+                                          <a
+                                            href={`${process.env.REACT_APP_PDF_URL}btns/${data?.po_amendment_file}`}
+                                            target="_blank"
+                                            rel="noreferrer"
+                                          >
+                                            VIEW
+                                          </a>
+                                        </span>
+                                      </td>
+                                    </tr>
+                                    <tr>
+                                      <td>Worksheet Excel Upload. :</td>
+                                      <td className="btn_value">
+                                        {data?.letter_reference_no}
+                                        <span style={{ marginLeft: "16px" }}>
+                                          {/* Adjust the margin value as needed */}
+                                          <a
+                                            href={`${process.env.REACT_APP_PDF_URL}btns/${data?.worksheet_excel_file}`}
                                             target="_blank"
                                             rel="noreferrer"
                                           >
@@ -318,4 +350,4 @@ const AnyOtherClaimview = () => {
   );
 };
 
-export default AnyOtherClaimview;
+export default LDRefundSupplyMaterialView;

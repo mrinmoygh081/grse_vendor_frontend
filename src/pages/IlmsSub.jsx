@@ -9,7 +9,7 @@ import moment from "moment";
 import { toast } from "react-toastify";
 import { reConfirm } from "../utils/reConfirm";
 import { clrLegend } from "../utils/clrLegend";
-import { formatDate } from "../utils/getDateTimeNow";
+import { formatDate, formatFilePath } from "../utils/getDateTimeNow";
 import { groupedByIlms } from "../utils/groupedByReq";
 import DynamicButton from "../Helpers/DynamicButton";
 import SkeletonLoader from "../loader/SkeletonLoader";
@@ -207,11 +207,13 @@ const IlmsSub = () => {
                                                 <td>
                                                   {item.file_name && (
                                                     <a
-                                                      href={`${process.env.REACT_APP_PDF_URL}submitILMS/${item.file_name}`}
+                                                      href={formatFilePath(
+                                                        item.file_path
+                                                      )}
                                                       target="_blank"
                                                       rel="noreferrer"
                                                     >
-                                                      Click Here
+                                                      View File
                                                     </a>
                                                   )}
                                                 </td>
