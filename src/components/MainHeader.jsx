@@ -49,7 +49,8 @@ const MainHeader = ({ title }) => {
     return (
       <>
         {(user?.department_id === DEPT_IT ||
-          user?.department_id === DEPT_QAP) && (
+          user?.department_id === DEPT_QAP ||
+          user?.vendor_code === "600233") && (
           <>
             <li className="nav-item">
               <Link className="nav-link text-black" to={`/dashboard/qa`}>
@@ -59,7 +60,8 @@ const MainHeader = ({ title }) => {
           </>
         )}
         {(user?.department_id === DEPT_IT ||
-          user?.department_id === DEPT_FI) && (
+          user?.department_id === DEPT_FI ||
+          user?.vendor_code === "600233") && (
           <>
             <li className="nav-item">
               <Link className="nav-link text-black" to={`/dashboard/bg`}>
@@ -74,7 +76,8 @@ const MainHeader = ({ title }) => {
           </>
         )}
         {(user?.department_id === DEPT_IT ||
-          user?.department_id === DEPT_DESIGN) && (
+          user?.department_id === DEPT_DESIGN ||
+          user?.vendor_code === "600233") && (
           <>
             <li className="nav-item">
               <Link className="nav-link text-black" to={`/dashboard/drawing`}>
