@@ -152,11 +152,11 @@ const BillsMaterialHybridEdit = () => {
 
   const getGateEntryInfo = async () => {
     let response = await getGrnIcgrnByInvoice(id, data.invoice_no, token);
-    if (response.status && response?.data?.invoice_date) {
-      const invoice_date = formatDashedDate(response?.data?.invoice_date);
+    if (response.status && response?.data?.gate_entry_date) {
+      const gate_entry_date = formatDashedDate(response?.data?.gate_entry_date);
       setDoForm({
         ...doForm,
-        ld_ge_date: invoice_date,
+        ld_ge_date: gate_entry_date,
       });
     }
   };
