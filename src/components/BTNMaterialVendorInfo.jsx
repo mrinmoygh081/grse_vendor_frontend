@@ -421,7 +421,9 @@ const BTNMaterialVendorInfo = ({ navigate, id }) => {
                     <td>Total ICGRN Value</td>
                     <td className="btn_value">
                       <b className="me-3">
-                        {data?.icgrn_total ? data.icgrn_total : "NA"}
+                        {data?.icgrn_total
+                          ? parseFloat(data.icgrn_total).toFixed(3)
+                          : "0.000"}
                       </b>
                     </td>
                   </tr>

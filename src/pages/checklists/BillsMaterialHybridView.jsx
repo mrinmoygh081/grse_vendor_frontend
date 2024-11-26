@@ -104,30 +104,8 @@ const BillsMaterialHybridView = () => {
     }
   };
 
-  // useEffect(() => {
-  //   let net = data?.icgrn_total;
-  //   let report = calculateNetPay(
-  //     net,
-  //     doForm?.ld_amount,
-  //     doForm?.p_sdbg_amount,
-  //     doForm?.p_drg_amount,
-  //     doForm?.p_qap_amount,
-  //     doForm?.p_ilms_amount,
-  //     doForm?.o_deduction,
-  //     doForm?.p_estimate_amount
-  //   );
-  //   console.log(report?.net_pay);
-  //   setDoForm({
-  //     ...doForm,
-  //     total_deduction: report?.deduct,
-  //     net_payable_amount: report?.net_pay,
-  //   });
-  // }, [doForm?.ld_amount, doForm?.o_deduction, doForm?.p_estimate_amount]);
-
   useEffect(() => {
-    // getBTNData();
     getBTNDOData();
-    // getDataByBTN();
   }, []);
 
   useEffect(() => {

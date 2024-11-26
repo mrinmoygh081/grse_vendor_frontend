@@ -128,6 +128,10 @@ export const actionHandlerBTN = async (
 
     if (response?.status) {
       toast.success(response?.message);
+      setForm({
+        ...initialData,
+        associated_po: [{ a_po: "" }],
+      });
       setForm(initialData);
       // getData();
       navigate(`/invoice-and-payment-process/${id}`);
