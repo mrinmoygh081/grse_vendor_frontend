@@ -23,13 +23,16 @@ import { toast } from "react-toastify";
 import { initialData } from "../../data/btnData";
 import DynamicButton from "../../Helpers/DynamicButton";
 import { D_S_INVOICE, E_INVOICE } from "../../constants/BTNContants";
+console.log("initialDatainitialData", initialData);
 
 const BillsMaterialHybrid = () => {
   const navigate = useNavigate();
   const { user, token } = useSelector((state) => state.auth);
   const { id } = useParams();
   const [data, setData] = useState(null);
-  const [form, setForm] = useState(initialData);
+  console.log("initialData", initialData?.associated_po);
+  const [form, setForm] = useState(() => structuredClone(initialData || {}));
+  console.log("initialData", initialData?.associated_po);
 
   const calNetClaimAmount = (invoice_value, debit_note, credit_note) => {
     invoice_value = parseFloat(invoice_value) || 0;
@@ -410,6 +413,10 @@ const BillsMaterialHybrid = () => {
                                             form.associated_po.map(
                                               (item, i) => (
                                                 <div className="d-flex align-items-center gap-1 mb-1">
+                                                  {console.log(
+                                                    "item?.a_po",
+                                                    item?.a_po
+                                                  )}
                                                   <input
                                                     type="text"
                                                     className="form-control"
