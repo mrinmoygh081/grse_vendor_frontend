@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
-import { FaCaretLeft } from "react-icons/fa";
+import { FaCaretLeft, FaMinus } from "react-icons/fa";
 import SideBar from "../../components/SideBar";
 import Header from "../../components/Header";
 import Footer from "../../components/Footer";
@@ -23,13 +23,16 @@ import { toast } from "react-toastify";
 import { initialData } from "../../data/btnData";
 import DynamicButton from "../../Helpers/DynamicButton";
 import { D_S_INVOICE, E_INVOICE } from "../../constants/BTNContants";
+console.log("initialDatainitialData", initialData);
 
 const BillsMaterialHybrid = () => {
   const navigate = useNavigate();
   const { user, token } = useSelector((state) => state.auth);
   const { id } = useParams();
   const [data, setData] = useState(null);
-  const [form, setForm] = useState(initialData);
+  console.log("initialData", initialData?.associated_po);
+  const [form, setForm] = useState(() => structuredClone(initialData || {}));
+  console.log("initialData", initialData?.associated_po);
 
   const calNetClaimAmount = (invoice_value, debit_note, credit_note) => {
     invoice_value = parseFloat(invoice_value) || 0;
@@ -404,45 +407,111 @@ const BillsMaterialHybrid = () => {
 
                                     <tr>
                                       <td>Additional PO:</td>
-                                      <td className="btn_value">
-                                        {checkTypeArr(form?.associated_po) &&
-                                          form.associated_po.map((item, i) => (
-                                            <input
-                                              type="text"
-                                              className="form-control"
-                                              name="associated_po"
-                                              value={item?.a_po}
-                                              onChange={(e) => {
-                                                item.a_po = e.target.value;
-                                                setForm({
-                                                  ...form,
-                                                  associated_po:
-                                                    form.associated_po,
-                                                });
-                                              }}
-                                              key={i}
-                                            />
-                                          ))}
-                                        <button
-                                          className="btn btn-sm btn-primary d-flex align-items-center ms-2"
-                                          style={{ fontSize: "16px" }}
-                                          type="button"
-                                          onClick={() =>
-                                            setForm({
-                                              ...form,
-                                              associated_po: [
-                                                ...form?.associated_po,
-                                                {
-                                                  a_po: "",
-                                                },
-                                              ],
-                                            })
-                                          }
-                                        >
-                                          <FaPlus />
-                                        </button>
+                                      <td>
+                                        <div className="d-flex align-items-start flex-column">
+                                          {checkTypeArr(form?.associated_po) &&
+                                            form.associated_po.map(
+                                              (item, i) => (
+                                                <div className="d-flex align-items-center gap-1 mb-1">
+                                                  {console.log(
+                                                    "item?.a_po",
+                                                    item?.a_po
+                                                  )}
+                                                  <input
+                                                    type="text"
+                                                    className="form-control"
+                                                    name="associated_po"
+                                                    value={item?.a_po}
+                                                    onChange={(e) => {
+                                                      const newValue =
+                                                        e.target.value;
+                                                      if (newValue === id) {
+                                                        toast.error(
+                                                          "This PO value matches the existing PO and cannot be added!"
+                                                        );
+                                                        return;
+                                                      }
+                                                      const isDuplicate =
+                                                        form.associated_po.some(
+                                                          (po, index) =>
+                                                            po.a_po ===
+                                                              newValue &&
+                                                            index !== i
+                                                        );
+
+                                                      if (isDuplicate) {
+                                                        toast.error(
+                                                          "Duplicate PO entry is not allowed!"
+                                                        );
+                                                        return;
+                                                      }
+                                                      const updatedPOs = [
+                                                        ...form.associated_po,
+                                                      ];
+                                                      updatedPOs[i].a_po =
+                                                        newValue;
+
+                                                      setForm({
+                                                        ...form,
+                                                        associated_po:
+                                                          updatedPOs,
+                                                      });
+                                                    }}
+                                                  />
+                                                  {i > 0 && (
+                                                    <button
+                                                      className="btn btn-sm btn-danger d-flex align-items-center ms-2"
+                                                      style={{
+                                                        fontSize: "16px",
+                                                      }}
+                                                      type="button"
+                                                      onClick={() => {
+                                                        const updatedPOs =
+                                                          form.associated_po.filter(
+                                                            (_, index) =>
+                                                              index !== i
+                                                          );
+                                                        setForm({
+                                                          ...form,
+                                                          associated_po:
+                                                            updatedPOs,
+                                                        });
+                                                      }}
+                                                    >
+                                                      <FaMinus />
+                                                    </button>
+                                                  )}
+                                                  {form.associated_po.length -
+                                                    1 ===
+                                                    i && (
+                                                    <button
+                                                      className="btn btn-sm btn-primary d-flex align-items-center"
+                                                      style={{
+                                                        fontSize: "16px",
+                                                      }}
+                                                      type="button"
+                                                      onClick={() =>
+                                                        setForm({
+                                                          ...form,
+                                                          associated_po: [
+                                                            ...form?.associated_po,
+                                                            {
+                                                              a_po: "",
+                                                            },
+                                                          ],
+                                                        })
+                                                      }
+                                                    >
+                                                      <FaPlus />
+                                                    </button>
+                                                  )}
+                                                </div>
+                                              )
+                                            )}
+                                        </div>
                                       </td>
                                     </tr>
+
                                     <tr>
                                       <td>Basic value:</td>
                                       <td className="btn_value">

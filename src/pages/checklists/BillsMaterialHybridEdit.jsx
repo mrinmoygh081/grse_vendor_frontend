@@ -104,10 +104,13 @@ const BillsMaterialHybridEdit = () => {
   };
 
   useEffect(() => {
-    let net = data?.net_with_gst;
-    if (net) {
+    let net = data?.net_claim_amount;
+    let netWithGST = data?.net_with_gst;
+
+    if (net && netWithGST) {
       let report = calculateNetPay(
         net,
+        netWithGST,
         doForm?.ld_amount,
         doForm?.p_sdbg_amount,
         doForm?.drg_penalty,
@@ -116,15 +119,16 @@ const BillsMaterialHybridEdit = () => {
         doForm?.o_ret_per,
         doForm?.p_estimate_amount
       );
-      // console.log("net_pay", report?.net_pay);
-      setDoForm({
-        ...doForm,
+
+      setDoForm((prevForm) => ({
+        ...prevForm,
         total_deduction: report?.deduct,
         net_payable_amount: report?.net_pay,
         other_deduction: report?.other,
-      });
+      }));
     }
   }, [
+    data?.net_claim_amount,
     data?.net_with_gst,
     doForm?.ld_amount,
     doForm?.o_ret_per,

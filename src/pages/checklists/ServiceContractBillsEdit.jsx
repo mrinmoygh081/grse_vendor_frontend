@@ -182,9 +182,11 @@ const ServiceContractBillsEdit = () => {
 
   useEffect(() => {
     let net = empForm?.value;
+    let netWIthGST = form?.net_claim_amt_gst;
     if (net) {
       let report = calculateNetPayService(
         net,
+        netWIthGST,
         empForm?.estimatedLD,
         empForm?.retension_rate,
         empForm?.other_deduction

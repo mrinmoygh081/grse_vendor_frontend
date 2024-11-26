@@ -44,9 +44,7 @@ const BillsMaterialHybridView = () => {
   };
 
   useEffect(() => {
-    // getBTNData();
     getBTNDOData();
-    // getDataByBTN();
   }, []);
 
   useEffect(() => {

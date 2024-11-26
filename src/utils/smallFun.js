@@ -61,60 +61,19 @@ export const calculateLDByDate = (difference, originalValue, percentage) => {
 
   if (difference < 0) return 0;
 
-  // Calculate the number of weeks delayed
   const weeksDelayed = Math.ceil(difference / oneWeek);
   // console.log("fun", difference, actualTime, contractualTime, weeksDelayed);
 
-  // Calculate the penalty percentage
   let penaltyPercentage = weeksDelayed * percentage;
 
-  // Calculate the penalty amount
   const penaltyAmount = (Number(originalValue) * penaltyPercentage) / 100;
 
   return Math.round(penaltyAmount);
 };
 
-// export const calculateNetPay = (
-//   net,
-//   ld,
-//   sdbg,
-//   drg,
-//   qap,
-//   ilms,
-//   other,
-//   estimate
-// ) => {
-//   if (!net || net === "") {
-//     toast.warn("Net claim amount is missing");
-//   }
-//   if (!ld || ld === "") {
-//     ld = 0;
-//   } else if (!sdbg || sdbg === "") {
-//     sdbg = 0;
-//   } else if (!drg || drg === "") {
-//     drg = 0;
-//   } else if (!qap || qap === "") {
-//     qap = 0;
-//   } else if (!ilms || ilms === "") {
-//     ilms = 0;
-//   } else if (!other || other === "") {
-//     other = 0;
-//   } else if (!estimate || estimate === "") {
-//     estimate = 0;
-//   }
-
-//   let deduct = parseFloat(ld) + parseFloat(other) + parseFloat(estimate);
-//   console.log(estimate);
-
-//   let net_pay = parseFloat(net) - deduct;
-
-//   return {
-//     deduct: parseFloat(deduct).toFixed(2),
-//     net_pay: parseFloat(net_pay).toFixed(2),
-//   };
-// };
 export const calculateNetPay = (
   net,
+  netWithGST,
   ld,
   sdbg,
   drg,
@@ -140,7 +99,7 @@ export const calculateNetPay = (
   other = (other / 100) * net;
 
   let deduct = parseFloat(ld) + parseFloat(other) + parseFloat(estimate);
-  let net_pay = parseFloat(net) - deduct;
+  let net_pay = parseFloat(netWithGST) - deduct;
 
   return {
     other: parseFloat(other).toFixed(2),
@@ -149,7 +108,13 @@ export const calculateNetPay = (
   };
 };
 
-export const calculateNetPayService = (net, ld, retension, other) => {
+export const calculateNetPayService = (
+  net,
+  netWIthGST,
+  ld,
+  retension,
+  other
+) => {
   if (!net || net === "") {
     toast.warn("Net claim amount is missing");
     return;
@@ -164,7 +129,7 @@ export const calculateNetPayService = (net, ld, retension, other) => {
   retension = (retension / 100) * net;
 
   let deduct = parseFloat(ld) + parseFloat(retension) + parseFloat(other);
-  let net_pay = parseFloat(net) - deduct;
+  let net_pay = parseFloat(netWIthGST) - deduct;
 
   return {
     retension: parseFloat(retension).toFixed(2),
