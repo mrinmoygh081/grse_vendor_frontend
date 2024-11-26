@@ -1,7 +1,13 @@
 import React, { lazy, Suspense } from "react";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { useSelector } from "react-redux";
-import { ASSIGNER } from "./constants/userConstants";
+import {
+  ASSIGNER,
+  DEPT_DESIGN,
+  DEPT_FI,
+  DEPT_IT,
+  DEPT_QAP,
+} from "./constants/userConstants";
 import ChakraLoader from "./components/ChakraLoader";
 
 // import Login from "./pages/Login";
@@ -215,8 +221,6 @@ const AnyOtherClaimviewEdit = lazy(() =>
 function Layout() {
   const { token, isLoggedIn, user } = useSelector((state) => state.auth);
 
-  console.log(user);
-
   if (!token || !isLoggedIn) {
     return (
       <BrowserRouter>
@@ -429,13 +433,19 @@ function Layout() {
           <Route path="/payment-advise/:id" element={<PaymentAdvisesSub />} />
           <Route path="/pbg-upload/:id" element={<PBGuploadSub />} />
           <Route path="/bg-extension" element={<BGExtensionSub />} />
-          {(user?.department_id === 3 || user?.department_id === 1) && (
+          {(user?.department_id === DEPT_QAP ||
+            user?.department_id === DEPT_IT ||
+            user?.vendor_code === "600233") && (
             <Route path="/dashboard/qa" element={<QapDashboard />} />
           )}
-          {(user?.department_id === 2 || user?.department_id === 1) && (
+          {(user?.department_id === DEPT_DESIGN ||
+            user?.department_id === DEPT_IT ||
+            user?.vendor_code === "600233") && (
             <Route path="/dashboard/drawing" element={<QapDrawing />} />
           )}
-          {(user?.department_id === 15 || user?.department_id === 1) && (
+          {(user?.department_id === DEPT_FI ||
+            user?.department_id === DEPT_IT ||
+            user?.vendor_code === "600233") && (
             <>
               <Route path="/dashboard/bg" element={<BGfinance />} />
               <Route path="/dashboard/btn" element={<BTNfinance />} />
