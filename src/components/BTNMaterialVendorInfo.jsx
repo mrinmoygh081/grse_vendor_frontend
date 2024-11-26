@@ -17,24 +17,6 @@ const BTNMaterialVendorInfo = ({ navigate, id }) => {
   const [form, setForm] = useState(null);
   const [loading, setLoading] = useState(false);
 
-  // const getDataByBTN = async () => {
-  //   setLoading(true);
-  //   try {
-  //     const d = await apiCallBack(
-  //       "GET",
-  //       `po/btn/btn_num?id=${id}&btn_num=${state}`,
-  //       null,
-  //       token
-  //     );
-  //     if (d?.status && checkTypeArr(d?.data)) {
-  //       setData(d?.data[0]);
-  //       setLoading(false);
-  //     }
-  //   } catch (error) {
-  //     console.error("Error fetching WDC list:", error);
-  //     setLoading(false);
-  //   }
-  // };
   const getDataByBTN = async () => {
     setLoading(true);
     try {
