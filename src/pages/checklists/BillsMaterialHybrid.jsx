@@ -116,15 +116,20 @@ const BillsMaterialHybrid = () => {
       let response = await getGrnIcgrnByInvoice(id, inv_no, token);
 
       if (response && response.status && response.data) {
-        const { gate_entry_no, grn_nos, icgrn_nos, invoice_date, total_price } =
-          response.data;
+        const {
+          gate_entry_no,
+          grn_nos,
+          icgrn_nos,
+          gate_entry_date,
+          total_price,
+        } = response.data;
         setForm({
           ...form,
-          gate_entry_no: gate_entry_no,
-          gate_entry_date: formatDate(invoice_date),
-          grn_nos: grn_nos,
-          icgrn_nos: icgrn_nos,
-          total_price: total_price,
+          gate_entry_no,
+          gate_entry_date: formatDate(gate_entry_date),
+          grn_nos,
+          icgrn_nos,
+          total_price,
         });
       } else if (response && response.message) {
         toast.warn(response.message);
@@ -655,7 +660,7 @@ const BillsMaterialHybrid = () => {
                                       <td>Gate Entry Date</td>
                                       <td className="btn_value">
                                         <b>
-                                          {form.gate_entry_date &
+                                          {form.gate_entry_date &&
                                             form.gate_entry_date}
                                         </b>
                                       </td>
