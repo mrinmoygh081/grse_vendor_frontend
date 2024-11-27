@@ -80,39 +80,46 @@ const DisplayStoreActions = () => {
 
   const CheckFileHandler = (item) => {
     if (item.documentType === "reservation_report") {
-      setPayloadData({
-        reservationNumber: item.reservationNumber,
-      });
+      return { reservationNumber: item.reservationNumber };
+      // setPayloadData({
+      //   reservationNumber: item.reservationNumber,
+      // });
     }
     if (item.documentType === "goods_issue_slip") {
-      setPayloadData({
-        issueNo: item.issueNo,
-      });
+      return { issueNo: item.issueNo };
+      // setPayloadData({
+      //   issueNo: item.issueNo,
+      // });
     }
     if (item.documentType === "icgrn_report") {
-      setPayloadData({
-        docNo: item.docNo,
-      });
+      return { docNo: item.docNo };
+      // setPayloadData({
+      //   docNo: item.docNo,
+      // });
     }
     if (item.documentType === "ztfi_bil_deface") {
-      setPayloadData({
-        btn: item.btn,
-      });
+      return { btn: item.btn };
+      // setPayloadData({
+      //   btn: item.btn,
+      // });
     }
     if (item.documentType === "gate_entry") {
-      setPayloadData({
-        gate_entry_no: item.gateEntryNo,
-      });
+      return { gate_entry_no: item.gateEntryNo };
+      // setPayloadData({
+      //   gate_entry_no: item.gateEntryNo,
+      // });
     }
     if (item.documentType === "grn_report") {
-      setPayloadData({
-        matDocNo: item.matDocNo,
-      });
+      return { matDocNo: item.matDocNo };
+      // setPayloadData({
+      //   matDocNo: item.matDocNo,
+      // });
     }
     if (item.documentType === "service_entry_report") {
-      setPayloadData({
-        serviceEntryNumber: item.serviceEntryNumber,
-      });
+      return { serviceEntryNumber: item.serviceEntryNumber };
+      // setPayloadData({
+      //   serviceEntryNumber: item.serviceEntryNumber,
+      // });
     }
   };
 
@@ -245,21 +252,18 @@ const DisplayStoreActions = () => {
                                                       )}
                                                   </td>
                                                   <td>
-                                                    <a
-                                                      href={`${
+                                                    <Link
+                                                      to={`${
                                                         doc_routes[
                                                           item.documentType
                                                         ]
                                                       }/${JSON.stringify(
-                                                        payloadData
-                                                      )}`}
-                                                      rel="noreferrer"
-                                                      onClick={() =>
                                                         CheckFileHandler(item)
-                                                      }
+                                                      )}?po=${id}`}
+                                                      rel="noreferrer"
                                                     >
                                                       VIEW
-                                                    </a>
+                                                    </Link>
                                                   </td>
                                                 </tr>
                                               ))}
