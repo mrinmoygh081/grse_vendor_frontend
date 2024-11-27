@@ -253,7 +253,6 @@ const DisplayStoreActions = () => {
                                                       }/${JSON.stringify(
                                                         payloadData
                                                       )}`}
-                                                      target="_blank"
                                                       rel="noreferrer"
                                                       onClick={() =>
                                                         CheckFileHandler(item)
