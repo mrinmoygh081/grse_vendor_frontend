@@ -250,7 +250,7 @@ input[type="number"] {
 }
 
 @media print {
-  .print_btn {
+  .print_btn, .no_print {
     display: none !important;
   }
   .date_time_container {

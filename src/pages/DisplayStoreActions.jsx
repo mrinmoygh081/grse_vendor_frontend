@@ -245,21 +245,21 @@ const DisplayStoreActions = () => {
                                                       )}
                                                   </td>
                                                   <td>
-                                                    <a
-                                                      href={`${
+                                                    <Link
+                                                      to={`${
                                                         doc_routes[
                                                           item.documentType
                                                         ]
                                                       }/${JSON.stringify(
                                                         payloadData
-                                                      )}`}
+                                                      )}?po=${id}`}
                                                       rel="noreferrer"
                                                       onClick={() =>
                                                         CheckFileHandler(item)
                                                       }
                                                     >
                                                       VIEW
-                                                    </a>
+                                                    </Link>
                                                   </td>
                                                 </tr>
                                               ))}

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import logo from "../../images/logo.png";
 import { useSelector } from "react-redux";
-import { useLocation, useParams } from "react-router-dom";
+import { Link, useLocation, useParams } from "react-router-dom";
 
 function GoodsIssueSlip() {
   const location = useLocation();
@@ -13,6 +13,9 @@ function GoodsIssueSlip() {
     minute: "2-digit",
   });
   const { token } = useSelector((state) => state.auth);
+  const searchParams = new URLSearchParams(location.search);
+
+  const poNumber = searchParams.get("po");
 
   const handlePrint = () => {
     window.print();
@@ -183,6 +186,14 @@ function GoodsIssueSlip() {
               </tfoot>
             </table>
           )}
+        </div>
+        <div className="col-12 text-center">
+          <Link
+            className="no_print btn-primary btn"
+            to={`/display-store-actions/${poNumber}`}
+          >
+            BACK
+          </Link>
         </div>
       </div>
 

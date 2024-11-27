@@ -1,13 +1,16 @@
 import React, { useEffect, useState } from "react";
 import logo from "../../images/logo.png";
 import { useSelector } from "react-redux";
-import { useLocation, useParams } from "react-router-dom";
+import { Link, useLocation, useParams } from "react-router-dom";
 
 function ServiceEntrySheetPdf() {
   const location = useLocation();
   const [apiData, setApiData] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const { token } = useSelector((state) => state.auth);
+  const searchParams = new URLSearchParams(location.search);
+
+  const poNumber = searchParams.get("po");
 
   const currentDate = new Date().toLocaleDateString();
   const currentTime = new Date().toLocaleTimeString([], {
@@ -157,6 +160,14 @@ function ServiceEntrySheetPdf() {
                   </tbody>
                 </table>
               </div>
+            </div>
+            <div className="col-12 text-center">
+              <Link
+                className="no_print btn-primary btn"
+                to={`/display-store-actions/${poNumber}`}
+              >
+                BACK
+              </Link>
             </div>
           </>
         )}
