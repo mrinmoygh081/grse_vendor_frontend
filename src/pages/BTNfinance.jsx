@@ -13,6 +13,7 @@ import SkeletonLoader from "../loader/SkeletonLoader";
 import "jspdf-autotable";
 import * as XLSX from "xlsx";
 import { clrLegend } from "../utils/clrLegend";
+import { formatFilePath, formatFilePathBTN } from "../utils/getDateTimeNow";
 
 const BTNfinance = () => {
   const { id } = useParams();
@@ -54,10 +55,23 @@ const BTNfinance = () => {
     navigate(`/invoice-and-payment-process/${poNumber}`);
   };
 
-  const handleViewInvoice = (invoiceFilename) => {
-    const pdfUrl = `${process.env.REACT_APP_PDF_URL}btns/${invoiceFilename}`;
-    window.open(pdfUrl, "_blank");
-  };
+  // const handleViewInvoice = (invoiceFilename) => {
+  //   const pdfUrl = `${process.env.REACT_APP_PDF_URL}btns/${invoiceFilename}`;
+  //   window.open(pdfUrl, "_blank");
+  // };
+
+  // const handleViewInvoice = (invoiceFilename) => {
+  //   // Ensure the URL is correctly formed with a trailing slash
+  //   const baseUrl = process.env.REACT_APP_PDF_URL.endsWith("/")
+  //     ? process.env.REACT_APP_PDF_URL
+  //     : `${process.env.REACT_APP_PDF_URL}/`;
+
+  //   // Generate the full URL
+  //   const pdfUrl = `${baseUrl}btns/${invoiceFilename}`;
+
+  //   // Open the PDF in a new tab
+  //   window.open(pdfUrl, "_blank");
+  // };
 
   const filteredData = paymentdata.filter(
     (file) =>
@@ -230,14 +244,36 @@ const BTNfinance = () => {
                             {file.status}
                           </td>
                           <td>
-                            <button
+                            {/* <button
                               onClick={() =>
                                 handleViewInvoice(file.invoice_filename)
                               }
                               className="btn_view"
                             >
                               <FaFilePdf /> VIEW
-                            </button>
+                            </button> */}
+                            {file?.invoice_file_path ? (
+                              <a
+                                href={formatFilePath(file?.invoice_file_path)}
+                                target="_blank"
+                                rel="noreferrer"
+                                style={{
+                                  marginRight: "10px",
+                                }}
+                              >
+                                VIEW
+                              </a>
+                            ) : file?.invoice_filename ? (
+                              <a
+                                href={formatFilePathBTN(file?.invoice_filename)}
+                                target="_blank"
+                                rel="noreferrer"
+                              >
+                                VIEW
+                              </a>
+                            ) : (
+                              "NA"
+                            )}
                           </td>
                         </tr>
                       ))}
