@@ -1,14 +1,18 @@
 import React, { useEffect, useState } from "react";
 import logo from "../../images/logo.png";
 import { useSelector } from "react-redux";
-import { useParams } from "react-router-dom";
+import { useLocation, useParams, Link } from "react-router-dom";
 import { checkTypeArr } from "../../utils/smallFun";
 
 function InspectionReport() {
+  const location = useLocation();
   const [apiData, setApiData] = useState([]);
   // const [payloadData , setPayloadData] = useState({});
   const [isLoading, setIsLoading] = useState(false);
   const { token } = useSelector((state) => state.auth);
+  const searchParams = new URLSearchParams(location.search);
+
+  const poNumber = searchParams.get("po");
 
   // console.log("payload iss--", location.state)
 
@@ -267,6 +271,14 @@ function InspectionReport() {
                 </p>
               ))}
           </div> */}
+        </div>
+        <div className="col-12 text-center">
+          <Link
+            className="no_print btn-primary btn"
+            to={`/display-store-actions/${poNumber}`}
+          >
+            BACK
+          </Link>
         </div>
       </div>
 
