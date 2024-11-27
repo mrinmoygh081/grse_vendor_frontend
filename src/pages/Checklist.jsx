@@ -36,6 +36,7 @@ const Checklist = () => {
   const [slug, setSlug] = useState("");
   const [paymentData, setPaymentData] = useState("");
   const [loading, setLoading] = useState(true);
+  const [searchQuery, setSearchQuery] = useState("");
   console.log("groupedBG", groupedBG);
 
   useEffect(() => {
@@ -146,6 +147,13 @@ const Checklist = () => {
     }
   };
 
+  const filteredGroupedBG = Object.keys(groupedBG)
+    .filter((key) => key.toLowerCase().includes(searchQuery.toLowerCase()))
+    .reduce((acc, key) => {
+      acc[key] = groupedBG[key];
+      return acc;
+    }, {});
+
   return (
     <div className="wrapper d-flex flex-column flex-row-fluid">
       <div className="page d-flex flex-row flex-column-fluid">
@@ -203,6 +211,15 @@ const Checklist = () => {
                             ADD
                           </button>
                         </div>
+                        <div className="search-bar mb-4 d-flex align-items-center justify-content-end">
+                          <input
+                            className="searchui"
+                            type="text"
+                            placeholder="Search BTN No..."
+                            value={searchQuery}
+                            onChange={(e) => setSearchQuery(e.target.value)}
+                          />
+                        </div>
                         <div
                           className="table-responsive position-relative"
                           style={{ overflowX: "auto" }}
@@ -233,230 +250,236 @@ const Checklist = () => {
                                 </>
                               ) : (
                                 <>
-                                  {Object.keys(groupedBG).map((it, index) => {
-                                    let items = groupedBG[it];
-                                    let firstItem = items[0];
-                                    items = [...items].sort(
-                                      (a, b) =>
-                                        Number(a.created_at) -
-                                        Number(b.created_at)
-                                    );
+                                  {Object.keys(filteredGroupedBG).map(
+                                    (it, index) => {
+                                      let items = filteredGroupedBG[it];
+                                      let firstItem = items[0];
+                                      items = [...items].sort(
+                                        (a, b) =>
+                                          Number(a.created_at) -
+                                          Number(b.created_at)
+                                      );
 
-                                    return (
-                                      <Fragment key={index}>
-                                        <tr>
-                                          <td
-                                            colSpan={7}
-                                            style={{
-                                              whiteSpace: "pre-wrap",
-                                              padding: "10px 0",
-                                            }}
-                                          >
-                                            <b>BTN No:</b>
-                                            {it}{" "}
-                                            &nbsp;&nbsp;&nbsp;||&nbsp;&nbsp;&nbsp;{" "}
-                                            <b>Invoice Number:</b>{" "}
-                                            {groupedBG[it][0]
-                                              ? groupedBG[it][0]?.invoice_no
-                                              : "NA"}{" "}
-                                            &nbsp;&nbsp;&nbsp;||&nbsp;&nbsp;&nbsp;
-                                            <b>BTN Type:</b>{" "}
-                                            {groupedBG[it][0]
-                                              ? groupedBG[it][0]?.btn_type
-                                              : "NA"}{" "}
-                                            &nbsp;&nbsp;&nbsp;||&nbsp;&nbsp;&nbsp;
-                                            <b>Net Claim Amount:</b>{" "}
-                                            {groupedBG[it][0]?.net_claim_amount
-                                              ? `₹ ${groupedBG[it][0]?.net_claim_amount}`
-                                              : "NA"}{" "}
-                                            (without GST)
-                                          </td>
+                                      return (
+                                        <Fragment key={index}>
+                                          <tr>
+                                            <td
+                                              colSpan={7}
+                                              style={{
+                                                whiteSpace: "pre-wrap",
+                                                padding: "10px 0",
+                                              }}
+                                            >
+                                              <b>BTN No:</b>
+                                              {it}{" "}
+                                              &nbsp;&nbsp;&nbsp;||&nbsp;&nbsp;&nbsp;{" "}
+                                              <b>Invoice Number:</b>{" "}
+                                              {groupedBG[it][0]
+                                                ? groupedBG[it][0]?.invoice_no
+                                                : "NA"}{" "}
+                                              &nbsp;&nbsp;&nbsp;||&nbsp;&nbsp;&nbsp;
+                                              <b>BTN Type:</b>{" "}
+                                              {groupedBG[it][0]
+                                                ? groupedBG[it][0]?.btn_type
+                                                : "NA"}{" "}
+                                              &nbsp;&nbsp;&nbsp;||&nbsp;&nbsp;&nbsp;
+                                              <b>Net Claim Amount:</b>{" "}
+                                              {groupedBG[it][0]
+                                                ?.net_claim_amount
+                                                ? `₹ ${groupedBG[it][0]?.net_claim_amount}`
+                                                : "NA"}{" "}
+                                              (without GST)
+                                            </td>
 
-                                          <td>
-                                            <div className="view-button-container">
-                                              <button
-                                                className="btn btn-sm btn-secondary m-1"
-                                                onClick={() => {
-                                                  let type = "";
+                                            <td>
+                                              <div className="view-button-container">
+                                                <button
+                                                  className="btn btn-sm btn-secondary m-1"
+                                                  onClick={() => {
+                                                    let type = "";
 
-                                                  if (
-                                                    firstItem.btn_type ===
-                                                    "hybrid-bill-material"
-                                                  ) {
-                                                    type =
-                                                      "hybrid-bill-material";
-                                                  } else if (
-                                                    firstItem.btn_type ===
-                                                    "service-contract-bills"
-                                                  ) {
-                                                    type = "bill-service";
-                                                  } else if (
-                                                    firstItem.btn_type ===
-                                                    "advance-bill"
-                                                  ) {
-                                                    type = "advance-bill";
-                                                  } else if (
-                                                    firstItem.btn_type ===
-                                                    "claim-against-pbg"
-                                                  ) {
-                                                    type = "claim-against-pbg";
-                                                  } else if (
-                                                    firstItem.btn_type ===
-                                                    "bill-incorrect-deductions"
-                                                  ) {
-                                                    type = "any-other";
-                                                  } else if (
-                                                    firstItem.btn_type ===
-                                                    "other-retentions"
-                                                  ) {
-                                                    type = "any-other";
-                                                  } else if (
-                                                    firstItem.btn_type ===
-                                                    "claim-against-jcc"
-                                                  ) {
-                                                    type = "claim-against-jcc";
-                                                  } else if (
-                                                    firstItem.btn_type ===
-                                                    "ld-penalty-refund"
-                                                  ) {
-                                                    type = "ld-penalty-refund";
-                                                  }
-
-                                                  navigate(
-                                                    `/checklist/${type}/view/${id}`,
-                                                    {
-                                                      state: `${firstItem?.btn_num}`,
+                                                    if (
+                                                      firstItem.btn_type ===
+                                                      "hybrid-bill-material"
+                                                    ) {
+                                                      type =
+                                                        "hybrid-bill-material";
+                                                    } else if (
+                                                      firstItem.btn_type ===
+                                                      "service-contract-bills"
+                                                    ) {
+                                                      type = "bill-service";
+                                                    } else if (
+                                                      firstItem.btn_type ===
+                                                      "advance-bill"
+                                                    ) {
+                                                      type = "advance-bill";
+                                                    } else if (
+                                                      firstItem.btn_type ===
+                                                      "claim-against-pbg"
+                                                    ) {
+                                                      type =
+                                                        "claim-against-pbg";
+                                                    } else if (
+                                                      firstItem.btn_type ===
+                                                      "bill-incorrect-deductions"
+                                                    ) {
+                                                      type = "any-other";
+                                                    } else if (
+                                                      firstItem.btn_type ===
+                                                      "other-retentions"
+                                                    ) {
+                                                      type = "any-other";
+                                                    } else if (
+                                                      firstItem.btn_type ===
+                                                      "claim-against-jcc"
+                                                    ) {
+                                                      type =
+                                                        "claim-against-jcc";
+                                                    } else if (
+                                                      firstItem.btn_type ===
+                                                      "ld-penalty-refund"
+                                                    ) {
+                                                      type =
+                                                        "ld-penalty-refund";
                                                     }
-                                                  );
-                                                }}
-                                              >
-                                                VIEW
-                                              </button>
-                                              {user?.department_id ===
-                                                DEPT_FI &&
-                                                user?.internal_role_id ===
-                                                  ASSIGNER && (
-                                                  <button
-                                                    onClick={() => {
-                                                      setAssign({
-                                                        ...assign,
-                                                        btn_num:
-                                                          firstItem?.btn_num,
-                                                        btn_type:
-                                                          firstItem?.btn_type,
-                                                      });
-                                                      setIsAssignPopup(true);
-                                                    }}
-                                                    className="btn fw-bold btn-sm btn-primary me-3 m-1"
-                                                  >
-                                                    ASSIGN
-                                                  </button>
-                                                )}
-                                              {isDO &&
-                                                firstItem &&
-                                                [
-                                                  "hybrid-bill-material",
-                                                  "claim-against-pbg",
-                                                  "bill-incorrect-deductions",
-                                                  "ld-penalty-refund",
-                                                  "other-retentions",
-                                                  "claim-against-jcc",
-                                                  "advance-bill",
-                                                ].includes(
-                                                  firstItem.btn_type
-                                                ) && (
+
+                                                    navigate(
+                                                      `/checklist/${type}/view/${id}`,
+                                                      {
+                                                        state: `${firstItem?.btn_num}`,
+                                                      }
+                                                    );
+                                                  }}
+                                                >
+                                                  VIEW
+                                                </button>
+                                                {user?.department_id ===
+                                                  DEPT_FI &&
+                                                  user?.internal_role_id ===
+                                                    ASSIGNER && (
+                                                    <button
+                                                      onClick={() => {
+                                                        setAssign({
+                                                          ...assign,
+                                                          btn_num:
+                                                            firstItem?.btn_num,
+                                                          btn_type:
+                                                            firstItem?.btn_type,
+                                                        });
+                                                        setIsAssignPopup(true);
+                                                      }}
+                                                      className="btn fw-bold btn-sm btn-primary me-3 m-1"
+                                                    >
+                                                      ASSIGN
+                                                    </button>
+                                                  )}
+                                                {isDO &&
+                                                  firstItem &&
+                                                  [
+                                                    "hybrid-bill-material",
+                                                    "claim-against-pbg",
+                                                    "bill-incorrect-deductions",
+                                                    "ld-penalty-refund",
+                                                    "other-retentions",
+                                                    "claim-against-jcc",
+                                                    "advance-bill",
+                                                  ].includes(
+                                                    firstItem.btn_type
+                                                  ) && (
+                                                    <button
+                                                      className="btn btn-sm btn-primary m-1"
+                                                      onClick={() => {
+                                                        let type =
+                                                          firstItem.btn_type;
+
+                                                        if (
+                                                          firstItem.btn_type ===
+                                                            "bill-incorrect-deductions" ||
+                                                          firstItem.btn_type ===
+                                                            "other-retentions"
+                                                        ) {
+                                                          type = "any-other";
+                                                        }
+
+                                                        if (id) {
+                                                          navigate(
+                                                            `/checklist/${type}/edit/${id}`,
+                                                            {
+                                                              state:
+                                                                firstItem?.btn_num,
+                                                            }
+                                                          );
+                                                        }
+                                                      }}
+                                                    >
+                                                      Action
+                                                    </button>
+                                                  )}
+
+                                                {user?.vendor_code ===
+                                                  firstItem?.bill_certifing_authority && (
                                                   <button
                                                     className="btn btn-sm btn-primary m-1"
                                                     onClick={() => {
-                                                      let type =
-                                                        firstItem.btn_type;
-
-                                                      if (
-                                                        firstItem.btn_type ===
-                                                          "bill-incorrect-deductions" ||
-                                                        firstItem.btn_type ===
-                                                          "other-retentions"
-                                                      ) {
-                                                        type = "any-other";
-                                                      }
-
-                                                      if (id) {
-                                                        navigate(
-                                                          `/checklist/${type}/edit/${id}`,
-                                                          {
-                                                            state:
+                                                      navigate(
+                                                        `/checklist/bill-service/edit/${id}`,
+                                                        {
+                                                          state: {
+                                                            btn_num:
                                                               firstItem?.btn_num,
-                                                          }
-                                                        );
-                                                      }
+                                                            bill_ca:
+                                                              firstItem?.bill_certifing_authority,
+                                                          },
+                                                        }
+                                                      );
                                                     }}
                                                   >
                                                     Action
                                                   </button>
                                                 )}
+                                              </div>
+                                            </td>
+                                          </tr>
+                                          {items &&
+                                            items.map((item, i) => (
+                                              <tr key={i}>
+                                                <td>
+                                                  {formatDate(item?.created_at)}
+                                                  {console.log(
+                                                    item?.created_at,
+                                                    "OBPS"
+                                                  )}
+                                                </td>
+                                                <td className="tdrowadd">
+                                                  {item?.assign_by_name}{" "}
+                                                  {item?.assign_by &&
+                                                    `(${item.assign_by})`}
+                                                </td>
 
-                                              {user?.vendor_code ===
-                                                firstItem?.bill_certifing_authority && (
-                                                <button
-                                                  className="btn btn-sm btn-primary m-1"
-                                                  onClick={() => {
-                                                    navigate(
-                                                      `/checklist/bill-service/edit/${id}`,
-                                                      {
-                                                        state: {
-                                                          btn_num:
-                                                            firstItem?.btn_num,
-                                                          bill_ca:
-                                                            firstItem?.bill_certifing_authority,
-                                                        },
-                                                      }
-                                                    );
-                                                  }}
+                                                <td className="tdrowadd">
+                                                  {item?.assign_to_name}{" "}
+                                                  {item?.assign_to &&
+                                                    `(${item.assign_to})`}
+                                                </td>
+                                                <td className="tdrowadd">
+                                                  {item?.assign_to_fi_name}{" "}
+                                                  {item?.assign_to_fi &&
+                                                    `(${item.assign_to_fi})`}
+                                                </td>
+                                                <td
+                                                  className={`${clrLegend(
+                                                    item?.status
+                                                  )} bold`}
                                                 >
-                                                  Action
-                                                </button>
-                                              )}
-                                            </div>
-                                          </td>
-                                        </tr>
-                                        {items &&
-                                          items.map((item, i) => (
-                                            <tr key={i}>
-                                              <td>
-                                                {formatDate(item?.created_at)}
-                                                {console.log(
-                                                  item?.created_at,
-                                                  "OBPS"
-                                                )}
-                                              </td>
-                                              <td className="tdrowadd">
-                                                {item?.assign_by_name}{" "}
-                                                {item?.assign_by &&
-                                                  `(${item.assign_by})`}
-                                              </td>
-
-                                              <td className="tdrowadd">
-                                                {item?.assign_to_name}{" "}
-                                                {item?.assign_to &&
-                                                  `(${item.assign_to})`}
-                                              </td>
-                                              <td className="tdrowadd">
-                                                {item?.assign_to_fi_name}{" "}
-                                                {item?.assign_to_fi &&
-                                                  `(${item.assign_to_fi})`}
-                                              </td>
-                                              <td
-                                                className={`${clrLegend(
-                                                  item?.status
-                                                )} bold`}
-                                              >
-                                                {item?.status}
-                                              </td>
-                                            </tr>
-                                          ))}
-                                      </Fragment>
-                                    );
-                                  })}
+                                                  {item?.status}
+                                                </td>
+                                              </tr>
+                                            ))}
+                                        </Fragment>
+                                      );
+                                    }
+                                  )}
                                 </>
                               )}
                             </tbody>
@@ -577,7 +600,7 @@ const Checklist = () => {
                                             <td>{file.documentNo}</td>
                                             <td>
                                               <a
-                                                href={`${process.env.REACT_APP_ROOT_URL}sapuploads/pymtadvice/${file?.fileName}`}
+                                                href={`${process.env.REACT_APP_ROOT_URL}uploads/paymentadvice/${file?.fileName}`}
                                                 target="_blank"
                                                 rel="noreferrer"
                                               >
