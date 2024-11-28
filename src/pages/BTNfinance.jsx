@@ -73,18 +73,43 @@ const BTNfinance = () => {
   //   window.open(pdfUrl, "_blank");
   // };
 
-  const filteredData = paymentdata.filter(
-    (file) =>
-      ((file.btn_num &&
-        file.btn_num.toLowerCase().includes(searchQuery.toLowerCase())) ||
-        (file.invoice_no &&
-          file.invoice_no.toLowerCase().includes(searchQuery.toLowerCase())) ||
-        (file.purchasing_doc_no &&
-          file.purchasing_doc_no
-            .toLowerCase()
-            .includes(searchQuery.toLowerCase()))) &&
-      (selectedStatus === "All" || file.status === selectedStatus)
-  );
+  // const filteredData = paymentdata.filter(
+  //   (file) =>
+  //     ((file.btn_num &&
+  //       file.btn_num.toLowerCase().includes(searchQuery.toLowerCase())) ||
+  //       (file.invoice_no &&
+  //         file.invoice_no.toLowerCase().includes(searchQuery.toLowerCase())) ||
+  //       (file.purchasing_doc_no &&
+  //         file.purchasing_doc_no
+  //           .toLowerCase()
+  //           .includes(searchQuery.toLowerCase()))) &&
+  //     (selectedStatus === "All" || file.status === selectedStatus)
+  // );
+
+  const filteredData = paymentdata
+    .filter(
+      (file) =>
+        ((file.btn_num &&
+          file.btn_num.toLowerCase().includes(searchQuery.toLowerCase())) ||
+          (file.invoice_no &&
+            file.invoice_no
+              .toLowerCase()
+              .includes(searchQuery.toLowerCase())) ||
+          (file.purchasing_doc_no &&
+            file.purchasing_doc_no
+              .toLowerCase()
+              .includes(searchQuery.toLowerCase()))) &&
+        (selectedStatus === "All" || file.status === selectedStatus)
+    )
+    .sort((a, b) => {
+      console.log(a, "abhinit-a");
+      console.log(b, "rahul-b");
+
+      if (a.btn_num && b.btn_num) {
+        return b.btn_num.localeCompare(a.btn_num);
+      }
+      return 0;
+    });
 
   const generateExcel = () => {
     const data = [
@@ -174,11 +199,15 @@ const BTNfinance = () => {
                     >
                       <option value="All">All</option>
                       <option value="RECEIVED">RECEIVED</option>
+                      <option value="SUBMITTED_BY_VENDOR">
+                        SUBMITTED_BY_VENDOR
+                      </option>
                       <option value="SUBMITTED_BY_DO">SUBMITTED_BY_DO</option>
                       <option value="FORWARD_TO_FINANCE">
                         FORWARD_TO_FINANCE
                       </option>
                       <option value="RETURN_TO_DO">RETURN_TO_DO</option>
+                      <option value="PAYMENT DONE">PAYMENT DONE</option>
                       <option value="REJECTED">REJECTED</option>
                       <option value="BANK">BANK</option>
                       <option value="HOLD">HOLD</option>
