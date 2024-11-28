@@ -44,6 +44,7 @@ export const BGEntry = async (formDatainput, token, flag) => {
     reference_no,
     bank_name,
     branch_name,
+    department,
     bank_addr1,
     bank_city,
     bank_pin_code,
@@ -66,7 +67,7 @@ export const BGEntry = async (formDatainput, token, flag) => {
     bank_pin_code === "" ||
     bg_no === "" ||
     bg_date === "" ||
-    // bg_ammount === "" ||
+    department === "" ||
     bg_recived_date === "" ||
     validity_date === "" ||
     claim_priod === "" ||
