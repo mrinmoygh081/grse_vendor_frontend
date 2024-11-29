@@ -44,6 +44,7 @@ export const actionHandlerBTN = async (
       invoice_filename,
       invoice_supporting_doc,
       invoice_value,
+      invoice_date,
       debit_note,
       credit_note,
       net_claim_amount,
@@ -65,6 +66,10 @@ export const actionHandlerBTN = async (
 
     if (!invoice_value || !invoice_value.trim() === "") {
       toast.warning("Basic Value is mandatory.");
+      return;
+    }
+    if (!invoice_date || !invoice_date.trim() === "") {
+      toast.warning("Invoice Date is mandatory.");
       return;
     }
     if (!agree_to_declaration) {
@@ -97,6 +102,7 @@ export const actionHandlerBTN = async (
     fDToSend.append("invoice_no", invoice_no);
     fDToSend.append("invoice_type", invoice_type);
     fDToSend.append("invoice_value", invoice_value);
+    fDToSend.append("invoice_date", convertToEpoch(invoice_date));
     fDToSend.append("debit_note", debit_note);
     fDToSend.append("credit_note", credit_note);
     fDToSend.append("hsn_gstn_icgrn", hsn_gstn_icgrn);

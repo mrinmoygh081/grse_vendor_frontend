@@ -31,6 +31,7 @@ export const initialData = {
     },
   ],
   inv_type: "",
+  invoice_date: "",
 };
 
 export const initialDODataPBG = {

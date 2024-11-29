@@ -66,6 +66,9 @@ input[type="number"] {
 .min-w-90px {
   width: 90px;
 }
+.max_w_50 {
+  max-width: 50%;
+}
 .flex_center {
   display: flex;
   align-items: center;
@@ -250,7 +253,8 @@ input[type="number"] {
 }
 
 @media print {
-  .print_btn, .no_print {
+  .print_btn,
+  .no_print {
     display: none !important;
   }
   .date_time_container {
@@ -948,7 +952,7 @@ input[type="number"] {
 
 .wide-header {
   min-width: 200px;
-  white-space: nowrap; 
+  white-space: nowrap;
 }
 
 /* cheklist table css */
@@ -1001,4 +1005,3 @@ table td {
 table th {
   background-color: #f4f4f4;
 }
-
