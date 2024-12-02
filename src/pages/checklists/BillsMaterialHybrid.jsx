@@ -416,10 +416,6 @@ const BillsMaterialHybrid = () => {
                                     <tr>
                                       <td>Invoice Date:</td>
                                       <td className="btn_value">
-                                        {console.log(
-                                          "ata?.invoice_date",
-                                          data?.invoice_date
-                                        )}
                                         {data?.invoice_date &&
                                         data?.invoice_date !== "--" ? (
                                           data?.invoice_date
@@ -444,6 +440,7 @@ const BillsMaterialHybrid = () => {
                                             dateFormat="dd/MM/yyyy"
                                             className="form-control"
                                             placeholderText="Select invoice date"
+                                            maxDate={new Date()}
                                           />
                                         )}
                                       </td>
