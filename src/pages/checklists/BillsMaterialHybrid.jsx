@@ -20,7 +20,11 @@ import {
 } from "../../utils/smallFun";
 import { inputOnWheelPrevent } from "../../utils/inputOnWheelPrevent";
 import { apiCallBack } from "../../utils/fetchAPIs";
-import { formatDate, formatFilePath } from "../../utils/getDateTimeNow";
+import {
+  convertToEpoch,
+  formatDate,
+  formatFilePath,
+} from "../../utils/getDateTimeNow";
 import { toast } from "react-toastify";
 import { initialData } from "../../data/btnData";
 import DynamicButton from "../../Helpers/DynamicButton";
@@ -137,6 +141,7 @@ const BillsMaterialHybrid = () => {
           total_price,
           invoice_date: formatDate(invoice_date),
         });
+        setData({ ...data, invoice_date: formatDate(invoice_date) });
       } else if (response && response.message) {
         toast.warn(response.message);
       } else {
@@ -411,21 +416,29 @@ const BillsMaterialHybrid = () => {
                                     <tr>
                                       <td>Invoice Date:</td>
                                       <td className="btn_value">
-                                        {form?.invoice_date &&
-                                        form?.invoice_date !== "" ? (
-                                          form?.invoice_date
+                                        {console.log(
+                                          "ata?.invoice_date",
+                                          data?.invoice_date
+                                        )}
+                                        {data?.invoice_date &&
+                                        data?.invoice_date !== "--" ? (
+                                          data?.invoice_date
                                         ) : (
                                           <DatePicker
                                             selected={
-                                              form?.invoice_date
-                                                ? new Date(form.invoice_date)
+                                              form?.invoice_date &&
+                                              form?.invoice_date !== "--"
+                                                ? new Date(
+                                                    form.invoice_date * 1000
+                                                  )
                                                 : null
                                             }
                                             onChange={(date) => {
                                               console.log("date", date);
                                               setForm({
                                                 ...form,
-                                                invoice_date: date,
+                                                invoice_date:
+                                                  convertToEpoch(date),
                                               });
                                             }}
                                             dateFormat="dd/MM/yyyy"

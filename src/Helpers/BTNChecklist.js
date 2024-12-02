@@ -68,7 +68,11 @@ export const actionHandlerBTN = async (
       toast.warning("Basic Value is mandatory.");
       return;
     }
-    if (!invoice_date || !invoice_date.trim() === "") {
+    if (
+      !invoice_date ||
+      !invoice_date.trim() === "" ||
+      invoice_date.trim() === "--"
+    ) {
       toast.warning("Invoice Date is mandatory.");
       return;
     }
