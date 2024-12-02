@@ -264,7 +264,7 @@ const Checklist = () => {
                                         <Fragment key={index}>
                                           <tr>
                                             <td
-                                              colSpan={7}
+                                              colSpan={5}
                                               style={{
                                                 whiteSpace: "pre-wrap",
                                                 padding: "10px 0",
