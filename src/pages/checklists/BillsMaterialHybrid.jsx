@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from "react";
-import { useLocation, useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 import { FaCaretLeft, FaMinus } from "react-icons/fa";
 import SideBar from "../../components/SideBar";
 import Header from "../../components/Header";
@@ -18,7 +20,11 @@ import {
 } from "../../utils/smallFun";
 import { inputOnWheelPrevent } from "../../utils/inputOnWheelPrevent";
 import { apiCallBack } from "../../utils/fetchAPIs";
-import { formatDate, formatFilePath } from "../../utils/getDateTimeNow";
+import {
+  convertToEpoch,
+  formatDate,
+  formatFilePath,
+} from "../../utils/getDateTimeNow";
 import { toast } from "react-toastify";
 import { initialData } from "../../data/btnData";
 import DynamicButton from "../../Helpers/DynamicButton";
@@ -110,6 +116,8 @@ const BillsMaterialHybrid = () => {
     }
   }, [data]);
 
+  console.log("form", form);
+
   const getGrnIcgrnHandler = async () => {
     try {
       let inv_no = form.invoice_no;
@@ -122,6 +130,7 @@ const BillsMaterialHybrid = () => {
           icgrn_nos,
           gate_entry_date,
           total_price,
+          invoice_date,
         } = response.data;
         setForm({
           ...form,
@@ -130,7 +139,9 @@ const BillsMaterialHybrid = () => {
           grn_nos,
           icgrn_nos,
           total_price,
+          invoice_date: formatDate(invoice_date),
         });
+        setData({ ...data, invoice_date: formatDate(invoice_date) });
       } else if (response && response.message) {
         toast.warn(response.message);
       } else {
@@ -403,17 +414,49 @@ const BillsMaterialHybrid = () => {
                                     )}
 
                                     <tr>
+                                      <td>Invoice Date:</td>
+                                      <td className="btn_value">
+                                        {data?.invoice_date &&
+                                        data?.invoice_date !== "--" ? (
+                                          data?.invoice_date
+                                        ) : (
+                                          <DatePicker
+                                            selected={
+                                              form?.invoice_date &&
+                                              form?.invoice_date !== "--"
+                                                ? new Date(
+                                                    form.invoice_date * 1000
+                                                  )
+                                                : null
+                                            }
+                                            onChange={(date) => {
+                                              console.log("date", date);
+                                              setForm({
+                                                ...form,
+                                                invoice_date:
+                                                  convertToEpoch(date),
+                                              });
+                                            }}
+                                            dateFormat="dd/MM/yyyy"
+                                            className="form-control"
+                                            placeholderText="Select invoice date"
+                                            maxDate={new Date()}
+                                          />
+                                        )}
+                                      </td>
+                                    </tr>
+
+                                    <tr>
                                       <td>Additional PO:</td>
                                       <td>
                                         <div className="d-flex align-items-start flex-column">
                                           {checkTypeArr(form?.associated_po) &&
                                             form.associated_po.map(
                                               (item, i) => (
-                                                <div className="d-flex align-items-center gap-1 mb-1">
-                                                  {console.log(
-                                                    "item?.a_po",
-                                                    item?.a_po
-                                                  )}
+                                                <div
+                                                  key={i}
+                                                  className="d-flex align-items-center gap-1 mb-1"
+                                                >
                                                   <input
                                                     type="text"
                                                     className="form-control"

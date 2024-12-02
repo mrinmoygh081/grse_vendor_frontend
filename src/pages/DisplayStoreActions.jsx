@@ -2,43 +2,20 @@ import React, { Fragment, useEffect, useState } from "react";
 import Footer from "../components/Footer";
 import SideBar from "../components/SideBar";
 import Header from "../components/Header";
-import { Link, useParams, useNavigate } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { apiCallBack } from "../utils/fetchAPIs";
 import { useSelector } from "react-redux";
 import { groupByDocumentType } from "../utils/groupedByReq";
-import moment from "moment";
-import { formatDate } from "../utils/getDateTimeNow";
 import SkeletonLoader from "../loader/SkeletonLoader";
 
 const DisplayStoreActions = () => {
-  const navigate = useNavigate();
-  const [isPopup, setIsPopup] = useState(false);
-  const [icgrnData, setIcgrnData] = useState([]);
   const [allPdfData, setAllPdfData] = useState([]);
   const [groupByPdfData, setGroupByPdfData] = useState([]);
-  const [payloadData, setPayloadData] = useState({});
   const [searchQuery, setSearchQuery] = useState("");
-  const [isLoading, setIsLoading] = useState(true); // Set to true initially to show loader
+  const [isLoading, setIsLoading] = useState(true);
 
   const { id } = useParams();
   const { token } = useSelector((state) => state.auth);
-  const { poType } = useSelector((state) => state.selectedPO);
-
-  const getIcgrnData = async () => {
-    try {
-      const data = await apiCallBack(
-        "GET",
-        `po/ListOfIcgrn?poNo=${id}`,
-        null,
-        token
-      );
-      if (data?.status) {
-        setIcgrnData(data?.data);
-      }
-    } catch (error) {
-      console.error("Error fetching ICGRN list:", error);
-    }
-  };
 
   const doc_Type_Name = {
     reservation_report: "Store Issue Requisition",
@@ -74,57 +51,35 @@ const DisplayStoreActions = () => {
     } catch (error) {
       console.error("Error fetching ICGRN list:", error);
     } finally {
-      setIsLoading(false); // Set loading to false after fetching data
+      setIsLoading(false);
     }
   };
 
   const CheckFileHandler = (item) => {
     if (item.documentType === "reservation_report") {
       return { reservationNumber: item.reservationNumber };
-      // setPayloadData({
-      //   reservationNumber: item.reservationNumber,
-      // });
     }
     if (item.documentType === "goods_issue_slip") {
       return { issueNo: item.issueNo };
-      // setPayloadData({
-      //   issueNo: item.issueNo,
-      // });
     }
     if (item.documentType === "icgrn_report") {
       return { docNo: item.docNo };
-      // setPayloadData({
-      //   docNo: item.docNo,
-      // });
     }
     if (item.documentType === "ztfi_bil_deface") {
       return { btn: item.btn };
-      // setPayloadData({
-      //   btn: item.btn,
-      // });
     }
     if (item.documentType === "gate_entry") {
       return { gate_entry_no: item.gateEntryNo };
-      // setPayloadData({
-      //   gate_entry_no: item.gateEntryNo,
-      // });
     }
     if (item.documentType === "grn_report") {
       return { matDocNo: item.matDocNo };
-      // setPayloadData({
-      //   matDocNo: item.matDocNo,
-      // });
     }
     if (item.documentType === "service_entry_report") {
       return { serviceEntryNumber: item.serviceEntryNumber };
-      // setPayloadData({
-      //   serviceEntryNumber: item.serviceEntryNumber,
-      // });
     }
   };
 
   useEffect(() => {
-    getIcgrnData();
     getAllPdfHandler();
   }, [id, token]);
 
@@ -148,25 +103,6 @@ const DisplayStoreActions = () => {
     }),
     {}
   );
-  // const filteredPdfData = Object.keys(groupByPdfData).reduce(
-  //   (acc, key) => ({
-  //     ...acc,
-  //     [key]: groupByPdfData[key]
-  //       .filter((item) =>
-  //         Object.values(item).some(
-  //           (value) =>
-  //             value &&
-  //             value.toString().toLowerCase().includes(searchQuery.toLowerCase())
-  //         )
-  //       )
-  //       .filter((item) =>
-  //         key === "gate_entry"
-  //           ? !item.gateEntryNo?.toLowerCase().startsWith("n")
-  //           : true
-  //       ), // Apply case-insensitive filter for Gate Entry No
-  //   }),
-  //   {}
-  // );
 
   return (
     <>

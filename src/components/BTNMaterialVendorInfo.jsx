@@ -192,6 +192,16 @@ const BTNMaterialVendorInfo = ({ navigate, id }) => {
                     </td>
                   </tr>
                   <tr>
+                    <td>Invoice Date:</td>
+                    <td className="btn_value">
+                      <b className="me-3">
+                        {data?.invoice_date
+                          ? formatDate(data.invoice_date)
+                          : ""}
+                      </b>
+                    </td>
+                  </tr>
+                  <tr>
                     <td>Basic value:</td>
                     <td className="btn_value">
                       <b className="me-3">

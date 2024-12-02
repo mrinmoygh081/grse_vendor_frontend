@@ -44,6 +44,7 @@ export const actionHandlerBTN = async (
       invoice_filename,
       invoice_supporting_doc,
       invoice_value,
+      invoice_date,
       debit_note,
       credit_note,
       net_claim_amount,
@@ -58,13 +59,22 @@ export const actionHandlerBTN = async (
       associated_po,
     } = form;
 
-    if (!invoice_type || !invoice_type.trim() === "") {
+    if (!invoice_type || invoice_type.trim() === "") {
       toast.warning("Please choose Invoice Type.");
       return;
     }
 
-    if (!invoice_value || !invoice_value.trim() === "") {
+    if (!invoice_value || invoice_value.trim() === "") {
       toast.warning("Basic Value is mandatory.");
+      return;
+    }
+    console.log("invoice_date", invoice_date, typeof invoice_date)
+    if (
+      !invoice_date ||
+      invoice_date.toString().trim() === "" ||
+      invoice_date.toString().trim() === "--"
+    ) {
+      toast.warning("Invoice Date is mandatory.");
       return;
     }
     if (!agree_to_declaration) {
@@ -97,6 +107,7 @@ export const actionHandlerBTN = async (
     fDToSend.append("invoice_no", invoice_no);
     fDToSend.append("invoice_type", invoice_type);
     fDToSend.append("invoice_value", invoice_value);
+    fDToSend.append("invoice_date", invoice_date);
     fDToSend.append("debit_note", debit_note);
     fDToSend.append("credit_note", credit_note);
     fDToSend.append("hsn_gstn_icgrn", hsn_gstn_icgrn);
@@ -135,7 +146,8 @@ export const actionHandlerBTN = async (
       toast.error(response?.message);
     }
   } catch (error) {
-    toast.error("Error:", error);
+    console.error("error", error?.message)
+    toast.error("Error:", error.message);
   }
 };
 
