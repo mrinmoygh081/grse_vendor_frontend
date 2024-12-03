@@ -40,8 +40,12 @@ const QapDashboard = () => {
         null,
         token
       );
+
       if (response?.status) {
-        setPaymentdata(response.data);
+        const sortedData = response.data.sort(
+          (a, b) => b.created_at - a.created_at
+        );
+        setPaymentdata(sortedData);
       } else {
         setError("Error fetching payment data: " + response.message);
       }
@@ -93,9 +97,6 @@ const QapDashboard = () => {
       (selectedStatus === "All" || file.status === selectedStatus)
     );
   });
-  console.log("filteredData", filteredData);
-  console.log("paymentdata", paymentdata);
-  console.log("selectedStatus", selectedStatus);
 
   const generateExcel = () => {
     const data = [

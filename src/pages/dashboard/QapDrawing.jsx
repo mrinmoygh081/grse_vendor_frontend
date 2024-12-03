@@ -41,7 +41,10 @@ const QapDrawing = () => {
         token
       );
       if (response?.status) {
-        setPaymentdata(response.data);
+        const sortedData = response.data.sort(
+          (a, b) => b.created_at - a.created_at
+        );
+        setPaymentdata(sortedData);
       } else {
         setError("Error fetching payment data: " + response.message);
       }

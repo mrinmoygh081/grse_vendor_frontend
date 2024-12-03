@@ -132,6 +132,7 @@ const DisplayStoreActions = () => {
                               <thead>
                                 <tr className="border-0">
                                   <th>Document Number</th>
+                                  <th>Invoice Number</th>
                                   <th>DATE</th>
                                   <th>VIEW DOCUMENT</th>
                                 </tr>
@@ -174,6 +175,7 @@ const DisplayStoreActions = () => {
                                                       item.matDocNo ||
                                                       item.serviceEntryNumber}
                                                   </td>
+                                                  <td>{item.invoice_no}</td>
                                                   <td>
                                                     {item.dateTime &&
                                                       new Date(
