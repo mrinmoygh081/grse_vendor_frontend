@@ -307,7 +307,8 @@ const BillsMaterialHybridEdit = () => {
       let payload = {
         btn_num: state,
         status: "REJECTED",
-        rejectedMessage: remarks,
+        remarks,
+        purchasing_doc_no: id,
       };
       const response = await apiCallBack(
         "POST",

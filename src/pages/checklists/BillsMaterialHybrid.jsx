@@ -86,13 +86,10 @@ const BillsMaterialHybrid = () => {
         token
       );
       if (d?.status) {
-        console.log(d);
         setData(d?.data);
-        // setLoading(false);
       }
     } catch (error) {
       console.error("Error fetching WDC list:", error);
-      // setLoading(false);
     }
   };
 
@@ -115,8 +112,6 @@ const BillsMaterialHybrid = () => {
       });
     }
   }, [data]);
-
-  console.log("form", form);
 
   const getGrnIcgrnHandler = async () => {
     try {
@@ -430,7 +425,6 @@ const BillsMaterialHybrid = () => {
                                                 : null
                                             }
                                             onChange={(date) => {
-                                              console.log("date", date);
                                               setForm({
                                                 ...form,
                                                 invoice_date:

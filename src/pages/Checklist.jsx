@@ -233,7 +233,7 @@ const Checklist = () => {
                                 <th>Date</th>
                                 <th>Assign By</th>
                                 <th>Assign TO</th>
-                                <th>Assign To FI</th>
+                                {/* <th>Assign To FI</th> */}
                                 <th>Status</th>
                                 <th>Action</th>
                               </tr>
@@ -264,7 +264,7 @@ const Checklist = () => {
                                         <Fragment key={index}>
                                           <tr>
                                             <td
-                                              colSpan={5}
+                                              colSpan={4}
                                               style={{
                                                 whiteSpace: "pre-wrap",
                                                 padding: "10px 0",
@@ -462,11 +462,11 @@ const Checklist = () => {
                                                   {item?.assign_to &&
                                                     `(${item.assign_to})`}
                                                 </td>
-                                                <td className="tdrowadd">
+                                                {/* <td className="tdrowadd">
                                                   {item?.assign_to_fi_name}{" "}
                                                   {item?.assign_to_fi &&
                                                     `(${item.assign_to_fi})`}
-                                                </td>
+                                                </td> */}
                                                 <td
                                                   className={`${clrLegend(
                                                     item?.status
