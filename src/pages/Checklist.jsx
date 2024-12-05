@@ -15,7 +15,7 @@ import { TailSpin } from "react-loader-spinner";
 import { activityOptions } from "../data/btnData";
 import SkeletonLoader from "../loader/SkeletonLoader";
 import DynamicButton from "../Helpers/DynamicButton";
-import { MdOutlineTextsms } from "react-icons/md";
+import { BsChatRightText } from "react-icons/bs";
 import { ASSIGNER, DEPT_FI } from "../constants/userConstants";
 
 const Checklist = () => {
@@ -500,7 +500,7 @@ const Checklist = () => {
                                                           position: "relative",
                                                         }}
                                                       >
-                                                        <MdOutlineTextsms
+                                                        <BsChatRightText
                                                           className="ms-2"
                                                           size={15}
                                                           style={{
