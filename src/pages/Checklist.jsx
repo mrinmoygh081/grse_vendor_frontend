@@ -248,12 +248,12 @@ const Checklist = () => {
                           >
                             <thead>
                               <tr className="border-0">
-                                <th>Date</th>
-                                <th>Assign By</th>
-                                <th>Assign TO</th>
-                                <th>Assign To FI</th>
-                                <th>Status</th>
-                                <th>Action</th>
+                                <th>DATE</th>
+                                <th>ACTION BY</th>
+                                <th>ACTION ON (NEXT)</th>
+                                {/* <th>Assign To FI</th> */}
+                                <th>STATUS</th>
+                                <th>ACTION</th>
                               </tr>
                             </thead>
                             <tbody style={{ maxHeight: "100%" }}>
@@ -282,7 +282,7 @@ const Checklist = () => {
                                         <Fragment key={index}>
                                           <tr>
                                             <td
-                                              colSpan={5}
+                                              colSpan={4}
                                               style={{
                                                 whiteSpace: "pre-wrap",
                                                 padding: "10px 0",
@@ -480,11 +480,11 @@ const Checklist = () => {
                                                   {item?.assign_to &&
                                                     `(${item.assign_to})`}
                                                 </td>
-                                                <td className="tdrowadd">
+                                                {/* <td className="tdrowadd">
                                                   {item?.assign_to_fi_name}{" "}
                                                   {item?.assign_to_fi &&
                                                     `(${item.assign_to_fi})`}
-                                                </td>
+                                                </td> */}
                                                 <td
                                                   className={`${clrLegend(
                                                     item?.status
@@ -658,14 +658,14 @@ const Checklist = () => {
                           )}
                           <div>
                             <div className="page_heading mt-5 mb-3">
-                              <h3>Payment Advice</h3>
+                              <h3>PAYMENT ADVICE</h3>
                             </div>
                             <table className="table table-striped table-bordered table_height">
                               <thead>
                                 <tr className="border-0">
-                                  <th>Date</th>
-                                  <th>Vendor Code</th>
-                                  <th>Document No</th>
+                                  <th>DATE</th>
+                                  <th>VENDOR CODE</th>
+                                  <th>DOCUMENT NO.</th>
                                   <th>VIEW DOCUMENT</th>
                                 </tr>
                               </thead>
