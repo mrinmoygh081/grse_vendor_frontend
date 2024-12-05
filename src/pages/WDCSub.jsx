@@ -2295,7 +2295,7 @@ const WDCSub = () => {
               <div className="card-header border-0 pt-5 pb-3">
                 <h3 className="card-title align-items-start flex-column">
                   <span className="card-label fw-bold fs-3 mb-1">
-                    ffffff All Data{" "}
+                    All Data{" "}
                     {viewData?.reference_no && `for ${viewData?.reference_no}`}
                   </span>
                 </h3>
