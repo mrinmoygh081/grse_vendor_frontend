@@ -148,7 +148,7 @@ const POs = () => {
                       setSelectedStatus(e.target.value);
                     }}
                   >
-                    <option value="All">All</option>
+                    {/* <option value="All">All</option>
                     <option value="SDBG">SDBG</option>
                     <option value="Drawing">Drawing</option>
                     <option value="QAP">QAP</option>
@@ -161,7 +161,19 @@ const POs = () => {
                     </option>
                     <option value="ICGRN">ICGRN</option>
                     <option value="WDC">WDC</option>
+                    <option value="PAYMENT">PAYMENT</option> */}
+                    <option value="All">All</option>
+                    <option value="SDBG">SDBG</option>
+                    <option value="DRAWING">DRAWING</option>
+                    <option value="QAP">QAP</option>
+                    <option value="ILMS">ILMS</option>
+                    <option value="INSPECTION">INSPECTION</option>
+                    <option value="SHIPPING">SHIPPING</option>
+                    <option value="STORE-GRN">STORE-GRN</option>
+                    <option value="STORE-ICGRN">STORE-ICGRN</option>
+                    <option value="WDC">WDC</option>
                     <option value="PAYMENT">PAYMENT</option>
+                    <option value="Not Started">Not Started</option>
                   </select>
                 </div>
               </div>
