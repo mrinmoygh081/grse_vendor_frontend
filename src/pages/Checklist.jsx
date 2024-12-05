@@ -230,12 +230,12 @@ const Checklist = () => {
                           >
                             <thead>
                               <tr className="border-0">
-                                <th>Date</th>
-                                <th>Assign By</th>
-                                <th>Assign TO</th>
+                                <th>DATE</th>
+                                <th>ACTION BY</th>
+                                <th>ACTION ON (NEXT)</th>
                                 {/* <th>Assign To FI</th> */}
-                                <th>Status</th>
-                                <th>Action</th>
+                                <th>STATUS</th>
+                                <th>ACTION</th>
                               </tr>
                             </thead>
                             <tbody style={{ maxHeight: "100%" }}>
@@ -565,14 +565,14 @@ const Checklist = () => {
                           )}
                           <div>
                             <div className="page_heading mt-5 mb-3">
-                              <h3>Payment Advice</h3>
+                              <h3>PAYMENT ADVICE</h3>
                             </div>
                             <table className="table table-striped table-bordered table_height">
                               <thead>
                                 <tr className="border-0">
-                                  <th>Date</th>
-                                  <th>Vendor Code</th>
-                                  <th>Document No</th>
+                                  <th>DATE</th>
+                                  <th>VENDOR CODE</th>
+                                  <th>DOCUMENT NO.</th>
                                   <th>VIEW DOCUMENT</th>
                                 </tr>
                               </thead>
