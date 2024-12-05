@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect, useState } from "react";
+import React, { Fragment, useEffect, useRef, useState } from "react";
 import Footer from "../components/Footer";
 import SideBar from "../components/SideBar";
 import Header from "../components/Header";
@@ -15,6 +15,7 @@ import { TailSpin } from "react-loader-spinner";
 import { activityOptions } from "../data/btnData";
 import SkeletonLoader from "../loader/SkeletonLoader";
 import DynamicButton from "../Helpers/DynamicButton";
+import { MdOutlineTextsms } from "react-icons/md";
 import { ASSIGNER, DEPT_FI } from "../constants/userConstants";
 
 const Checklist = () => {
@@ -37,6 +38,8 @@ const Checklist = () => {
   const [paymentData, setPaymentData] = useState("");
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
+  const popupRef = useRef(null);
+  const remarksRef = useRef(null);
   console.log("groupedBG", groupedBG);
 
   useEffect(() => {
@@ -153,6 +156,21 @@ const Checklist = () => {
       acc[key] = groupedBG[key];
       return acc;
     }, {});
+
+  //reject remarks
+  const handleButtonClick = (remarks) => {
+    if (popupRef.current) {
+      popupRef.current.style.display = "block"; // Show the popup
+      remarksRef.current.textContent = remarks; // Update the remarks text
+    }
+  };
+
+  const closePopup = () => {
+    if (popupRef.current) {
+      popupRef.current.style.display = "none"; // Hide the popup
+      remarksRef.current.textContent = ""; // Clear the remarks text
+    }
+  };
 
   return (
     <div className="wrapper d-flex flex-column flex-row-fluid">
@@ -472,7 +490,36 @@ const Checklist = () => {
                                                     item?.status
                                                   )} bold`}
                                                 >
-                                                  {item?.status}
+                                                  {/* Display Status with Remarks Icon */}
+                                                  <div className="d-flex align-items-center">
+                                                    <span>{item?.status}</span>
+                                                    {item.remarks && (
+                                                      <div
+                                                        className="icon-container"
+                                                        style={{
+                                                          position: "relative",
+                                                        }}
+                                                      >
+                                                        <MdOutlineTextsms
+                                                          className="ms-2"
+                                                          size={15}
+                                                          style={{
+                                                            cursor: "pointer",
+                                                            color: "blue",
+                                                          }}
+                                                          onClick={() =>
+                                                            handleButtonClick(
+                                                              item.remarks
+                                                            )
+                                                          }
+                                                        />
+                                                        <div className="tooltip">
+                                                          Reason for Rejection
+                                                        </div>{" "}
+                                                        {/* Tooltip text */}
+                                                      </div>
+                                                    )}
+                                                  </div>
                                                 </td>
                                               </tr>
                                             ))}
@@ -484,6 +531,52 @@ const Checklist = () => {
                               )}
                             </tbody>
                           </table>
+                          <div
+                            ref={popupRef}
+                            style={{
+                              display: "none",
+                              position: "fixed",
+                              top: "50%",
+                              left: "50%",
+                              transform: "translate(-50%, -50%)",
+                              backgroundColor: "white",
+                              boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.3)",
+                              padding: "30px",
+                              zIndex: 1000,
+                              borderRadius: "8px",
+                              width: "380px",
+                              maxWidth: "90%",
+                            }}
+                          >
+                            <h4>Reason for Rejection</h4>
+                            <p ref={remarksRef}></p>
+                            <button
+                              className="btn btn-danger"
+                              onClick={closePopup}
+                              style={{
+                                marginTop: "10px",
+                                fontSize: "14px",
+                                padding: "5px 10px",
+                              }}
+                            >
+                              Close
+                            </button>
+                          </div>
+
+                          {/* Background Overlay */}
+                          <div
+                            style={{
+                              display: "none",
+                              position: "fixed",
+                              top: 0,
+                              left: 0,
+                              width: "100%",
+                              height: "100%",
+                              backgroundColor: "rgba(0, 0, 0, 0.5)",
+                              zIndex: 999,
+                            }}
+                            onClick={closePopup}
+                          />
                           {isAssignPopup && (
                             <div className="popup active">
                               <div className="card card-xxl-stretch mb-5 mb-xxl-8">
