@@ -119,3 +119,13 @@ export const formatFilePathBTN = (path) => {
   // const replacedPath = path.replace(/\\/g, "/").replace(/\/\//g, "/");
   return fileDefaultPath + "/uploads/btns/" + path;
 };
+
+export const formatFilePathWDC = (path) => {
+  const fileDefaultPath = process.env.REACT_APP_PDF_URL;
+  if (!path || typeof path != "string") {
+    return fileDefaultPath + "/NO-FILE";
+  }
+
+  // const replacedPath = path.replace(/\\/g, "/").replace(/\/\//g, "/");
+  return fileDefaultPath + "/uploads/wdcs/" + path;
+};

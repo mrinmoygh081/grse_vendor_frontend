@@ -15,6 +15,8 @@ import {
   convertToEpoch,
   formatDate,
   formatEpochToDate,
+  formatFilePath,
+  formatFilePathWDC,
 } from "../utils/getDateTimeNow";
 import { clrLegend } from "../utils/clrLegend";
 import { checkTypeArr } from "../utils/smallFun";
@@ -2073,7 +2075,7 @@ const WDCSub = () => {
                       </label>
                       <p>
                         <span>{viewData?.inspection_note_ref_no}</span>
-                        {viewData?.file_inspection_note_ref_no && (
+                        {/* {viewData?.file_inspection_note_ref_no && (
                           <Link
                             to={`${process.env.REACT_APP_PDF_URL}wdcs/${viewData?.file_inspection_note_ref_no}`}
                             target="_blank"
@@ -2081,6 +2083,32 @@ const WDCSub = () => {
                           >
                             Click here
                           </Link>
+                        )} */}
+                        {viewData?.file_inspection_note_ref_no_file_path ? (
+                          <a
+                            href={formatFilePath(
+                              viewData?.file_inspection_note_ref_no_file_path
+                            )}
+                            target="_blank"
+                            rel="noreferrer"
+                            style={{
+                              marginRight: "10px",
+                            }}
+                          >
+                            View File
+                          </a>
+                        ) : viewData?.file_inspection_note_ref_no ? (
+                          <a
+                            href={formatFilePathWDC(
+                              viewData?.file_inspection_note_ref_no
+                            )}
+                            target="_blank"
+                            rel="noreferrer"
+                          >
+                            View File
+                          </a>
+                        ) : (
+                          "NA"
                         )}
                       </p>
                     </div>
@@ -2094,7 +2122,7 @@ const WDCSub = () => {
                         <span>
                           {viewData?.hinderence_report_cerified_by_berth}
                         </span>
-                        {viewData?.file_hinderence_report_cerified_by_berth && (
+                        {/* {viewData?.file_hinderence_report_cerified_by_berth && (
                           <Link
                             to={`${process.env.REACT_APP_PDF_URL}wdcs/${viewData?.file_hinderence_report_cerified_by_berth}`}
                             target="_blank"
@@ -2102,6 +2130,32 @@ const WDCSub = () => {
                           >
                             Click here
                           </Link>
+                        )} */}
+                        {viewData?.file_hinderence_report_cerified_by_berth_file_path ? (
+                          <a
+                            href={formatFilePath(
+                              viewData?.file_hinderence_report_cerified_by_berth_file_path
+                            )}
+                            target="_blank"
+                            rel="noreferrer"
+                            style={{
+                              marginRight: "10px",
+                            }}
+                          >
+                            View File
+                          </a>
+                        ) : viewData?.file_hinderence_report_cerified_by_berth ? (
+                          <a
+                            href={formatFilePathWDC(
+                              viewData?.file_hinderence_report_cerified_by_berth
+                            )}
+                            target="_blank"
+                            rel="noreferrer"
+                          >
+                            View File
+                          </a>
+                        ) : (
+                          "NA"
                         )}
                       </p>
                     </div>
@@ -2111,7 +2165,7 @@ const WDCSub = () => {
                       <label className="form-label">Attendance Report</label>
                       <p>
                         <span>{viewData?.attendance_report}</span>
-                        {viewData?.file_attendance_report && (
+                        {/* {viewData?.file_attendance_report && (
                           <Link
                             to={`${process.env.REACT_APP_PDF_URL}wdcs/${viewData?.file_attendance_report}`}
                             target="_blank"
@@ -2119,6 +2173,32 @@ const WDCSub = () => {
                           >
                             Click here
                           </Link>
+                        )} */}
+                        {viewData?.file_attendance_report_file_path ? (
+                          <a
+                            href={formatFilePath(
+                              viewData?.file_attendance_report_file_path
+                            )}
+                            target="_blank"
+                            rel="noreferrer"
+                            style={{
+                              marginRight: "10px",
+                            }}
+                          >
+                            View File
+                          </a>
+                        ) : viewData?.file_attendance_report ? (
+                          <a
+                            href={formatFilePathWDC(
+                              viewData?.file_attendance_report
+                            )}
+                            target="_blank"
+                            rel="noreferrer"
+                          >
+                            View File
+                          </a>
+                        ) : (
+                          "NA"
                         )}
                       </p>
                     </div>
@@ -2556,14 +2636,39 @@ const WDCSub = () => {
                   <label className="form-label">Inspecttion Note Ref No</label>
                   <p>
                     <span>{viewData?.inspection_note_ref_no}</span>
-                    {viewData?.file_inspection_note_ref_no && (
-                      <Link
+
+                    {/* <Link
                         to={`${process.env.REACT_APP_PDF_URL}wdcs/${viewData?.file_inspection_note_ref_no}`}
                         target="_blank"
                         style={{ marginLeft: "10px" }}
                       >
                         Click here
-                      </Link>
+                      </Link> */}
+                    {viewData?.file_inspection_note_ref_no_file_path ? (
+                      <a
+                        href={formatFilePath(
+                          viewData?.file_inspection_note_ref_no_file_path
+                        )}
+                        target="_blank"
+                        rel="noreferrer"
+                        style={{
+                          marginRight: "10px",
+                        }}
+                      >
+                        View File
+                      </a>
+                    ) : viewData?.file_inspection_note_ref_no ? (
+                      <a
+                        href={formatFilePathWDC(
+                          viewData?.file_inspection_note_ref_no
+                        )}
+                        target="_blank"
+                        rel="noreferrer"
+                      >
+                        View File
+                      </a>
+                    ) : (
+                      "NA"
                     )}
                   </p>
                 </div>
@@ -2575,7 +2680,7 @@ const WDCSub = () => {
                   </label>
                   <p>
                     <span>{viewData?.hinderence_report_cerified_by_berth}</span>
-                    {viewData?.file_hinderence_report_cerified_by_berth && (
+                    {/* {viewData?.file_hinderence_report_cerified_by_berth && (
                       <Link
                         to={`${process.env.REACT_APP_PDF_URL}wdcs/${viewData?.file_hinderence_report_cerified_by_berth}`}
                         target="_blank"
@@ -2583,6 +2688,32 @@ const WDCSub = () => {
                       >
                         Click here
                       </Link>
+                    )} */}
+                    {viewData?.file_hinderence_report_cerified_by_berth_file_path ? (
+                      <a
+                        href={formatFilePath(
+                          viewData?.file_hinderence_report_cerified_by_berth_file_path
+                        )}
+                        target="_blank"
+                        rel="noreferrer"
+                        style={{
+                          marginRight: "10px",
+                        }}
+                      >
+                        View File
+                      </a>
+                    ) : viewData?.file_hinderence_report_cerified_by_berth ? (
+                      <a
+                        href={formatFilePathWDC(
+                          viewData?.file_hinderence_report_cerified_by_berth
+                        )}
+                        target="_blank"
+                        rel="noreferrer"
+                      >
+                        View File
+                      </a>
+                    ) : (
+                      "NA"
                     )}
                   </p>
                 </div>
@@ -2592,7 +2723,7 @@ const WDCSub = () => {
                   <label className="form-label">Attendance Report</label>
                   <p>
                     <span>{viewData?.attendance_report}</span>
-                    {viewData?.file_attendance_report && (
+                    {/* {viewData?.file_attendance_report && (
                       <Link
                         to={`${process.env.REACT_APP_PDF_URL}wdcs/${viewData?.file_attendance_report}`}
                         target="_blank"
@@ -2600,6 +2731,32 @@ const WDCSub = () => {
                       >
                         Click here
                       </Link>
+                    )} */}
+                    {viewData?.file_attendance_report_file_path ? (
+                      <a
+                        href={formatFilePath(
+                          viewData?.file_attendance_report_file_path
+                        )}
+                        target="_blank"
+                        rel="noreferrer"
+                        style={{
+                          marginRight: "10px",
+                        }}
+                      >
+                        View File
+                      </a>
+                    ) : viewData?.file_attendance_report ? (
+                      <a
+                        href={formatFilePathWDC(
+                          viewData?.file_attendance_report
+                        )}
+                        target="_blank"
+                        rel="noreferrer"
+                      >
+                        View File
+                      </a>
+                    ) : (
+                      "NA"
                     )}
                   </p>
                 </div>
