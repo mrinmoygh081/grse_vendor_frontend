@@ -61,6 +61,10 @@ const QapDashboard = () => {
     const date = new Date(Number(timestamp) * 1000);
     return date.toLocaleDateString("en-US");
   };
+  const formatDateassign = (date) => {
+    if (isNaN(date)) return "N/A";
+    return date.toLocaleDateString("en-GB");
+  };
 
   useEffect(() => {
     if (token) createPayment();
@@ -282,7 +286,14 @@ const QapDashboard = () => {
                           <td>{""}</td>
                           <td>{file.vendor_name}</td>
                           <td>{file.assigned_to}</td>
-                          <td>{file.assigned_from}</td>
+                          <td>
+                            {file.assigned_on
+                              ? formatDateassign(
+                                  new Date(parseInt(file.assigned_on, 10))
+                                )
+                              : "N/A"}
+                          </td>
+
                           <td>{file.accepted_on}</td>
                           <td className={`${clrLegend(file?.status)} bold`}>
                             {file.status}
