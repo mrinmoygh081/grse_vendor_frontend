@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import MainHeader from "../components/MainHeader";
@@ -14,6 +14,7 @@ import "jspdf-autotable";
 import * as XLSX from "xlsx";
 import { clrLegend } from "../utils/clrLegend";
 import { formatFilePath, formatFilePathBTN } from "../utils/getDateTimeNow";
+import { BsChatRightText } from "react-icons/bs";
 
 const BTNfinance = () => {
   const { id } = useParams();
@@ -25,6 +26,8 @@ const BTNfinance = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedStatus, setSelectedStatus] = useState("All");
   const [error, setError] = useState(null);
+  const popupRef = useRef(null);
+  const remarksRef = useRef(null);
 
   const createPayment = async () => {
     setLoading(true);
@@ -149,6 +152,21 @@ const BTNfinance = () => {
     downloadLink.click();
   };
 
+  //reject remarks
+  const handleButtonClick = (remarks) => {
+    if (popupRef.current) {
+      popupRef.current.style.display = "block"; // Show the popup
+      remarksRef.current.textContent = remarks; // Update the remarks text
+    }
+  };
+
+  const closePopup = () => {
+    if (popupRef.current) {
+      popupRef.current.style.display = "none"; // Hide the popup
+      remarksRef.current.textContent = ""; // Clear the remarks text
+    }
+  };
+
   return (
     <div className="d-flex flex-column flex-row-fluid">
       <div className="page d-flex flex-row flex-column-fluid">
@@ -269,8 +287,38 @@ const BTNfinance = () => {
                           <td>{file.invoice_no}</td>
                           <td>{file.yard}</td>
                           {/* <td>{file.status}</td> */}
-                          <td className={`${clrLegend(file?.status)} bold`}>
+                          {/* <td className={`${clrLegend(file?.status)} bold`}>
                             {file.status}
+                          </td> */}
+                          <td className={`${clrLegend(file?.status)} bold`}>
+                            {/* Display Status with Remarks Icon */}
+                            <div className="d-flex align-items-center">
+                              <span>{file?.status}</span>
+                              {file.remarks && (
+                                <div
+                                  className="icon-container"
+                                  style={{
+                                    position: "relative",
+                                  }}
+                                >
+                                  <BsChatRightText
+                                    className="ms-2"
+                                    size={15}
+                                    style={{
+                                      cursor: "pointer",
+                                      color: "blue",
+                                    }}
+                                    onClick={() =>
+                                      handleButtonClick(file.remarks)
+                                    }
+                                  />
+                                  <div className="tooltip">
+                                    Reason for Rejection
+                                  </div>{" "}
+                                  {/* Tooltip text */}
+                                </div>
+                              )}
+                            </div>
                           </td>
                           <td>
                             {/* <button
@@ -310,6 +358,52 @@ const BTNfinance = () => {
                   )}
                 </tbody>
               </table>
+              <div
+                ref={popupRef}
+                style={{
+                  display: "none",
+                  position: "fixed",
+                  top: "50%",
+                  left: "50%",
+                  transform: "translate(-50%, -50%)",
+                  backgroundColor: "white",
+                  boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.3)",
+                  padding: "30px",
+                  zIndex: 1000,
+                  borderRadius: "8px",
+                  width: "380px",
+                  maxWidth: "90%",
+                }}
+              >
+                <h4>Reason for Rejection</h4>
+                <p ref={remarksRef}></p>
+                <button
+                  className="btn btn-danger"
+                  onClick={closePopup}
+                  style={{
+                    marginTop: "10px",
+                    fontSize: "14px",
+                    padding: "5px 10px",
+                  }}
+                >
+                  Close
+                </button>
+              </div>
+
+              {/* Background Overlay */}
+              <div
+                style={{
+                  display: "none",
+                  position: "fixed",
+                  top: 0,
+                  left: 0,
+                  width: "100%",
+                  height: "100%",
+                  backgroundColor: "rgba(0, 0, 0, 0.5)",
+                  zIndex: 999,
+                }}
+                onClick={closePopup}
+              />
             </div>
           </div>
           <Footer />
